@@ -1,0 +1,25 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:50352/",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "dev": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "em-api/0.1",
+      "applicationUrl": "https://localhost:50005",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Database": "Template",
+        "DbUser": "sa",
+        "DbPassword": "123",
+        "DbServer": "localhost"
+      }
+    }
+  }
+}

@@ -1,0 +1,323 @@
+openapi: 3.0.0
+info:
+  title: Template API
+  version: 0.1.0
+  description: |
+    Api para exponer la funcionalidad del template.
+  contact:
+    name: Edilberto Martinez
+    url: 'https://edilbertomd.github.io/portafoliolaboral/'
+    email: edilberto_diaz14@hotmail.com
+servers:
+  - url: 'http://localhost:3000'
+    description: Development/Test Server
+  - url: 'http://localhost:4000'
+    description: Production Server
+paths:
+  /health:
+    get:
+      summary: Ping echo for testing the services is up
+      tags:
+        - Health
+      responses:
+        '200':
+          description: OK
+      operationId: get-health
+      description: Health check for the service
+      security: []
+  /ready:
+    get:
+      summary: Readiness check by executing base functionality
+      tags:
+        - Health
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      operationId: GetReady
+      description: Readiness check for the service
+      security: []
+  '/{version}/users':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    get:
+      summary: Obtiene el usuario
+      tags:
+        - Users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      operationId: GetUser
+      description: Obtiene el usuario
+      security:
+        - jwsToken: []
+    post:
+      summary: Crea un usuario
+      operationId: PostUser
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      tags:
+        - Users
+      description: Crea un usuario
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        description: ''
+    put:
+      summary: Actualiza un usuario
+      operationId: PutUser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      tags:
+        - Users
+      description: Actualiza un usuario
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+    delete:
+      summary: Elimina un usuario
+      operationId: DeleteUser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      tags:
+        - Users
+      description: Elimina un usuario
+      security:
+        - jwsToken: []
+components:
+  schemas:
+    UserRequest:
+      title: UserRequest
+      x-stoplight:
+        id: 1a399a20dcefe
+      type: object
+      description: Estructura para agregar usuarios
+      properties:
+        user:
+          type: string
+          minLength: 1
+          maxLength: 100
+      required:
+        - user
+    UserUpdateRequest:
+      title: UserUpdateRequest
+      x-stoplight:
+        id: s7nqtlsw9m3sh
+      type: object
+      properties:
+        user:
+          type: string
+          minLength: 1
+          maxLength: 100
+        modificationTimestamp:
+          type: string
+          format: date-time
+      required:
+        - user
+        - modificationTimestamp
+      description: Estructura para actualizar usuarios
+    UserResult:
+      title: UserResult
+      x-stoplight:
+        id: gu55vk4o2l8gt
+      type: object
+      description: Estructura para consultar usuarios
+      properties:
+        user:
+          type: string
+          minLength: 1
+          maxLength: 100
+        guid:
+          type: string
+          description: Guid of the key-value configuration
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+      required:
+        - user
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+  securitySchemes:
+    jwsToken:
+      type: http
+      scheme: bearer
+    X-API-Key:
+      name: X-API-Key
+      type: apiKey
+      in: header
+  parameters:
+    version:
+      name: version
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+      description: Version of the API to use
+  responses:
+    HTTP_Error_400:
+      description: Response to client error satus code
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                description: List of errors
+                items:
+                  type: object
+                  description: Standard error
+                  properties:
+                    errorCode:
+                      type: string
+                      description: Error key for internationalization purposes
+                    type:
+                      type: string
+                      format: uri
+                      description: Original URI
+                      readOnly: true
+                    title:
+                      type: string
+                      description: 'Error title, clear and concise'
+                      readOnly: true
+                    status:
+                      type: integer
+                      description: HTTP status for the specific error
+                      format: int32
+                      minimum: 0
+                      exclusiveMinimum: true
+                      readOnly: true
+                    detail:
+                      type: string
+                      description: Full detail of the error
+                      minLength: 15
+                      readOnly: true
+                    instance:
+                      type: string
+                      description: Specific instance where the error occurs without the base URI
+                      minLength: 1
+                      readOnly: true
+                    extraAttributes:
+                      type: object
+                      description: Extra attributes
+                      nullable: true
+                      properties:
+                        desciptionDynamicContents:
+                          type: array
+                          description: List of dynamic fields used in the detail of the error
+                          nullable: true
+                          items:
+                            type: string
+                        module:
+                          type: string
+                          description: Module that generated the error
+                          nullable: true
+                        serviceName:
+                          type: string
+                          description: Name of the service generating the error
+                          nullable: true
+                        serviceLocation:
+                          type: string
+                          description: Location of the service's instance
+                          nullable: true
+                  required:
+                    - errorCode
+                    - type
+                    - title
+                    - status
+                    - detail
+                    - instance
+            required:
+              - errors
+          examples:
+            Basic example:
+              value:
+                errors:
+                  - errorCode: string
+                    type: 'http://example.com'
+                    title: string
+                    status: 1
+                    detail: stringstringstr
+                    instance: string
+                    extraAttributes:
+                      desciptionDynamicContents:
+                        - string
+                      module: string
+                      serviceName: string
+                      serviceLocation: string
+tags:
+  - name: Health
+  - name: Users
+security:
+  - jwsToken: []
+  - X-API-Key: []
