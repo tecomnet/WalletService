@@ -11,16 +11,16 @@ namespace Template.DOM
 
         private static readonly ServiceErrorsBuilder ServiceError = ServiceErrorsBuilder.Instance();
 
-        private static EmGeneralException BuildEmGeneralException(IServiceError serviceError, List<object> dynamicContent, string module = ModuleName)
+        private static EMGeneralException BuildEmGeneralException(IServiceError serviceError, List<object> dynamicContent, string module = ModuleName)
         {
-            return new EmGeneralException(
+            return new EMGeneralException(
                 serviceError: serviceError,
                 serviceName: ServiceName,
                 module: module,
                 descriptionDynamicContents: dynamicContent);
         }
 
-        public static EmGeneralException BuildEmGeneralException(string errorCode, List<object> dynamicContent, string module = ModuleName)
+        public static EMGeneralException BuildEmGeneralException(string errorCode, List<object> dynamicContent, string module = ModuleName)
         {
             var serviceError = ServiceError.GetError(errorCode);
             var itaGeneralException = BuildEmGeneralException(serviceError, dynamicContent, module);

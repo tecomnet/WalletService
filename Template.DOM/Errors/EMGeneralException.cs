@@ -1,6 +1,6 @@
 namespace Template.DOM.Errors;
 
-public class EmGeneralException : Exception
+public class EMGeneralException : Exception
 {
     public IServiceError ServiceError { get; }
     public string Code { get; }
@@ -15,7 +15,7 @@ public class EmGeneralException : Exception
 
     public string ServiceLocation { get; }
     public string Module { get; }
-    public EmGeneralException(
+    public EMGeneralException(
         string message,
         string code,
         string title,
@@ -30,13 +30,13 @@ public class EmGeneralException : Exception
         this.Code = code;
         this.Title = title;
         this.Description = description;
-        this.DescriptionDynamicContents = EmGeneralException.ProcessDynamicContent(descriptionDynamicContents);
+        this.DescriptionDynamicContents = EMGeneralException.ProcessDynamicContent(descriptionDynamicContents);
         this.ServiceName = serviceName;
         this.ServiceInstance = serviceInstance ?? "NA";
         this.ServiceLocation = serviceLocation ?? "NA";
         this.Module = module;
     }
-    public EmGeneralException(
+    public EMGeneralException(
         IServiceError serviceError,
         string serviceName,
         string module = "DOM",
@@ -46,11 +46,11 @@ public class EmGeneralException : Exception
         this.Code = serviceError.ErrorCode;
         this.Title = serviceError.Message;
         this.Description = serviceError.Description(descriptionDynamicContents.ToArray());
-        this.DescriptionDynamicContents = EmGeneralException.ProcessDynamicContent(descriptionDynamicContents);
+        this.DescriptionDynamicContents = EMGeneralException.ProcessDynamicContent(descriptionDynamicContents);
         this.ServiceName = serviceName;
         this.Module = module;
     }
-    public EmGeneralException(string message, Exception inner)
+    public EMGeneralException(string message, Exception inner)
         : base(message, inner)
     {
     }

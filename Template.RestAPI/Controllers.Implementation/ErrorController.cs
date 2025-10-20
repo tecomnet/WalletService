@@ -28,7 +28,7 @@ namespace Template.RestAPI.Controllers.Implementation
             }
 
             var exception = context.Error;
-            var emGeneralAggregateException = new EmGeneralAggregateException(new EmGeneralException(exception.Message, exception));
+            var emGeneralAggregateException = new EMGeneralAggregateException(new EMGeneralException(exception.Message, exception));
             return BadRequest(new InlineResponse400(emGeneralAggregateException));
         }
     }

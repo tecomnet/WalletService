@@ -26,7 +26,7 @@ public class GeneralConfigurationServiceFacade(
         remoteServiceNameConfig: GeneralConfigurationSettingsData.RemoteServiceNameConfig,
         version: GeneralConfigurationSettingsData.Version), IGeneralConfigurationManagementFacade
 {
-    protected override EmGeneralAggregateException? ExtractEMGeneralAggregateException(Exception exception)
+    protected override EMGeneralAggregateException? ExtractEMGeneralAggregateException(Exception exception)
     {
         throw new NotImplementedException();
     }

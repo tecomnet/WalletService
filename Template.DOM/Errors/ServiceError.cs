@@ -6,7 +6,8 @@ public class ServiceError : IServiceError
     public string ErrorCode { get; protected set; }
 
     public string Message { get; protected set; }
-    
+    public string Title { get; }
+
 
     public string Description(object[]? args = null)
     {
@@ -16,6 +17,7 @@ public class ServiceError : IServiceError
     {
         this.ErrorCode = errorCode;
         this.Message = message;
+        this.Title = message;
         this._description = description;
     }
 }

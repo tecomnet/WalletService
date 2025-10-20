@@ -103,7 +103,7 @@ namespace Template.RestAPI.Models
             string? type,
 #nullable disable
             int status,
-            EmGeneralException exception) :
+            EMGeneralException exception) :
             this(type, status, exception.Code, exception.Title, exception.Description, exception.ServiceInstance)
         {
             // Instantiate the ExtraAttributes
@@ -157,7 +157,7 @@ namespace Template.RestAPI.Models
         /// <param name="exceptions">List of EMGeneralExceptions</param>
         /// <returns></returns>
         public static List<InlineResponse400Errors> CreateFromExceptionList(
-            List<EmGeneralException> exceptions)
+            List<EMGeneralException> exceptions)
         {
             // Create an empty list to hold the new errors
             List<InlineResponse400Errors> newErrors = [];
@@ -195,15 +195,15 @@ namespace Template.RestAPI.Models
         /// one inner EMGeneralException</param>
         /// <returns></returns>
         public static List<InlineResponse400Errors> CreateFromAggregatedException(
-            EmGeneralAggregateException aggregateException)
+            EMGeneralAggregateException aggregateException)
         {
             // Initialize the list of exceptions
-            List<EmGeneralException> emGeneralExceptions = [];
+            List<EMGeneralException> emGeneralExceptions = [];
             // Extract each inner exception
             foreach (var exception in aggregateException.InnerExceptions)
             {
                 // Add the cast exception into the list
-                emGeneralExceptions.Add((EmGeneralException)exception);
+                emGeneralExceptions.Add((EMGeneralException)exception);
             }
             // Use the basic factory passing the list of EMGeneralExceptions within the AggregatedException
             return CreateFromExceptionList(exceptions: emGeneralExceptions);

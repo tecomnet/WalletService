@@ -15,7 +15,7 @@ namespace Template.UnitTest
             string caseName,
             bool success,
             string[]? expectedErrors,
-            EmGeneralAggregateException exception)
+            EMGeneralAggregateException exception)
         {
             // Assert not null errors
             if (exception.InnerException is not null)

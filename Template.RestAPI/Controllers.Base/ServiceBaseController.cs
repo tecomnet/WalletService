@@ -45,7 +45,7 @@ namespace Template.RestAPI.Controllers.Base
                 return;
             }
 
-            if (context.Exception is EmGeneralException emGeneralException)
+            if (context.Exception is EMGeneralException emGeneralException)
             {
                 HandleEMGeneralException(context, emGeneralException);
                 return;
@@ -79,10 +79,10 @@ namespace Template.RestAPI.Controllers.Base
             context.ExceptionHandled = true;
         }
 
-        private static void HandleEMGeneralException(ActionExecutedContext context, EmGeneralException emGeneralException)
+        private static void HandleEMGeneralException(ActionExecutedContext context, EMGeneralException emGeneralException)
         {
             var emGeneralAggregateException =
-                new EmGeneralAggregateException(emGeneralException);
+                new EMGeneralAggregateException(emGeneralException);
             context.Result = new ObjectResult(new InlineResponse400(emGeneralAggregateException))
             {
                 StatusCode = 400

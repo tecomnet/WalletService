@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Template.Funcionalidad;
-using Template.Funcionalidad.ApplicationDbContext;
+using Template.DOM.ApplicationDbContext;
 using Template.RestAPI;
 
 namespace Template.UnitTest.FixtureBase
@@ -23,15 +23,15 @@ namespace Template.UnitTest.FixtureBase
             context.Database.Migrate();
         }
 
-        protected async Task SetupDataAsync(Func<AppDbContext, Task> setupDataAction)
+        protected async Task SetupDataAsync(Func<ServiceDbContext, Task> setupDataAction)
         {
             await using var context = CreateContext();
             await setupDataAction(context);
         }
 
-        protected internal AppDbContext CreateContext()
+        protected internal ServiceDbContext CreateContext()
             => new(
-                new DbContextOptionsBuilder<AppDbContext>()
+                new DbContextOptionsBuilder<ServiceDbContext>()
                     .UseSqlServer(_connectionString,
                         optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                     .Options);

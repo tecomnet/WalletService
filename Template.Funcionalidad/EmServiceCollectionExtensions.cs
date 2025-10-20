@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Template.Funcionalidad.ApplicationDbContext;
+using Template.DOM.ApplicationDbContext;
 using Template.Funcionalidad.Helper;
 using Template.Funcionalidad.ServiceClient;
 
@@ -26,7 +26,7 @@ namespace Template.Funcionalidad
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddDbContext<AppDbContext>(
+            services.AddDbContext<ServiceDbContext>(
                 options =>
                 {
                     var connString = BuildConnectionString(configuration);
@@ -61,7 +61,7 @@ namespace Template.Funcionalidad
         
         public static IServiceCollection AddEmTestServices(this IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(GetConnectionString(),
+            services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(GetConnectionString(),
                 optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
             ConfigureServices(services);
             return services;

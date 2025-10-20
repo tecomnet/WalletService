@@ -62,7 +62,7 @@ namespace Template.RestAPI.Models
             string? type,
 #nullable disable
             int status,
-            EmGeneralException exception)
+            EMGeneralException exception)
         {
             // Initialize the Errors property with an empty list for 400Errors
             Errors = new List<InlineResponse400Errors>();
@@ -78,7 +78,7 @@ namespace Template.RestAPI.Models
         /// Constrtuctor based on a list of exceptions
         /// </summary>
         /// <param name="exceptions">List of EMGeneralExceptions</param>
-        public InlineResponse400(List<EmGeneralException> exceptions)
+        public InlineResponse400(List<EMGeneralException> exceptions)
         {
             // Initialize the Errors property with a list of errors from the exception factory
             Errors = InlineResponse400Errors.CreateFromExceptionList(exceptions: exceptions);
@@ -96,7 +96,7 @@ namespace Template.RestAPI.Models
         /// Constructor based on a AggregatedException containing at least one EMGeneralException
         /// </summary>
         /// <param name="aggregateException">Aggregated exception containing at least one EMGeneralException</param>
-        public InlineResponse400(EmGeneralAggregateException aggregateException)
+        public InlineResponse400(EMGeneralAggregateException aggregateException)
         {
             // Initialize the Errors property with a list of errors from the aggregated exception factory
             Errors = InlineResponse400Errors.CreateFromAggregatedException(aggregateException: aggregateException);

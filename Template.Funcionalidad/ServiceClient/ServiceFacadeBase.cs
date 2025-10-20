@@ -48,7 +48,7 @@ namespace Template.Funcionalidad.ServiceClient
                     break;
                 default:
                     {
-                        throw new EmGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                        throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
                             errorCode: serviceErrorCode,
                             dynamicContent: [authorizationType, user ?? "N/A"],
                             module: runningModuleName));
@@ -120,14 +120,14 @@ namespace Template.Funcionalidad.ServiceClient
         }
 
 
-        protected virtual EmGeneralAggregateException HandelAPIException(Exception exception)
+        protected virtual EMGeneralAggregateException HandelAPIException(Exception exception)
         {
             // If the exception has inner exceptions
             var itaGeneralAggregateException = ExtractEMGeneralAggregateException(exception);
             if (itaGeneralAggregateException == null)
             {
                 // Create a generic ITA general exception
-                return new EmGeneralAggregateException(exception: new EmGeneralException(
+                return new EMGeneralAggregateException(exception: new EMGeneralException(
                     message: exception.Message,
                     code: _unmanagedServiceErrorCode,
                     title: "Not managed service client error",
@@ -141,6 +141,6 @@ namespace Template.Funcionalidad.ServiceClient
             return itaGeneralAggregateException;
         }
 
-        protected abstract EmGeneralAggregateException? ExtractEMGeneralAggregateException(Exception exception);
+        protected abstract EMGeneralAggregateException? ExtractEMGeneralAggregateException(Exception exception);
     }
 }

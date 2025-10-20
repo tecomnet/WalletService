@@ -17,7 +17,7 @@ public class ServiceErrorsBuilder
     }
 
     // Método privado para añadir un error al diccionario
-    private void AddServiceError(string errorCode, string message, string description)
+    public void AddServiceError(string errorCode, string message, string description)
     {
         _errors[errorCode] = new ServiceError(errorCode, message, description);
     }

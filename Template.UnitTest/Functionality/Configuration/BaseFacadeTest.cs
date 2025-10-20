@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Template.Funcionalidad;
-using Template.Funcionalidad.ApplicationDbContext;
+using Template.DOM.ApplicationDbContext;
 
 namespace Template.UnitTest.Functionality.Configuration;
 
@@ -13,7 +13,7 @@ public abstract class BaseFacadeTest<T> : UnitTestTemplate, IClassFixture<SetupD
     protected readonly SetupDataConfig SetupConfig;
 
     // Defines a context for test   
-    protected readonly AppDbContext Context;
+    protected readonly ServiceDbContext Context;
 
     // Defines a facade for test
     protected readonly T Facade;
