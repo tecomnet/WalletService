@@ -13,24 +13,24 @@ public class Verificacion2FATest : UnitTestTemplate
     
     // === 1. CASOS DE ÉXITO ===
     [InlineData("1. OK: Full Valid (SMS, True)", 
-        "1234", "2025-12-31T23:59:59", Tipo2FA.Sms, true, 
+        "1234", "2025-12-31T23:59:59", Tipo2FA.Sms,  
         true, new string[] { })]
     [InlineData("2. OK: Full Valid (EMAIL, False)", 
-        "9876", "2026-01-01T00:00:00", Tipo2FA.Email, false, 
+        "9876", "2026-01-01T00:00:00", Tipo2FA.Email,  
         true, new string[] { })]
 
     // === 2. ERRORES DE CÓDIGO (string, required, length=4) ===
     [InlineData("3. ERROR: Codigo null", 
-        null, "2025-12-31T23:59:59", Tipo2FA.Sms, true, 
+        null, "2025-12-31T23:59:59", Tipo2FA.Sms,  
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("4. ERROR: Codigo empty", 
-        "", "2025-12-31T23:59:59", Tipo2FA.Email, false, 
+        "", "2025-12-31T23:59:59", Tipo2FA.Email,  
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("5. ERROR: Codigo too short (3)", 
-        "123", "2025-12-31T23:59:59", Tipo2FA.Sms, true, 
+        "123", "2025-12-31T23:59:59", Tipo2FA.Sms,  
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
     [InlineData("6. ERROR: Codigo too long (5)", 
-        "12345", "2025-12-31T23:59:59", Tipo2FA.Email, false, 
+        "12345", "2025-12-31T23:59:59", Tipo2FA.Email,  
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
 
     // === 3. ERRORES DE TIPOS REQUERIDOS (FechaVencimiento, Tipo, Verificado) ===
@@ -41,18 +41,17 @@ public class Verificacion2FATest : UnitTestTemplate
 
     // === 4. ERROR MÚLTIPLE ===
     [InlineData("7. ERROR: Multiple (Codigo Required + Length invalid)", 
-        "", "2025-12-31T23:59:59", Tipo2FA.Sms, true, 
+        "", "2025-12-31T23:59:59", Tipo2FA.Sms,  
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })] 
     // Nota: Si el código tiene más de 4, el 'Required' (empty/null) no aplica, solo el Length.
     [InlineData("8. ERROR: Multiple (Codigo Length invalid)", 
-        "123456", "2025-12-31T23:59:59", Tipo2FA.Email, false, 
+        "123456", "2025-12-31T23:59:59", Tipo2FA.Email,  
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
     public void Verificacion2FAConsructorTest(
         string caseName,
         string? codigo,
         string fechaVencimientoStr, // Usamos string para InlineData
         Tipo2FA tipo,
-        bool verificado,
         bool success,
         string[]? expectedErrors = null)
     {
@@ -66,7 +65,6 @@ public class Verificacion2FATest : UnitTestTemplate
                 codigo: codigo!,
                 fechaVencimiento: fechaVencimiento,
                 tipo: tipo,
-                verificado: verificado,
                 creationUser: Guid.NewGuid(),
                 testCase: caseName);
 
@@ -77,7 +75,7 @@ public class Verificacion2FATest : UnitTestTemplate
             Assert.Equal(codigo, verificacion.Codigo);
             Assert.Equal(fechaVencimiento, verificacion.FechaVencimiento);
             Assert.Equal(tipo, verificacion.Tipo);
-            Assert.Equal(verificado, verificacion.Verificado);
+            Assert.False(verificacion.Verificado);
         }
         catch (EMGeneralAggregateException exception)
         {
