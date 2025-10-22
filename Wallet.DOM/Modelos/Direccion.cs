@@ -55,12 +55,12 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
             propertyName: nameof(NumeroInterior),
             isRequired: true,
             minimumLength: 1,
-            maximumLength: 100),
+            maximumLength: 6),
 
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Referencia),
-            isRequired: false,
-            minimumLength: 0,
+            isRequired: true,
+            minimumLength: 1,
             maximumLength: 250),
     ];
 
@@ -98,9 +98,9 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
     public string NumeroExterior { get; private set; }
 
     [Required]
-    [MaxLength(100)]
+    [MaxLength(6)]
     public string NumeroInterior { get; private set; }
-
+    [Required]
     [MaxLength(250)]
     public string? Referencia { get; private set; }
 
@@ -112,8 +112,13 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
 
     }
 
-
-    public Direccion(string pais, string estado)
+    /// <summary>
+    /// Nueva direccion durante el registro y seleccion del estado
+    /// </summary>
+    /// <param name="pais"></param>
+    /// <param name="estado"></param>
+    /// <exception cref="EMGeneralAggregateException"></exception>
+    public Direccion(string pais, string estado, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
