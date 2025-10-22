@@ -14,62 +14,62 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
             isRequired: true,
             minimumLength: 3,
             maximumLength: 3),
-        
+
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Telefono),
             isRequired: true,
             minimumLength: 9,
             maximumLength: 10),
-        
+
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Nombre),
             isRequired: true,
             minimumLength: 1,
             maximumLength: 100),
-        
+
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(PrimerApellido),
             isRequired: true,
             minimumLength: 1,
             maximumLength: 100),
-        
+
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(SegundoApellido),
             isRequired: true,
             minimumLength: 1,
             maximumLength: 100),
-        
+
         PropertyConstraint.DateOnlyPropertyConstraint(
             propertyName: nameof(FechaNacimiento),
             isRequired: true),
-        
+
         PropertyConstraint.ObjectPropertyConstraint(
             propertyName: nameof(Genero),
             isRequired: true),
-        
+
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(CorreoElectronico),
             isRequired: true,
             minimumLength: 1,
             maximumLength: 150,
             regex: @"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$"),
-        
+
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Contrasena),
             isRequired: true,
             minimumLength: 1,
             maximumLength: 100),
-        
+
         PropertyConstraint.ObjectPropertyConstraint(
             propertyName: nameof(TipoPersona),
             isRequired: true),
-        
+
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Curp),
             isRequired: true,
             minimumLength: 18,
             maximumLength:18),
-        
+
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Rfc),
             isRequired: true,
@@ -121,35 +121,35 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     //[Required]
     public TipoPersona? TipoPersona { get; private set; }
-    
+
     //[Required]
     [MaxLength(18)]
     public string? Curp { get; private set; }
-    
+
     //[Required]
     [MaxLength(13)]
     public string? Rfc { get; private set; }
-    
+
     // TODO EMD: FOTO OPCIONAL, AQUI SE GUARDARA EL GUID O TOKEN QUE RETORNE AWS
     //[Required]
     [MaxLength(500)]
     public string? FotoAWS { get; private set; }
-    
+
     public int EstadoId { get; private set; }
-    
+
     public Estado Estado { get; private set; }
-    
+
     public int EmpresaId { get; private set; }
-    
+
     public Empresa Empresa { get; private set; }
-    
+
     public int DireccionId { get; private set; }
-    
+
     public Direccion Direccion { get; private set; }
-    
-    public List<Verificacion2FA> Verificaciones2FA { get; private set; }    
+
+    public List<Verificacion2FA> Verificaciones2FA { get; private set; }
     public List<UbicacionesGeolocalizacion> UbicacionesGeolocalizacion { get; private set; }
-    public List<DispositivoMovilAutorizado> DispositivoMovilAutorizados { get; private set; }   
+    public List<DispositivoMovilAutorizado> DispositivoMovilAutorizados { get; private set; }
     public List<DocumentacionAdjunta> DocumentacionAdjuntas { get; private set; }
     public List<ActividadEconomica> ActividadEconomicas { get; private set; }
     public List<ValidacionCheckton> ValidacionesChecktons { get; private set; }
@@ -157,9 +157,9 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     public Cliente()
     {
-        
+
     }
-    
+
     /// <summary>
     /// Nuevo cliente, para generar code 4 digitos por sms
     /// </summary>
@@ -273,7 +273,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         this.Telefono = telefono;
         base.Update(modificationUser: modificationUser);
     }
-    
+
     public void ActualizarCorreoElectronico(string correoElectronico, Guid modificationUser)
     {
         // Initialize the list of exceptions
@@ -484,8 +484,49 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         // Agrega el nuevo dispositivo a la lista y este quedara como el actual
         this.DispositivoMovilAutorizados.Add(dispositivo);
         base.Update(modificationUser: modificationUser);
-
     }
+
+    /// <summary>
+    /// Agrega un documento adjunto
+    /// </summary>
+    /// <param name="documentacion"></param>
+    /// <param name="modificationUser"></param>
+    /// <exception cref="EMGeneralAggregateException"></exception>
+    private void AgregarDocumentacionAdjunta(DocumentacionAdjunta documentacion, Guid modificationUser)
+    {
+        // Verifica que la lista de documentos no sea nula
+        if (this.DocumentacionAdjuntas == null)
+        {
+            this.DocumentacionAdjuntas = new List<DocumentacionAdjunta>();
+        }
+        // Verifica que el tipo de persona esté configurado
+        if (this.TipoPersona == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.TipoPersonaNoConfigurada,
+                    dynamicContent: []));
+        }
+        // Verifica que el documento no sea nulo
+        if (documentacion == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.DocumentacionAdjuntaRequerida,
+                    dynamicContent: []));
+        }
+        // Valida si el documento ya existe (por NombreDocumento)
+        if (this.DocumentacionAdjuntas.Any(d => d.Documento.Nombre == documentacion.Documento.Nombre &&
+         d.Documento.TipoPersona == this.TipoPersona))
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                   errorCode: ServiceErrorsBuilder.DocumentacionAdjuntaYaExiste,
+                   dynamicContent: [documentacion.Documento.Nombre, this.TipoPersona]));
+        }
+        // Agrega el nuevo documento a la lista
+        this.DocumentacionAdjuntas.Add(documentacion);
+        base.Update(modificationUser: modificationUser);
+    }
+
+
 }
 
 

@@ -74,6 +74,13 @@ public class ServiceErrorsBuilder
     public const string CodigoVerificacionVencido = "CODIGO-VERIFICACION-VENCIDO";
     public const string CodigoVerificacionNoEncontrado = "CODIGO-VERIFICACION-NO-ENCONTRADO";
 
+    public const string DocumentacionAdjuntaRequerida = "DOCUMENTACION-ADJUNTA-REQUERIDA";
+    
+    public const string TipoPersonaNoConfigurada = "TIPO-PERSONA-NO-CONFIGURADA";
+    public const string DocumentacionAdjuntaYaExiste = "DOCUMENTACION-ADJUNTA-YA-EXISTE"; 
+
+
+
     private void ClienteErrors()
     {
         // Error de dispositivo móvil autorizado requerido
@@ -131,6 +138,21 @@ public class ServiceErrorsBuilder
             errorCode: CodigoVerificacionNoEncontrado,
             message: "El código de verificación no fue encontrado.",
             description: "El código de verificación proporcionado {0} del tipo {1} no existe.");
+        // Error de documentación adjunta requerida
+        AddServiceError(
+            errorCode: DocumentacionAdjuntaRequerida,
+            message: "La documentación adjunta es requerida.",
+            description: "La documentación adjunta no puede ser nula o vacía.");
+        // Error de tipo de persona no configurada
+        AddServiceError(
+            errorCode: TipoPersonaNoConfigurada,
+            message: "El tipo de persona no fue configurado.",
+            description: "El tipo de persona no fue configurado. Primero debe configurar el tipo de persona.");
+        // Error de documentación adjunta ya existe
+        AddServiceError(
+            errorCode: DocumentacionAdjuntaYaExiste,
+            message: "La documentación adjunta ya existe.",
+            description: "La documentación adjunta proporcionada {0} ya está asociada al cliente.");
     }
 
     // Errores específicos de TipoDocumentos
