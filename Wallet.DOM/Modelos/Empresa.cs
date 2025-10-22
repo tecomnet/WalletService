@@ -34,6 +34,7 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(Nombre), value: nombre, ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        // Seteo de propiedades
         this.Nombre = nombre;
     }
 }
