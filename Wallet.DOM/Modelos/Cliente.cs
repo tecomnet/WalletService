@@ -51,7 +51,8 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
             propertyName: nameof(CorreoElectronico),
             isRequired: true,
             minimumLength: 1,
-            maximumLength: 250),
+            maximumLength: 150,
+            regex: @"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$"),
         
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Contrasena),
@@ -111,6 +112,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     //[Required]
     [EmailAddress]
+    [MaxLength(150)]
     public string? CorreoElectronico { get; private set; }
 
     //[Required]
@@ -242,7 +244,9 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     {
         if (oldContrasena != this.Contrasena)
         {
-            throw new Exception("La contraseña actual no es correcta");
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ContrasenasNoCoinciden,
+                    dynamicContent: []));
         }
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
@@ -252,26 +256,235 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Set new contrasena
         //  TODO EMD: ENCRIPTAR EN EL FUTURO O USA HASH
-        this.Contrasena = newContrasena;   
+        this.Contrasena = newContrasena;
+        base.Update(modificationUser: modificationUser);
+    }
+
+    public void ActualizarTelefono(string codigoPais, string telefono, Guid modificationUser)
+    {
+        // Initialize the list of exceptions
+        List<EMGeneralException> exceptions = new();
+        // Validate the properties
+        IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Telefono), value: telefono, ref exceptions);
+        // If there are exceptions, throw them
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        this.CodigoPais = codigoPais;
+        this.Telefono = telefono;
         base.Update(modificationUser: modificationUser);
     }
     
-    
+    public void ActualizarCorreoElectronico(string correoElectronico, Guid modificationUser)
+    {
+        // Initialize the list of exceptions
+        List<EMGeneralException> exceptions = new();
+        // Validate the properties
+        IsPropertyValid(propertyName: nameof(CorreoElectronico), value: correoElectronico, ref exceptions);
+        // If there are exceptions, throw them
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        this.CorreoElectronico = correoElectronico;
+        base.Update(modificationUser: modificationUser);
+    }
+
+    public void AgregarVerificacion2FA(Verificacion2FA verificacion, Guid modificationUser)
+    {
+        // 1. Inicializa la lista si es null
+        if (this.Verificaciones2FA == null)
+        {
+            this.Verificaciones2FA = new List<Verificacion2FA>();
+        }
+
+        // 2. Verifica que el objeto a agregar no sea nulo 
+        if (verificacion == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                            errorCode: ServiceErrorsBuilder.Verificacion2FARequerida,
+                            dynamicContent: []));
+        }
+
+        // 3. IDENTIFICA y DESACTIVA todos los códigos activos y no verificados del MISMO TIPO
+        var verificacionesViejas = this.Verificaciones2FA
+            // Filtramos por las que están VIGENTES (no vencidas) Y NO VERIFICADAS Y DEL MISMO TIPO
+            .Where(x => x.FechaVencimiento >= DateTime.UtcNow &&
+                        x.Tipo == verificacion.Tipo &&
+                        !x.Verificado &&
+                        x.IsActive)
+            // Convertir a lista para iterar sin problemas con el Where
+            .ToList();
+
+        // 4. Desactiva cada código de verificación viejo/pendiente
+        foreach (var oldVerification in verificacionesViejas)
+        {
+            // Asumiendo que Deactivate(modificationUser) marca x.Verificado = true o x.Activo = false.
+            // Si tienes un método de dominio 'Invalidate()' o 'Cancel()', úsalo.
+            oldVerification.Deactivate(modificationUser: modificationUser);
+        }
+
+        // 5. Agrega la nueva verificación (la más reciente)
+        this.Verificaciones2FA.Add(verificacion);
+        base.Update(modificationUser: modificationUser);
+    }
+
+    public bool ConfirmarVerificacion2FA(Tipo2FA tipo, string codigo, Guid modificationUser)
+    {
+        // Busca la verificación 2FA activa y no verificada del tipo y código proporcionados
+        var verificacion = this.Verificaciones2FA?
+            .FirstOrDefault(v => v.Tipo == tipo &&
+                                 v.Codigo == codigo);
+        // Verifica si se encontró la verificación
+        if (verificacion == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                            errorCode: ServiceErrorsBuilder.CodigoVerificacionNoEncontrado,
+                            dynamicContent: [codigo, tipo.ToString()]));
+        }
+        // Verifica si el código está activo
+        if (!verificacion.IsActive)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                            errorCode: ServiceErrorsBuilder.CodigoVerificacionInactivo,
+                            dynamicContent: []));
+        }
+        // Verifica si el código ya ha sido verificado
+        if (verificacion.Verificado)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                            errorCode: ServiceErrorsBuilder.CodigoVerificacionConfirmado,
+                            dynamicContent: []));
+        }
+        // Verifica si el código ha vencido
+        if (verificacion.FechaVencimiento >= DateTime.UtcNow)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                            errorCode: ServiceErrorsBuilder.CodigoVerificacionVencido,
+                            dynamicContent: []));
+        }
+        // Si se encuentra la verificación, márcala como verificada
+        if (verificacion != null)
+        {
+            // Marca la verificación como verificada
+            verificacion.MarcarComoVerificado(modificationUser: modificationUser);
+            base.Update(modificationUser: modificationUser);
+            return true; // Verificación exitosa
+        }
+        return false; // Verificación fallida
+    }
+
+
+
     public void AgregarEmpresa(Empresa empresa, Guid modificationUser)
     {
+        if (empresa == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EmpresaRequerida,
+                    dynamicContent: []));
+        }
         this.Empresa = empresa;
         base.Update(modificationUser: modificationUser);
     }
     public void AgregarDireccion(Direccion direccion, Guid modificationUser)
     {
+        if (direccion == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.DireccionRequerida,
+                    dynamicContent: []));
+        }
         this.Direccion = direccion;
         base.Update(modificationUser: modificationUser);
     }
 
     public void AgregarEstado(Estado estado, Guid modificationUser)
     {
+        if (estado == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EstadoRequerido,
+                    dynamicContent: []));
+        }
         this.Estado = estado;
         base.Update(modificationUser: modificationUser);
+    }
+
+    public void AgregarFotoAWS(string fotoAWS, Guid modificationUser)
+    {
+        // Initialize the list of exceptions
+        List<EMGeneralException> exceptions = new();
+        // Validate the properties
+        IsPropertyValid(propertyName: nameof(FotoAWS), value: fotoAWS, ref exceptions);
+        // If there are exceptions, throw them
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        // Set fotoAWS
+        this.FotoAWS = fotoAWS;
+        base.Update(modificationUser: modificationUser);
+    }
+
+    public void AgregarTipoPersona(TipoPersona tipoPersona, Guid modificationUser)
+    {
+        this.TipoPersona = tipoPersona;
+        base.Update(modificationUser: modificationUser);
+    }
+
+    public void AgregarCurpRfc(string curp, string rfc, Guid modificationUser)
+    {
+        // Initialize the list of exceptions
+        List<EMGeneralException> exceptions = new();
+        // Validate the properties
+        IsPropertyValid(propertyName: nameof(Curp), value: curp, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Rfc), value: rfc, ref exceptions);
+        // If there are exceptions, throw them
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        // Set curp and rfc
+        this.Curp = curp;
+        this.Rfc = rfc;
+        base.Update(modificationUser: modificationUser);
+    }
+
+    public void AgregarUbicacionGeolocalizacion(UbicacionesGeolocalizacion ubicacion, Guid modificationUser)
+    {
+        // Verifica que la lista de ubicaciones no sea nula
+        if (this.UbicacionesGeolocalizacion == null)
+        {
+            this.UbicacionesGeolocalizacion = new List<UbicacionesGeolocalizacion>();
+        }
+        // Verifica que la ubicacion no sea nula
+        if (ubicacion == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.UbicacionGeolocalizacionRequerido,
+                    dynamicContent: []));
+        }
+        // Agrega la nueva ubicacion a la lista
+        this.UbicacionesGeolocalizacion.Add(ubicacion);
+        base.Update(modificationUser: modificationUser);
+    }
+
+    public void AgregarDispositivoMovilAutorizado(DispositivoMovilAutorizado dispositivo, Guid modificationUser)
+    {
+        // Verifica que la lista de dispositivos no sea nula
+        if (this.DispositivoMovilAutorizados == null)
+        {
+            this.DispositivoMovilAutorizados = new List<DispositivoMovilAutorizado>();
+        }
+        // Verifica que el dispositivo no sea nulo
+        if (dispositivo == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.DiscpositorioMovilAutorizadoRequerido,
+                    dynamicContent: []));
+        }
+        // Encuentra el dispositivo actual en la lista
+        var dispositivoActual = this.DispositivoMovilAutorizados.FirstOrDefault(x => x.Actual);
+        // Si existe un dispositivo actual, marcarlo como no actual
+        if (dispositivoActual != null)
+        {
+            dispositivoActual.MarcarComoNoActual();
+        }
+        // Agrega el nuevo dispositivo a la lista y este quedara como el actual
+        this.DispositivoMovilAutorizados.Add(dispositivo);
+        base.Update(modificationUser: modificationUser);
+
     }
 }
 

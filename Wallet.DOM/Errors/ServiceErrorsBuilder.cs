@@ -69,6 +69,11 @@ public class ServiceErrorsBuilder
 
     public const string Verificacion2FARequerida = "VERIFICACION-2FA-REQUERIDA";
 
+    public const string CodigoVerificacionInactivo = "CODIGO-VERIFICACION-INACTIVO";
+    public const string CodigoVerificacionConfirmado = "CODIGO-VERIFICACION-CONFIRMADO";
+    public const string CodigoVerificacionVencido = "CODIGO-VERIFICACION-VENCIDO";
+    public const string CodigoVerificacionNoEncontrado = "CODIGO-VERIFICACION-NO-ENCONTRADO";
+
     private void ClienteErrors()
     {
         // Error de dispositivo móvil autorizado requerido
@@ -106,6 +111,26 @@ public class ServiceErrorsBuilder
             errorCode: Verificacion2FARequerida,
             message: "La verificación 2FA es requerida.",
             description: "La verificación 2FA no puede ser nula.");
+        // Error de código de verificación inactivo
+        AddServiceError(
+            errorCode: CodigoVerificacionInactivo,
+            message: "El código de verificación esta inactivo.",
+            description: "El código de verificación proporcionado esta inactivo.");
+        // Error de código de verificación confirmado
+        AddServiceError(
+            errorCode: CodigoVerificacionConfirmado,
+            message: "El código de verificación ya fue confirmado.",
+            description: "El código de verificación proporcionado ya fue confirmado anteriormente.");
+        // Error de código de verificación vencido
+        AddServiceError(
+            errorCode: CodigoVerificacionVencido,
+            message: "El código de verificación ha vencido.",
+            description: "El código de verificación proporcionado ha expirado.");
+        // Error de código de verificación no encontrado
+        AddServiceError(
+            errorCode: CodigoVerificacionNoEncontrado,
+            message: "El código de verificación no fue encontrado.",
+            description: "El código de verificación proporcionado {0} del tipo {1} no existe.");
     }
 
     // Errores específicos de TipoDocumentos
