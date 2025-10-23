@@ -24,6 +24,8 @@ public class Estado : ValidatablePersistentObjectLogicalDelete
 
     public List<Cliente> Clientes { get; private set; }
     
+    public Estado() : base() { }
+
     public Estado(string nombre, Guid creationUser,
         string? testCase = null) : base(creationUser, testCase)
     {

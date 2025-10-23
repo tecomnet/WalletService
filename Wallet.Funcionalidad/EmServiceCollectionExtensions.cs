@@ -43,7 +43,7 @@ namespace Wallet.Funcionalidad
 			// Try to get test connection string from environment variable
 			if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("testDbConnectionString")))
 				//return Environment.GetEnvironmentVariable("testDbConnectionString")!;
-				return "Server=.;Initial Catalog=Template;User Id=sa; password=123;TrustServerCertificate=True;";
+				return "Server=.;Initial Catalog=WallerService;User Id=sa; password=123;TrustServerCertificate=True;";
             // Try to get test connection string from environment variables
             if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbServer")) &&
                 !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("Database")) &&

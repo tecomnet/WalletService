@@ -74,7 +74,10 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
     [MaxLength(45)]
     public string DireccionIp { get; private set; }
 
-
+    public UbicacionesGeolocalizacion() : base()
+    {
+        
+    }
     public UbicacionesGeolocalizacion(
         string latitud,
         string longitud,

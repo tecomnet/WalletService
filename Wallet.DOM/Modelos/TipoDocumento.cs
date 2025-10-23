@@ -24,6 +24,7 @@ public class TipoDocumento : ValidatablePersistentObjectLogicalDelete
 
     public List<Documento> Documentos { get; private set; }
 
+    public TipoDocumento() : base() { }
 
     /// <summary>
     /// Constructor

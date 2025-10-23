@@ -10,7 +10,10 @@
       <ProjectReference Include="..\Wallet.DOM\Wallet.DOM.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Functionality\" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>

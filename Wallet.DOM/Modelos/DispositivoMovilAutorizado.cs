@@ -51,7 +51,10 @@ public class DispositivoMovilAutorizado :ValidatablePersistentObjectLogicalDelet
     [Required]
     public bool Actual { get; private set; }
 
-
+    public DispositivoMovilAutorizado() : base()
+    {
+        
+    }
     public DispositivoMovilAutorizado(
         string token,
         string idDispositivo,

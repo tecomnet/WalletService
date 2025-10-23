@@ -38,7 +38,10 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
     [Required]
     public bool Verificado { get; private set; }
 
-
+    public Verificacion2FA() : base()
+    {
+        
+    }
     public Verificacion2FA(string codigo, DateTime fechaVencimiento, Tipo2FA tipo, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
     {
         // Initialize the list of exceptions

@@ -28,6 +28,12 @@ public class DocumentacionAdjunta :  ValidatablePersistentObjectLogicalDelete
     
     public Documento Documento { get; private set; }
 
+
+    public DocumentacionAdjunta() : base()
+    {
+        
+    }
+
     public DocumentacionAdjunta(Documento documento, string archivoAWS, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
     {
         // Initialize the list of exceptions

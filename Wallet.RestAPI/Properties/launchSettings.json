@@ -15,10 +15,10 @@
       "applicationUrl": "https://localhost:50005",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Database": "Template",
+        "Database": "WalletService",
         "DbUser": "sa",
         "DbPassword": "123",
-        "DbServer": "localhost"
+        "DbServer": "."
       }
     }
   }

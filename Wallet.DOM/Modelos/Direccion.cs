@@ -107,7 +107,7 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
     public Cliente Cliente { get; private set; }
 
 
-    public Direccion()
+    public Direccion() : base()
     {
 
     }

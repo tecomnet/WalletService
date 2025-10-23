@@ -1,6 +1,8 @@
 openapi: 3.0.0
+x-stoplight:
+  id: 018fa124ecfc8
 info:
-  title: Template API
+  title: Wallet Service API
   version: 0.1.0
   description: |
     Api para exponer la funcionalidad del template.
@@ -40,20 +42,26 @@ paths:
       operationId: GetReady
       description: Readiness check for the service
       security: []
-  '/{version}/users':
+  '/{version}/cliente':
     parameters:
-      - $ref: '#/components/parameters/version'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
     get:
-      summary: Obtiene el usuario
-      tags:
-        - Users
+      summary: Obtiene los clientes
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResult'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
@@ -64,33 +72,77 @@ paths:
       description: Obtiene el usuario
       security:
         - jwsToken: []
+      tags:
+        - Cliente
     post:
-      summary: Crea un usuario
-      operationId: PostUser
+      summary: Crea un cliente
+      operationId: PostCliente
       responses:
         '201':
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResult'
+                $ref: '#/components/schemas/ClienteResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
           $ref: '#/components/responses/HTTP_Error_400'
-      tags:
-        - Users
-      description: Crea un usuario
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      description: Crea un cliente
       security:
         - jwsToken: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequest'
+              $ref: '#/components/schemas/ClienteRequest'
         description: ''
+      tags:
+        - Cliente
+  '/{version}/cliente/{idCliente}':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    get:
+      summary: Obtiene un cliente por id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      operationId: GetUser
+      description: Obtiene el usuario por id
+      security:
+        - jwsToken: []
+      tags:
+        - Cliente
     put:
-      summary: Actualiza un usuario
+      summary: Actualiza un cliente por id
       operationId: PutUser
       responses:
         '200':
@@ -98,25 +150,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResult'
+                $ref: '#/components/schemas/ClienteResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      tags:
-        - Users
-      description: Actualiza un usuario
+      description: Actualiza un cliente por id
       security:
         - jwsToken: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdateRequest'
+              $ref: '#/components/schemas/ClienteUpdateRequest'
+      tags:
+        - Cliente
     delete:
-      summary: Elimina un usuario
+      summary: Elimina un cliente por id
       operationId: DeleteUser
       responses:
         '200':
@@ -124,61 +176,116 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResult'
+                $ref: '#/components/schemas/ClienteResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      tags:
-        - Users
-      description: Elimina un usuario
+      description: Elimina un cliente por id
       security:
         - jwsToken: []
+      tags:
+        - Cliente
 components:
   schemas:
-    UserRequest:
-      title: UserRequest
-      x-stoplight:
-        id: 1a399a20dcefe
-      type: object
-      description: Estructura para agregar usuarios
-      properties:
-        user:
-          type: string
-          minLength: 1
-          maxLength: 100
-      required:
-        - user
-    UserUpdateRequest:
-      title: UserUpdateRequest
-      x-stoplight:
-        id: s7nqtlsw9m3sh
-      type: object
-      properties:
-        user:
-          type: string
-          minLength: 1
-          maxLength: 100
-        modificationTimestamp:
-          type: string
-          format: date-time
-      required:
-        - user
-        - modificationTimestamp
-      description: Estructura para actualizar usuarios
-    UserResult:
-      title: UserResult
+    ClienteResult:
+      title: ClienteResult
       x-stoplight:
         id: gu55vk4o2l8gt
       type: object
-      description: Estructura para consultar usuarios
+      description: Estructura para consultar clientes
       properties:
-        user:
+        id:
+          type: integer
+          x-stoplight:
+            id: 3of979vs8a9k9
+        codigoPais:
           type: string
+          minLength: 3
+          maxLength: 3
+          x-stoplight:
+            id: neep14yhburn4
+        telefono:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 9
+          maxLength: 10
+        nombre:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
           minLength: 1
           maxLength: 100
+        primerApellido:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        segundoApellido:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        fechaNacimiento:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 10
+          format: date
+          maxLength: 10
+        genero:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 50
+        correoElectronico:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 150
+        tipoPersona:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 50
+        curp:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 18
+        rfc:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 13
+        foto:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 500
+        estado:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 500
+        empresa:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 13
         guid:
           type: string
           description: Guid of the key-value configuration
@@ -200,12 +307,116 @@ components:
           format: uuid
           description: Guid of the modification user
       required:
-        - user
+        - id
+        - codigoPais
+        - telefono
+        - nombre
+        - primerApellido
+        - segundoApellido
+        - fechaNacimiento
+        - genero
+        - correoElectronico
+        - tipoPersona
+        - curp
+        - rfc
+        - foto
+        - estado
+        - empresa
         - guid
         - creationTimestamp
         - modificationTimestamp
         - creationUser
         - modificationUser
+    ClienteRequest:
+      title: ClienteResult
+      x-stoplight:
+        id: zdjtcdgwyvde7
+      type: object
+      description: Estructura para consultar clientes
+      properties:
+        codigoPais:
+          type: string
+          minLength: 3
+          maxLength: 3
+          x-stoplight:
+            id: neep14yhburn4
+        telefono:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 9
+          maxLength: 10
+      required:
+        - codigoPais
+        - telefono
+    ClienteUpdateRequest:
+      title: ClienteResult
+      x-stoplight:
+        id: 0skzdo892adg6
+      type: object
+      description: Estructura para consultar clientes
+      properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: 3of979vs8a9k9
+        nombre:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        primerApellido:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        segundoApellido:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        fechaNacimiento:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 10
+          format: date
+          maxLength: 10
+        genero:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 50
+        correoElectronico:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 150
+        estado:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 500
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+      required:
+        - id
+        - nombre
+        - primerApellido
+        - segundoApellido
+        - fechaNacimiento
+        - genero
+        - correoElectronico
+        - estado
+        - modificationTimestamp
   securitySchemes:
     jwsToken:
       type: http
@@ -316,8 +527,8 @@ components:
                       serviceName: string
                       serviceLocation: string
 tags:
+  - name: Cliente
   - name: Health
-  - name: Users
 security:
   - jwsToken: []
   - X-API-Key: []

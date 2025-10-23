@@ -50,6 +50,10 @@ public class ActividadEconomica : ValidatablePersistentObjectLogicalDelete
     [MaxLength(500)]
     public string ArchivoAWS { get; private set; }
     
+    public ActividadEconomica() : base()
+    {
+        
+    }
 
     public ActividadEconomica(string nombre, decimal ingreso, string origenRecurso, string archivoAWS, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
     {

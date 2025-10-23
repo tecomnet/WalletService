@@ -24,6 +24,7 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
     
     public List<Cliente> Clientes { get; private set; }
 
+    public Empresa() : base() { }
 
     public Empresa(string nombre, Guid creationUser,
         string? testCase = null) : base(creationUser, testCase)

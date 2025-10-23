@@ -155,7 +155,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     public List<ValidacionCheckton> ValidacionesChecktons { get; private set; }
 
 
-    public Cliente()
+    public Cliente() : base()
     {
 
     }

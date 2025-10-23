@@ -25,6 +25,10 @@ public class ValidacionCheckton : ValidatablePersistentObjectLogicalDelete
     [Required]
     public bool Resultado { get; private set; }
 
+    public ValidacionCheckton() : base()
+    {
+        
+    }
     public ValidacionCheckton(TipoCheckton tipoCheckton, bool resultado, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
     {
         // Initialize the list of exceptions

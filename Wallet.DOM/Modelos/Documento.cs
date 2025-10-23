@@ -29,6 +29,11 @@ public class Documento : ValidatablePersistentObjectLogicalDelete
     public TipoPersona TipoPersona { get; private set; }
     
     
+    public Documento() : base()
+    {
+        
+    }
+
     public Documento(string nombre, TipoPersona tipoPersona, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
     {
         // Initialize the list of exceptions
