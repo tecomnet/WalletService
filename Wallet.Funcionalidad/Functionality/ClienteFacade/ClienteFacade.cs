@@ -25,8 +25,11 @@ public class ClienteFacade(ServiceDbContext context) : IClienteFacade
                 genero: genero,
                 correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
+            // Se valida la duplicidad, despues de la actualizacion
+            await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
             // Actualizar en db
             context.Update(cliente);
+            // TODO EMD: LLAMAR A API DE Tilwio PARA EL PROCESO DE VALIDACION 2FA
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
@@ -79,6 +82,7 @@ public class ClienteFacade(ServiceDbContext context) : IClienteFacade
             cliente.ActualizarCorreoElectronico(correoElectronico: correoElectronico, modificationUser: modificationUser);
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
+            // TODO EMD: LLAMAR A API DE Tilwio PARA OTRO PROCESO DE VALIDACION 2FA
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
@@ -164,6 +168,7 @@ public class ClienteFacade(ServiceDbContext context) : IClienteFacade
             await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono);
             // Agregar cliente
             await context.AddAsync(cliente);
+            // TODO EMD: LLAMAR A API DE Tilwio PARA EL PROCESO DE VALIDACION 2FA
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
