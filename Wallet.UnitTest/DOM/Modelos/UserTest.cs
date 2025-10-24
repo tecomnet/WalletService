@@ -235,8 +235,10 @@ private const string ContrasenaInicial = "Pass123456789";
     // === ERRORES DE ACTUALIZAR CONTRASEÑA (Lógica de Negocio) ===
     [InlineData("6. ERROR: Pass Antigua NO Coincide", "ActualizarContrasena", 
         "SuperNuevaPass", "SuperNuevaPass", "PassIncorrecta", null, null, null, 
+        false, new string[] { ServiceErrorsBuilder.ContrasenaActualIncorrecta })]
+    [InlineData("6.1. ERROR: Pass Antigua NO Coincide", "ActualizarContrasena", 
+        "SuperNuevaPass", "SuperNuevaPass1", "PassIncorrecta", null, null, null, 
         false, new string[] { ServiceErrorsBuilder.ContrasenasNoCoinciden })]
-
     // === ERRORES DE CONTRASENA (REQUIRED, LENGTH-INVALID) ===
     [InlineData("7. ERROR: Contrasena nula", "CrearContrasena", 
         null, null,null, null, null, null, 

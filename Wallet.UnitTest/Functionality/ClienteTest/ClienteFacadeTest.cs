@@ -136,4 +136,89 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             Assert.Fail($"Uncaught exception. {exception.Message}");
         }
     }
+    
+    
+     [Theory]
+    // Successfully case
+    [InlineData("1. Successfully case, create cliente", 1,"micontrasena", false, "nuevacontrasena", "nuevacontrasena",
+        true, new string[] { })]
+    // Wrong cases
+    [InlineData("2. Caso error, cliente no encontrado", 25,"micontrasena", false, "nuevacontrasena", "nuevacontrasena",
+        false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado})]
+    [InlineData("3. Caso error, la nueva contrasena con coincide con la confirmacion", 2,"micontrasena", true, "nuevacontrasena", "nocoincide",
+        false, new string[] { ServiceErrorsBuilder.ContrasenasNoCoinciden})]
+    public async Task GuardarYActualizarContrasenaClienteTest(
+        string caseName,
+        int idCliente,
+        string contrasena,
+        bool aplicaActualizacion,
+        string contrasenaNueva,
+        string contrasenaConfirmacion,
+        bool success,
+        string[] expectedErrors)
+    {
+        try
+        {
+            // Call facade method
+            var cliente = await Facade.GuardarContrasenaAsync(
+                idCliente: idCliente,
+                contrasena: contrasena,
+                modificationUser: SetupConfig.UserId);
+            // Assert user created
+            Assert.NotNull(cliente);
+            // Assert user properties
+            Assert.True(cliente.Id == idCliente &&
+                        cliente.Contrasena == contrasena &&
+                        cliente.ModificationUser == SetupConfig.UserId);
+            // Get the user from context
+            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            // Confirm user created in context
+            Assert.NotNull(clienteContext);
+            // Assert user properties
+            Assert.True(clienteContext.Id == idCliente &&
+                        clienteContext.Contrasena == contrasena &&
+                        clienteContext.ModificationUser == SetupConfig.UserId);
+
+            if (aplicaActualizacion)
+            {
+                // Call facade method
+                cliente = await Facade.ActualizarContrasenaAsync(
+                    idCliente: idCliente,
+                    contrasenaActual: cliente.Contrasena,
+                    contrasenaNueva: contrasenaNueva,
+                    confirmacionContrasenaNueva: contrasenaConfirmacion,                    
+                    modificationUser: SetupConfig.UserId);
+                // Assert user created
+                Assert.NotNull(cliente);
+                // Assert user properties
+                Assert.True(cliente.Id == idCliente &&
+                            cliente.Contrasena == contrasenaNueva &&
+                            cliente.ModificationUser == SetupConfig.UserId);
+                // Get the user from context
+                clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+                // Confirm user created in context
+                Assert.NotNull(clienteContext);
+                // Assert user properties
+                Assert.True(clienteContext.Id == idCliente &&
+                            clienteContext.Contrasena == contrasenaNueva &&
+                            clienteContext.ModificationUser == SetupConfig.UserId);
+            }
+            // Assert successful test
+            Assert.True(success);
+        }
+        // Catch the managed errors and check them with the expected ones in the case of failures
+        catch (EMGeneralAggregateException exception)
+        {
+            // Treat the raised error
+            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
+        }
+        // Catch any non managed errors and display them to understand the root cause
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not TrueException && exception is not FalseException)
+        {
+            // Should not reach for unmanaged errors
+            Assert.Fail($"Uncaught exception. {exception.Message}");
+        }
+    }
+
 }

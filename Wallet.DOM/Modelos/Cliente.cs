@@ -258,7 +258,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         if (this.Contrasena != contrasenaActual)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.ContrasenasNoCoinciden,
+                    errorCode: ServiceErrorsBuilder.ContrasenaActualIncorrecta,
                     dynamicContent: []));
         }
         // Initialize the list of exceptions

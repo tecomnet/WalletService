@@ -10,6 +10,32 @@ namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
 public class ClienteFacade(ServiceDbContext context) : IClienteFacade
 {
+    public async Task<Cliente> GuardarClientePreRegistroAsync(string codigoPais, string telefono, Guid creationUser, string? testCase = null)
+    {
+        try
+        {
+            // Crea un nuevo cliente
+            var cliente = new Cliente(codigoPais, telefono, creationUser, testCase);
+            // Validamos duplicidad 
+            await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono);
+            // Agregar cliente
+            await context.AddAsync(cliente);
+            // TODO EMD: LLAMAR A API DE Tilwio PARA EL PROCESO DE VALIDACION 2FA
+            // Guardar cambios
+            await context.SaveChangesAsync();
+            // Retornar cliente
+            return cliente;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+    
     public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(int idCliente, string nombre, string primerApellido, string segundoApellido, DateOnly fechaNacimiento, Genero genero, string correoElectronico, Guid modificationUser)
     {
         try
@@ -30,6 +56,29 @@ public class ClienteFacade(ServiceDbContext context) : IClienteFacade
             // Actualizar en db
             context.Update(cliente);
             // TODO EMD: LLAMAR A API DE Tilwio PARA EL PROCESO DE VALIDACION 2FA
+            // Guardar cambios
+            await context.SaveChangesAsync();
+            // Retornar cliente
+            return cliente;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    public async Task<Cliente> GuardarContrasenaAsync(int idCliente, string contrasena, Guid modificationUser)
+    {
+        try
+        {
+            // Obtener cliente
+            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+            // Agregar cliente
+            cliente.CrearContrasena(contrasena: contrasena, modificationUser: modificationUser);
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
@@ -157,56 +206,7 @@ public class ClienteFacade(ServiceDbContext context) : IClienteFacade
                 exception: exception);
         }
     }
-
-    public async Task<Cliente> GuardarClientePreRegistroAsync(string codigoPais, string telefono, Guid creationUser, string? testCase = null)
-    {
-        try
-        {
-            // Crea un nuevo cliente
-            var cliente = new Cliente(codigoPais, telefono, creationUser, testCase);
-            // Validamos duplicidad 
-            await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono);
-            // Agregar cliente
-            await context.AddAsync(cliente);
-            // TODO EMD: LLAMAR A API DE Tilwio PARA EL PROCESO DE VALIDACION 2FA
-            // Guardar cambios
-            await context.SaveChangesAsync();
-            // Retornar cliente
-            return cliente;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    public async Task<Cliente> GuardarContrasenaAsync(int idCliente, string contrasena, Guid modificationUser)
-    {
-        try
-        {
-            // Obtener cliente
-            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Agregar cliente
-            cliente.CrearContrasena(contrasena: contrasena, modificationUser: modificationUser);
-            // Guardar cambios
-            await context.SaveChangesAsync();
-            // Retornar cliente
-            return cliente;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
+   
     public async Task<Cliente> ObtenerClientePorIdAsync(int idCliente)
     {
         try
