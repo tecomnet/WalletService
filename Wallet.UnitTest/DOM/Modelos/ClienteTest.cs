@@ -5,7 +5,7 @@ using Xunit.Sdk;
 
 namespace Wallet.UnitTest.DOM.Modelos;
 
-public class UserTest : UnitTestTemplate
+public class ClienteTest : UnitTestTemplate
 {
     [Theory]
     [InlineData("OK: New user", "+52", "9815263699", true, new string[] { })]
