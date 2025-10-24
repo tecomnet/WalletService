@@ -1,7 +1,6 @@
-using System;
 using Wallet.DOM.Modelos;
 
-namespace Wallet.Funcionalidad.Functionality;
+namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
 public interface IDispositivoAutorizado
 {

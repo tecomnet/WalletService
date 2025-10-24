@@ -19,9 +19,7 @@ public class SetupDataConfig : DatabaseTestFixture
 	{
 		SetupDataAsync(async context =>
 		{
-			
-			//await context.AddRangeAsync(_commonSettings.Users);
-
+			await context.AddRangeAsync(_commonSettings.Clientes);
 			await context.SaveChangesAsync();
 		}).GetAwaiter().GetResult();
 	}

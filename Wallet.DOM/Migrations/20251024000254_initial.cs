@@ -123,9 +123,9 @@ namespace Wallet.DOM.Migrations
                     Curp = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: true),
                     Rfc = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: true),
                     FotoAWS = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    EstadoId = table.Column<int>(type: "int", nullable: false),
-                    EmpresaId = table.Column<int>(type: "int", nullable: false),
-                    DireccionId = table.Column<int>(type: "int", nullable: false),
+                    EstadoId = table.Column<int>(type: "int", nullable: true),
+                    EmpresaId = table.Column<int>(type: "int", nullable: true),
+                    DireccionId = table.Column<int>(type: "int", nullable: true),
                     ConcurrencyToken = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -142,20 +142,17 @@ namespace Wallet.DOM.Migrations
                         name: "FK_Cliente_Direccion_DireccionId",
                         column: x => x.DireccionId,
                         principalTable: "Direccion",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Cliente_Empresa_EmpresaId",
                         column: x => x.EmpresaId,
                         principalTable: "Empresa",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Cliente_Estado_EstadoId",
                         column: x => x.EstadoId,
                         principalTable: "Estado",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -259,8 +256,8 @@ namespace Wallet.DOM.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Latitud = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Longitud = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Latitud = table.Column<decimal>(type: "decimal(11,8)", nullable: false),
+                    Longitud = table.Column<decimal>(type: "decimal(11,8)", nullable: false),
                     Dispositivo = table.Column<int>(type: "int", nullable: false),
                     TipoEvento = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     TipoDispositivo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -353,7 +350,8 @@ namespace Wallet.DOM.Migrations
                 name: "IX_Cliente_DireccionId",
                 table: "Cliente",
                 column: "DireccionId",
-                unique: true);
+                unique: true,
+                filter: "[DireccionId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cliente_EmpresaId",

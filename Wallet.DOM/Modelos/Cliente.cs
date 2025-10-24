@@ -135,17 +135,17 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     [MaxLength(500)]
     public string? FotoAWS { get; private set; }
 
-    public int EstadoId { get; private set; }
+    public int? EstadoId { get; private set; }
 
-    public Estado Estado { get; private set; }
+    public Estado? Estado { get; private set; }
 
-    public int EmpresaId { get; private set; }
+    public int? EmpresaId { get; private set; }
 
-    public Empresa Empresa { get; private set; }
+    public Empresa? Empresa { get; private set; }
 
-    public int DireccionId { get; private set; }
+    public int? DireccionId { get; private set; }
 
-    public Direccion Direccion { get; private set; }
+    public Direccion? Direccion { get; private set; }
 
     public List<Verificacion2FA> Verificaciones2FA { get; private set; }
     public List<UbicacionesGeolocalizacion> UbicacionesGeolocalizacion { get; private set; }
@@ -183,6 +183,12 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         this.CodigoPais = codigoPais;
         this.Telefono = telefono;
+        // Initialize the list of exceptions
+        exceptions = new();
+        // Validate the properties
+        IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Telefono), value: telefono, ref exceptions);
+        // TODO EMD: PRO DEFAULT VAN A LA EMPRESA TECOMNET
     }
 
     /// <summary>
@@ -194,6 +200,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <param name="fechaNacimiento"></param>
     /// <param name="genero"></param>
     /// <param name="correoElectronico"></param>
+    /// <param name="modificationUser"></param>
     /// <returns></returns>
     /// <exception cref="EMGeneralAggregateException"></exception>
     public void AgregarDatosPersonales(
@@ -240,9 +247,15 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         base.Update(modificationUser: modificationUser);
     }
 
-    public void ActualizarContrasena(string newContrasena, string? oldContrasena, Guid modificationUser)
+    public void ActualizarContrasena(string contrasenaNueva, string confirmacionContrasenaNueva, string contrasenaActual, Guid modificationUser)
     {
-        if (oldContrasena != this.Contrasena)
+        if (contrasenaNueva != confirmacionContrasenaNueva)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ContrasenasNoCoinciden,
+                dynamicContent: []));
+        }
+        if (this.Contrasena != contrasenaActual)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
                     errorCode: ServiceErrorsBuilder.ContrasenasNoCoinciden,
@@ -251,12 +264,12 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate the properties
-        IsPropertyValid(propertyName: nameof(Contrasena), value: newContrasena, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Contrasena), value: contrasenaNueva, ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Set new contrasena
         //  TODO EMD: ENCRIPTAR EN EL FUTURO O USA HASH
-        this.Contrasena = newContrasena;
+        this.Contrasena = contrasenaNueva;
         base.Update(modificationUser: modificationUser);
     }
 

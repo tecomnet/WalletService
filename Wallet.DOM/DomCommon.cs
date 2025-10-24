@@ -4,7 +4,7 @@ namespace Wallet.DOM
 {
     public static class DomCommon
     {
-        public const string ServiceName = "TemplateService";
+        public const string ServiceName = "WalletService";
         private const string ModuleName = "DOM";
 
         private static readonly ServiceErrorsBuilder ServiceError = ServiceErrorsBuilder.Instance();

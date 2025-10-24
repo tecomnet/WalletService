@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Wallet.DOM.ApplicationDbContext;
+using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.ServiceClient;
 
@@ -91,6 +92,7 @@ namespace Wallet.Funcionalidad
 
 		private static void ConfigureFacadeServices(IServiceCollection services)
 		{
+			services.AddScoped<IClienteFacade, ClienteFacade>();
 		}
 	}
 }

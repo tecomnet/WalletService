@@ -1,8 +1,7 @@
-using System;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
 
-namespace Wallet.Funcionalidad.Functionality;
+namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
 public interface IUbicacionGeolocalizacionFacade
 {

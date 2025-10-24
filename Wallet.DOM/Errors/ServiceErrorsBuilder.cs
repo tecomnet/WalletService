@@ -62,6 +62,7 @@ public class ServiceErrorsBuilder
     public const string DiscpositorioMovilAutorizadoRequerido = "DISPOSITIVO-MOVIL-AUTORIZADO-REQUERIDO";
     public const string UbicacionGeolocalizacionRequerido = "UBICACION-GEOLOCALIZACION-REQUERIDO";
     public const string ContrasenasNoCoinciden = "CONTRASEÑAS-NO-COINCIDEN";
+    public const string ContrasenaActualIncorrecta = "CONTRASEÑA-ACTUAL-INCORRECTA";
     public const string DireccionRequerida = "DIRECCION-REQUERIDA";
 
     public const string EmpresaRequerida = "EMPRESA-REQUERIDA";
@@ -79,7 +80,9 @@ public class ServiceErrorsBuilder
     public const string TipoPersonaNoConfigurada = "TIPO-PERSONA-NO-CONFIGURADA";
     public const string DocumentacionAdjuntaYaExiste = "DOCUMENTACION-ADJUNTA-YA-EXISTE"; 
 
-
+    public const string ClienteDuplicado = "CLIENTE-DUPLICADO";
+    public const string ClienteDuplicadoPorCorreoElectronico = "CLIENTE-DUPLICADO-POR-CORREO-ELECTRONICO";
+    public const string ClienteNoEncontrado = "CLIENTE-NO-ENCONTRADO";
 
     private void ClienteErrors()
     {
@@ -98,6 +101,11 @@ public class ServiceErrorsBuilder
             errorCode: ContrasenasNoCoinciden,
             message: "Las contraseñas no coinciden.",
             description: "La contraseña y la confirmación de la contraseña deben ser iguales.");
+        // Error contrasena actual incorrecta
+        AddServiceError(
+            errorCode: ContrasenaActualIncorrecta,
+            message: "La contraseña actual es incorrecta.",
+            description: "La contraseña actual no coincide con la contraseña del cliente.");
         // Error de dirección requerida
         AddServiceError(
             errorCode: DireccionRequerida,
@@ -153,6 +161,21 @@ public class ServiceErrorsBuilder
             errorCode: DocumentacionAdjuntaYaExiste,
             message: "La documentación adjunta ya existe.",
             description: "La documentación adjunta proporcionada {0} ya está asociada al cliente.");
+        // Error cliente duplicado
+        AddServiceError(
+            errorCode: ClienteDuplicado,
+            message: "El cliente ya existe.",
+            description: "El cliente con codigo pais {0} y telefono {1} ya existe.");
+        // Error cliente duplicado por correo electrónico
+        AddServiceError(
+            errorCode: ClienteDuplicadoPorCorreoElectronico,
+            message: "El cliente ya existe.",
+            description: "El cliente con correo electrónico {0} ya existe.");
+        // Error cliente no encontrado
+        AddServiceError(
+            errorCode: ClienteNoEncontrado,
+            message: "El cliente no fue encontrado.",
+            description: "El cliente no existe.");
     }
 
     // Errores específicos de TipoDocumentos

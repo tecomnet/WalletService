@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
@@ -9,16 +10,20 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
 {
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
-        PropertyConstraint.StringPropertyConstraint(
+        PropertyConstraint.DecimalPropertyConstraint(
             propertyName: nameof(Latitud),
             isRequired: true,
-            minimumLength: 1,
-            maximumLength: 100),
-        PropertyConstraint.StringPropertyConstraint(
+            allowNegative: true,
+            allowZero: true,
+            allowPositive: true,
+            allowedDecimals: 8),
+        PropertyConstraint.DecimalPropertyConstraint(
             propertyName: nameof(Longitud),
             isRequired: true,
-            minimumLength: 1,
-            maximumLength: 100),
+            allowNegative: true,
+            allowZero: true,
+            allowPositive: true,
+            allowedDecimals: 8),
         PropertyConstraint.ObjectPropertyConstraint(
             propertyName: nameof(Dispositivo),
             isRequired: true),
@@ -49,12 +54,12 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
     public int Id { get; private set; }
 
     [Required]
-    [MaxLength(100)]
-    public string Latitud { get; private set; }
+    [Column(TypeName = "decimal(11, 8)")]
+    public decimal Latitud { get; private set; }
 
     [Required]
-    [MaxLength(100)]
-    public string Longitud { get; private set; }
+    [Column(TypeName = "decimal(11, 8)")]
+    public decimal Longitud { get; private set; }
 
     [Required]
     public Dispositivo Dispositivo { get; private set; }
@@ -79,8 +84,8 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
         
     }
     public UbicacionesGeolocalizacion(
-        string latitud,
-        string longitud,
+        decimal latitud,
+        decimal longitud,
         Dispositivo dispositivo,
         string tipoEvento,
         string tipoDispositivo,

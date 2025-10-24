@@ -1,8 +1,7 @@
-using System;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
 
-namespace Wallet.Funcionalidad.Functionality;
+namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
 public interface IClienteFacade
 {
@@ -63,15 +62,17 @@ public interface IClienteFacade
     /// <param name="modificationUser"></param>
     /// <returns></returns>
     public Task<Cliente> GuardarContrasenaAsync(int idCliente, string contrasena, Guid modificationUser);
+
     /// <summary>
     /// Actualiza la contraseña del cliente
     /// </summary>
     /// <param name="idCliente"></param>
     /// <param name="contrasenaActual"></param>
     /// <param name="contrasenaNueva"></param>
+    /// <param name="confirmacionContrasenaNueva"></param>
     /// <param name="modificationUser"></param>
     /// <returns></returns>
-    public Task<Cliente> ActualizarContrasenaAsync(int idCliente, string contrasenaActual, string contrasenaNueva, Guid modificationUser);
+    public Task<Cliente> ActualizarContrasenaAsync(int idCliente, string contrasenaActual, string contrasenaNueva, string confirmacionContrasenaNueva, Guid modificationUser);
 
     /// <summary>
     /// Actualiza el teléfono del cliente, este generara nueva verificación 2FA

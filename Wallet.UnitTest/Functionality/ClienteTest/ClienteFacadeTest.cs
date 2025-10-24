@@ -1,48 +1,47 @@
+using Microsoft.EntityFrameworkCore;
+using Wallet.DOM.Errors;
+using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.UnitTest.Functionality.Configuration;
+using Xunit.Sdk;
 
-namespace Wallet.UnitTest.Functionality.ReferenceData;
+namespace Wallet.UnitTest.Functionality.ClienteTest;
 
-public class UserFacadeTest(SetupDataConfig setupConfig)
-    : BaseFacadeTest<object>(setupConfig) //TODO: SE DEBE PASAR LA FACADE EN EL TIPO T
+public class ClienteFacadeTest(SetupDataConfig setupConfig)
+    : BaseFacadeTest<IClienteFacade>(setupConfig) 
 {
-    /*[Theory]
+    [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, create user", true, "userTest", true, new string[] { })]
+    [InlineData("1. Successfully case, create user", "+52", "9818523698",true, new string[] { })]
     // Wrong cases
-    [InlineData("2. Wrong case, user already exists", false, "userTest", false, new string[] { ServiceErrorsBuilder.EmUserIsDuplicated })]
-    public async Task AddUserTest(
+    [InlineData("2. Wrong case, user already exists", "+52", "9812078573", false, new string[] { ServiceErrorsBuilder.ClienteDuplicado })]
+    public async Task GuardarPreRegistroClienteTest(
         string caseName,
+        string codigoPais,
+        string telefono,
         bool success,
-        string username,
-        bool removeUser,
         string[] expectedErrors)
     {
         try
         {
-            // Validate to exists user in context
-            if (removeUser)
-            {
-                // Remove user in context
-                Context.User.Remove(await Context.User.SingleAsync());
-                // Save changes in context
-                await Context.SaveChangesAsync();
-            }
             // Call facade method
-            var user = await Facade.AddAsync(
+            var user = await Facade.GuardarClientePreRegistroAsync(
                 creationUser: SetupConfig.UserId,
-                username: username,
+                codigoPais: codigoPais,
+                telefono: telefono,
                 testCase: SetupConfig.TestCaseId);
             // Assert user created
             Assert.NotNull(user);
             // Assert user properties
-            Assert.True(user.Username == username &&
+            Assert.True(user.CodigoPais == codigoPais &&
+                        user.Telefono == telefono &&
                         user.CreationUser == SetupConfig.UserId);
             // Get the user from context
-            var userContext = await Context.User.AsNoTracking().SingleOrDefaultAsync();
+            var userContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id);
             // Confirm user created in context
             Assert.NotNull(userContext);
             // Assert user properties
-            Assert.True(userContext.Username == username &&
+            Assert.True(userContext.CodigoPais == codigoPais &&
+                        userContext.Telefono == telefono &&
                         userContext.CreationUser == SetupConfig.UserId);
             // Assert successful test
             Assert.True(success);
@@ -60,7 +59,7 @@ public class UserFacadeTest(SetupDataConfig setupConfig)
             // Should not reach for unmanaged errors
             Assert.Fail($"Uncaught exception. {exception.Message}");
         }
-    }*/
+    }
 
   
 }

@@ -121,13 +121,13 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(18)
                         .HasColumnType("nvarchar(18)");
 
-                    b.Property<int>("DireccionId")
+                    b.Property<int?>("DireccionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EmpresaId")
+                    b.Property<int?>("EmpresaId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EstadoId")
+                    b.Property<int?>("EstadoId")
                         .HasColumnType("int");
 
                     b.Property<DateOnly?>("FechaNacimiento")
@@ -183,7 +183,8 @@ namespace Wallet.DOM.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DireccionId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[DireccionId] IS NOT NULL");
 
                     b.HasIndex("EmpresaId");
 
@@ -579,15 +580,11 @@ namespace Wallet.DOM.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Latitud")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<decimal>("Latitud")
+                        .HasColumnType("decimal(11, 8)");
 
-                    b.Property<string>("Longitud")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<decimal>("Longitud")
+                        .HasColumnType("decimal(11, 8)");
 
                     b.Property<DateTime>("ModificationTimestamp")
                         .HasColumnType("datetime2");
@@ -737,21 +734,15 @@ namespace Wallet.DOM.Migrations
                 {
                     b.HasOne("Wallet.DOM.Modelos.Direccion", "Direccion")
                         .WithOne("Cliente")
-                        .HasForeignKey("Wallet.DOM.Modelos.Cliente", "DireccionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Wallet.DOM.Modelos.Cliente", "DireccionId");
 
                     b.HasOne("Wallet.DOM.Modelos.Empresa", "Empresa")
                         .WithMany("Clientes")
-                        .HasForeignKey("EmpresaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmpresaId");
 
                     b.HasOne("Wallet.DOM.Modelos.Estado", "Estado")
                         .WithMany("Clientes")
-                        .HasForeignKey("EstadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EstadoId");
 
                     b.Navigation("Direccion");
 

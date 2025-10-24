@@ -21,7 +21,7 @@ public class UserApiTest : DatabaseTestFixture
             // Create data
             var commonSettings = new CommonSettings();
             // Add data
-            //await context.AddRangeAsync(commonSettings.Users);
+            //await context.AddRangeAsync(commonSettings.Clientes);
             // Save changes
             await context.SaveChangesAsync();
         }).GetAwaiter().GetResult();

@@ -222,60 +222,60 @@ private const string ContrasenaInicial = "Pass123456789";
     [Theory]
     // === CASOS DE ÉXITO ===
     [InlineData("1. OK: CrearContrasena", "CrearContrasena", 
-        "NuevaPass123", null, null, null, null, true, new string[] { })]
+        "NuevaPass123", null,null, null, null, null, true, new string[] { })]
     [InlineData("2. OK: ActualizarContrasena", "ActualizarContrasena", 
-        "SuperNuevaPass", ContrasenaInicial, null, null, null, true, new string[] { })]
+        "SuperNuevaPass", "SuperNuevaPass", ContrasenaInicial, null, null, null, true, new string[] { })]
     [InlineData("3. OK: ActualizarTelefono", "ActualizarTelefono", 
-        null, null, "MEX", "5512345678", null, true, new string[] { })]
+        null, null,null, "MEX", "5512345678", null, true, new string[] { })]
     [InlineData("4. OK: ActualizarCorreo", "ActualizarCorreoElectronico", 
-        null, null, null, null, "nuevo.email@ejemplo.com", true, new string[] { })]
+        null, null,null, null, null, "nuevo.email@ejemplo.com", true, new string[] { })]
     [InlineData("5. OK: Longitud máxima Contraseña (100)", "CrearContrasena", 
-        "X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X2XX9X13X46X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3XX1X2X3X4X5X6X7X8X9X1X2", null, null, null, null, true, new string[] { })]
+        "X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X2XX9X13X46X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3XX1X2X3X4X5X6X7X8X9X1X2", null,null, null, null, null, true, new string[] { })]
 
     // === ERRORES DE ACTUALIZAR CONTRASEÑA (Lógica de Negocio) ===
     [InlineData("6. ERROR: Pass Antigua NO Coincide", "ActualizarContrasena", 
-        "SuperNuevaPass", "PassIncorrecta", null, null, null, 
+        "SuperNuevaPass", "SuperNuevaPass", "PassIncorrecta", null, null, null, 
         false, new string[] { ServiceErrorsBuilder.ContrasenasNoCoinciden })]
 
     // === ERRORES DE CONTRASENA (REQUIRED, LENGTH-INVALID) ===
     [InlineData("7. ERROR: Contrasena nula", "CrearContrasena", 
-        null, null, null, null, null, 
+        null, null,null, null, null, null, 
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("8. ERROR: Contrasena muy larga (>100)", "CrearContrasena", 
-        MaxContrasenaMas100Chars, null, null, null, null, 
+        MaxContrasenaMas100Chars, null,null, null, null, null, 
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
 
     // === ERRORES DE ACTUALIZAR TELEFONO (REQUIRED, LENGTH-INVALID) ===
     // CódigoPais (3-3)
     [InlineData("9. ERROR: CodigoPais null", "ActualizarTelefono", 
-        null, null, null, "5512345678", null, 
+        null, null,null, null, "5512345678", null, 
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("10. ERROR: CodigoPais < 3", "ActualizarTelefono", 
-        null, null, "MX", "5512345678", null, 
+        null, null,null, "MX", "5512345678", null, 
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
     // Telefono (9-10)
     [InlineData("11. ERROR: Telefono < 9", "ActualizarTelefono", 
-        null, null, "MEX", "12345678", null, 
+        null, null, null, "MEX", "12345678", null, 
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
     [InlineData("12. ERROR: Telefono > 10", "ActualizarTelefono", 
-        null, null, "MEX", "12345678901", null, 
+        null, null,null, "MEX", "12345678901", null, 
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
 
     // === ERRORES DE CORREO ELECTRONICO (REQUIRED, LENGTH-INVALID, REGEX-INVALID) ===
     // Restricciones: min 1, max 150, con formato regex
     [InlineData("13. ERROR: Correo null", "ActualizarCorreoElectronico", 
-        null, null, null, null, null, 
+        null, null,null, null, null, null, 
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("14. ERROR: Correo REGEX-INVALID", "ActualizarCorreoElectronico", 
-        null, null, null, null, "correo@malo", 
+        null, null, null, null, null, "correo@malo", 
         false, new string[] { "PROPERTY-VALIDATION-REGEX-INVALID" })]
     [InlineData("15. ERROR: Correo muy largo (>150)", "ActualizarCorreoElectronico", 
-        null, null, null, null,  LongCorreoElectronicoMas150Chars + "@dominio.com", // 151 chars
+        null, null,null, null, null,  LongCorreoElectronicoMas150Chars + "@dominio.com", // 151 chars
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID", "PROPERTY-VALIDATION-REGEX-INVALID" })]
 
     // === ERRORES MÚLTIPLES ===
     [InlineData("16. ERROR: Múltiples fallos en Teléfono", "ActualizarTelefono", 
-        null, null, "M", "", null, // Código: < 3; Teléfono: < 9 y REQUIRED
+        null, null,null, "M", "", null, // Código: < 3; Teléfono: < 9 y REQUIRED
         false, new string[] { 
             "PROPERTY-VALIDATION-LENGTH-INVALID", // CodigoPais
             "PROPERTY-VALIDATION-REQUIRED-ERROR", // Telefono
@@ -284,8 +284,9 @@ private const string ContrasenaInicial = "Pass123456789";
     public void DatosContactoYSeguridadTest(
         string caseName,
         string accion,
-        string? newContrasena,
-        string? oldContrasena,
+        string? nuevaContrasena,
+        string? confirmacionNuevaContrasena,
+        string? contrasenaActual,
         string? codigoPais,
         string? telefono,
         string? correoElectronico,
@@ -309,12 +310,12 @@ private const string ContrasenaInicial = "Pass123456789";
             switch (accion)
             {
                 case "CrearContrasena":
-                    cliente.CrearContrasena(newContrasena!, Guid.NewGuid());
-                    Assert.Equal(newContrasena, cliente.Contrasena);
+                    cliente.CrearContrasena(nuevaContrasena!, Guid.NewGuid());
+                    Assert.Equal(nuevaContrasena, cliente.Contrasena);
                     break;
                 case "ActualizarContrasena":
-                    cliente.ActualizarContrasena(newContrasena!, oldContrasena, Guid.NewGuid());
-                    Assert.Equal(newContrasena, cliente.Contrasena);
+                    cliente.ActualizarContrasena(contrasenaNueva: nuevaContrasena!, confirmacionContrasenaNueva: confirmacionNuevaContrasena!, contrasenaActual: contrasenaActual, Guid.NewGuid());
+                    Assert.Equal(nuevaContrasena, cliente.Contrasena);
                     break;
                 case "ActualizarTelefono":
                     cliente.ActualizarTelefono(codigoPais!, telefono!, Guid.NewGuid());
