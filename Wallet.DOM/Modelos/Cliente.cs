@@ -328,7 +328,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         // 4. Desactiva cada código de verificación viejo/pendiente
         foreach (var oldVerification in verificacionesViejas)
         {
-            // Asumiendo que Deactivate(modificationUser) marca x.Verificado = true o x.Activo = false.
+            // Asumiendo que Deactivate(creactionUser) marca x.Verificado = true o x.Activo = false.
             // Si tienes un método de dominio 'Invalidate()' o 'Cancel()', úsalo.
             oldVerification.Deactivate(modificationUser: modificationUser);
         }
@@ -396,16 +396,14 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         this.Empresa = empresa;
         base.Update(modificationUser: modificationUser);
     }
-    public void AgregarDireccion(Direccion direccion, Guid modificationUser)
+    public void AgregarDireccion(Direccion direccion, Guid creationUser)
     {
-        if (direccion == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.DireccionRequerida,
-                    dynamicContent: []));
-        }
-        this.Direccion = direccion;
-        base.Update(modificationUser: modificationUser);
+        // Se agrega la direccion solo con estado y pais
+        this.Direccion = direccion ?? throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            errorCode: ServiceErrorsBuilder.DireccionRequerida,
+            dynamicContent: []));
+        // Actualizamos el cliente
+        base.Update(modificationUser: creationUser);
     }
 
     public void AgregarEstado(Estado estado, Guid modificationUser)

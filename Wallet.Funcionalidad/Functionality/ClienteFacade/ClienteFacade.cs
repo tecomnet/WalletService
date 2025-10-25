@@ -212,7 +212,8 @@ public class ClienteFacade(ServiceDbContext context) : IClienteFacade
         try
         {
             // Obtener cliente
-            var cliente = await context.Cliente.FirstOrDefaultAsync(x => x.Id == idCliente);
+            var cliente = await context.Cliente.Include(x=>x.Direccion).
+                FirstOrDefaultAsync(x => x.Id == idCliente);
             // Validar cliente
             if (cliente == null)
             {

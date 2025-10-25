@@ -64,6 +64,7 @@ public class ServiceErrorsBuilder
     public const string ContrasenasNoCoinciden = "CONTRASEÑAS-NO-COINCIDEN";
     public const string ContrasenaActualIncorrecta = "CONTRASEÑA-ACTUAL-INCORRECTA";
     public const string DireccionRequerida = "DIRECCION-REQUERIDA";
+    public const string DireccionNoConfigurada = "DIRECCION-NO-CONFIGURADA";
 
     public const string EmpresaRequerida = "EMPRESA-REQUERIDA";
     public const string EstadoRequerido = "ESTADO-REQUERIDO";
@@ -176,6 +177,11 @@ public class ServiceErrorsBuilder
             errorCode: ClienteNoEncontrado,
             message: "El cliente no fue encontrado.",
             description: "El cliente no existe.");
+        // Error direccion aun no configurada
+        AddServiceError(
+            errorCode: DireccionNoConfigurada,
+            message: "La direccion aun no esta configurada.",
+            description: "La direccion aun no esta configurada.");
     }
 
     // Errores específicos de TipoDocumentos
