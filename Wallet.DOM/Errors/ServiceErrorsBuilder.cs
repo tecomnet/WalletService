@@ -84,6 +84,8 @@ public class ServiceErrorsBuilder
     public const string ClienteDuplicado = "CLIENTE-DUPLICADO";
     public const string ClienteDuplicadoPorCorreoElectronico = "CLIENTE-DUPLICADO-POR-CORREO-ELECTRONICO";
     public const string ClienteNoEncontrado = "CLIENTE-NO-ENCONTRADO";
+    
+    public const string EstadoNoEncontrado = "ESTADO-NO-ENCONTRADO";
 
     private void ClienteErrors()
     {
@@ -182,6 +184,11 @@ public class ServiceErrorsBuilder
             errorCode: DireccionNoConfigurada,
             message: "La direccion aun no esta configurada.",
             description: "La direccion aun no esta configurada.");
+        // Error estado no encontrado
+        AddServiceError(
+            errorCode: EstadoNoEncontrado,
+            message: "El estado no fue encontrado.",
+            description: "El estado {0} no existe.");
     }
 
     // Errores específicos de TipoDocumentos

@@ -69,9 +69,9 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
     [Key]
     public int Id { get; private set; }
 
-    [Required]
+    //[Required]
     [MaxLength(5)]
-    public string CodigoPostal { get; private set; }
+    public string? CodigoPostal { get; private set; }
 
     [Required]
     [MaxLength(100)]
@@ -81,26 +81,26 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
     [MaxLength(100)]
     public string Estado { get; private set; }
 
-    [Required]
+    //[Required]
     [MaxLength(100)]
-    public string Municipio { get; private set; }
+    public string? Municipio { get; private set; }
 
-    [Required]
+    //[Required]
     [MaxLength(100)]
-    public string Colonia { get; private set; }
+    public string? Colonia { get; private set; }
 
-    [Required]
+    //[Required]
     [MaxLength(100)]
-    public string Calle { get; private set; }
+    public string? Calle { get; private set; }
 
-    [Required]
+    //[Required]
     [MaxLength(6)]
-    public string NumeroExterior { get; private set; }
+    public string? NumeroExterior { get; private set; }
 
-    [Required]
+    //[Required]
     [MaxLength(6)]
-    public string NumeroInterior { get; private set; }
-    [Required]
+    public string? NumeroInterior { get; private set; }
+    //[Required]
     [MaxLength(250)]
     public string? Referencia { get; private set; }
 
@@ -137,7 +137,7 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
         string calle,
         string numeroExterior,
         string numeroInterior,
-        string? referencia,
+        string referencia,
         Guid modificationUser)
     {
         // Initialize the list of exceptions

@@ -12,7 +12,7 @@ using Wallet.DOM.ApplicationDbContext;
 namespace Wallet.DOM.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    [Migration("20251024000254_initial")]
+    [Migration("20251026204648_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -205,17 +205,14 @@ namespace Wallet.DOM.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Calle")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("CodigoPostal")
-                        .IsRequired()
                         .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
 
                     b.Property<string>("Colonia")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -248,17 +245,14 @@ namespace Wallet.DOM.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Municipio")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NumeroExterior")
-                        .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("NumeroInterior")
-                        .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
@@ -268,7 +262,6 @@ namespace Wallet.DOM.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Referencia")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 

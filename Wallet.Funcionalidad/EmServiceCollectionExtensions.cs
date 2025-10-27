@@ -93,6 +93,8 @@ namespace Wallet.Funcionalidad
 		private static void ConfigureFacadeServices(IServiceCollection services)
 		{
 			services.AddScoped<IClienteFacade, ClienteFacade>();
+			services.AddScoped<IDireccionFacade, DireccionFacade>();
+			services.AddScoped<IEstadoFacade, EstadoFacade>();
 		}
 	}
 }

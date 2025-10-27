@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
@@ -5,7 +6,7 @@ using Wallet.DOM.Modelos;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext context) : IDireccionFacade
+public class DireccionFacade(IClienteFacade clienteFacade, IEstadoFacade estadoFacade, ServiceDbContext context) : IDireccionFacade
 {
     public async Task<Direccion> AgregarDireccionClientePreRegistro(int idCliente, string pais, string estado, Guid creationUser, string? testCase = null)
     {
@@ -13,10 +14,12 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
         {
             // Obtiene al cliente
             var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
+            // Localiza estado 
+            var estadoExiste = await estadoFacade.ObtenerEstado(nombre: estado);    
             // Crea la direccion
             var direccion = new Direccion(
                 pais: pais,
-                estado: estado,
+                estado: estadoExiste.Nombre,
                 creationUser: creationUser,
                 testCase: testCase);
             // Agrega la direccion
@@ -38,7 +41,7 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
         }
     }
 
-    public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio, string colonia, string calle, string numeroExterior, string numeroInterior, string? referencia, Guid modificationUser, string? testCase = null)
+    public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio, string colonia, string calle, string numeroExterior, string numeroInterior, string referencia, Guid modificationUser, string? testCase = null)
     {
         try
         {

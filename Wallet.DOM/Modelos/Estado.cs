@@ -17,10 +17,10 @@ public class Estado : ValidatablePersistentObjectLogicalDelete
     ];
     
     [Key]
-    public int Id { get; private set; }
+    public int Id { get; internal set; }
     [Required]
     [MaxLength(100)]
-    public string Nombre { get; private set; }
+    public string Nombre { get; internal set; }
 
     public List<Cliente> Clientes { get; private set; }
     
