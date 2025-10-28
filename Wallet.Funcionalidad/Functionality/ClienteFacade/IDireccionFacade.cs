@@ -27,7 +27,6 @@ public interface IDireccionFacade
     /// <param name="numeroInterior"></param>
     /// <param name="referencia"></param>
     /// <param name="modificationUser"></param>
-    /// <param name="testCase"></param>
     /// <returns></returns>
     public Task<Direccion> ActualizarDireccionCliente(
         int idCliente,
@@ -38,5 +37,5 @@ public interface IDireccionFacade
         string numeroExterior,
         string numeroInterior,
         string referencia,
-        Guid modificationUser, string? testCase = null);
+        Guid modificationUser);
 }

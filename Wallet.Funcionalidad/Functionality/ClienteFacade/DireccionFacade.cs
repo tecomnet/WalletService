@@ -25,7 +25,7 @@ public class DireccionFacade(IClienteFacade clienteFacade, IEstadoFacade estadoF
             // Agrega la direccion
             cliente.AgregarDireccion(direccion: direccion, creationUser: creationUser);
             // Agregamos al contexto
-            await context.AddAsync(direccion);
+            //await context.AddAsync(direccion);
             // Guardamos cambios
             await context.SaveChangesAsync();
             // Return direccion
@@ -41,7 +41,7 @@ public class DireccionFacade(IClienteFacade clienteFacade, IEstadoFacade estadoF
         }
     }
 
-    public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio, string colonia, string calle, string numeroExterior, string numeroInterior, string referencia, Guid modificationUser, string? testCase = null)
+    public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio, string colonia, string calle, string numeroExterior, string numeroInterior, string referencia, Guid modificationUser)
     {
         try
         {

@@ -47,7 +47,8 @@ public class DireccionFacadeTest(SetupDataConfig setupConfig)
                     idCliente: idCliente,
                     pais: pais,
                     estado: estado,
-                    creationUser: SetupConfig.UserId);
+                    creationUser: SetupConfig.UserId,
+                    testCase: SetupConfig.TestCaseId);
                 // Assert user created
                 Assert.NotNull(direccion);
                 // Assert user properties

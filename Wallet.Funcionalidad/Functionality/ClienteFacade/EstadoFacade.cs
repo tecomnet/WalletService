@@ -8,6 +8,7 @@ namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
 public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
 {
+    // TODO EMD: AGREGAR ADD, UPDATE AND DELETE
     public async Task<Estado> ObtenerEstado(string nombre)
     {
         try
