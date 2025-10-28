@@ -13,8 +13,9 @@ public class UbicacionGeolocalizacionFacadeTest(SetupDataConfig setupConfig)
     [Theory]
     // Casos ok
     [InlineData("1. OK: Nueva ubicacion", 1, 1, 1, Dispositivo.Web, "Inicio session", "Tablet", "Chrome", "127.0.0.1", true, new string[] { })]
+    [InlineData("1. OK: Nueva ubicacion", 2, 1.2515, 2.18956, Dispositivo.App, "Nuevo usuario", "Smartphone", "App movil", "127.0.0.1", true, new string[] { })]
     // Casos error
-    [InlineData("2. ERROR: IdCliente null", 25, 1, 1, Dispositivo.App, "Nueva cuenta", "Celular", "App Wallet", "127.0.0.1", false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
+    [InlineData("2. ERROR: Cliente no encontrado", 25, 1, 1, Dispositivo.App, "Nueva cuenta", "Celular", "App Wallet", "127.0.0.1", false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
     public async Task GuardarUbicacionGeolocalizacionTest(
         string caseName,
         int idCliente,

@@ -6,7 +6,7 @@ using Wallet.DOM.Modelos;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public class UbicacionGeolocalizacionFacade (ClienteFacade clienteFacade, ServiceDbContext context) : IUbicacionGeolocalizacionFacade
+public class UbicacionGeolocalizacionFacade(IClienteFacade clienteFacade, ServiceDbContext context) : IUbicacionGeolocalizacionFacade
 {
     public async Task<UbicacionesGeolocalizacion> GuardarUbicacionGeolocalizacionAsync(
         int idCliente,

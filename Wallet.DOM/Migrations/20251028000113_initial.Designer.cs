@@ -12,7 +12,7 @@ using Wallet.DOM.ApplicationDbContext;
 namespace Wallet.DOM.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    [Migration("20251026204648_initial")]
+    [Migration("20251028000113_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -548,7 +548,7 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("ClienteId")
+                    b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
                     b.Property<byte[]>("ConcurrencyToken")
@@ -606,7 +606,7 @@ namespace Wallet.DOM.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.ToTable("UbicacionesGeolocalizacion");
+                    b.ToTable("UbicacionGeolocalizacion");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.ValidacionCheckton", b =>
@@ -771,9 +771,13 @@ namespace Wallet.DOM.Migrations
 
             modelBuilder.Entity("Wallet.DOM.Modelos.UbicacionesGeolocalizacion", b =>
                 {
-                    b.HasOne("Wallet.DOM.Modelos.Cliente", null)
+                    b.HasOne("Wallet.DOM.Modelos.Cliente", "Cliente")
                         .WithMany("UbicacionesGeolocalizacion")
-                        .HasForeignKey("ClienteId");
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.ValidacionCheckton", b =>

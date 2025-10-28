@@ -251,7 +251,7 @@ namespace Wallet.DOM.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UbicacionesGeolocalizacion",
+                name: "UbicacionGeolocalizacion",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -263,7 +263,7 @@ namespace Wallet.DOM.Migrations
                     TipoDispositivo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Agente = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DireccionIp = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: false),
-                    ClienteId = table.Column<int>(type: "int", nullable: true),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
                     ConcurrencyToken = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -275,12 +275,13 @@ namespace Wallet.DOM.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UbicacionesGeolocalizacion", x => x.Id);
+                    table.PrimaryKey("PK_UbicacionGeolocalizacion", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UbicacionesGeolocalizacion_Cliente_ClienteId",
+                        name: "FK_UbicacionGeolocalizacion_Cliente_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Cliente",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -379,8 +380,8 @@ namespace Wallet.DOM.Migrations
                 column: "DocumentoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UbicacionesGeolocalizacion_ClienteId",
-                table: "UbicacionesGeolocalizacion",
+                name: "IX_UbicacionGeolocalizacion_ClienteId",
+                table: "UbicacionGeolocalizacion",
                 column: "ClienteId");
 
             migrationBuilder.CreateIndex(
@@ -407,7 +408,7 @@ namespace Wallet.DOM.Migrations
                 name: "DocumentacionAdjunta");
 
             migrationBuilder.DropTable(
-                name: "UbicacionesGeolocalizacion");
+                name: "UbicacionGeolocalizacion");
 
             migrationBuilder.DropTable(
                 name: "ValidacionCheckton");
