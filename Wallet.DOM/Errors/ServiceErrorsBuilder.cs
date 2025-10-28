@@ -59,7 +59,7 @@ public class ServiceErrorsBuilder
 
     }
 
-    public const string DiscpositorioMovilAutorizadoRequerido = "DISPOSITIVO-MOVIL-AUTORIZADO-REQUERIDO";
+    public const string DispositivoMovilAutorizadoRequerido = "DISPOSITIVO-MOVIL-AUTORIZADO-REQUERIDO";
     public const string UbicacionGeolocalizacionRequerido = "UBICACION-GEOLOCALIZACION-REQUERIDO";
     public const string ContrasenasNoCoinciden = "CONTRASEÑAS-NO-COINCIDEN";
     public const string ContrasenaActualIncorrecta = "CONTRASEÑA-ACTUAL-INCORRECTA";
@@ -84,14 +84,16 @@ public class ServiceErrorsBuilder
     public const string ClienteDuplicado = "CLIENTE-DUPLICADO";
     public const string ClienteDuplicadoPorCorreoElectronico = "CLIENTE-DUPLICADO-POR-CORREO-ELECTRONICO";
     public const string ClienteNoEncontrado = "CLIENTE-NO-ENCONTRADO";
-    
+
     public const string EstadoNoEncontrado = "ESTADO-NO-ENCONTRADO";
+    
+    public const string DispositivoMovilAutorizadoDuplicado = "DISPOSITIVO-MOVIL-AUTORIZADO-DUPLICADO";
 
     private void ClienteErrors()
     {
         // Error de dispositivo móvil autorizado requerido
         AddServiceError(
-            errorCode: DiscpositorioMovilAutorizadoRequerido,
+            errorCode: DispositivoMovilAutorizadoRequerido,
             message: "El dispositivo móvil autorizado es requerido.",
             description: "El dispositivo móvil autorizado no puede ser nulo o vacío.");
         // Error de ubicaciones de geolocalización requerido
@@ -189,6 +191,11 @@ public class ServiceErrorsBuilder
             errorCode: EstadoNoEncontrado,
             message: "El estado no fue encontrado.",
             description: "El estado {0} no existe.");
+        // Error dispositivo movil autorizado duplicado
+        AddServiceError(
+            errorCode: DispositivoMovilAutorizadoDuplicado,
+            message: "El dispositivo movil ya existe como autorizado.",
+            description: "El dispositivo movil {0} ya existe como autorizado.");
     }
 
     // Errores específicos de TipoDocumentos

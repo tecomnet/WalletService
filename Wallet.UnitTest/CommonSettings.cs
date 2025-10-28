@@ -42,6 +42,25 @@ public class CommonSettings
 		cliente.AgregarDatosPersonales(nombre: "Cliente", primerApellido: "ApellidoPaterno", segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse("1990-01-01"),
 			genero: Genero.Masculino, correoElectronico: "cliente@cliente.com", modificationUser: UserId);
 		Clientes.Add(cliente);
+		// Nuevo cliente con datos completos
+		cliente = new Cliente(
+			codigoPais: "+52",
+			telefono: "9876543210",
+			creationUser: UserId,
+			testCase: TestCaseId);
+		// Agrega datos personales
+		cliente.AgregarDatosPersonales(nombre: "Cliente Tecomnet", primerApellido: "Primer Apellido", segundoApellido: "Segundo Apellido", fechaNacimiento: DateOnly.Parse("1990-01-01"),
+			genero: Genero.Femenino, correoElectronico: "cliente@tecomnet.com", modificationUser: UserId);
+		// Agrega dispositivo movil autorizado
+		cliente.AgregarDispositivoMovilAutorizado(dispositivo: new DispositivoMovilAutorizado(
+			token: "32414",
+			idDispositivo: "32414",
+			nombre: "nombre dispositivo",
+			caracteristicas: "caracteristicas dispositivo",
+			creationUser: UserId,
+			testCase: TestCaseId), modificationUser: UserId);
+		// Agrega cliente
+		Clientes.Add(cliente);
 	}
 
 	private void CrearEstados()

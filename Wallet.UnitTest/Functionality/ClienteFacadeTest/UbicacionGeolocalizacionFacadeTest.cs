@@ -5,7 +5,7 @@ using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.UnitTest.Functionality.Configuration;
 using Xunit.Sdk;
 
-namespace Wallet.UnitTest.Functionality.ClienteTest;
+namespace Wallet.UnitTest.Functionality.ClienteFacadeTest;
 
 public class UbicacionGeolocalizacionFacadeTest(SetupDataConfig setupConfig)
     : BaseFacadeTest<IUbicacionGeolocalizacionFacade>(setupConfig) 

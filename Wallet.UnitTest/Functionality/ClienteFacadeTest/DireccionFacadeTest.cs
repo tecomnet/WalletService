@@ -4,7 +4,7 @@ using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.UnitTest.Functionality.Configuration;
 using Xunit.Sdk;
 
-namespace Wallet.UnitTest.Functionality.ClienteTest;
+namespace Wallet.UnitTest.Functionality.ClienteFacadeTest;
 
 public class DireccionFacadeTest(SetupDataConfig setupConfig)
     : BaseFacadeTest<IDireccionFacade>(setupConfig) 

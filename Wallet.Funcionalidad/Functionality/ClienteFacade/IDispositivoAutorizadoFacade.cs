@@ -2,7 +2,7 @@ using Wallet.DOM.Modelos;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public interface IDispositivoAutorizado
+public interface IDispositivoMovilAutorizadoFacade
 {
     /// <summary>
     /// Guarda un dispositivo autorizado para un cliente

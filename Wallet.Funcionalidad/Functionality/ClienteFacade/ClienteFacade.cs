@@ -213,6 +213,7 @@ public class ClienteFacade(ServiceDbContext context) : IClienteFacade
         {
             // Obtener cliente
             var cliente = await context.Cliente.Include(x=>x.Direccion).
+                Include(x=>x.DispositivoMovilAutorizados).
                 FirstOrDefaultAsync(x => x.Id == idCliente);
             // Validar cliente
             if (cliente == null)

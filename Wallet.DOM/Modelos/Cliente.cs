@@ -482,7 +482,14 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         if (dispositivo == null)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.DiscpositorioMovilAutorizadoRequerido,
+                    errorCode: ServiceErrorsBuilder.DispositivoMovilAutorizadoRequerido,
+                    dynamicContent: []));
+        }
+        // Valida dispoitivo duplicado por IdDispositivo y Token
+        if (this.DispositivoMovilAutorizados.Any(x => x.IdDispositivo == dispositivo.IdDispositivo && x.Token == dispositivo.Token))
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.DispositivoMovilAutorizadoDuplicado,
                     dynamicContent: []));
         }
         // Encuentra el dispositivo actual en la lista
@@ -538,6 +545,11 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     }
 
 
+    public bool EsDispositivoAutorizado(string idDispositivo, string token)
+    {
+        var dispositivo = this.DispositivoMovilAutorizados.FirstOrDefault(x => x.IdDispositivo == idDispositivo && x.Token == token);
+        return dispositivo != null;
+    }
 }
 
 
