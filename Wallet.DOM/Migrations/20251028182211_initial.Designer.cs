@@ -12,7 +12,7 @@ using Wallet.DOM.ApplicationDbContext;
 namespace Wallet.DOM.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    [Migration("20251028000113_initial")]
+    [Migration("20251028182211_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -708,6 +708,11 @@ namespace Wallet.DOM.Migrations
 
                     b.Property<int>("Tipo")
                         .HasColumnType("int");
+
+                    b.Property<string>("TwilioSid")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("Verificado")
                         .HasColumnType("bit");

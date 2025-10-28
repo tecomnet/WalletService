@@ -10,6 +10,11 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
         PropertyConstraint.StringPropertyConstraint(
+            propertyName: nameof(TwilioSid),
+            isRequired: true,
+            minimumLength: 1,
+            maximumLength: 100),
+        PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Codigo),
             isRequired: true,
             minimumLength: 4,
@@ -29,6 +34,9 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
     [Key]
     public int Id { get; private set; }
     [Required]
+    [MaxLength(100)]
+    public string TwilioSid { get; private set; }
+    [Required]
     [MaxLength(4)]
     public string Codigo { get; private set; }
     [Required]
@@ -42,26 +50,34 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
     {
         
     }
-    public Verificacion2FA(string codigo, DateTime fechaVencimiento, Tipo2FA tipo, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
+    public Verificacion2FA(string twilioSid, DateTime fechaVencimiento, Tipo2FA tipo, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate properties
-        IsPropertyValid(propertyName: nameof(Codigo), value: codigo, ref exceptions);
+        IsPropertyValid(propertyName: nameof(TwilioSid), value: twilioSid, ref exceptions);
         IsPropertyValid(propertyName: nameof(FechaVencimiento), value: fechaVencimiento, ref exceptions);
         IsPropertyValid(propertyName: nameof(Tipo), value: tipo, ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Assign properties
-        Codigo = codigo;
+        TwilioSid = twilioSid;
         FechaVencimiento = fechaVencimiento;
         Tipo = tipo;
         Verificado = false;
     }
 
-    public void MarcarComoVerificado(Guid modificationUser)
+    public void MarcarComoVerificado(string codigo, Guid modificationUser)
     {
+          // Initialize the list of exceptions
+        List<EMGeneralException> exceptions = new();
+        // Validate properties
+        IsPropertyValid(propertyName: nameof(Codigo), value: codigo, ref exceptions);
+        // If there are exceptions, throw them
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        // Assign properties
         this.Verificado = true;
+        this.Codigo = codigo;
         base.Update(modificationUser: modificationUser);
     }
 }

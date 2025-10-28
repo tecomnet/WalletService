@@ -706,6 +706,11 @@ namespace Wallet.DOM.Migrations
                     b.Property<int>("Tipo")
                         .HasColumnType("int");
 
+                    b.Property<string>("TwilioSid")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<bool>("Verificado")
                         .HasColumnType("bit");
 

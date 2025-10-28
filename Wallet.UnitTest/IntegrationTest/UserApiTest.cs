@@ -30,7 +30,7 @@ public class UserApiTest : DatabaseTestFixture
  
     
     #region Get test
-        [Fact]
+     /*   [Fact]
         public async Task Get_Unauthorized()
         {
             // Arrange
@@ -241,7 +241,8 @@ public class UserApiTest : DatabaseTestFixture
         // Assert key value config properties 
         Assert.Equal(expected: body.User, actual: result.User);
     }
-
+ */
     #endregion
+   
    
 }

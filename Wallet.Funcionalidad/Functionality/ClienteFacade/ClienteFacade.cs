@@ -189,7 +189,7 @@ public class ClienteFacade(ServiceDbContext context) : IClienteFacade
             // Llamamos al helper para generar el codigo
             var codigoVerificacion = CodeGeneratorHelper.GenerateFourDigitCode();
             // Crear verificacion 2FA
-            var verificacion2Fa = new Verificacion2FA(codigo: codigoVerificacion, fechaVencimiento: DateTime.Now.AddMinutes(5), tipo: tipo2FA, creationUser: creationUser, testCase: testCase);
+            var verificacion2Fa = new Verificacion2FA(twilioSid: codigoVerificacion, fechaVencimiento: DateTime.Now.AddMinutes(5), tipo: tipo2FA, creationUser: creationUser, testCase: testCase);
             // Generar codigo verificacion
             cliente.AgregarVerificacion2FA(verificacion: verificacion2Fa, modificationUser: creationUser);
             // Guardar cambios

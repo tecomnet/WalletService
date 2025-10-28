@@ -332,24 +332,23 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
             // Si tienes un método de dominio 'Invalidate()' o 'Cancel()', úsalo.
             oldVerification.Deactivate(modificationUser: modificationUser);
         }
-
         // 5. Agrega la nueva verificación (la más reciente)
         this.Verificaciones2FA.Add(verificacion);
         base.Update(modificationUser: modificationUser);
     }
 
-    public bool ConfirmarVerificacion2FA(Tipo2FA tipo, string codigo, Guid modificationUser)
+    public bool ConfirmarVerificacion2FA(Tipo2FA tipo, string twilioSid, string codigo, Guid modificationUser)
     {
         // Busca la verificación 2FA activa y no verificada del tipo y código proporcionados
         var verificacion = this.Verificaciones2FA?
             .FirstOrDefault(v => v.Tipo == tipo &&
-                                 v.Codigo == codigo);
+                                 v.TwilioSid == twilioSid);
         // Verifica si se encontró la verificación
         if (verificacion == null)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
                             errorCode: ServiceErrorsBuilder.CodigoVerificacionNoEncontrado,
-                            dynamicContent: [codigo, tipo.ToString()]));
+                            dynamicContent: [tipo.ToString()]));
         }
         // Verifica si el código está activo
         if (!verificacion.IsActive)
@@ -376,7 +375,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         if (verificacion != null)
         {
             // Marca la verificación como verificada
-            verificacion.MarcarComoVerificado(modificationUser: modificationUser);
+            verificacion.MarcarComoVerificado(codigo: codigo, modificationUser: modificationUser);
             base.Update(modificationUser: modificationUser);
             return true; // Verificación exitosa
         }
