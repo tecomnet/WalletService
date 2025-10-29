@@ -15,7 +15,7 @@ public class DireccionFacade(IClienteFacade clienteFacade, IEstadoFacade estadoF
             // Obtiene al cliente
             var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
             // Localiza estado 
-            var estadoExiste = await estadoFacade.ObtenerEstadoPorNombre(nombre: estado);    
+            var estadoExiste = await estadoFacade.ObtenerEstadoPorNombreAsync(nombre: estado);    
             // Crea la direccion
             var direccion = new Direccion(
                 pais: pais,

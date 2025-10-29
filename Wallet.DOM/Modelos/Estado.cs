@@ -38,4 +38,19 @@ public class Estado : ValidatablePersistentObjectLogicalDelete
         // Seteo de propiedades
         this.Nombre = nombre;
     }
+
+
+    public void Actualizar(string nombre, Guid modificationUser)
+    {
+        // Initialize the list of exceptions
+        List<EMGeneralException> exceptions = new();
+        // Validate the properties
+        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, ref exceptions);
+        // If there are exceptions, throw them
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        // Seteo de propiedades
+        this.Nombre = nombre;
+        base.Update(modificationUser: modificationUser);
+    }
+ 
 }

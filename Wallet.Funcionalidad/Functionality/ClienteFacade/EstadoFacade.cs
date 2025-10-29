@@ -8,8 +8,29 @@ namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
 public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
 {
+
+    public async Task<Estado> ObtenerEstadoPorIdAsync(int idEstado)
+    {
+        try
+        {
+            var estado = await context.Estado.FirstOrDefaultAsync(x => x.Id == idEstado);
+            if (estado is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.EstadoNoEncontrado,
+                dynamicContent: [idEstado]));
+            return estado;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
     // TODO EMD: AGREGAR ADD, UPDATE AND DELETE
-    public async Task<Estado> ObtenerEstado(string nombre)
+    public async Task<Estado> ObtenerEstadoPorNombreAsync(string nombre)
     {
         try
         {
@@ -29,7 +50,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
         }
     }
 
-    public async Task<List<Estado>> ObtenerEstados(bool? activo = null)
+    public async Task<List<Estado>> ObtenerTodosAsync(bool? activo = null)
     {
         try
         {
@@ -57,38 +78,126 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
         }
     }
 
-    public async Task<Estado> ObtenerEstadoPorId(int idEstado)
+    public async Task<Estado> ActivaEstadoAsync(int idEstado, Guid modificationUser)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // Obtenemos el estado
+            var estado = await ObtenerEstadoPorIdAsync(idEstado: idEstado);
+            // Marcamos como activo
+            estado.Activate(modificationUser: modificationUser);
+            // Guardamos cambios
+            context.Update(estado);
+            await context.SaveChangesAsync();
+            return estado;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
-    public async Task<Estado> ObtenerEstadoPorNombre(string nombre)
+    public async Task<Estado> ActualizaEstadoAsync(int idEstado, string nombre, Guid modificationUser)
     {
-        throw new NotImplementedException();
+        try 
+        {
+            var estado = await ObtenerEstadoPorIdAsync(idEstado: idEstado);
+            // Validamos que el estado este activo
+            ValidarEstadoActivo(estado: estado);
+            // Validamos duplicidad
+            ValidarDuplicidad(nombre: nombre, id: idEstado);
+            // Actualizamos el estado
+            estado.Actualizar(nombre: nombre, modificationUser: modificationUser);
+            // Guardamos cambios
+            context.Update(estado);
+            await context.SaveChangesAsync();
+            return estado;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
-    public async Task<List<Estado>> ObtenerTodos(bool? activo = null)
+    public async Task<Estado> EliminaEstadoAsync(int idEstado, Guid modificationUser)
     {
-        throw new NotImplementedException();
+        try 
+        {
+            var estado = await ObtenerEstadoPorIdAsync(idEstado: idEstado);
+            // Eliminamos el estado
+            estado.Deactivate(modificationUser: modificationUser);
+            // Guardamos cambios
+            context.Update(estado);
+            await context.SaveChangesAsync();
+            return estado;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
-    public async Task<Estado> GuardarEstado(string nombre, Guid creationUser, string? testCase = null)
+    public async Task<Estado> GuardarEstadoAsync(string nombre, Guid creationUser, string? testCase = null)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // Creamos el estado
+            var estado = new Estado(nombre: nombre, creationUser: creationUser, testCase: testCase);
+            // Validamos duplicidad
+            ValidarDuplicidad(nombre: nombre);
+            // Guardamos cambios
+            context.Add(estado);
+            await context.SaveChangesAsync();
+            return estado;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
-    public async Task<Estado> ActualizaEstado(int idEstado, Guid modificationUser)
+    #region Metodos privados
+    public void ValidarDuplicidad(string nombre, int id = 0)
     {
-        throw new NotImplementedException();
+        // Obtiene estado existente
+        var estadoExistente = context.Estado.FirstOrDefault(x => x.Nombre == nombre && x.Id != id);
+        // Duplicado por nombre
+        if (estadoExistente != null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.EstadoDuplicado,
+                dynamicContent: [nombre],
+                module: this.GetType().Name));
+        }
     }
 
-    public async Task<Estado> EliminaEstado(int idEstado, Guid modificationUser)
+    private void ValidarEstadoActivo(Estado estado)
     {
-        throw new NotImplementedException();
+        if (!estado.IsActive)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.EstadoInactivo,
+                dynamicContent: [estado.Nombre]));
+        }
     }
+    #endregion
 
-    public async Task<Estado> ActivaEstado(int idEstado, Guid modificationUser)
-    {
-        throw new NotImplementedException();
-    }
+
+
 }

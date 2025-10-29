@@ -10,7 +10,7 @@ using Wallet.Funcionalidad.ServiceClient;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilioService) : IClienteFacade
+public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilioService, IEmpresaFacade empresaFacade) : IClienteFacade
 {
     public async Task<Cliente> ObtenerClientePorIdAsync(int idCliente)
     {
@@ -112,6 +112,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
             // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
+            var empresa = await empresaFacade.ObtenerPorNombreAsync("TECOMNET");
             // Actualizar en db
             context.Update(cliente);
             // TODO EMD: LLAMAR A API DE Tilwio PARA EL PROCESO DE VALIDACION 2FA

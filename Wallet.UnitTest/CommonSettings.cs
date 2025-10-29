@@ -9,7 +9,7 @@ public class CommonSettings
 	private const string TestCaseId = "FunctionalTest";
 	private static readonly Guid UserId = Guid.NewGuid();
 	public readonly List<Cliente> Clientes = [];
-	public readonly List<Estado> Estados = [];
+	public  List<Estado> Estados = [];
 	public readonly List<Empresa> Empresas = [];
 
 	public CommonSettings()
@@ -93,6 +93,14 @@ public class CommonSettings
 			testCase: TestCaseId);
 		// Agrega estado
 		Estados.Add(estado);
+		// Nuevo estado
+		estado = new Estado(
+			nombre: "Estado inactivo",
+			creationUser: UserId,
+			testCase: TestCaseId);
+		estado.Deactivate(UserId);
+		// Agrega estado
+		Estados.Add(estado);
 	}
 
 	private void CrearEmpresas()
@@ -104,6 +112,13 @@ public class CommonSettings
 			testCase: TestCaseId);
 		// Agrega empresa
 		Empresas.Add(empresa);
-
+		// Nueva empresa
+		empresa = new Empresa(
+			nombre: "EmpresaInactiva",
+			creationUser: UserId,
+			testCase: TestCaseId);
+		empresa.Deactivate(modificationUser: UserId);
+		// Agrega empresa
+		Empresas.Add(empresa);
 	}
 }

@@ -4,13 +4,13 @@ namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
 public interface IEstadoFacade
 {
-    public Task<Estado> ObtenerEstadoPorId(int idEstado);
-    public Task<Estado> ObtenerEstadoPorNombre(string nombre);
-    public Task<List<Estado>> ObtenerTodos(bool? activo = null);
-    public Task<Estado> GuardarEstado(string nombre, Guid creationUser, string? testCase = null);
-    public Task<Estado> ActualizaEstado(int idEstado, Guid modificationUser);
-    public Task<Estado> EliminaEstado(int idEstado, Guid modificationUser);
-    public Task<Estado> ActivaEstado(int idEstado, Guid modificationUser);
+    public Task<Estado> ObtenerEstadoPorIdAsync(int idEstado);
+    public Task<Estado> ObtenerEstadoPorNombreAsync(string nombre);
+    public Task<List<Estado>> ObtenerTodosAsync(bool? activo = null);
+    public Task<Estado> GuardarEstadoAsync(string nombre, Guid creationUser, string? testCase = null);
+    public Task<Estado> ActualizaEstadoAsync(int idEstado, string nombre, Guid modificationUser);
+    public Task<Estado> EliminaEstadoAsync(int idEstado, Guid modificationUser);
+    public Task<Estado> ActivaEstadoAsync(int idEstado, Guid modificationUser);
     
     
 }

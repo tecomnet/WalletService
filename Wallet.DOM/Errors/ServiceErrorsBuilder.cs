@@ -16,8 +16,12 @@ public class ServiceErrorsBuilder
         GeneralErrors();
         // 2. Errores específicos de cliente
         ClienteErrors();
-        // 3. Errores específicos de TipoDocumentos
+        // 3. Errores específicos de empresa
+        EmpresaErrors();
+        // 4. Errores específicos de TipoDocumentos
         TipoDocumentosErrors();
+        // 5. Errores específicos de Estado
+        EstadoErrors();
     }
 
     // Método privado para añadir un error al diccionario
@@ -55,10 +59,10 @@ public class ServiceErrorsBuilder
             errorCode: ApiErrorNoManejado, // Usa la constante pública
             message: "Error Interno del Servidor",
             description: "Ocurrió un error inesperado que ha sido registrado. Inténtelo de nuevo más tarde.");
-
-
     }
+    #endregion
 
+    #region Cliente
     public const string DispositivoMovilAutorizadoRequerido = "DISPOSITIVO-MOVIL-AUTORIZADO-REQUERIDO";
     public const string UbicacionGeolocalizacionRequerido = "UBICACION-GEOLOCALIZACION-REQUERIDO";
     public const string ContrasenasNoCoinciden = "CONTRASEÑAS-NO-COINCIDEN";
@@ -74,13 +78,12 @@ public class ServiceErrorsBuilder
     public const string CodigoVerificacionNoEncontrado = "CODIGO-VERIFICACION-NO-ENCONTRADO";
     public const string DocumentacionAdjuntaRequerida = "DOCUMENTACION-ADJUNTA-REQUERIDA";
     public const string TipoPersonaNoConfigurada = "TIPO-PERSONA-NO-CONFIGURADA";
-    public const string DocumentacionAdjuntaYaExiste = "DOCUMENTACION-ADJUNTA-YA-EXISTE"; 
+    public const string DocumentacionAdjuntaYaExiste = "DOCUMENTACION-ADJUNTA-YA-EXISTE";
     public const string ClienteDuplicado = "CLIENTE-DUPLICADO";
     public const string ClienteDuplicadoPorCorreoElectronico = "CLIENTE-DUPLICADO-POR-CORREO-ELECTRONICO";
     public const string ClienteNoEncontrado = "CLIENTE-NO-ENCONTRADO";
-    public const string EstadoNoEncontrado = "ESTADO-NO-ENCONTRADO";
     public const string DispositivoMovilAutorizadoDuplicado = "DISPOSITIVO-MOVIL-AUTORIZADO-DUPLICADO";
-    public const string EmpresaNoEncontrada = "EMPRESA-NO-ENCONTRADA";
+    
 
     private void ClienteErrors()
     {
@@ -179,24 +182,43 @@ public class ServiceErrorsBuilder
             errorCode: DireccionNoConfigurada,
             message: "La direccion aun no esta configurada.",
             description: "La direccion aun no esta configurada.");
-        // Error estado no encontrado
-        AddServiceError(
-            errorCode: EstadoNoEncontrado,
-            message: "El estado no fue encontrado.",
-            description: "El estado {0} no existe.");
+
         // Error dispositivo movil autorizado duplicado
         AddServiceError(
             errorCode: DispositivoMovilAutorizadoDuplicado,
             message: "El dispositivo movil ya existe como autorizado.",
             description: "El dispositivo movil {0} ya existe como autorizado.");
-        // Error empresa no encontrada
+    }
+
+
+    #endregion
+
+    #region Empresa
+    public const string EmpresaNoEncontrada = "EMPRESA-NO-ENCONTRADA";
+    public const string EmpresaDuplicada = "EMPRESA-DUPLICADA";
+    public const string EmpresaInactiva = "EMPRESA-INACTIVA";
+    private void EmpresaErrors()
+    {
+        // Error de empresa no encontrada
         AddServiceError(
             errorCode: EmpresaNoEncontrada,
             message: "La empresa no fue encontrada.",
             description: "La empresa {0} no existe.");
+        // Error de empresa duplicada
+        AddServiceError(
+            errorCode: EmpresaDuplicada,
+            message: "La empresa ya existe.",
+            description: "La empresa {0} ya existe.");
+        // Error de empresa inactiva
+        AddServiceError(
+            errorCode: EmpresaInactiva,
+            message: "La empresa no esta activa.",
+            description: "La empresa {0} no esta activa. Primero debe activarla.");
     }
+    #endregion
 
-    // Errores específicos de TipoDocumentos
+    #region TipoDocumentos
+     // Errores específicos de TipoDocumentos
     public const string DocumentoRequerido = "DOCUMENTO-REQUERIDO";
     public const string DocumentoYaExisteEnTipoDocumento = "DOCUMENTO-YA-EXISTE-EN-TIPO-DOCUMENTO";
     private void TipoDocumentosErrors()
@@ -214,5 +236,30 @@ public class ServiceErrorsBuilder
             description: "El documento proporcionado {0} de tipo persona {1} ya está asociado con otro tipo de documento.");
     }
 
+    #endregion
+
+
+    #region  Estado
+    public const string EstadoDuplicado = "ESTADO-DUPLICADO";
+    public const string EstadoNoEncontrado = "ESTADO-NO-ENCONTRADO";
+    public const string EstadoInactivo = "ESTADO-INACTIVO";
+    private void EstadoErrors()
+    {
+        // Error de estado duplicado
+        AddServiceError(
+            errorCode: EstadoDuplicado,
+            message: "El estado ya existe.",
+            description: "El estado {0} ya existe.");
+        // Error estado no encontrado
+        AddServiceError(
+            errorCode: EstadoNoEncontrado,
+            message: "El estado no fue encontrado.",
+            description: "El estado {0} no existe.");
+        // Error de estado inactivo
+        AddServiceError(
+            errorCode: EstadoInactivo,
+            message: "El estado no esta activo.",
+            description: "El estado {0} no esta activo. Primero debe activarlo.");
+    }
     #endregion
 }

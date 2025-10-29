@@ -97,6 +97,7 @@ namespace Wallet.Funcionalidad
 			services.AddScoped<IEstadoFacade, EstadoFacade>();
             services.AddScoped<IUbicacionGeolocalizacionFacade, UbicacionGeolocalizacionFacade>();
             services.AddScoped<IDispositivoMovilAutorizadoFacade, DispositivoMovilAutorizadoFacadeFacade>();
+            services.AddScoped<IEmpresaFacade, EmpresaFacade>();
 		}
 	}
 }
