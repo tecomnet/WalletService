@@ -56,4 +56,39 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
                 exception: exception);
         }
     }
+
+    public async Task<Estado> ObtenerEstadoPorId(int idEstado)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Estado> ObtenerEstadoPorNombre(string nombre)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<List<Estado>> ObtenerTodos(bool? activo = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Estado> GuardarEstado(string nombre, Guid creationUser, string? testCase = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Estado> ActualizaEstado(int idEstado, Guid modificationUser)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Estado> EliminaEstado(int idEstado, Guid modificationUser)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Estado> ActivaEstado(int idEstado, Guid modificationUser)
+    {
+        throw new NotImplementedException();
+    }
 }

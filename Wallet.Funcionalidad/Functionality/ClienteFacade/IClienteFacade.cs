@@ -20,18 +20,7 @@ public interface IClienteFacade
     /// <param name="idCliente"></param>
     /// <returns></returns>
     public Task<Cliente> ObtenerClientePorIdAsync(int idCliente);
-
-    /// <summary>
-    /// Genera el código de verificación 2FA para el cliente y lo envía por sms o email
-    /// </summary>
-    /// <param name="idCliente"></param>
-    /// <param name="tipo2FA"></param>
-    /// <param name="codigoPais"></param>
-    /// <param name="telefono"></param>
-    /// <param name="creationUser"></param>
-    /// <param name="testCase"></param>
-    /// <returns></returns>
-    public Task<bool> GeneraCodigoVerificacion2FAsync(int idCliente, Tipo2FA tipo2FA, string codigoPais, string telefono, Guid creationUser, string? testCase = null);
+    
     /// <summary>
     /// Confirma el código 2FA enviado al cliente por sms o email
     /// </summary>
@@ -82,7 +71,7 @@ public interface IClienteFacade
     /// <param name="telefono"></param>
     /// <param name="modificationUser"></param>
     /// <returns></returns>
-    public Task<Cliente> ActualizarTelefonoAsync(int idCliente, string codigoPais, string telefono, Guid modificationUser);
+    public Task<Cliente> ActualizarTelefonoAsync(int idCliente, string codigoPais, string telefono, Guid modificationUser, string? testCase = null);
     /// <summary>
     /// Actualiza el correo electrónico del cliente, este generara nueva verificación 2FA
     /// </summary>
@@ -90,7 +79,7 @@ public interface IClienteFacade
     /// <param name="correoElectronico"></param>
     /// <param name="modificationUser"></param>
     /// <returns></returns>
-    public Task<Cliente> ActualizarCorreoElectronicoAsync(int idCliente, string correoElectronico, Guid modificationUser);
+    public Task<Cliente> ActualizarCorreoElectronicoAsync(int idCliente, string correoElectronico, Guid modificationUser, string? testCase = null);
 
 }
     

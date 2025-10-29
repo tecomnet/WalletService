@@ -87,7 +87,7 @@ namespace Wallet.Funcionalidad
 		/// <param name="services"></param>
 		private static void ConfigureExternalConnectionServices(IServiceCollection services)
 		{
-			services.AddScoped<IGeneralConfigurationManagementFacade, GeneralConfigurationServiceFacade>();
+			services.AddScoped<ITwilioServiceFacade, TwilioServiceFacade>();
 		}
 
 		private static void ConfigureFacadeServices(IServiceCollection services)

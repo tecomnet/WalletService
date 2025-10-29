@@ -65,29 +65,22 @@ public class ServiceErrorsBuilder
     public const string ContrasenaActualIncorrecta = "CONTRASEÑA-ACTUAL-INCORRECTA";
     public const string DireccionRequerida = "DIRECCION-REQUERIDA";
     public const string DireccionNoConfigurada = "DIRECCION-NO-CONFIGURADA";
-
     public const string EmpresaRequerida = "EMPRESA-REQUERIDA";
     public const string EstadoRequerido = "ESTADO-REQUERIDO";
-
     public const string Verificacion2FARequerida = "VERIFICACION-2FA-REQUERIDA";
-
     public const string CodigoVerificacionInactivo = "CODIGO-VERIFICACION-INACTIVO";
     public const string CodigoVerificacionConfirmado = "CODIGO-VERIFICACION-CONFIRMADO";
     public const string CodigoVerificacionVencido = "CODIGO-VERIFICACION-VENCIDO";
     public const string CodigoVerificacionNoEncontrado = "CODIGO-VERIFICACION-NO-ENCONTRADO";
-
     public const string DocumentacionAdjuntaRequerida = "DOCUMENTACION-ADJUNTA-REQUERIDA";
-    
     public const string TipoPersonaNoConfigurada = "TIPO-PERSONA-NO-CONFIGURADA";
     public const string DocumentacionAdjuntaYaExiste = "DOCUMENTACION-ADJUNTA-YA-EXISTE"; 
-
     public const string ClienteDuplicado = "CLIENTE-DUPLICADO";
     public const string ClienteDuplicadoPorCorreoElectronico = "CLIENTE-DUPLICADO-POR-CORREO-ELECTRONICO";
     public const string ClienteNoEncontrado = "CLIENTE-NO-ENCONTRADO";
-
     public const string EstadoNoEncontrado = "ESTADO-NO-ENCONTRADO";
-    
     public const string DispositivoMovilAutorizadoDuplicado = "DISPOSITIVO-MOVIL-AUTORIZADO-DUPLICADO";
+    public const string EmpresaNoEncontrada = "EMPRESA-NO-ENCONTRADA";
 
     private void ClienteErrors()
     {
@@ -196,6 +189,11 @@ public class ServiceErrorsBuilder
             errorCode: DispositivoMovilAutorizadoDuplicado,
             message: "El dispositivo movil ya existe como autorizado.",
             description: "El dispositivo movil {0} ya existe como autorizado.");
+        // Error empresa no encontrada
+        AddServiceError(
+            errorCode: EmpresaNoEncontrada,
+            message: "La empresa no fue encontrada.",
+            description: "La empresa {0} no existe.");
     }
 
     // Errores específicos de TipoDocumentos

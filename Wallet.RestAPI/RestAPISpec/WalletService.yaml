@@ -68,8 +68,8 @@ paths:
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      operationId: GetUser
-      description: Obtiene el usuario
+      operationId: GetClientes
+      description: Obtiene todos los clientes
       security:
         - jwsToken: []
       tags:
@@ -135,15 +135,15 @@ paths:
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      operationId: GetUser
-      description: Obtiene el usuario por id
+      operationId: GetCliente
+      description: Obtiene un cliente por id
       security:
         - jwsToken: []
       tags:
         - Cliente
     put:
       summary: Actualiza un cliente por id
-      operationId: PutUser
+      operationId: PutCliente
       responses:
         '200':
           description: OK
@@ -169,7 +169,7 @@ paths:
         - Cliente
     delete:
       summary: Elimina un cliente por id
-      operationId: DeleteUser
+      operationId: DeleteCliente
       responses:
         '200':
           description: OK
@@ -188,6 +188,343 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
+  '/{version}/cliente/{idCliente}/activar':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    put:
+      summary: Activa un cliente por id
+      operationId: PutActivarCliente
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Activa un cliente por id
+      security:
+        - jwsToken: []
+      requestBody:
+        content: {}
+      tags:
+        - Cliente
+  '/{version}/cliente/{idCliente}/confirmaVerificacion':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    put:
+      summary: Confirma codigo de verificacion
+      operationId: PutConfirmaVerificacion
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Confirma codigo de verificacion de 4 digitos
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Verificacion2FARequest'
+      tags:
+        - Cliente
+  '/{version}/cliente/{idCliente}/contrasena':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    put:
+      summary: Actualiza contraseña
+      operationId: PutContrasena
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: 'Actualiza la contraseña '
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContrasenaUpdateRequest'
+      tags:
+        - Cliente
+    post:
+      summary: Guarda contraseña
+      operationId: postContrasena
+      responses:
+        '201':
+          description: Created
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: 'Agrega contraseña '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContrasenaRequest'
+      tags:
+        - Cliente
+  '/{version}/cliente/{idCliente}/actualizaTelefono':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    put:
+      summary: Actualiza telefono
+      operationId: PutTelefono
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza el telefono
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelefonoUpdateRequest'
+        description: ''
+      tags:
+        - Cliente
+  '/{version}/cliente/{idCliente}/actualizaEmail':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    put:
+      summary: Actualiza email
+      operationId: PutEmail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza el email
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailUpdateRequest'
+      tags:
+        - Cliente
+  '/{version}/direccion/{idCliente}':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    post:
+      summary: Guarda direccion cliente
+      operationId: postDireccion
+      responses:
+        '201':
+          description: Created
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda la direccion del cliente
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DireccionRequest'
+      tags:
+        - Direccion
+  '/{version}/ubicacion/{idCliente}':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    post:
+      summary: Guarda ubicacion cliente
+      operationId: postUbicacion
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UbicacionResult'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      description: Gaurda ubicaciones del cliente
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UbicacionRequest'
+      tags:
+        - Ubicacion
+  '/{version}/dispositivoMovilAutorizado/{idCliente}':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idCliente
+        in: path
+        required: true
+        description: Id del cliente
+    post:
+      summary: Guarda dispositivo movil autorizado
+      operationId: postDispositivoMovilAutorizado
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispositivoMovilAutorizadoResult'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      description: Gaurda dispositivo moveil autorizado del cliente
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispositivoMovilAutorizadoRequest'
+      tags:
+        - DispositivoMovilAutorizado
 components:
   schemas:
     ClienteResult:
@@ -328,11 +665,11 @@ components:
         - creationUser
         - modificationUser
     ClienteRequest:
-      title: ClienteResult
+      title: ClienteRequest
       x-stoplight:
         id: zdjtcdgwyvde7
       type: object
-      description: Estructura para consultar clientes
+      description: Estructura para pre registrar un cliente
       properties:
         codigoPais:
           type: string
@@ -350,16 +687,12 @@ components:
         - codigoPais
         - telefono
     ClienteUpdateRequest:
-      title: ClienteResult
+      title: ClienteUpdateRequest
       x-stoplight:
         id: 0skzdo892adg6
       type: object
-      description: Estructura para consultar clientes
+      description: Estructura para actualizar datos personales de clientes
       properties:
-        id:
-          type: integer
-          x-stoplight:
-            id: 3of979vs8a9k9
         nombre:
           type: string
           x-stoplight:
@@ -403,12 +736,7 @@ components:
             id: neep14yhburn4
           minLength: 1
           maxLength: 500
-        modificationTimestamp:
-          type: string
-          description: Modification timestamp
-          format: date-time
       required:
-        - id
         - nombre
         - primerApellido
         - segundoApellido
@@ -416,7 +744,533 @@ components:
         - genero
         - correoElectronico
         - estado
+    Verificacion2FARequest:
+      title: Verificacion2FARequest
+      x-stoplight:
+        id: i04swzrm0cwii
+      type: object
+      description: Estructura para confirmar un codigo de verificacion
+      properties:
+        idCliente:
+          type: integer
+          x-stoplight:
+            id: neep14yhburn4
+        Tipo:
+          $ref: '#/components/schemas/Tipo2FAEnum'
+        Codigo:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 4
+          maxLength: 4
+      required:
+        - idCliente
+        - Tipo
+        - Codigo
+    UbicacionRequest:
+      title: UbicacionRequest
+      x-stoplight:
+        id: e0409yze6vh4o
+      type: object
+      description: Estructura para guardar la ubicacion o geolocalizacion
+      properties:
+        latitud:
+          type: number
+          x-stoplight:
+            id: neep14yhburn4
+          format: double
+        longitud:
+          type: number
+          x-stoplight:
+            id: neep14yhburn4
+          format: double
+        Dispositivo:
+          $ref: '#/components/schemas/DispositivoEnum'
+        TipoEvento:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        TipoDispositivo:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        Agente:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        DireccionIP:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 45
+      required:
+        - latitud
+        - longitud
+        - Dispositivo
+        - TipoEvento
+        - TipoDispositivo
+        - Agente
+        - DireccionIP
+    UbicacionResult:
+      title: UbicacionResult
+      x-stoplight:
+        id: 8m2uf7deyqani
+      type: object
+      description: Estructura para consultar ubicacion o geolocalizacion
+      properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: 3of979vs8a9k9
+        latitud:
+          type: number
+          x-stoplight:
+            id: neep14yhburn4
+          format: double
+        longitud:
+          type: number
+          x-stoplight:
+            id: neep14yhburn4
+          format: double
+        dispositivo:
+          $ref: '#/components/schemas/DispositivoEnum'
+        tipoEvento:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        tipoDispositivo:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        Agente:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 10
+          maxLength: 10
+        DireccionIP:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 50
+        guid:
+          type: string
+          description: Guid of the key-value configuration
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+      required:
+        - id
+        - latitud
+        - longitud
+        - dispositivo
+        - tipoEvento
+        - tipoDispositivo
+        - Agente
+        - DireccionIP
+        - guid
+        - creationTimestamp
         - modificationTimestamp
+        - creationUser
+        - modificationUser
+    DireccionResut:
+      title: DireccionResult
+      x-stoplight:
+        id: 7665cfilold6w
+      type: object
+      description: Estructura para consultar la direccion de cliente
+      properties:
+        codigoPostal:
+          type: string
+          x-stoplight:
+            id: 3of979vs8a9k9
+          minLength: 5
+          maxLength: 5
+        pais:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          format: double
+          minLength: 1
+          maxLength: 100
+        estado:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          format: double
+          minLength: 1
+          maxLength: 100
+        'municipio ':
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        colonia:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        calle:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        numeroExterior:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 50
+        numeroInterior:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 6
+        referencia:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 250
+        guid:
+          type: string
+          description: Guid of the key-value configuration
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+      required:
+        - codigoPostal
+        - pais
+        - estado
+        - 'municipio '
+        - colonia
+        - calle
+        - numeroExterior
+        - numeroInterior
+        - referencia
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+    DireccionRequest:
+      title: DireccionRequest
+      x-stoplight:
+        id: 8h88f5567ienu
+      type: object
+      description: Estructura para agregar direccion del cliente
+      properties:
+        codigoPostal:
+          type: string
+          x-stoplight:
+            id: 3of979vs8a9k9
+          minLength: 5
+          maxLength: 5
+        pais:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          format: double
+          minLength: 1
+          maxLength: 100
+        estado:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          format: double
+          minLength: 1
+          maxLength: 100
+        'municipio ':
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        colonia:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        calle:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        numeroExterior:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 50
+        numeroInterior:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 6
+        referencia:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 250
+      required:
+        - codigoPostal
+        - pais
+        - estado
+        - 'municipio '
+        - colonia
+        - calle
+        - numeroExterior
+        - numeroInterior
+        - referencia
+    DispositivoEnum:
+      title: DispositivoEnum
+      x-stoplight:
+        id: 0zx76o4y76jnu
+      type: string
+      enum:
+        - APP
+        - WEB
+      description: Estructura enum para dispositivo cliente
+    Tipo2FAEnum:
+      title: Tipo2FAEnum
+      x-stoplight:
+        id: g9720ns8qbcnm
+      type: string
+      description: Estructura enum para tipo de verificacion 2fa
+      enum:
+        - SMS
+        - EMAIL
+    DispositivoMovilAutorizadoResult:
+      title: DispositivoMovilAutorizadoResult
+      x-stoplight:
+        id: tk90eyg5k0ss1
+      type: object
+      description: Estructura para consultar el dispositivo movil autorizado
+      properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: 3of979vs8a9k9
+        token:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        idDispositivo:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        nombre:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        caracteristicas:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        Actual:
+          type: boolean
+          x-stoplight:
+            id: neep14yhburn4
+          format: date
+        guid:
+          type: string
+          description: Guid of the key-value configuration
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+      required:
+        - id
+        - token
+        - idDispositivo
+        - nombre
+        - caracteristicas
+        - Actual
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+    DispositivoMovilAutorizadoRequest:
+      title: DispositivoMovilAutorizadoRequest
+      type: object
+      description: Estructura para guardar el dispositivo movil autorizado
+      x-stoplight:
+        id: 3fbae6a9f4aca
+      properties:
+        token:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        idDispositivo:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        nombre:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        caracteristicas:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+      required:
+        - token
+        - idDispositivo
+        - nombre
+        - caracteristicas
+    ContrasenaRequest:
+      title: ContrasenaRequest
+      x-stoplight:
+        id: j2ftnp0wbf13n
+      type: object
+      description: Estructura para guardar la contraseña del cliente
+      properties:
+        contrasena:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+      required:
+        - contrasena
+    ContrasenaUpdateRequest:
+      title: ContrasenaUpdateRequest
+      x-stoplight:
+        id: 1grn8pkquo5ay
+      type: object
+      description: Estructura para actualizar la contraseña del cliente
+      properties:
+        contrasenaActual:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        contrasenaNueva:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        contrasenaNuevaConfrimacion:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+      required:
+        - contrasenaActual
+        - contrasenaNueva
+        - contrasenaNuevaConfrimacion
+    EmailUpdateRequest:
+      title: EmailUpdateRequest
+      x-stoplight:
+        id: 0g2w4jmzjmlwz
+      type: object
+      description: Estructura para actualizar el correo electronico del cliente
+      properties:
+        correoElectronico:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 150
+          format: email
+      required:
+        - correoElectronico
+    TelefonoUpdateRequest:
+      title: TelefonoUpdateRequest
+      x-stoplight:
+        id: tt9tgt4hvzh2s
+      type: object
+      description: Estructura para actualizar el telefono del cliente
+      properties:
+        telefono:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          maxLength: 10
+          minLength: 9
+      required:
+        - telefono
   securitySchemes:
     jwsToken:
       type: http

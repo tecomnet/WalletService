@@ -306,7 +306,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         {
             this.Verificaciones2FA = new List<Verificacion2FA>();
         }
-
         // 2. Verifica que el objeto a agregar no sea nulo 
         if (verificacion == null)
         {
@@ -314,7 +313,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
                             errorCode: ServiceErrorsBuilder.Verificacion2FARequerida,
                             dynamicContent: []));
         }
-
+        // Si el codigo ya existe, retronamos, solo faltara confirmarlo
         // 3. IDENTIFICA y DESACTIVA todos los códigos activos y no verificados del MISMO TIPO
         var verificacionesViejas = this.Verificaciones2FA
             // Filtramos por las que están VIGENTES (no vencidas) Y NO VERIFICADAS Y DEL MISMO TIPO
@@ -324,12 +323,10 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
                         x.IsActive)
             // Convertir a lista para iterar sin problemas con el Where
             .ToList();
-
         // 4. Desactiva cada código de verificación viejo/pendiente
         foreach (var oldVerification in verificacionesViejas)
         {
-            // Asumiendo que Deactivate(creactionUser) marca x.Verificado = true o x.Activo = false.
-            // Si tienes un método de dominio 'Invalidate()' o 'Cancel()', úsalo.
+            // Desactivamos codigo viejo
             oldVerification.Deactivate(modificationUser: modificationUser);
         }
         // 5. Agrega la nueva verificación (la más reciente)
@@ -337,12 +334,13 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         base.Update(modificationUser: modificationUser);
     }
 
-    public bool ConfirmarVerificacion2FA(Tipo2FA tipo, string twilioSid, string codigo, Guid modificationUser)
+    public bool ConfirmarVerificacion2FA(Tipo2FA tipo, string codigo, Guid modificationUser)
     {
         // Busca la verificación 2FA activa y no verificada del tipo y código proporcionados
         var verificacion = this.Verificaciones2FA?
-            .FirstOrDefault(v => v.Tipo == tipo &&
-                                 v.TwilioSid == twilioSid);
+            .Where(v => v.Tipo == tipo)             // 1. Filtrar por tipo.
+            .OrderByDescending(v => v.CreationTimestamp) // 2. Ordenar de más nuevo a más viejo.
+            .FirstOrDefault();
         // Verifica si se encontró la verificación
         if (verificacion == null)
         {

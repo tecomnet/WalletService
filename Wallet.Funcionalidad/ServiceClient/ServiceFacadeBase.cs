@@ -54,7 +54,6 @@ namespace Wallet.Funcionalidad.ServiceClient
                             module: runningModuleName));
                     }
             }
-
             // Instantiate the service client with the corresponding HTTP client
             serviceClient.Client = init.Invoke(serviceClient.HttpClient, baseUrl);
             return serviceClient.Client;
