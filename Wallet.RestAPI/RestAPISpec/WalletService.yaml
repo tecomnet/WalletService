@@ -44,13 +44,7 @@ paths:
       security: []
   '/{version}/cliente':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
+      - $ref: '#/components/parameters/version'
     get:
       summary: Obtiene los clientes
       responses:
@@ -107,19 +101,8 @@ paths:
         - Cliente
   '/{version}/cliente/{idCliente}':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     get:
       summary: Obtiene un cliente por id
       responses:
@@ -190,19 +173,8 @@ paths:
         - Cliente
   '/{version}/cliente/{idCliente}/activar':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     put:
       summary: Activa un cliente por id
       operationId: PutActivarCliente
@@ -226,19 +198,8 @@ paths:
         - Cliente
   '/{version}/cliente/{idCliente}/confirmaVerificacion':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     put:
       summary: Confirma codigo de verificacion
       operationId: PutConfirmaVerificacion
@@ -267,19 +228,8 @@ paths:
         - Cliente
   '/{version}/cliente/{idCliente}/contrasena':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     put:
       summary: Actualiza contraseña
       operationId: PutContrasena
@@ -325,19 +275,8 @@ paths:
         - Cliente
   '/{version}/cliente/{idCliente}/actualizaTelefono':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     put:
       summary: Actualiza telefono
       operationId: PutTelefono
@@ -367,19 +306,8 @@ paths:
         - Cliente
   '/{version}/cliente/{idCliente}/actualizaEmail':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     put:
       summary: Actualiza email
       operationId: PutEmail
@@ -408,19 +336,8 @@ paths:
         - Cliente
   '/{version}/direccion/{idCliente}':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     post:
       summary: Guarda direccion cliente
       operationId: postDireccion
@@ -443,19 +360,8 @@ paths:
         - Direccion
   '/{version}/ubicacion/{idCliente}':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     post:
       summary: Guarda ubicacion cliente
       operationId: postUbicacion
@@ -482,19 +388,8 @@ paths:
         - Ubicacion
   '/{version}/dispositivoMovilAutorizado/{idCliente}':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idCliente
-        in: path
-        required: true
-        description: Id del cliente
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     post:
       summary: Guarda dispositivo movil autorizado
       operationId: postDispositivoMovilAutorizado
@@ -1282,6 +1177,13 @@ components:
         type: string
         pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
       description: Version of the API to use
+    idCliente:
+      name: idCliente
+      in: path
+      schema:
+        type: integer
+      description: Id del cliente
+      required: true
   responses:
     HTTP_Error_400:
       description: Response to client error satus code
