@@ -81,5 +81,25 @@ public interface IClienteFacade
     /// <returns></returns>
     public Task<Cliente> ActualizarCorreoElectronicoAsync(int idCliente, string correoElectronico, Guid modificationUser, string? testCase = null);
 
+    /// <summary>
+    /// Elimina un cliente por su Id
+    /// </summary>
+    /// <param name="idCliente"></param>
+    /// <returns></returns>
+    public Task<Cliente> EliminarClienteAsync(int idCliente, Guid modificationUser);
+    /// <summary>
+    /// Activa un cliente por su Id
+    /// </summary>
+    /// <param name="idCliente"></param>
+    /// <returns></returns>
+    public Task<Cliente> ActivarClienteAsync(int idCliente, Guid modificationUser);
+    /// <summary>
+    /// Obtiene la lista de todos los clientes
+    /// </summary>
+    /// <returns></returns>
+    public Task<List<Cliente>> ObtenerClientesAsync();
+
+
+
 }
     

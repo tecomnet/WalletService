@@ -85,6 +85,8 @@ namespace Wallet.RestAPI
 						.SystemTextJsonOutputFormatter>();
 					// Adds ObsoleteMethodFilter
 					options.Filters.Add<ObsoleteMethodFilter>();
+					  // AÑADIDO: Agrega el filtro global para el manejo de excepciones de negocio/sistema.
+                    options.Filters.Add<ServiceExceptionFilter>();
 				})
 				.AddNewtonsoftJson(opts =>
 				{
@@ -120,7 +122,7 @@ namespace Wallet.RestAPI
 						new() {
 							// You can set the Url from the default http request data or by hard coding it
 							// Url = $"{httpReq.Scheme}://{httpReq.Host.Value}",
-							Url = $"https://{httpReq.Host.Value}/api/templateservice",
+							Url = $"https://{httpReq.Host.Value}/api/WalletService",
 							Description = "Deployed Tecom Net"
 						}
 					];
@@ -134,7 +136,7 @@ namespace Wallet.RestAPI
 				{
 					// TODO Change the name parameter with information of this service
 					c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json"
-						, "TemplateService " + description.ApiVersion);
+						, "WalletService " + description.ApiVersion);
 				}
 			});
 

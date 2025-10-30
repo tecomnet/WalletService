@@ -245,7 +245,62 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         }
     }
 
+    public async Task<Cliente> EliminarClienteAsync(int idCliente, Guid modificationUser)
+    {
+        try
+        {
+            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+            cliente.Deactivate(modificationUser: modificationUser);
+            await context.SaveChangesAsync();
+            return cliente;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
 
+    public async Task<Cliente> ActivarClienteAsync(int idCliente, Guid modificationUser)
+    {
+        try
+        {
+            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+            cliente.Activate(modificationUser: modificationUser);
+            await context.SaveChangesAsync();
+            return cliente;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    public async Task<List<Cliente>> ObtenerClientesAsync()
+    {
+        try
+        {
+            // Obtener lista de clientes
+            var clientes = await context.Cliente.ToListAsync();
+            // Retornar lista de clientes
+            return clientes;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
    
   
 

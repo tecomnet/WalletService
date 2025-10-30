@@ -54,8 +54,8 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
         OpenApiInfo info = new()
         {
             // FIXME: Title and Description, change for information about this service
-            Title = "TemplateService API",
-            Description = "TemplateService API to publish the functionality of TemplateService service",
+            Title = "WalletService API",
+            Description = "WalletService API to publish the functionality of WalletService service",
             Contact = new OpenApiContact()
             {
                 Name = "Swagger Codegen Contributors",
