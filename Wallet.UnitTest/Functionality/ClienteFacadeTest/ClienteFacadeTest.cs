@@ -64,19 +64,20 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
 
    [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, se actualiza el cliente", 1, "Edilberto", "Martinez", "Diaz", "1991-01-01", Genero.Masculino, "correo@correo.com",
+    [InlineData("1. Successfully case, se actualiza el cliente", 1, "Edilberto", "Martinez", "Diaz", "Campeche", "1991-01-01", Genero.Masculino, "correo@correo.com",
         true, new string[] { })]
     // Wrong cases
-    [InlineData("2. Caso de error, el cliente no existe por id", 25, "Nombre", "Apellido", "Apellido", "2000-01-01", Genero.Masculino, "correo@correo.com",
+    [InlineData("2. Caso de error, el cliente no existe por id", 25, "Nombre", "Apellido", "Apellido", "Aguascalientes", "2000-01-01", Genero.Masculino, "correo@correo.com",
         false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado})]
-    [InlineData("3. Caso de error, el correo electronico ya lo tiene otro cliente", 1, "Nombre", "Apellido", "Apellido", "2000-01-01", Genero.Masculino, "cliente@cliente.com",
+    [InlineData("3. Caso de error, el correo electronico ya lo tiene otro cliente", 1, "Nombre", "Apellido", "Apellido", "Aguascalientes", "2000-01-01", Genero.Masculino, "cliente@cliente.com",
         false, new string[] { ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico})]
     public async Task ActualizarDatosPersonalesTest(
         string caseName,
         int idCliente,
         string nombre,
-        string primerApellido, 
+        string primerApellido,
         string segundoApellido,
+        string nombreEstado,
         string fechaNacimiento,
         Genero genero,
         string correoElectronico,
@@ -93,6 +94,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 nombre: nombre,
                 primerApellido: primerApellido,
                 segundoApellido: segundoApellido,
+                nombreEstado: nombreEstado,
                 fechaNacimiento: fechaNacimientoDateOnly,
                 genero: genero,
                 correoElectronico: correoElectronico,
@@ -103,18 +105,20 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             Assert.True(cliente.Nombre == nombre &&
                         cliente.PrimerApellido == primerApellido &&
                         cliente.SegundoApellido == segundoApellido &&
+                        cliente.Estado.Nombre == nombreEstado &&
                         cliente.FechaNacimiento == fechaNacimientoDateOnly &&
                         cliente.Genero == genero &&
                         cliente.CorreoElectronico == correoElectronico &&
                         cliente.ModificationUser == SetupConfig.UserId);
             // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext = await Context.Cliente.Include(x=>x.Estado).AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
             // Confirm user created in context
             Assert.NotNull(clienteContext);
             // Assert user properties
             Assert.True(clienteContext.Nombre == nombre &&
                         clienteContext.PrimerApellido == primerApellido &&
                         clienteContext.SegundoApellido == segundoApellido &&
+                        clienteContext.Estado.Nombre == nombreEstado &&
                         clienteContext.FechaNacimiento == fechaNacimientoDateOnly &&
                         clienteContext.Genero == genero &&
                         clienteContext.CorreoElectronico == correoElectronico &&

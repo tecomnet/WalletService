@@ -10,7 +10,7 @@ using Wallet.Funcionalidad.ServiceClient;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilioService, IEmpresaFacade empresaFacade) : IClienteFacade
+public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilioService, IEmpresaFacade empresaFacade, IEstadoFacade estadoFacade) : IClienteFacade
 {
     public async Task<Cliente> ObtenerClientePorIdAsync(int idCliente)
     {
@@ -94,7 +94,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
     }
 
   
-    public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(int idCliente, string nombre, string primerApellido, string segundoApellido, DateOnly fechaNacimiento, Genero genero, string correoElectronico, Guid modificationUser)
+    public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(int idCliente, string nombre, string primerApellido, string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, string correoElectronico, Guid modificationUser)
     {
         try
         {
@@ -112,10 +112,15 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
             // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
-            var empresa = await empresaFacade.ObtenerPorNombreAsync("TECOMNET");
+            var empresa = await empresaFacade.ObtenerPorNombreAsync("Tecomnet");
+            cliente.AgregarEmpresa(empresa: empresa, modificationUser: modificationUser);
+            // Agregar estado
+            var estado = await estadoFacade.ObtenerEstadoPorNombreAsync(nombreEstado);
+            cliente.AgregarEstado(estado: estado, modificationUser: modificationUser);
             // Actualizar en db
             context.Update(cliente);
             // TODO EMD: LLAMAR A API DE Tilwio PARA EL PROCESO DE VALIDACION 2FA
+            // TODO EMD: LLAMAR A API DE CHECKTON PARA VALIDACION RENAPO
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
@@ -303,5 +308,17 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 exception: exception);
         }
     }
+
+    private void ValidarClienteActivo(Cliente cliente)
+    {
+        if (!cliente.IsActive)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ClienteInactivo,
+                dynamicContent: [cliente.Nombre],
+                module: this.GetType().Name));
+        }
+    }
+
     #endregion
 }

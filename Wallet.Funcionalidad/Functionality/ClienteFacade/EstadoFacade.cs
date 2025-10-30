@@ -28,8 +28,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
                 exception: exception);
         }
     }
-
-    // TODO EMD: AGREGAR ADD, UPDATE AND DELETE
+    
     public async Task<Estado> ObtenerEstadoPorNombreAsync(string nombre)
     {
         try

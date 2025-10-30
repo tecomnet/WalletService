@@ -9,7 +9,7 @@ public class CommonSettings
 	private const string TestCaseId = "FunctionalTest";
 	private static readonly Guid UserId = Guid.NewGuid();
 	public readonly List<Cliente> Clientes = [];
-	public  List<Estado> Estados = [];
+	public readonly List<Estado> Estados = [];
 	public readonly List<Empresa> Empresas = [];
 
 	public CommonSettings()
@@ -95,7 +95,7 @@ public class CommonSettings
 		Estados.Add(estado);
 		// Nuevo estado
 		estado = new Estado(
-			nombre: "Estado inactivo",
+			nombre: "EstadoInactivo",
 			creationUser: UserId,
 			testCase: TestCaseId);
 		estado.Deactivate(UserId);

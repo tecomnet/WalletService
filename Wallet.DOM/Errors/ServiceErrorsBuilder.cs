@@ -83,7 +83,7 @@ public class ServiceErrorsBuilder
     public const string ClienteDuplicadoPorCorreoElectronico = "CLIENTE-DUPLICADO-POR-CORREO-ELECTRONICO";
     public const string ClienteNoEncontrado = "CLIENTE-NO-ENCONTRADO";
     public const string DispositivoMovilAutorizadoDuplicado = "DISPOSITIVO-MOVIL-AUTORIZADO-DUPLICADO";
-    
+    public const string ClienteInactivo = "CLIENTE-INACTIVO";
 
     private void ClienteErrors()
     {
@@ -188,6 +188,11 @@ public class ServiceErrorsBuilder
             errorCode: DispositivoMovilAutorizadoDuplicado,
             message: "El dispositivo movil ya existe como autorizado.",
             description: "El dispositivo movil {0} ya existe como autorizado.");
+        // Error cliente inactivo
+        AddServiceError(
+            errorCode: ClienteInactivo,
+            message: "El cliente no esta activo.",
+            description: "El cliente {0} no esta activo. Primero debe activarlo.");
     }
 
 
