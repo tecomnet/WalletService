@@ -143,7 +143,7 @@ paths:
             schema:
               $ref: '#/components/schemas/VerificacionEmailRequest'
         description: ''
-  '/{version}/twilio/verificacionEmail/Check':
+  '/{version}/verificacionEmail/Check':
     parameters:
       - name: version
         in: path
@@ -237,8 +237,25 @@ components:
           maxLength: 150
           pattern: '^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$'
           minLength: 1
+        nombreCompleto:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          maxLength: 150
+          minLength: 1
+        tiempoExpiracion:
+          type: integer
+          x-stoplight:
+            id: rwchuhnhlpxaj
+        nombreEmpresa:
+          type: string
+          x-stoplight:
+            id: z42vvuay2wrfg
       required:
         - correoElectronico
+        - nombreCompleto
+        - tiempoExpiracion
+        - nombreEmpresa
     VerificacionEmailCheckRequest:
       title: VerificacionEmailRequest
       x-stoplight:
@@ -287,17 +304,10 @@ components:
             id: rwchuhnhlpxaj
           maxLength: 4
           minLength: 4
-        verificacionServiceSid:
-          type: string
-          x-stoplight:
-            id: rwchuhnhlpxaj
-          minLength: 1
-          maxLength: 250
       required:
         - codigoPais
         - telefono
         - codigoVerificacion
-        - verificacionServiceSid
   securitySchemes:
     jwsToken:
       type: http

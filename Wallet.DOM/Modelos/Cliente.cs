@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
@@ -105,6 +106,9 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     //[Required]
     [MaxLength(100)]
     public string? SegundoApellido { get; private set; }
+    [NotMapped]
+    public string? NombreCompleto { get { return $"{this.Nombre} {this.PrimerApellido} {this.SegundoApellido}"; } }
+
     //[Required]
     public DateOnly? FechaNacimiento { get; private set; }
     //[Required]

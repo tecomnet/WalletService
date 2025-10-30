@@ -16,8 +16,8 @@ public interface ITwilioServiceFacade
 {
     Task<VerificacionResult> VerificacionSMS(string codigoPais, string telefono);
     Task<VerificacionResult> ConfirmarVerificacionSMS(string codigoPais, string telefono, string codigo);
-    Task<VerificacionResult> VerificacionEmail(string correoElectronico);
-    Task<VerificacionResult> ConfirmarVerificacionSMS(string correoElectronico, string codigo);
+    Task<VerificacionResult> VerificacionEmail(string correoElectronico, string nombreCliente, string nombreEmpresa);
+    Task<VerificacionResult> ConfirmarVerificacionEmail(string correoElectronico, string codigo);
 }
 
 public class TwilioServiceFacade(
@@ -31,7 +31,7 @@ public class TwilioServiceFacade(
 {
     
     
-      #region private methods
+    #region private methods
 
     private TwilioService BuildLocalServiceClientApiKey()
     {
@@ -141,7 +141,7 @@ public class TwilioServiceFacade(
         }
     }
 
-    public async Task<VerificacionResult> VerificacionEmail(string correoElectronico)
+    public async Task<VerificacionResult> VerificacionEmail(string correoElectronico, string nombreCliente, string nombreEmpresa)
     {
         try
         {
@@ -149,6 +149,9 @@ public class TwilioServiceFacade(
             var requestBody = new VerificacionEmailRequest()
             {
                 CorreoElectronico = correoElectronico,
+                NombreCompleto = nombreCliente,
+                TiempoExpiracion = 10,
+                NombreEmpresa = nombreEmpresa
             };
             var response = await serviceClient.PostVerificacionEmailAsync(
                 version: TwilioSettingsData.Version, body: requestBody);
@@ -160,7 +163,7 @@ public class TwilioServiceFacade(
         }
     }
 
-    public async Task<VerificacionResult> ConfirmarVerificacionSMS(string correoElectronico, string codigo)
+    public async Task<VerificacionResult> ConfirmarVerificacionEmail(string correoElectronico, string codigo)
     {
         try
         {

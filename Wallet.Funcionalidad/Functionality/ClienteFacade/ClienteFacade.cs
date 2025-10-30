@@ -50,8 +50,8 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono);
             // Agregar cliente
             await context.AddAsync(cliente);
-            // Genera codigo de verificacion
-            var verificacion2Fa = await GeneraCodigoVerificacion2FASMSsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
+            // Genera codigo de verificacion y envia por twilio service
+            var verificacion2Fa = await GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
             // Agrega el codigo de verificacion
             cliente.AgregarVerificacion2FA(verificacion:verificacion2Fa, modificationUser: creationUser);
             // Guardar cambios
@@ -76,8 +76,25 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Cargar los codigos de verificacion
             await context.Entry(cliente)
-                .Collection(c => c.Verificaciones2FA) 
+                .Collection(c => c.Verificaciones2FA)
                 .LoadAsync();
+            // Resultadod de la verificacion
+            VerificacionResult verificacionResult;
+            // Es sms
+            if (tipo2FA == Tipo2FA.Sms)
+                // Llamamos a twilio service
+                verificacionResult = await twilioService.ConfirmarVerificacionSMS(codigoPais: cliente.CodigoPais, telefono: cliente.Telefono, codigo: codigoVerificacion);
+            else
+            {
+                if (string.IsNullOrWhiteSpace(cliente.CorreoElectronico))
+                {
+                    throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ClienteCorreoElectronicoNoConfigurado,
+                    dynamicContent: [cliente.Id],
+                    module: this.GetType().Name));
+                }
+                verificacionResult = await twilioService.ConfirmarVerificacionEmail(correoElectronico: cliente.CorreoElectronico, codigo: codigoVerificacion);
+            }
             // Confirma la verificacion
             var confirmado = cliente.ConfirmarVerificacion2FA(tipo: tipo2FA, codigo: codigoVerificacion, modificationUser: modificationUser);
             // Return confrimacion
@@ -94,7 +111,17 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
     }
 
   
-    public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(int idCliente, string nombre, string primerApellido, string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, string correoElectronico, Guid modificationUser)
+    public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(
+        int idCliente,
+        string nombre,
+        string primerApellido,
+        string segundoApellido,
+        string nombreEstado,
+        DateOnly fechaNacimiento,
+        Genero genero,
+        string correoElectronico,
+        Guid modificationUser,
+        string? testCase = null)
     {
         try
         {
@@ -119,7 +146,15 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             cliente.AgregarEstado(estado: estado, modificationUser: modificationUser);
             // Actualizar en db
             context.Update(cliente);
-            // TODO EMD: LLAMAR A API DE Tilwio PARA EL PROCESO DE VALIDACION 2FA
+            // Generar nuevo codigo de verificacion y envia a twilio service
+            var nuevaVerificacion = await GeneraCodigoVerificacion2FAEmailyEnviaTwilioServiceAsync(
+                correoElectronico: correoElectronico,
+                nombreCliente: cliente.NombreCompleto!,
+                nombreEmpresa: cliente.Empresa!.Nombre,
+                creationUser: modificationUser,
+                testCase: testCase);
+            // Se agrega nuevo codigo para luego confrimar
+            cliente.AgregarVerificacion2FA(verificacion: nuevaVerificacion, modificationUser: modificationUser);
             // TODO EMD: LLAMAR A API DE CHECKTON PARA VALIDACION RENAPO
             // Guardar cambios
             await context.SaveChangesAsync();
@@ -192,11 +227,21 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         {
             // Obtener cliente
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+            // Cargar empresa 
+            var empresa = context.Entry(cliente).Reference(x => x.Empresa);
             // Actualizar datos del correo electronico
             cliente.ActualizarCorreoElectronico(correoElectronico: correoElectronico, modificationUser: modificationUser);
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
-            // TODO EMD: LLAMAR A API DE Tilwio PARA OTRO PROCESO DE VALIDACION 2FA
+            // Generar nuevo codigo de verificacion y envia a twilio service
+            var nuevaVerificacion = await GeneraCodigoVerificacion2FAEmailyEnviaTwilioServiceAsync(
+                correoElectronico: correoElectronico,
+                nombreCliente: cliente.NombreCompleto!,
+                nombreEmpresa: cliente.Empresa!.Nombre,
+                creationUser: modificationUser,
+                testCase: testCase);
+            // Se agrega nuevo codigo para luego confrimar
+            cliente.AgregarVerificacion2FA(verificacion: nuevaVerificacion, modificationUser: modificationUser);
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
@@ -223,7 +268,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono, id: idCliente);
             // Generar nuevo codigo de verificacion 
-            var nuevaVerificacion = await GeneraCodigoVerificacion2FASMSsync(
+            var nuevaVerificacion = await GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(
                 codigoPais: codigoPais,
                 telefono: telefono,
                 creationUser: modificationUser,
@@ -337,7 +382,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         }
     }
 
-    private async Task<Verificacion2FA> GeneraCodigoVerificacion2FASMSsync(string codigoPais, string telefono, Guid creationUser, string? testCase = null)
+    private async Task<Verificacion2FA> GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(string codigoPais, string telefono, Guid creationUser, string? testCase = null)
     {
         try
         {
@@ -363,6 +408,35 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 exception: exception);
         }
     }
+
+    private async Task<Verificacion2FA> GeneraCodigoVerificacion2FAEmailyEnviaTwilioServiceAsync(
+        string correoElectronico, string nombreCliente, string nombreEmpresa, Guid creationUser, string? testCase = null)
+    {
+        try
+        {
+            // Llamamos a twilio service
+            var verificacion = await twilioService.VerificacionEmail(correoElectronico: correoElectronico, nombreEmpresa: nombreEmpresa, nombreCliente: nombreCliente);
+            // Creamos la verificacion 2fa
+            Verificacion2FA verificacion2Fa = new Verificacion2FA(
+                twilioSid: verificacion.Sid,
+                fechaVencimiento: DateTime.UtcNow.AddMinutes(10),
+                tipo: Tipo2FA.Email,
+                creationUser: creationUser,
+                testCase: testCase
+            );
+            // Retorna codigo de verificacion
+            return verificacion2Fa;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
 
     private void ValidarClienteActivo(Cliente cliente)
     {

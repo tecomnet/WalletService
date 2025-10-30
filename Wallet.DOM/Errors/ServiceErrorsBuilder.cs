@@ -85,6 +85,8 @@ public class ServiceErrorsBuilder
     public const string DispositivoMovilAutorizadoDuplicado = "DISPOSITIVO-MOVIL-AUTORIZADO-DUPLICADO";
     public const string ClienteInactivo = "CLIENTE-INACTIVO";
 
+    public const string ClienteCorreoElectronicoNoConfigurado = "CLIENTE-CORREO-ELECTRONICO-NO-CONFIGURADO";
+
     private void ClienteErrors()
     {
         // Error de dispositivo móvil autorizado requerido
@@ -193,6 +195,11 @@ public class ServiceErrorsBuilder
             errorCode: ClienteInactivo,
             message: "El cliente no esta activo.",
             description: "El cliente {0} no esta activo. Primero debe activarlo.");
+        // Error correo electronico no configurado
+        AddServiceError(
+            errorCode: ClienteCorreoElectronicoNoConfigurado,
+            message: "El cliente no tiene correo electronico configurado",
+            description: "El cliente {0} no tiene correo electronico configurado");
     }
 
 
