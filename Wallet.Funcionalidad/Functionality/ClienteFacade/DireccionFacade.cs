@@ -8,39 +8,7 @@ namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
 public class DireccionFacade(IClienteFacade clienteFacade, IEstadoFacade estadoFacade, ServiceDbContext context) : IDireccionFacade
 {
-    public async Task<Direccion> AgregarDireccionClientePreRegistro(int idCliente, string pais, string estado, Guid creationUser, string? testCase = null)
-    {
-        try
-        {
-            // Obtiene al cliente
-            var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Localiza estado 
-            var estadoExiste = await estadoFacade.ObtenerEstadoPorNombreAsync(nombre: estado);    
-            // Crea la direccion
-            var direccion = new Direccion(
-                pais: pais,
-                estado: estadoExiste.Nombre,
-                creationUser: creationUser,
-                testCase: testCase);
-            // Agrega la direccion
-            cliente.AgregarDireccion(direccion: direccion, creationUser: creationUser);
-            // Agregamos al contexto
-            //await context.AddAsync(direccion);
-            // Guardamos cambios
-            await context.SaveChangesAsync();
-            // Return direccion
-            return direccion;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
+ 
     public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio, string colonia, string calle, string numeroExterior, string numeroInterior, string referencia, Guid modificationUser)
     {
         try

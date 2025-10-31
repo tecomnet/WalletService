@@ -345,24 +345,28 @@ paths:
     parameters:
       - $ref: '#/components/parameters/version'
       - $ref: '#/components/parameters/idCliente'
-    post:
-      summary: Guarda direccion cliente
-      operationId: postDireccion
+    put:
+      summary: Actualiza direccion cliente
+      operationId: putDireccion
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DireccionResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      description: Guarda la direccion del cliente
+      description: Actualiza la direccion del cliente
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DireccionRequest'
+              $ref: '#/components/schemas/DireccionUpdateRequest'
       tags:
         - Direccion
   '/{version}/ubicacion/{idCliente}':
@@ -791,7 +795,7 @@ components:
         - modificationTimestamp
         - creationUser
         - modificationUser
-    DireccionResut:
+    DireccionResult:
       title: DireccionResult
       x-stoplight:
         id: 7665cfilold6w
@@ -889,12 +893,12 @@ components:
         - modificationTimestamp
         - creationUser
         - modificationUser
-    DireccionRequest:
-      title: DireccionRequest
+    DireccionUpdateRequest:
+      title: DireccionUpdateRequest
       x-stoplight:
         id: 8h88f5567ienu
       type: object
-      description: Estructura para agregar direccion del cliente
+      description: Estructura para actualizar la direccion del cliente
       properties:
         codigoPostal:
           type: string
@@ -916,7 +920,7 @@ components:
           format: double
           minLength: 1
           maxLength: 100
-        'municipio ':
+        municipio:
           type: string
           x-stoplight:
             id: neep14yhburn4
@@ -956,7 +960,7 @@ components:
         - codigoPostal
         - pais
         - estado
-        - 'municipio '
+        - municipio
         - colonia
         - calle
         - numeroExterior

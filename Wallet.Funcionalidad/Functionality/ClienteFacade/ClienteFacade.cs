@@ -144,6 +144,9 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Agregar estado
             var estado = await estadoFacade.ObtenerEstadoPorNombreAsync(nombreEstado);
             cliente.AgregarEstado(estado: estado, modificationUser: modificationUser);
+            // Agregar direccion pre-registro, TODO EMD: PENDIENTE RECIBIR EL PAIS O IMPLEMENTAR EL CATALOGO PAIS
+            var preDireccion = await CrearDireccionPreRegistro(pais: "México", estado: nombreEstado, creationUser: modificationUser, testCase: testCase);
+            cliente.AgregarDireccion(direccion: preDireccion, creationUser: modificationUser);
             // Actualizar en db
             context.Update(cliente);
             // Generar nuevo codigo de verificacion y envia a twilio service
@@ -437,6 +440,30 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         }
     }
 
+    public async Task<Direccion> CrearDireccionPreRegistro(string pais, string estado, Guid creationUser, string? testCase = null)
+    {
+        try
+        {
+            // Localiza estado 
+            var estadoExiste = await estadoFacade.ObtenerEstadoPorNombreAsync(nombre: estado);    
+            // Crea la direccion
+            var direccion = new Direccion(
+                pais: pais,
+                estado: estadoExiste.Nombre,
+                creationUser: creationUser,
+                testCase: testCase);
+            // Return direccion
+            return direccion;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
 
     private void ValidarClienteActivo(Cliente cliente)
     {
@@ -444,7 +471,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ClienteInactivo,
-                dynamicContent: [cliente.Nombre],
+                dynamicContent: [cliente.NombreCompleto!],
                 module: this.GetType().Name));
         }
     }

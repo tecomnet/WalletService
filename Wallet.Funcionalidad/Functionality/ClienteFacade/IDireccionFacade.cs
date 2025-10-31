@@ -5,17 +5,6 @@ namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 public interface IDireccionFacade
 {
     /// <summary>
-    /// Agrega una dirección para un cliente en pre-registro
-    /// </summary>
-    /// <param name="idCliente"></param>
-    /// <param name="pais"></param>
-    /// <param name="estado"></param>
-    /// <param name="creationUser"></param>
-    /// <param name="testCase"></param>
-    /// <returns></returns>
-    public Task<Direccion> AgregarDireccionClientePreRegistro(int idCliente, string pais, string estado, Guid creationUser, string? testCase = null);
-
-    /// <summary>
     /// Actualiza una direccion para un cliente
     /// </summary>
     /// <param name="idCliente"></param>

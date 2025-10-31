@@ -21,10 +21,10 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Estructura para consultar la direccion de cliente
+    /// Estructura para actualizar la direccion del cliente
     /// </summary>
     [DataContract]
-    public partial class DireccionResut : IEquatable<DireccionResut>
+    public partial class DireccionUpdateRequest : IEquatable<DireccionUpdateRequest>
     { 
         /// <summary>
         /// Gets or Sets CodigoPostal
@@ -54,13 +54,13 @@ namespace Wallet.RestAPI.Models
         public string Estado { get; set; }
 
         /// <summary>
-        /// Gets or Sets Municipio_
+        /// Gets or Sets Municipio
         /// </summary>
         [Required]
 
         [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="municipio ")]
-        public string Municipio_ { get; set; }
+        [DataMember(Name="municipio")]
+        public string Municipio { get; set; }
 
         /// <summary>
         /// Gets or Sets Colonia
@@ -108,72 +108,22 @@ namespace Wallet.RestAPI.Models
         public string Referencia { get; set; }
 
         /// <summary>
-        /// Guid of the key-value configuration
-        /// </summary>
-        /// <value>Guid of the key-value configuration</value>
-        [Required]
-
-        [DataMember(Name="guid")]
-        public Guid? Guid { get; set; }
-
-        /// <summary>
-        /// Creation timestamp
-        /// </summary>
-        /// <value>Creation timestamp</value>
-        [Required]
-
-        [DataMember(Name="creationTimestamp")]
-        public DateTime? CreationTimestamp { get; set; }
-
-        /// <summary>
-        /// Modification timestamp
-        /// </summary>
-        /// <value>Modification timestamp</value>
-        [Required]
-
-        [DataMember(Name="modificationTimestamp")]
-        public DateTime? ModificationTimestamp { get; set; }
-
-        /// <summary>
-        /// Guid of the creation user
-        /// </summary>
-        /// <value>Guid of the creation user</value>
-        [Required]
-
-        [DataMember(Name="creationUser")]
-        public Guid? CreationUser { get; set; }
-
-        /// <summary>
-        /// Guid of the modification user
-        /// </summary>
-        /// <value>Guid of the modification user</value>
-        [Required]
-
-        [DataMember(Name="modificationUser")]
-        public Guid? ModificationUser { get; set; }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class DireccionResut {\n");
+            sb.Append("class DireccionUpdateRequest {\n");
             sb.Append("  CodigoPostal: ").Append(CodigoPostal).Append("\n");
             sb.Append("  Pais: ").Append(Pais).Append("\n");
             sb.Append("  Estado: ").Append(Estado).Append("\n");
-            sb.Append("  Municipio_: ").Append(Municipio_).Append("\n");
+            sb.Append("  Municipio: ").Append(Municipio).Append("\n");
             sb.Append("  Colonia: ").Append(Colonia).Append("\n");
             sb.Append("  Calle: ").Append(Calle).Append("\n");
             sb.Append("  NumeroExterior: ").Append(NumeroExterior).Append("\n");
             sb.Append("  NumeroInterior: ").Append(NumeroInterior).Append("\n");
             sb.Append("  Referencia: ").Append(Referencia).Append("\n");
-            sb.Append("  Guid: ").Append(Guid).Append("\n");
-            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
-            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
-            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
-            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -196,15 +146,15 @@ namespace Wallet.RestAPI.Models
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((DireccionResut)obj);
+            return obj.GetType() == GetType() && Equals((DireccionUpdateRequest)obj);
         }
 
         /// <summary>
-        /// Returns true if DireccionResut instances are equal
+        /// Returns true if DireccionUpdateRequest instances are equal
         /// </summary>
-        /// <param name="other">Instance of DireccionResut to be compared</param>
+        /// <param name="other">Instance of DireccionUpdateRequest to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(DireccionResut other)
+        public bool Equals(DireccionUpdateRequest other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -226,9 +176,9 @@ namespace Wallet.RestAPI.Models
                     Estado.Equals(other.Estado)
                 ) && 
                 (
-                    Municipio_ == other.Municipio_ ||
-                    Municipio_ != null &&
-                    Municipio_.Equals(other.Municipio_)
+                    Municipio == other.Municipio ||
+                    Municipio != null &&
+                    Municipio.Equals(other.Municipio)
                 ) && 
                 (
                     Colonia == other.Colonia ||
@@ -254,31 +204,6 @@ namespace Wallet.RestAPI.Models
                     Referencia == other.Referencia ||
                     Referencia != null &&
                     Referencia.Equals(other.Referencia)
-                ) && 
-                (
-                    Guid == other.Guid ||
-                    Guid != null &&
-                    Guid.Equals(other.Guid)
-                ) && 
-                (
-                    CreationTimestamp == other.CreationTimestamp ||
-                    CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other.CreationTimestamp)
-                ) && 
-                (
-                    ModificationTimestamp == other.ModificationTimestamp ||
-                    ModificationTimestamp != null &&
-                    ModificationTimestamp.Equals(other.ModificationTimestamp)
-                ) && 
-                (
-                    CreationUser == other.CreationUser ||
-                    CreationUser != null &&
-                    CreationUser.Equals(other.CreationUser)
-                ) && 
-                (
-                    ModificationUser == other.ModificationUser ||
-                    ModificationUser != null &&
-                    ModificationUser.Equals(other.ModificationUser)
                 );
         }
 
@@ -298,8 +223,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Pais.GetHashCode();
                     if (Estado != null)
                     hashCode = hashCode * 59 + Estado.GetHashCode();
-                    if (Municipio_ != null)
-                    hashCode = hashCode * 59 + Municipio_.GetHashCode();
+                    if (Municipio != null)
+                    hashCode = hashCode * 59 + Municipio.GetHashCode();
                     if (Colonia != null)
                     hashCode = hashCode * 59 + Colonia.GetHashCode();
                     if (Calle != null)
@@ -310,16 +235,6 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + NumeroInterior.GetHashCode();
                     if (Referencia != null)
                     hashCode = hashCode * 59 + Referencia.GetHashCode();
-                    if (Guid != null)
-                    hashCode = hashCode * 59 + Guid.GetHashCode();
-                    if (CreationTimestamp != null)
-                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                    if (ModificationTimestamp != null)
-                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
-                    if (CreationUser != null)
-                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                    if (ModificationUser != null)
-                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
                 return hashCode;
             }
         }
@@ -327,12 +242,12 @@ namespace Wallet.RestAPI.Models
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(DireccionResut left, DireccionResut right)
+        public static bool operator ==(DireccionUpdateRequest left, DireccionUpdateRequest right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(DireccionResut left, DireccionResut right)
+        public static bool operator !=(DireccionUpdateRequest left, DireccionUpdateRequest right)
         {
             return !Equals(left, right);
         }
