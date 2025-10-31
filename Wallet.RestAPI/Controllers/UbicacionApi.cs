@@ -36,15 +36,17 @@ namespace Wallet.RestAPI.Controllers
         /// <param name="idCliente">Id del cliente</param>
         /// <param name="body"></param>
         /// <response code="201">Created</response>
-        /// <response code="400">Bad Request</response>
-        /// <response code="401">Unauthorized</response>
-        /// <response code="403">Forbidden</response>
-        /// <response code="404">Not Found</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
         [HttpPost]
         [Route("/{version:apiVersion}/ubicacion/{idCliente}")]
         [ValidateModelState]
         [SwaggerOperation("PostUbicacion")]
         [SwaggerResponse(statusCode: 201, type: typeof(UbicacionResult), description: "Created")]
-        public abstract Task<IActionResult> PostUbicacionAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] string idCliente, [FromBody] UbicacionRequest body);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PostUbicacionAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idCliente, [FromBody] UbicacionRequest body);
     }
 }

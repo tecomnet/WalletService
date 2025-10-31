@@ -674,12 +674,10 @@ components:
           type: number
           x-stoplight:
             id: neep14yhburn4
-          format: double
         longitud:
           type: number
           x-stoplight:
             id: neep14yhburn4
-          format: double
         Dispositivo:
           $ref: '#/components/schemas/DispositivoEnum'
         TipoEvento:
@@ -729,12 +727,10 @@ components:
           type: number
           x-stoplight:
             id: neep14yhburn4
-          format: double
         longitud:
           type: number
           x-stoplight:
             id: neep14yhburn4
-          format: double
         dispositivo:
           $ref: '#/components/schemas/DispositivoEnum'
         tipoEvento:

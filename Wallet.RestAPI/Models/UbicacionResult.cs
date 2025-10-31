@@ -40,7 +40,7 @@ namespace Wallet.RestAPI.Models
         [Required]
 
         [DataMember(Name="latitud")]
-        public double? Latitud { get; set; }
+        public decimal? Latitud { get; set; }
 
         /// <summary>
         /// Gets or Sets Longitud
@@ -48,7 +48,7 @@ namespace Wallet.RestAPI.Models
         [Required]
 
         [DataMember(Name="longitud")]
-        public double? Longitud { get; set; }
+        public decimal? Longitud { get; set; }
 
         /// <summary>
         /// Gets or Sets Dispositivo
