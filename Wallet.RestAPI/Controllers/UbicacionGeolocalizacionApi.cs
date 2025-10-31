@@ -26,7 +26,7 @@ namespace Wallet.RestAPI.Controllers
     /// 
     /// </summary>
     [ApiController]
-    public abstract class UbicacionApiControllerBase : ServiceBaseController
+    public abstract class UbicacionGeolocalizacionApiControllerBase : ServiceBaseController
     {
         /// <summary>
         /// Guarda ubicacion cliente

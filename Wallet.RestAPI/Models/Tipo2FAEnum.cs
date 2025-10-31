@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
@@ -25,7 +26,7 @@ namespace Wallet.RestAPI.Models
           /// Estructura enum para tipo de verificacion 2fa
           /// </summary>
           /// <value>Estructura enum para tipo de verificacion 2fa</value>
-          [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+          [JsonConverter(typeof(CustomStringToEnumConverter<Tipo2FAEnum>))] 
           public enum Tipo2FAEnum
           {
               /// <summary>

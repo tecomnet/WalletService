@@ -26,8 +26,29 @@ namespace Wallet.RestAPI.Controllers
     /// 
     /// </summary>
     [ApiController]
-    public abstract class DispositivoMovilAutorizadoApiControllerBase : ServiceBaseController
+    public abstract class DispositivoMovilAutorizadoApiControllerBase : ControllerBase
     {
+        /// <summary>
+        /// Obtiene el dispositivo movil autroizado
+        /// </summary>
+        /// <remarks>Obtiene el dispositivo movil autorizado para entrar a la app</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idCliente">Id del cliente</param>
+        /// <param name="idDispositivo">id del dispositivo</param>
+        /// <param name="token">token autorizacion del dispositivo</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpGet]
+        [Route("/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
+        [ValidateModelState]
+        [SwaggerOperation("GetDispositivoMovilAutorizado")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool?), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetDispositivoMovilAutorizadoAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int? idCliente, [FromQuery] string idDispositivo, [FromQuery] string token);
         /// <summary>
         /// Guarda dispositivo movil autorizado
         /// </summary>
@@ -45,6 +66,6 @@ namespace Wallet.RestAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation("PostDispositivoMovilAutorizado")]
         [SwaggerResponse(statusCode: 201, type: typeof(DispositivoMovilAutorizadoResult), description: "Created")]
-        public abstract Task<IActionResult> PostDispositivoMovilAutorizadoAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] string idCliente, [FromBody] DispositivoMovilAutorizadoRequest body);
+        public abstract Task<IActionResult> PostDispositivoMovilAutorizadoAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idCliente, [FromBody] DispositivoMovilAutorizadoRequest body);
     }
 }

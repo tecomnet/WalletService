@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
@@ -47,7 +48,8 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [DataMember(Name="Dispositivo")]
+        [DataMember(Name = "Dispositivo")]
+        [JsonConverter(typeof(CustomStringToEnumConverter<DispositivoEnum>))]
         public DispositivoEnum Dispositivo { get; set; }
 
         /// <summary>

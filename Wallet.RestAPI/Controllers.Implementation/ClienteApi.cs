@@ -142,7 +142,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper) 
             throw new ArgumentException($"El valor {tipo2Fa} no es un tipo de 2FA válido.");
         }
 
-        var cliente = await clienteFacade.ConfirmarCodigoVerificacion2FAAsync(
+        var confirmacion = await clienteFacade.ConfirmarCodigoVerificacion2FAAsync(
             idCliente: idCliente,
             tipo2FA: (DOM.Enums.Tipo2FA)body.Tipo,
             codigoVerificacion: body.Codigo,
@@ -150,7 +150,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper) 
         // Map to response model
         //var response = mapper.Map<ClienteResult>(cliente);
         // Return OK response
-        return Ok();    
+        return Ok(confirmacion);    
     }
 
   

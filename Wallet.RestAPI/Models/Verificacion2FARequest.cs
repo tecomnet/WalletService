@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
@@ -39,7 +40,8 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [DataMember(Name="Tipo")]
+        [DataMember(Name = "Tipo")]
+        [JsonConverter(typeof(CustomStringToEnumConverter<Tipo2FAEnum>))] 
         public Tipo2FAEnum Tipo { get; set; }
 
         /// <summary>
