@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
@@ -65,10 +66,9 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Genero
         /// </summary>
         [Required]
-
-        [StringLength(50, MinimumLength=1)]
-        [DataMember(Name="genero")]
-        public string Genero { get; set; }
+        [JsonConverter(typeof(CustomStringToEnumConverter<GeneroEnum>))] 
+        [DataMember(Name = "genero")]
+        public GeneroEnum Genero { get; set; }
 
         /// <summary>
         /// Gets or Sets CorreoElectronico

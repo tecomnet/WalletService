@@ -91,7 +91,7 @@ namespace Wallet.RestAPI
 				.AddNewtonsoftJson(opts =>
 				{
 					opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-					opts.SerializerSettings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
+					opts.SerializerSettings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy{OverrideSpecifiedNames = true}));
 				})
 				.AddXmlSerializerFormatters();
 			

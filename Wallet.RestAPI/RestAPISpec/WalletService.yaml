@@ -236,7 +236,10 @@ paths:
       responses:
         '200':
           description: OK
-          content: {}
+          content:
+            application/json:
+              schema:
+                type: boolean
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
@@ -259,6 +262,10 @@ paths:
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                type: boolean
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
@@ -608,11 +615,7 @@ components:
           format: date
           maxLength: 10
         genero:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 50
+          $ref: '#/components/schemas/GeneroEnum'
         correoElectronico:
           type: string
           x-stoplight:
@@ -977,6 +980,16 @@ components:
       enum:
         - SMS
         - EMAIL
+    GeneroEnum:
+      title: GeneroEnum
+      x-stoplight:
+        id: f96aitg31pm61
+      type: string
+      description: Estructura enum para genero
+      enum:
+        - Masculino
+        - Femenino
+        - NoBinario
     DispositivoMovilAutorizadoResult:
       title: DispositivoMovilAutorizadoResult
       x-stoplight:
