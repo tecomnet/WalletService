@@ -12,35 +12,6 @@ namespace Wallet.DOM.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Direccion",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CodigoPostal = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
-                    Pais = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Municipio = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Colonia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Calle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    NumeroExterior = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
-                    NumeroInterior = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
-                    Referencia = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    ConcurrencyToken = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreationTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModificationTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreationUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ModificationUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TestCaseID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Direccion", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Documento",
                 columns: table => new
                 {
@@ -125,7 +96,6 @@ namespace Wallet.DOM.Migrations
                     FotoAWS = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     EstadoId = table.Column<int>(type: "int", nullable: true),
                     EmpresaId = table.Column<int>(type: "int", nullable: true),
-                    DireccionId = table.Column<int>(type: "int", nullable: true),
                     ConcurrencyToken = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -138,11 +108,6 @@ namespace Wallet.DOM.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cliente", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cliente_Direccion_DireccionId",
-                        column: x => x.DireccionId,
-                        principalTable: "Direccion",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Cliente_Empresa_EmpresaId",
                         column: x => x.EmpresaId,
@@ -183,6 +148,42 @@ namespace Wallet.DOM.Migrations
                         column: x => x.ClienteId,
                         principalTable: "Cliente",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Direccion",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodigoPostal = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    Pais = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Municipio = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Colonia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Calle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    NumeroExterior = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
+                    NumeroInterior = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
+                    Referencia = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    ConcurrencyToken = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreationTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificationTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreationUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModificationUser = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TestCaseID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Direccion", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Direccion_Cliente_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Cliente",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -349,13 +350,6 @@ namespace Wallet.DOM.Migrations
                 column: "ClienteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cliente_DireccionId",
-                table: "Cliente",
-                column: "DireccionId",
-                unique: true,
-                filter: "[DireccionId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cliente_EmpresaId",
                 table: "Cliente",
                 column: "EmpresaId");
@@ -364,6 +358,12 @@ namespace Wallet.DOM.Migrations
                 name: "IX_Cliente_EstadoId",
                 table: "Cliente",
                 column: "EstadoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Direccion_ClienteId",
+                table: "Direccion",
+                column: "ClienteId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_DispositivoMovilAutorizado_ClienteId",
@@ -403,6 +403,9 @@ namespace Wallet.DOM.Migrations
                 name: "ActividadEconomica");
 
             migrationBuilder.DropTable(
+                name: "Direccion");
+
+            migrationBuilder.DropTable(
                 name: "DispositivoMovilAutorizado");
 
             migrationBuilder.DropTable(
@@ -422,9 +425,6 @@ namespace Wallet.DOM.Migrations
 
             migrationBuilder.DropTable(
                 name: "Cliente");
-
-            migrationBuilder.DropTable(
-                name: "Direccion");
 
             migrationBuilder.DropTable(
                 name: "Empresa");

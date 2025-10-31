@@ -147,8 +147,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     public Empresa? Empresa { get; private set; }
 
-    public int? DireccionId { get; private set; }
-
     public Direccion? Direccion { get; private set; }
 
     public List<Verificacion2FA> Verificaciones2FA { get; private set; }
@@ -403,6 +401,8 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         this.Direccion = direccion ?? throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
             errorCode: ServiceErrorsBuilder.DireccionRequerida,
             dynamicContent: []));
+        // Actualizamos el cliente con la direccion
+        this.Direccion = direccion;
         // Actualizamos el cliente
         base.Update(modificationUser: creationUser);
     }

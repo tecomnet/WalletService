@@ -15,9 +15,9 @@ public class CommonSettings
 	public CommonSettings()
 	{
         // Create user data
-		CrearClientes();
-		CrearEstados();
 		CrearEmpresas();
+		CrearEstados();		
+		CrearClientes();
 	}
 
 
@@ -41,6 +41,12 @@ public class CommonSettings
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente", primerApellido: "ApellidoPaterno", segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse("1990-01-01"),
 			genero: Genero.Masculino, correoElectronico: "cliente@cliente.com", modificationUser: UserId);
+		// Agrega pre direccion
+		cliente.AgregarDireccion(direccion: new Direccion(
+			pais: "México",
+			estado: "Campeche",
+			creationUser: UserId,
+			testCase: TestCaseId), creationUser: UserId);
 		Clientes.Add(cliente);
 		// Nuevo cliente con datos completos
 		cliente = new Cliente(

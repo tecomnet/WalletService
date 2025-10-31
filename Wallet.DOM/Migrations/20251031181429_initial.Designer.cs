@@ -12,7 +12,7 @@ using Wallet.DOM.ApplicationDbContext;
 namespace Wallet.DOM.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    [Migration("20251028182211_initial")]
+    [Migration("20251031181429_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -124,9 +124,6 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(18)
                         .HasColumnType("nvarchar(18)");
 
-                    b.Property<int?>("DireccionId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("EmpresaId")
                         .HasColumnType("int");
 
@@ -185,10 +182,6 @@ namespace Wallet.DOM.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DireccionId")
-                        .IsUnique()
-                        .HasFilter("[DireccionId] IS NOT NULL");
-
                     b.HasIndex("EmpresaId");
 
                     b.HasIndex("EstadoId");
@@ -207,6 +200,9 @@ namespace Wallet.DOM.Migrations
                     b.Property<string>("Calle")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("CodigoPostal")
                         .HasMaxLength(5)
@@ -270,6 +266,9 @@ namespace Wallet.DOM.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClienteId")
+                        .IsUnique();
 
                     b.ToTable("Direccion");
                 });
@@ -733,10 +732,6 @@ namespace Wallet.DOM.Migrations
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Cliente", b =>
                 {
-                    b.HasOne("Wallet.DOM.Modelos.Direccion", "Direccion")
-                        .WithOne("Cliente")
-                        .HasForeignKey("Wallet.DOM.Modelos.Cliente", "DireccionId");
-
                     b.HasOne("Wallet.DOM.Modelos.Empresa", "Empresa")
                         .WithMany("Clientes")
                         .HasForeignKey("EmpresaId");
@@ -745,11 +740,20 @@ namespace Wallet.DOM.Migrations
                         .WithMany("Clientes")
                         .HasForeignKey("EstadoId");
 
-                    b.Navigation("Direccion");
-
                     b.Navigation("Empresa");
 
                     b.Navigation("Estado");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.Direccion", b =>
+                {
+                    b.HasOne("Wallet.DOM.Modelos.Cliente", "Cliente")
+                        .WithOne("Direccion")
+                        .HasForeignKey("Wallet.DOM.Modelos.Direccion", "ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.DispositivoMovilAutorizado", b =>
@@ -803,6 +807,8 @@ namespace Wallet.DOM.Migrations
                 {
                     b.Navigation("ActividadEconomicas");
 
+                    b.Navigation("Direccion");
+
                     b.Navigation("DispositivoMovilAutorizados");
 
                     b.Navigation("DocumentacionAdjuntas");
@@ -812,12 +818,6 @@ namespace Wallet.DOM.Migrations
                     b.Navigation("ValidacionesChecktons");
 
                     b.Navigation("Verificaciones2FA");
-                });
-
-            modelBuilder.Entity("Wallet.DOM.Modelos.Direccion", b =>
-                {
-                    b.Navigation("Cliente")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Empresa", b =>

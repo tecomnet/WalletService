@@ -19,5 +19,7 @@ public class AutoMapperProfile : Profile
         CreateMap<UbicacionesGeolocalizacion, UbicacionResult>();
         CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>();
         CreateMap<Direccion, DireccionResult>();
+        CreateMap<Empresa, EmpresaResult>();
+        CreateMap<Estado, EstadoResult>();
     }
 }

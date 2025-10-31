@@ -12,11 +12,11 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     {
         try
         {
-            var estado = await context.Empresa.FirstOrDefaultAsync(x => x.Id == idEmpresa);
-            if (estado is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            var empresa = await context.Empresa.FirstOrDefaultAsync(x => x.Id == idEmpresa);
+            if (empresa is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
                 dynamicContent: [idEmpresa]));
-            return estado;
+            return empresa;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
@@ -32,11 +32,11 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     {
         try
         {
-            var estado = await context.Empresa.FirstOrDefaultAsync(x => x.Nombre == nombre);
-            if (estado is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            var empresa = await context.Empresa.FirstOrDefaultAsync(x => x.Nombre == nombre);
+            if (empresa is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
                 dynamicContent: [nombre]));
-            return estado;
+            return empresa;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
@@ -47,7 +47,23 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
                 exception: exception);
         }
     }
-
+    public async Task<List<Empresa>> ObtenerTodasAsync()
+    {
+        try
+        {
+            var empresas = await context.Empresa.ToListAsync();
+            return empresas;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+    
     public async Task<Empresa> GuardarEmpresaAsync(string nombre, Guid creationUser, string? testCase = null)
     {
         try

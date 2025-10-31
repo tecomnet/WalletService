@@ -6,7 +6,6 @@ namespace Wallet.DOM.Modelos;
 
 public class Direccion : ValidatablePersistentObjectLogicalDelete
 {
-
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
         PropertyConstraint.StringPropertyConstraint(
@@ -104,6 +103,7 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
     [MaxLength(250)]
     public string? Referencia { get; private set; }
 
+    public int ClienteId { get; private set; }
     public Cliente Cliente { get; private set; }
 
 

@@ -17,33 +17,23 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Estructura para confirmar un codigo de verificacion
+    /// Estructura para guardar y actualizar un estado
     /// </summary>
     [DataContract]
-    public partial class Verificacion2FARequest : IEquatable<Verificacion2FARequest>
+    public partial class EstadoRequest : IEquatable<EstadoRequest>
     { 
         /// <summary>
-        /// Gets or Sets Tipo
+        /// Gets or Sets Nombre
         /// </summary>
         [Required]
 
-        [DataMember(Name = "Tipo")]
-        [JsonConverter(typeof(CustomStringToEnumConverter<Tipo2FAEnum>))] 
-        public Tipo2FAEnum Tipo { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Codigo
-        /// </summary>
-        [Required]
-
-        [StringLength(4, MinimumLength=4)]
-        [DataMember(Name="Codigo")]
-        public string Codigo { get; set; }
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="nombre")]
+        public string Nombre { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -52,9 +42,8 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class Verificacion2FARequest {\n");
-            sb.Append("  Tipo: ").Append(Tipo).Append("\n");
-            sb.Append("  Codigo: ").Append(Codigo).Append("\n");
+            sb.Append("class EstadoRequest {\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -77,29 +66,24 @@ namespace Wallet.RestAPI.Models
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((Verificacion2FARequest)obj);
+            return obj.GetType() == GetType() && Equals((EstadoRequest)obj);
         }
 
         /// <summary>
-        /// Returns true if Verificacion2FARequest instances are equal
+        /// Returns true if EstadoRequest instances are equal
         /// </summary>
-        /// <param name="other">Instance of Verificacion2FARequest to be compared</param>
+        /// <param name="other">Instance of EstadoRequest to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(Verificacion2FARequest other)
+        public bool Equals(EstadoRequest other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
-                    Tipo == other.Tipo ||
-                    Tipo != null &&
-                    Tipo.Equals(other.Tipo)
-                ) && 
-                (
-                    Codigo == other.Codigo ||
-                    Codigo != null &&
-                    Codigo.Equals(other.Codigo)
+                    Nombre == other.Nombre ||
+                    Nombre != null &&
+                    Nombre.Equals(other.Nombre)
                 );
         }
 
@@ -113,10 +97,8 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Tipo != null)
-                    hashCode = hashCode * 59 + Tipo.GetHashCode();
-                    if (Codigo != null)
-                    hashCode = hashCode * 59 + Codigo.GetHashCode();
+                    if (Nombre != null)
+                    hashCode = hashCode * 59 + Nombre.GetHashCode();
                 return hashCode;
             }
         }
@@ -124,12 +106,12 @@ namespace Wallet.RestAPI.Models
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(Verificacion2FARequest left, Verificacion2FARequest right)
+        public static bool operator ==(EstadoRequest left, EstadoRequest right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(Verificacion2FARequest left, Verificacion2FARequest right)
+        public static bool operator !=(EstadoRequest left, EstadoRequest right)
         {
             return !Equals(left, right);
         }

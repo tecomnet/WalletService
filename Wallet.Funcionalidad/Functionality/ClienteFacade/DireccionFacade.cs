@@ -6,7 +6,7 @@ using Wallet.DOM.Modelos;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public class DireccionFacade(IClienteFacade clienteFacade, IEstadoFacade estadoFacade, ServiceDbContext context) : IDireccionFacade
+public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext context) : IDireccionFacade
 {
  
     public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio, string colonia, string calle, string numeroExterior, string numeroInterior, string referencia, Guid modificationUser)

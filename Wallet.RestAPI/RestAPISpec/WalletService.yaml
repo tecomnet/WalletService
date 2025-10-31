@@ -455,6 +455,160 @@ paths:
           description: token autorizacion del dispositivo
       tags:
         - DispositivoMovilAutorizado
+  '/{version}/estado':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Guarda un estado de mexico
+      operationId: postEstado
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstadoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Gaurda un estado de mexico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstadoRequest'
+      tags:
+        - Estado
+    get:
+      summary: Obtiene todos los estadosde la republica mexicana
+      operationId: getEstados
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EstadoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene todos los estados de la republica mexicana
+      parameters: []
+      tags:
+        - Estado
+  '/{version}/estado/{idEstado}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idEstado'
+    put:
+      summary: Actualiza un estado de mexico
+      operationId: putEstado
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstadoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza un estado de mexico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstadoRequest'
+      tags:
+        - Estado
+  '/{version}/empresa':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Guarda una empresa
+      operationId: postEmpresa
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: 'Gaurda una empresa '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpresaRequest'
+      tags:
+        - Empresa
+    get:
+      summary: Obtiene todas las empresas
+      operationId: getEmpresas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmpresaResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene todas las empresas
+      parameters: []
+      tags:
+        - Empresa
+  '/{version}/empresa/{idEmpresa}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idEmpresa'
+    put:
+      summary: Actualiza una empresa
+      operationId: putEmpresa
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: 'Actualiza una empresa '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpresaRequest'
+      tags:
+        - Empresa
 components:
   schemas:
     ClienteResult:
@@ -677,10 +831,6 @@ components:
       type: object
       description: Estructura para confirmar un codigo de verificacion
       properties:
-        idCliente:
-          type: integer
-          x-stoplight:
-            id: neep14yhburn4
         Tipo:
           $ref: '#/components/schemas/Tipo2FAEnum'
         Codigo:
@@ -690,7 +840,6 @@ components:
           minLength: 4
           maxLength: 4
       required:
-        - idCliente
         - Tipo
         - Codigo
     UbicacionRequest:
@@ -1210,6 +1359,126 @@ components:
       required:
         - codigoPais
         - telefono
+    EstadoRequest:
+      title: EstadoRequest
+      x-stoplight:
+        id: 2v7tfnyng2bcx
+      type: object
+      description: Estructura para guardar y actualizar un estado
+      properties:
+        nombre:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          maxLength: 100
+          minLength: 1
+      required:
+        - nombre
+    EmpresaRequest:
+      title: EmpresaRequest
+      x-stoplight:
+        id: i1g7cd2dppcx7
+      type: object
+      description: Estructura para guardar y actualizar una empresa
+      properties:
+        nombre:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          maxLength: 100
+          minLength: 1
+      required:
+        - nombre
+    EstadoResult:
+      title: EstadoResult
+      x-stoplight:
+        id: ff7ui2uj6hqys
+      type: object
+      description: Estructura retorna estados de la repuplica mexicana
+      properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: neep14yhburn4
+        nombre:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        guid:
+          type: string
+          description: Guid of the key-value configuration
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+      required:
+        - id
+        - nombre
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+    EmpresaResult:
+      title: EmpresaResult
+      x-stoplight:
+        id: 3jqtfpukipt2c
+      type: object
+      description: Estructura retorna empresas de la wallet
+      properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: neep14yhburn4
+        nombre:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        guid:
+          type: string
+          description: Guid of the key-value configuration
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+      required:
+        - id
+        - nombre
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
   securitySchemes:
     jwsToken:
       type: http
@@ -1234,6 +1503,20 @@ components:
         type: integer
       description: Id del cliente
       required: true
+    idEmpresa:
+      name: idEmpresa
+      in: path
+      schema:
+        type: integer
+      description: Id de la empresa
+      required: true
+    idEstado:
+      name: idEstado
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Id del estado
   responses:
     HTTP_Error_400:
       description: Response to client error satus code
@@ -1330,6 +1613,8 @@ tags:
   - name: Cliente
   - name: Direccion
   - name: DispositivoMovilAutorizado
+  - name: Empresa
+  - name: Estado
   - name: Health
   - name: UbicacionGeolocalizacion
 security:

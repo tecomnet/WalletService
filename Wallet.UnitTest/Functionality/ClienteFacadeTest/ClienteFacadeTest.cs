@@ -71,6 +71,8 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
          false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
     [InlineData("3. Caso de error, el correo electronico ya lo tiene otro cliente", 1, "Nombre", "Apellido", "Apellido", "Aguascalientes", "2000-01-01", Genero.Masculino, "cliente@cliente.com",
          false, new string[] { ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico })]
+    [InlineData("3. Caso de error, el estado no existe", 1, "Nombre", "Apellido", "Apellido", "Merida", "2000-01-01", Genero.Masculino, "cliente@cliente.com",
+         false, new string[] { ServiceErrorsBuilder.EstadoNoEncontrado })]
     public async Task ActualizarDatosPersonalesTest(
          string caseName,
          int idCliente,

@@ -11,23 +11,16 @@ public class DireccionFacadeTest(SetupDataConfig setupConfig)
 {
      [Theory]
     // Successfully case
-    [InlineData("1. Caso ok, guarda direccion preregistro cliente", 1,"Mexico", "Campeche", false, null, null, null, null, null, null, null,
-        true, new string[] { })]
-    [InlineData("2. Caso ok, guarda direccion preregistro cliente y la actualiza por los datos completos", 1,"Mexico", "Campeche", true, "24000", "Carmen", "San Roman", "Calle 1", "123", "456", "Referencia 1", 
+    [InlineData("1. Caso ok, actualiza direccion por los datos completos", 2, "24000", "Carmen", "San Roman", "Calle 1", "123", "456", "Referencia 1", 
         true, new string[] { })]
     // Wrong cases
-    [InlineData("3. Caso error, guarda direccion preregistro cliente, pero el estado no existe", 1,"Mexico", "Quintana Roo", false, "24000", "Carmen", "San Roman", "Calle 1", "123", "456", "Referencia 1", 
-        false, new string[] { ServiceErrorsBuilder.EstadoNoEncontrado})]
-    [InlineData("4. Caso error, cliente no encontrado", 20,"Mexico", "Quintana Roo", false, "24000", "Carmen", "San Roman", "Calle 1", "123", "456", "Referencia 1", 
+    [InlineData("2. Caso error, cliente no encontrado", 20, "24000", "Carmen", "San Roman", "Calle 1", "123", "456", "Referencia 1", 
         false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado})]
-    [InlineData("5. Caso error, guarda direccion preregistro cliente, pero el estado no existe", 1,"Mexico", "Aguascalientes", true, "24000", "Carmen", "San Roman", "Calle 1", "123", "456", "Referencia 1", 
+    [InlineData("3. Caso error, guarda direccion preregistro cliente, pero el estado no existe", 1, "24000", "Carmen", "San Roman", "Calle 1", "123", "456", "Referencia 1", 
         false, new string[] { ServiceErrorsBuilder.DireccionNoConfigurada})]
-    public async Task GuardarYActualizarDireccionClienteTest(
+    public async Task ActualizarDireccionClienteTest(
         string caseName,
         int idCliente,
-        string pais,
-        string estado,
-        bool aplicaActualizacion,
         string codigoPostal,
         string municipio,
         string colonia,
@@ -40,72 +33,44 @@ public class DireccionFacadeTest(SetupDataConfig setupConfig)
     {
         try
         {
-            if (!expectedErrors.Contains(ServiceErrorsBuilder.DireccionNoConfigurada))
-            {
-                // Call facade method
-                var direccion = await Facade.AgregarDireccionClientePreRegistro(
-                    idCliente: idCliente,
-                    pais: pais,
-                    estado: estado,
-                    creationUser: SetupConfig.UserId,
-                    testCase: SetupConfig.TestCaseId);
-                // Assert user created
-                Assert.NotNull(direccion);
-                // Assert user properties
-                Assert.True(direccion.Cliente.Id == idCliente &&
-                            direccion.Pais == pais &&
-                            direccion.Estado == estado &&
-                            direccion.ModificationUser == SetupConfig.UserId);
-                // Get the user from context
-                var direccionContext = await Context.Direccion.Include(x => x.Cliente).AsNoTracking().FirstOrDefaultAsync(x => x.Id == direccion.Id);
-                // Confirm user created in context
-                Assert.NotNull(direccionContext);
-                // Assert user properties
-                Assert.True(direccionContext.Cliente.Id == idCliente &&
-                            direccionContext.Pais == pais &&
-                            direccionContext.Estado == estado &&
-                            direccionContext.ModificationUser == SetupConfig.UserId);
-            }
-            if (aplicaActualizacion)
-            {
-                // Call facade method
-                var direccion = await Facade.ActualizarDireccionCliente(
-                    idCliente: idCliente,
-                    codigoPostal: codigoPostal,
-                    municipio: municipio,
-                    colonia: colonia,
-                    calle: calle,
-                    numeroExterior: numeroExterior,
-                    numeroInterior: numeroInterior,
-                    referencia: referencia,
-                    modificationUser: SetupConfig.UserId);
-                // Assert user created
-                Assert.NotNull(direccion);
-                // Assert user properties
-                Assert.True(direccion.Id == idCliente &&
-                            direccion.CodigoPostal == codigoPostal &&
-                            direccion.Municipio == municipio &&
-                            direccion.Colonia == colonia &&
-                            direccion.Calle == calle &&
-                            direccion.NumeroExterior == numeroExterior &&
-                            direccion.NumeroInterior == numeroInterior &&
-                            direccion.Referencia == referencia &&
-                            direccion.ModificationUser == SetupConfig.UserId);
-                // Get the user from context
-                var direccionContext = await Context.Direccion.Include(x => x.Cliente).AsNoTracking().FirstOrDefaultAsync(x => x.Id == direccion.Id);
-                // Confirm user created in context
-                Assert.NotNull(direccionContext);
-                // Assert user properties
-                Assert.True(direccionContext.Id == idCliente &&
-                            direccionContext.CodigoPostal == codigoPostal &&
-                            direccionContext.Municipio == municipio &&
-                            direccionContext.Colonia == colonia &&
-                            direccionContext.Calle == calle &&
-                            direccionContext.NumeroExterior == numeroExterior &&
-                            direccionContext.NumeroInterior == numeroInterior &&
-                            direccionContext.Referencia == referencia &&
-                            direccionContext.ModificationUser == SetupConfig.UserId);
-            }
+            // Call facade method
+            var direccion = await Facade.ActualizarDireccionCliente(
+                idCliente: idCliente,
+                codigoPostal: codigoPostal,
+                municipio: municipio,
+                colonia: colonia,
+                calle: calle,
+                numeroExterior: numeroExterior,
+                numeroInterior: numeroInterior,
+                referencia: referencia,
+                modificationUser: SetupConfig.UserId);
+            // Assert user created
+            Assert.NotNull(direccion);
+            // Assert user properties
+            Assert.True(direccion.ClienteId == idCliente &&
+                        direccion.CodigoPostal == codigoPostal &&
+                        direccion.Municipio == municipio &&
+                        direccion.Colonia == colonia &&
+                        direccion.Calle == calle &&
+                        direccion.NumeroExterior == numeroExterior &&
+                        direccion.NumeroInterior == numeroInterior &&
+                        direccion.Referencia == referencia &&
+                        direccion.ModificationUser == SetupConfig.UserId);
+            // Get the user from context
+            var direccionContext = await Context.Direccion.Include(x => x.Cliente).AsNoTracking().FirstOrDefaultAsync(x => x.Id == direccion.Id);
+            // Confirm user created in context
+            Assert.NotNull(direccionContext);
+            // Assert user properties
+            Assert.True(direccionContext.ClienteId == idCliente &&
+                        direccionContext.CodigoPostal == codigoPostal &&
+                        direccionContext.Municipio == municipio &&
+                        direccionContext.Colonia == colonia &&
+                        direccionContext.Calle == calle &&
+                        direccionContext.NumeroExterior == numeroExterior &&
+                        direccionContext.NumeroInterior == numeroInterior &&
+                        direccionContext.Referencia == referencia &&
+                        direccionContext.ModificationUser == SetupConfig.UserId);
+
             // Assert successful test
             Assert.True(success);
         }
