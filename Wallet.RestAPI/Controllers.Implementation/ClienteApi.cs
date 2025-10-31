@@ -156,9 +156,14 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper) 
   
 
     /// <inheritdoc/>
-    public override Task<IActionResult> PutEmailAsync([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] EmailUpdateRequest body)
+    public override async Task<IActionResult> PutEmailAsync([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] EmailUpdateRequest body)
     {
-        throw new System.NotImplementedException();
+        // Call facade method
+        var cliente = await clienteFacade.ActualizarCorreoElectronicoAsync(idCliente: idCliente, correoElectronico: body.CorreoElectronico, modificationUser: Guid.Empty);
+        // Map to response model
+        var response = mapper.Map<ClienteResult>(cliente);
+        // Return OK response
+        return Ok(response);
     }
 
     /// <inheritdoc/>
