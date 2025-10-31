@@ -162,9 +162,14 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper) 
     }
 
     /// <inheritdoc/>
-    public override Task<IActionResult> PutTelefonoAsync([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] TelefonoUpdateRequest body)
+    public override async Task<IActionResult> PutTelefonoAsync([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] TelefonoUpdateRequest body)
     {
-        throw new System.NotImplementedException();
+        // Call facade method
+        var cliente = await clienteFacade.ActualizarTelefonoAsync(idCliente: idCliente, codigoPais: body.CodigoPais, telefono: body.Telefono, modificationUser: Guid.Empty);
+        // Map to response model
+        var response = mapper.Map<ClienteResult>(cliente);
+        // Return OK response
+        return Ok(response);
     }
 
 }

@@ -122,7 +122,7 @@ namespace Wallet.RestAPI.Controllers
         [Route("/{version:apiVersion}/cliente/{idCliente}/contrasena")]
         [ValidateModelState]
         [SwaggerOperation("PostContrasena")]
-        [SwaggerResponse(statusCode: 200, type: typeof(bool?), description: "OK")]
+        [SwaggerResponse(statusCode: 201, type: typeof(bool?), description: "Created")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]

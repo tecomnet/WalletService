@@ -27,6 +27,15 @@ namespace Wallet.RestAPI.Models
     public partial class TelefonoUpdateRequest : IEquatable<TelefonoUpdateRequest>
     { 
         /// <summary>
+        /// Gets or Sets CodigoPais
+        /// </summary>
+        [Required]
+
+        [StringLength(3, MinimumLength=3)]
+        [DataMember(Name="codigoPais")]
+        public string CodigoPais { get; set; }
+
+        /// <summary>
         /// Gets or Sets Telefono
         /// </summary>
         [Required]
@@ -43,6 +52,7 @@ namespace Wallet.RestAPI.Models
         {
             var sb = new StringBuilder();
             sb.Append("class TelefonoUpdateRequest {\n");
+            sb.Append("  CodigoPais: ").Append(CodigoPais).Append("\n");
             sb.Append("  Telefono: ").Append(Telefono).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -81,6 +91,11 @@ namespace Wallet.RestAPI.Models
 
             return 
                 (
+                    CodigoPais == other.CodigoPais ||
+                    CodigoPais != null &&
+                    CodigoPais.Equals(other.CodigoPais)
+                ) && 
+                (
                     Telefono == other.Telefono ||
                     Telefono != null &&
                     Telefono.Equals(other.Telefono)
@@ -97,6 +112,8 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
+                    if (CodigoPais != null)
+                    hashCode = hashCode * 59 + CodigoPais.GetHashCode();
                     if (Telefono != null)
                     hashCode = hashCode * 59 + Telefono.GetHashCode();
                 return hashCode;

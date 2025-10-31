@@ -1165,6 +1165,12 @@ components:
       type: object
       description: Estructura para actualizar el telefono del cliente
       properties:
+        codigoPais:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 3
+          maxLength: 3
         telefono:
           type: string
           x-stoplight:
@@ -1172,6 +1178,7 @@ components:
           maxLength: 10
           minLength: 9
       required:
+        - codigoPais
         - telefono
   securitySchemes:
     jwsToken:
