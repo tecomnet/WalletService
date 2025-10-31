@@ -152,7 +152,7 @@ namespace Wallet.RestAPI
 
 			app.MapScalarApiReference(opt =>
 			{
-				opt.Title = "Template Service";
+				opt.Title = "Wallet Service";
 				opt.Theme = ScalarTheme.Saturn;
 				opt.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
 				opt.OpenApiRoutePattern = "/swagger/{documentName}/swagger.json";
