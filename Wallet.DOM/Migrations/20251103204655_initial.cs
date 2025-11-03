@@ -324,7 +324,7 @@ namespace Wallet.DOM.Migrations
                     FechaVencimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Tipo = table.Column<int>(type: "int", nullable: false),
                     Verificado = table.Column<bool>(type: "bit", nullable: false),
-                    ClienteId = table.Column<int>(type: "int", nullable: true),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
                     ConcurrencyToken = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreationTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -341,7 +341,8 @@ namespace Wallet.DOM.Migrations
                         name: "FK_Verificacion2FA_Cliente_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Cliente",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

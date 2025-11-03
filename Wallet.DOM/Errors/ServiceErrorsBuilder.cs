@@ -87,6 +87,8 @@ public class ServiceErrorsBuilder
 
     public const string ClienteCorreoElectronicoNoConfigurado = "CLIENTE-CORREO-ELECTRONICO-NO-CONFIGURADO";
 
+    public const string Verificacion2FASMSNoConfirmado = "VERIFICACION-2FA-SMS-NO-CONFIRMADO";
+
     private void ClienteErrors()
     {
         // Error de dispositivo móvil autorizado requerido
@@ -200,6 +202,11 @@ public class ServiceErrorsBuilder
             errorCode: ClienteCorreoElectronicoNoConfigurado,
             message: "El cliente no tiene correo electronico configurado",
             description: "El cliente {0} no tiene correo electronico configurado");
+        // Error de verificación 2FA SMS no confirmado
+        AddServiceError(
+            errorCode: Verificacion2FASMSNoConfirmado,
+            message: "La verificación 2FA SMS no fue confirmada.",
+            description: "La verificación 2FA SMS no fue confirmada. Primero debe confirmar la verificación 2FA SMS.");
     }
 
 

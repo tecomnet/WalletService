@@ -17,8 +17,8 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         try
         {
             // Obtener cliente
-            var cliente = await context.Cliente.Include(x=>x.Direccion).
-                Include(x=>x.DispositivoMovilAutorizados).
+            var cliente = await context.Cliente.Include(x => x.Direccion).
+                Include(x => x.DispositivoMovilAutorizados).
                 FirstOrDefaultAsync(x => x.Id == idCliente);
             // Validar cliente
             if (cliente == null)
@@ -53,7 +53,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Genera codigo de verificacion y envia por twilio service
             var verificacion2Fa = await GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
             // Agrega el codigo de verificacion
-            cliente.AgregarVerificacion2FA(verificacion:verificacion2Fa, modificationUser: creationUser);
+            cliente.AgregarVerificacion2FA(verificacion: verificacion2Fa, modificationUser: creationUser);
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
@@ -110,7 +110,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         }
     }
 
-  
+
     public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(
         int idCliente,
         string nombre,
@@ -129,7 +129,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Actualizar datos personales
             cliente.AgregarDatosPersonales(
-                nombre: nombre, 
+                nombre: nombre,
                 primerApellido: primerApellido,
                 segundoApellido: segundoApellido,
                 fechaNacimiento: fechaNacimiento,
@@ -138,7 +138,8 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 modificationUser: modificationUser);
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
-            // TODO EMD: VALIDAR QUE YA HAYA CONFIRMADO EL CÓDIGO DE VERIFICACIÓN POR SMS
+            // Validar que ya haya confirmado el código de verificación por SMS
+            await ValidarConfirmacionCodigoVerificacionSMS2FA(cliente: cliente);
             // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
             var empresa = await empresaFacade.ObtenerPorNombreAsync("Tecomnet");
             cliente.AgregarEmpresa(empresa: empresa, modificationUser: modificationUser);
@@ -206,9 +207,9 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Actualizar contrasenas
             cliente.ActualizarContrasena(
-                contrasenaActual: contrasenaActual, 
+                contrasenaActual: contrasenaActual,
                 contrasenaNueva: contrasenaNueva,
-                confirmacionContrasenaNueva: confirmacionContrasenaNueva, 
+                confirmacionContrasenaNueva: confirmacionContrasenaNueva,
                 modificationUser: modificationUser);
             // Guardar cambios
             await context.SaveChangesAsync();
@@ -350,8 +351,8 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 exception: exception);
         }
     }
-   
-  
+
+
 
 
     #region Metodos privados
@@ -361,7 +362,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         // Obtiene cliente existente
         var clienteExistente = await context.Cliente.FirstOrDefaultAsync(
             x => x.CodigoPais == codigoPais && x.Telefono == telefono && x.Id != id);
-        
+
         // Duplicado por telefono
         if (clienteExistente != null)
         {
@@ -446,7 +447,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         try
         {
             // Localiza estado 
-            var estadoExiste = await estadoFacade.ObtenerEstadoPorNombreAsync(nombre: estado);    
+            var estadoExiste = await estadoFacade.ObtenerEstadoPorNombreAsync(nombre: estado);
             // Crea la direccion
             var direccion = new Direccion(
                 pais: pais,
@@ -473,6 +474,20 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ClienteInactivo,
                 dynamicContent: [cliente.NombreCompleto!],
+                module: this.GetType().Name));
+        }
+    }
+
+    private async Task ValidarConfirmacionCodigoVerificacionSMS2FA(Cliente cliente)
+    {
+        // Obtiene el código de verificación SMS
+        var confirmacionSMSCode = await context.Verificacion2FA.FirstOrDefaultAsync(x => x.Tipo == Tipo2FA.Sms && x.Verificado && x.ClienteId == cliente.Id);
+        // Valida que exista el código de verificación SMS
+        if (confirmacionSMSCode is null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.Verificacion2FASMSNoConfirmado,
+                dynamicContent: [],
                 module: this.GetType().Name));
         }
     }

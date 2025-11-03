@@ -46,6 +46,11 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
     [Required]
     public bool Verificado { get; private set; }
 
+    // Relaciones
+    public int ClienteId { get; private set; }
+    public Cliente Cliente { get; private set; }
+
+
     public Verificacion2FA() : base()
     {
         

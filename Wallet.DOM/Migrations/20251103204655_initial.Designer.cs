@@ -12,7 +12,7 @@ using Wallet.DOM.ApplicationDbContext;
 namespace Wallet.DOM.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    [Migration("20251101210544_initial")]
+    [Migration("20251103204655_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -667,7 +667,7 @@ namespace Wallet.DOM.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClienteId")
+                    b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
                     b.Property<string>("Codigo")
@@ -797,9 +797,13 @@ namespace Wallet.DOM.Migrations
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Verificacion2FA", b =>
                 {
-                    b.HasOne("Wallet.DOM.Modelos.Cliente", null)
+                    b.HasOne("Wallet.DOM.Modelos.Cliente", "Cliente")
                         .WithMany("Verificaciones2FA")
-                        .HasForeignKey("ClienteId");
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Cliente", b =>

@@ -11,6 +11,7 @@ public class ServiceDbContext : DbContext
     }
 
     public DbSet<Cliente> Cliente { get; set; }
+    public DbSet<Verificacion2FA> Verificacion2FA { get; set; }
     public DbSet<Direccion> Direccion { get; set; }
     public DbSet<Estado> Estado { get; set; }
     public DbSet<Empresa> Empresa { get; set; }
