@@ -48,7 +48,7 @@ public class TwilioServiceFacade(
             },
             user: User.ToString());
     }
-    private TwilioService BuildLocalServiceClient(string? token = null)
+    private TwilioService BuildLocalServiceClientBearer(string token)
     {
         // Build service client
         return BuildServiceClient(
@@ -69,7 +69,9 @@ public class TwilioServiceFacade(
             url: urlTwilioUri, 
             // La función 'init' toma el cliente HTTP y la URL, y devuelve la instancia de TwilioService
             init: (httpClient, baseUrl) => new TwilioService(httpClient)
-        );
+            {
+                BaseUrl = baseUrl
+            });
         return twilioServiceClient;
     }
 

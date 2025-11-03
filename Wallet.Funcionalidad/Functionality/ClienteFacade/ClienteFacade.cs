@@ -138,6 +138,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 modificationUser: modificationUser);
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
+            // TODO EMD: VALIDAR QUE YA HAYA CONFIRMADO EL CÓDIGO DE VERIFICACIÓN POR SMS
             // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
             var empresa = await empresaFacade.ObtenerPorNombreAsync("Tecomnet");
             cliente.AgregarEmpresa(empresa: empresa, modificationUser: modificationUser);
@@ -147,8 +148,6 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Agregar direccion pre-registro, TODO EMD: PENDIENTE RECIBIR EL PAIS O IMPLEMENTAR EL CATALOGO PAIS
             var preDireccion = await CrearDireccionPreRegistro(pais: "México", estado: nombreEstado, creationUser: modificationUser, testCase: testCase);
             cliente.AgregarDireccion(direccion: preDireccion, creationUser: modificationUser);
-            // Actualizar en db
-            context.Update(cliente);
             // Generar nuevo codigo de verificacion y envia a twilio service
             var nuevaVerificacion = await GeneraCodigoVerificacion2FAEmailyEnviaTwilioServiceAsync(
                 correoElectronico: correoElectronico,
@@ -159,6 +158,8 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Se agrega nuevo codigo para luego confrimar
             cliente.AgregarVerificacion2FA(verificacion: nuevaVerificacion, modificationUser: modificationUser);
             // TODO EMD: LLAMAR A API DE CHECKTON PARA VALIDACION RENAPO
+            // Actualizar en db
+            context.Update(cliente);
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
@@ -390,10 +391,10 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         try
         {
             // Llamamos a twilio service
-            var verificacion = await twilioService.VerificacionSMS(codigoPais: codigoPais, telefono: telefono);
+            //var verificacion = await twilioService.VerificacionSMS(codigoPais: codigoPais, telefono: telefono);
             // Creamos la verificacion 2fa
             Verificacion2FA verificacion2Fa = new Verificacion2FA(
-                twilioSid: verificacion.Sid,
+                twilioSid: "sid test", //verificacion.Sid,
                 fechaVencimiento: DateTime.UtcNow.AddMinutes(10),
                 tipo: Tipo2FA.Sms,
                 creationUser: creationUser,

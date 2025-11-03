@@ -111,7 +111,7 @@ namespace Wallet.Funcionalidad.ServiceClient
             string url,
             Func<HttpClient, string, T> init) where T : class
         {
-            var serviceClient = ServiceClient<T>.CreateServiceClientFacade(baseUrl: url);
+            var serviceClient = ServiceClient<T>.CreateServiceClientFacadeFreeAccess(baseUrl: url, version: version);
 
             // Instantiate the service client with the corresponding HTTP client
             serviceClient.Client = init.Invoke(serviceClient.HttpClient, url);

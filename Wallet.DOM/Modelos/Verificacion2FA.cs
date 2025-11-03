@@ -37,9 +37,8 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
     [MaxLength(100)]
     public string TwilioSid { get; private set; }
     // TODO EMD: AGREGAR SID DE CONFIRMACION
-    [Required]
     [MaxLength(4)]
-    public string Codigo { get; private set; }
+    public string? Codigo { get; private set; }
     [Required]
     public DateTime FechaVencimiento { get; private set; }
     [Required]

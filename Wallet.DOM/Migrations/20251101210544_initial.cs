@@ -320,7 +320,7 @@ namespace Wallet.DOM.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TwilioSid = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Codigo = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
+                    Codigo = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
                     FechaVencimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Tipo = table.Column<int>(type: "int", nullable: false),
                     Verificado = table.Column<bool>(type: "bit", nullable: false),

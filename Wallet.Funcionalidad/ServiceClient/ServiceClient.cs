@@ -241,10 +241,10 @@ namespace Wallet.Funcionalidad.ServiceClient
 		/// </summary>
 		/// <param name="baseUrl">Base URL for the service</param>
 		/// <returns>Instance of the client service facade</returns>
-		public static ServiceClient<T> CreateServiceClientFacade(string baseUrl)
+		public static ServiceClient<T> CreateServiceClientFacadeFreeAccess(string baseUrl, string version)
 		{
 			// Create an instance of the class
-			ServiceClient<T> clientFacade = new(baseUrl: baseUrl);
+			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version);
 			// Return the client instance
 			return clientFacade;
 		}

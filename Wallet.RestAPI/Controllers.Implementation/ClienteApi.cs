@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -47,7 +48,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper) 
         // Call facade method
         var clientes = await clienteFacade.ObtenerClientesAsync();
         // Map to response model
-        var response = mapper.Map<ClienteResult[]>(clientes);
+        var response = mapper.Map<List<ClienteResult>>(clientes);
         // Return OK response
         return Ok(value: response);
     }
