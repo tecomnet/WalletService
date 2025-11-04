@@ -185,12 +185,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         this.CodigoPais = codigoPais;
         this.Telefono = telefono;
-        // Initialize the list of exceptions
-        exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Telefono), value: telefono, ref exceptions);
-        // TODO EMD: PRO DEFAULT VAN A LA EMPRESA TECOMNET
     }
 
     /// <summary>
