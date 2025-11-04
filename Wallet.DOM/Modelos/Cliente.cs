@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
@@ -313,7 +314,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         // 3. IDENTIFICA y DESACTIVA todos los códigos activos y no verificados del MISMO TIPO
         var verificacionesViejas = this.Verificaciones2FA
             // Filtramos por las que están VIGENTES (no vencidas) Y NO VERIFICADAS Y DEL MISMO TIPO
-            .Where(x => x.FechaVencimiento >= DateTime.UtcNow &&
+            .Where(x => x.FechaVencimiento >= DateTime.Now &&
                         x.Tipo == verificacion.Tipo &&
                         !x.Verificado &&
                         x.IsActive)
@@ -334,46 +335,44 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     {
         // Busca la verificación 2FA activa y no verificada del tipo y código proporcionados
         var verificacion = this.Verificaciones2FA?
-            .Where(v => v.Tipo == tipo)             // 1. Filtrar por tipo.
+            .Where(v => v.Tipo == tipo) // 1. Filtrar por tipo.
             .OrderByDescending(v => v.CreationTimestamp) // 2. Ordenar de más nuevo a más viejo.
             .FirstOrDefault();
         // Verifica si se encontró la verificación
         if (verificacion == null)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                            errorCode: ServiceErrorsBuilder.CodigoVerificacionNoEncontrado,
-                            dynamicContent: [tipo.ToString()]));
+                errorCode: ServiceErrorsBuilder.CodigoVerificacionNoEncontrado,
+                dynamicContent: [tipo.ToString()]));
         }
+
         // Verifica si el código está activo
         if (!verificacion.IsActive)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                            errorCode: ServiceErrorsBuilder.CodigoVerificacionInactivo,
-                            dynamicContent: []));
+                errorCode: ServiceErrorsBuilder.CodigoVerificacionInactivo,
+                dynamicContent: []));
         }
+
         // Verifica si el código ya ha sido verificado
         if (verificacion.Verificado)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                            errorCode: ServiceErrorsBuilder.CodigoVerificacionConfirmado,
-                            dynamicContent: []));
+                errorCode: ServiceErrorsBuilder.CodigoVerificacionConfirmado,
+                dynamicContent: []));
         }
+
         // Verifica si el código ha vencido
-        if (verificacion.FechaVencimiento >= DateTime.UtcNow)
+        if (DateTime.Now >= verificacion.FechaVencimiento)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                            errorCode: ServiceErrorsBuilder.CodigoVerificacionVencido,
-                            dynamicContent: []));
+                errorCode: ServiceErrorsBuilder.CodigoVerificacionVencido,
+                dynamicContent: []));
         }
-        // Si se encuentra la verificación, márcala como verificada
-        if (verificacion != null)
-        {
-            // Marca la verificación como verificada
-            verificacion.MarcarComoVerificado(codigo: codigo, modificationUser: modificationUser);
-            base.Update(modificationUser: modificationUser);
-            return true; // Verificación exitosa
-        }
-        return false; // Verificación fallida
+        // Marca la verificación como verificada
+        verificacion.MarcarComoVerificado(codigo: codigo, modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
+        return verificacion.Verificado;
     }
 
 

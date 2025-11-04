@@ -72,6 +72,8 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
     {
         try
         {
+            // Confirmacion existosa
+            bool confirmado = false;
             // Obtenemos al cliente
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Cargar los codigos de verificacion
@@ -95,8 +97,14 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 }
                 verificacionResult = await twilioService.ConfirmarVerificacionEmail(correoElectronico: cliente.CorreoElectronico, codigo: codigoVerificacion);
             }
-            // Confirma la verificacion
-            var confirmado = cliente.ConfirmarVerificacion2FA(tipo: tipo2FA, codigo: codigoVerificacion, modificationUser: modificationUser);
+            // Se confrimo ok en twilio
+            if (verificacionResult.IsVerified)
+            {
+                // Confirma la verificacion
+                confirmado = cliente.ConfirmarVerificacion2FA(tipo: tipo2FA, codigo: codigoVerificacion, modificationUser: modificationUser);
+            }
+            // Guardar cambios
+            await context.SaveChangesAsync();
             // Return confrimacion
             return confirmado;
         }
@@ -392,11 +400,11 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         try
         {
             // Llamamos a twilio service
-            //var verificacion = await twilioService.VerificacionSMS(codigoPais: codigoPais, telefono: telefono);
+            var verificacion = await twilioService.VerificacionSMS(codigoPais: codigoPais, telefono: telefono);
             // Creamos la verificacion 2fa
             Verificacion2FA verificacion2Fa = new Verificacion2FA(
-                twilioSid: "sid test", //verificacion.Sid,
-                fechaVencimiento: DateTime.UtcNow.AddMinutes(10),
+                twilioSid: verificacion.Sid,//"sid test",
+                fechaVencimiento: DateTime.Now.AddMinutes(10),
                 tipo: Tipo2FA.Sms,
                 creationUser: creationUser,
                 testCase: testCase
@@ -424,7 +432,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Creamos la verificacion 2fa
             Verificacion2FA verificacion2Fa = new Verificacion2FA(
                 twilioSid: verificacion.Sid,
-                fechaVencimiento: DateTime.UtcNow.AddMinutes(10),
+                fechaVencimiento: DateTime.Now.AddMinutes(10),
                 tipo: Tipo2FA.Email,
                 creationUser: creationUser,
                 testCase: testCase
