@@ -19,6 +19,8 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Obtener cliente
             var cliente = await context.Cliente.Include(x => x.Direccion).
                 Include(x => x.DispositivoMovilAutorizados).
+                Include(x=>x.Estado).
+                Include(x=>x.Empresa).
                 FirstOrDefaultAsync(x => x.Id == idCliente);
             // Validar cliente
             if (cliente == null)
@@ -78,7 +80,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Cargar los codigos de verificacion
             await context.Entry(cliente)
-                .Collection(c => c.Verificaciones2FA)
+                .Collection(c => c.Verificaciones2FA.Where(v => v.Tipo == tipo2FA && v.IsActive))
                 .LoadAsync();
             // Resultadod de la verificacion
             VerificacionResult verificacionResult;
@@ -146,8 +148,12 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 modificationUser: modificationUser);
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
+            // Cargar los codigos de verificacion
+            await context.Entry(cliente)
+                .Collection(c => c.Verificaciones2FA)
+                .LoadAsync();
             // Validar que ya haya confirmado el código de verificación por SMS
-            await ValidarConfirmacionCodigoVerificacionSMS2FA(cliente: cliente);
+            ValidarConfirmacionCodigoVerificacionSMS2FA(cliente: cliente);
             // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
             var empresa = await empresaFacade.ObtenerPorNombreAsync("Tecomnet");
             cliente.AgregarEmpresa(empresa: empresa, modificationUser: modificationUser);
@@ -485,13 +491,18 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 module: this.GetType().Name));
         }
     }
+    /// <summary>
+    /// Valida que el cliente tenga confirmado el codigo de verificacion por SMS
+    /// </summary>
+    /// <param name="cliente"></param>
+    /// <exception cref="EMGeneralAggregateException"></exception>
 
-    private async Task ValidarConfirmacionCodigoVerificacionSMS2FA(Cliente cliente)
+    private void ValidarConfirmacionCodigoVerificacionSMS2FA(Cliente cliente)
     {
         // Obtiene el código de verificación SMS
-        var confirmacionSMSCode = await context.Verificacion2FA.FirstOrDefaultAsync(x => x.Tipo == Tipo2FA.Sms && x.Verificado && x.ClienteId == cliente.Id);
+        var confirmacionSmsCode = cliente.Verificaciones2FA.FirstOrDefault(x => x is { Tipo: Tipo2FA.Sms, Verificado: true });
         // Valida que exista el código de verificación SMS
-        if (confirmacionSMSCode is null)
+        if (confirmacionSmsCode is null)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.Verificacion2FASMSNoConfirmado,

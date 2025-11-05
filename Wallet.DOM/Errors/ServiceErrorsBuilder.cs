@@ -84,10 +84,9 @@ public class ServiceErrorsBuilder
     public const string ClienteNoEncontrado = "CLIENTE-NO-ENCONTRADO";
     public const string DispositivoMovilAutorizadoDuplicado = "DISPOSITIVO-MOVIL-AUTORIZADO-DUPLICADO";
     public const string ClienteInactivo = "CLIENTE-INACTIVO";
-
     public const string ClienteCorreoElectronicoNoConfigurado = "CLIENTE-CORREO-ELECTRONICO-NO-CONFIGURADO";
-
     public const string Verificacion2FASMSNoConfirmado = "VERIFICACION-2FA-SMS-NO-CONFIRMADO";
+    public const string ContrasenaYaExiste = "CONTRASEÑA-YA-EXISTE";
 
     private void ClienteErrors()
     {
@@ -186,12 +185,11 @@ public class ServiceErrorsBuilder
             errorCode: DireccionNoConfigurada,
             message: "La direccion aun no esta configurada.",
             description: "La direccion aun no esta configurada.");
-
         // Error dispositivo movil autorizado duplicado
         AddServiceError(
             errorCode: DispositivoMovilAutorizadoDuplicado,
             message: "El dispositivo movil ya existe como autorizado.",
-            description: "El dispositivo movil {0} ya existe como autorizado.");
+            description: "El dispositivo movil ya existe como autorizado.");
         // Error cliente inactivo
         AddServiceError(
             errorCode: ClienteInactivo,
@@ -207,6 +205,11 @@ public class ServiceErrorsBuilder
             errorCode: Verificacion2FASMSNoConfirmado,
             message: "La verificación 2FA SMS no fue confirmada.",
             description: "La verificación 2FA SMS no fue confirmada. Primero debe confirmar la verificación 2FA SMS.");
+        // Error de contraseña ya existe
+        AddServiceError(
+            errorCode: ContrasenaYaExiste,
+            message: "La contraseña ya existe.",
+            description: "La contraseña ya existe. Primero debe actualizar la contraseña.");
     }
 
 

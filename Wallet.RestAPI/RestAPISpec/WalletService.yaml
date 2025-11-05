@@ -727,6 +727,12 @@ components:
           type: string
           format: uuid
           description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: gcbqu8fp7wxo0
       required:
         - id
         - codigoPais
@@ -748,6 +754,7 @@ components:
         - modificationTimestamp
         - creationUser
         - modificationUser
+        - isActive
     ClienteRequest:
       title: ClienteRequest
       x-stoplight:
@@ -853,10 +860,14 @@ components:
           type: number
           x-stoplight:
             id: neep14yhburn4
+          minimum: 8
+          maximum: 8
         longitud:
           type: number
           x-stoplight:
             id: neep14yhburn4
+          minimum: 8
+          maximum: 8
         Dispositivo:
           $ref: '#/components/schemas/DispositivoEnum'
         TipoEvento:
@@ -956,6 +967,12 @@ components:
           type: string
           format: uuid
           description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: kyb43t959rajb
       required:
         - id
         - latitud
@@ -970,6 +987,7 @@ components:
         - modificationTimestamp
         - creationUser
         - modificationUser
+        - isActive
     DireccionResult:
       title: DireccionResult
       x-stoplight:
@@ -1053,6 +1071,12 @@ components:
           type: string
           format: uuid
           description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 2x51kh083gl38
       required:
         - codigoPostal
         - pais
@@ -1068,6 +1092,7 @@ components:
         - modificationTimestamp
         - creationUser
         - modificationUser
+        - isActive
     DireccionUpdateRequest:
       title: DireccionUpdateRequest
       x-stoplight:
@@ -1229,6 +1254,12 @@ components:
           type: string
           format: uuid
           description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: a2uhbk4e5rhfy
       required:
         - id
         - token
@@ -1241,6 +1272,7 @@ components:
         - modificationTimestamp
         - creationUser
         - modificationUser
+        - isActive
     DispositivoMovilAutorizadoRequest:
       title: DispositivoMovilAutorizadoRequest
       type: object
@@ -1426,6 +1458,12 @@ components:
           type: string
           format: uuid
           description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
       required:
         - id
         - nombre
@@ -1434,6 +1472,7 @@ components:
         - modificationTimestamp
         - creationUser
         - modificationUser
+        - isActive
     EmpresaResult:
       title: EmpresaResult
       x-stoplight:
@@ -1471,6 +1510,12 @@ components:
           type: string
           format: uuid
           description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 2oa3t6cskgc2f
       required:
         - id
         - nombre
@@ -1479,6 +1524,7 @@ components:
         - modificationTimestamp
         - creationUser
         - modificationUser
+        - isActive
   securitySchemes:
     jwsToken:
       type: http

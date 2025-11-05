@@ -60,7 +60,7 @@ namespace Wallet.RestAPI.Models
 
         [StringLength(100, MinimumLength=1)]
         [DataMember(Name="municipio ")]
-        public string Municipio_ { get; set; }
+        public string Municipio { get; set; }
 
         /// <summary>
         /// Gets or Sets Colonia
@@ -163,7 +163,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  CodigoPostal: ").Append(CodigoPostal).Append("\n");
             sb.Append("  Pais: ").Append(Pais).Append("\n");
             sb.Append("  Estado: ").Append(Estado).Append("\n");
-            sb.Append("  Municipio_: ").Append(Municipio_).Append("\n");
+            sb.Append("  Municipio_: ").Append(Municipio).Append("\n");
             sb.Append("  Colonia: ").Append(Colonia).Append("\n");
             sb.Append("  Calle: ").Append(Calle).Append("\n");
             sb.Append("  NumeroExterior: ").Append(NumeroExterior).Append("\n");
@@ -226,9 +226,9 @@ namespace Wallet.RestAPI.Models
                     Estado.Equals(other.Estado)
                 ) && 
                 (
-                    Municipio_ == other.Municipio_ ||
-                    Municipio_ != null &&
-                    Municipio_.Equals(other.Municipio_)
+                    Municipio == other.Municipio ||
+                    Municipio != null &&
+                    Municipio.Equals(other.Municipio)
                 ) && 
                 (
                     Colonia == other.Colonia ||
@@ -298,8 +298,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Pais.GetHashCode();
                     if (Estado != null)
                     hashCode = hashCode * 59 + Estado.GetHashCode();
-                    if (Municipio_ != null)
-                    hashCode = hashCode * 59 + Municipio_.GetHashCode();
+                    if (Municipio != null)
+                    hashCode = hashCode * 59 + Municipio.GetHashCode();
                     if (Colonia != null)
                     hashCode = hashCode * 59 + Colonia.GetHashCode();
                     if (Calle != null)

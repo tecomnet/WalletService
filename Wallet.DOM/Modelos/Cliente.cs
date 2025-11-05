@@ -150,12 +150,12 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     public Direccion? Direccion { get; private set; }
 
-    public List<Verificacion2FA> Verificaciones2FA { get; private set; }
-    public List<UbicacionesGeolocalizacion> UbicacionesGeolocalizacion { get; private set; }
-    public List<DispositivoMovilAutorizado> DispositivoMovilAutorizados { get; private set; }
-    public List<DocumentacionAdjunta> DocumentacionAdjuntas { get; private set; }
-    public List<ActividadEconomica> ActividadEconomicas { get; private set; }
-    public List<ValidacionCheckton> ValidacionesChecktons { get; private set; }
+    public List<Verificacion2FA> Verificaciones2FA { get; private set; } = new();
+    public List<UbicacionesGeolocalizacion> UbicacionesGeolocalizacion { get; private set; } = new();
+    public List<DispositivoMovilAutorizado> DispositivoMovilAutorizados { get; private set; } = new();
+    public List<DocumentacionAdjunta> DocumentacionAdjuntas { get; private set; } = new();
+    public List<ActividadEconomica> ActividadEconomicas { get; private set; } = new();
+    public List<ValidacionCheckton> ValidacionesChecktons { get; private set; } = new();
 
 
     public Cliente() : base()
@@ -186,6 +186,13 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         this.CodigoPais = codigoPais;
         this.Telefono = telefono;
+        // Inicializa las listas
+        this.Verificaciones2FA = new List<Verificacion2FA>();
+        this.UbicacionesGeolocalizacion = new List<UbicacionesGeolocalizacion>();
+        this.DispositivoMovilAutorizados = new List<DispositivoMovilAutorizado>();
+        this.DocumentacionAdjuntas = new List<DocumentacionAdjunta>();
+        this.ActividadEconomicas = new List<ActividadEconomica>();
+        this.ValidacionesChecktons = new List<ValidacionCheckton>();
     }
 
     /// <summary>
@@ -232,6 +239,13 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     public void CrearContrasena(string contrasena, Guid modificationUser)
     {
+        // Si ya existe la contrasena, debe actualizar
+        if (!string.IsNullOrWhiteSpace(this.Contrasena))
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ContrasenaYaExiste,
+                dynamicContent: []));
+        }
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate the properties
@@ -298,12 +312,8 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     public void AgregarVerificacion2FA(Verificacion2FA verificacion, Guid modificationUser)
     {
-        // 1. Inicializa la lista si es null
-        if (this.Verificaciones2FA == null)
-        {
-            this.Verificaciones2FA = new List<Verificacion2FA>();
-        }
-        // 2. Verifica que el objeto a agregar no sea nulo 
+     
+        // Verifica que el objeto a agregar no sea nulo 
         if (verificacion == null)
         {
             throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
@@ -311,13 +321,12 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
                             dynamicContent: []));
         }
         // Si el codigo ya existe, retronamos, solo faltara confirmarlo
-        // 3. IDENTIFICA y DESACTIVA todos los códigos activos y no verificados del MISMO TIPO
+        // IDENTIFICA y DESACTIVA todos los códigos activos y no verificados del MISMO TIPO
         var verificacionesViejas = this.Verificaciones2FA
-            // Filtramos por las que están VIGENTES (no vencidas) Y NO VERIFICADAS Y DEL MISMO TIPO
-            .Where(x => x.FechaVencimiento >= DateTime.Now &&
+            // Filtramos por las que NO SE VERIFICADAS Y DEL MISMO TIPO
+            .Where(x => 
                         x.Tipo == verificacion.Tipo &&
-                        !x.Verificado &&
-                        x.IsActive)
+                        x is { Verificado: false, IsActive: true })
             // Convertir a lista para iterar sin problemas con el Where
             .ToList();
         // 4. Desactiva cada código de verificación viejo/pendiente
@@ -448,11 +457,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     public void AgregarUbicacionGeolocalizacion(UbicacionesGeolocalizacion ubicacion, Guid modificationUser)
     {
-        // Verifica que la lista de ubicaciones no sea nula
-        if (this.UbicacionesGeolocalizacion == null)
-        {
-            this.UbicacionesGeolocalizacion = new List<UbicacionesGeolocalizacion>();
-        }
         // Verifica que la ubicacion no sea nula
         if (ubicacion == null)
         {
@@ -467,11 +471,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     public void AgregarDispositivoMovilAutorizado(DispositivoMovilAutorizado dispositivo, Guid modificationUser)
     {
-        // Verifica que la lista de dispositivos no sea nula
-        if (this.DispositivoMovilAutorizados == null)
-        {
-            this.DispositivoMovilAutorizados = new List<DispositivoMovilAutorizado>();
-        }
         // Verifica que el dispositivo no sea nulo
         if (dispositivo == null)
         {
@@ -506,11 +505,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <exception cref="EMGeneralAggregateException"></exception>
     private void AgregarDocumentacionAdjunta(DocumentacionAdjunta documentacion, Guid modificationUser)
     {
-        // Verifica que la lista de documentos no sea nula
-        if (this.DocumentacionAdjuntas == null)
-        {
-            this.DocumentacionAdjuntas = new List<DocumentacionAdjunta>();
-        }
         // Verifica que el tipo de persona esté configurado
         if (this.TipoPersona == null)
         {

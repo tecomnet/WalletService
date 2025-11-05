@@ -20,7 +20,11 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.FechaNacimiento,
                        opt => opt.MapFrom(src => src.FechaNacimiento.HasValue
                                ? src.FechaNacimiento.Value.ToDateTime(TimeOnly.MinValue)
-                               : (DateTime?)null));
+                               : (DateTime?)null))
+            .ForMember(dest => dest.Estado,
+                       opt => opt.MapFrom(src => src.Estado.Nombre))
+            .ForMember(dest => dest.Empresa,
+            opt => opt.MapFrom(src => src.Empresa.Nombre));
         CreateMap<UbicacionesGeolocalizacion, UbicacionResult>();
         CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>();
         CreateMap<Direccion, DireccionResult>();
