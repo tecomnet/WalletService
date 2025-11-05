@@ -89,6 +89,15 @@ namespace Wallet.RestAPI.Models
         public Guid? ModificationUser { get; set; }
 
         /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="isActive")]
+        public bool? IsActive { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -103,6 +112,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
             sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
             sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
+            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -173,6 +183,11 @@ namespace Wallet.RestAPI.Models
                     ModificationUser == other.ModificationUser ||
                     ModificationUser != null &&
                     ModificationUser.Equals(other.ModificationUser)
+                ) && 
+                (
+                    IsActive == other.IsActive ||
+                    IsActive != null &&
+                    IsActive.Equals(other.IsActive)
                 );
         }
 
@@ -200,6 +215,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + CreationUser.GetHashCode();
                     if (ModificationUser != null)
                     hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+                    if (IsActive != null)
+                    hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;
             }
         }

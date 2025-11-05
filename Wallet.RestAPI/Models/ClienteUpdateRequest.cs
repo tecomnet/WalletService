@@ -66,8 +66,8 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Genero
         /// </summary>
         [Required]
-        [JsonConverter(typeof(CustomStringToEnumConverter<GeneroEnum>))] 
-        [DataMember(Name = "genero")]
+
+        [DataMember(Name="genero")]
         public GeneroEnum Genero { get; set; }
 
         /// <summary>

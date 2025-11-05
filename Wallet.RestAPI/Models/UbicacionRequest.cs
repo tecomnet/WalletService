@@ -48,8 +48,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [DataMember(Name = "Dispositivo")]
-        [JsonConverter(typeof(CustomStringToEnumConverter<DispositivoEnum>))]
+        [DataMember(Name="Dispositivo")]
         public DispositivoEnum Dispositivo { get; set; }
 
         /// <summary>

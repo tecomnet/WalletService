@@ -32,8 +32,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [DataMember(Name = "Tipo")]
-        [JsonConverter(typeof(CustomStringToEnumConverter<Tipo2FAEnum>))] 
+        [DataMember(Name="Tipo")]
         public Tipo2FAEnum Tipo { get; set; }
 
         /// <summary>

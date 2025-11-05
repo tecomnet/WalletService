@@ -860,14 +860,10 @@ components:
           type: number
           x-stoplight:
             id: neep14yhburn4
-          minimum: 8
-          maximum: 8
         longitud:
           type: number
           x-stoplight:
             id: neep14yhburn4
-          minimum: 8
-          maximum: 8
         Dispositivo:
           $ref: '#/components/schemas/DispositivoEnum'
         TipoEvento:
@@ -1015,7 +1011,7 @@ components:
           format: double
           minLength: 1
           maxLength: 100
-        'municipio ':
+        municipio:
           type: string
           x-stoplight:
             id: neep14yhburn4
@@ -1081,7 +1077,7 @@ components:
         - codigoPostal
         - pais
         - estado
-        - 'municipio '
+        - municipio
         - colonia
         - calle
         - numeroExterior
