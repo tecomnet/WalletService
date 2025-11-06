@@ -41,9 +41,6 @@ namespace Wallet.UnitTest.FixtureBase
             Environment.SetEnvironmentVariable(
                 "dbConnectionString",
                 _connectionString);
-
-            
-     
         }
     }
 }
