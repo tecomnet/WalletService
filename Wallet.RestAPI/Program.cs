@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Net;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
@@ -85,7 +85,7 @@ namespace Wallet.RestAPI
 						.SystemTextJsonOutputFormatter>();
 					// Adds ObsoleteMethodFilter
 					options.Filters.Add<ObsoleteMethodFilter>();
-					  // AÑADIDO: Agrega el filtro global para el manejo de excepciones de negocio/sistema.
+					// AÑADIDO: Agrega el filtro global para el manejo de excepciones de negocio/sistema.
                     options.Filters.Add<ServiceExceptionFilter>();
 				})
 				.AddNewtonsoftJson(opts =>
