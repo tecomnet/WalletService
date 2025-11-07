@@ -80,7 +80,9 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Cargar los codigos de verificacion
             await context.Entry(cliente)
-                .Collection(c => c.Verificaciones2FA.Where(v => v.Tipo == tipo2FA && v.IsActive))
+                .Collection(c => c.Verificaciones2FA)
+                .Query()
+                .Where(v => v.Tipo == tipo2FA && v.IsActive)
                 .LoadAsync();
             // Resultadod de la verificacion
             VerificacionResult verificacionResult;
