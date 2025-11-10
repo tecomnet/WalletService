@@ -52,8 +52,9 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Existe pre registro incompleto
             var clienteExiste = await context.Cliente.Include(x=>x.Verificaciones2FA.Where(x=>x.IsActive)).
                 FirstOrDefaultAsync(x => x.CodigoPais == codigoPais && x.Telefono == telefono);
-            // Existe pero no finalizo la confirmacion, no verificado
-            if (clienteExiste != null && clienteExiste.Verificaciones2FA.Any(v => v is { Verificado: false, Tipo: Tipo2FA.Sms or Tipo2FA.Email }))
+            // Existe, pero no finalizo la confirmacion, ya sea por sms o email, iniciar el proceso de verificacion con sms
+            if (clienteExiste != null && (clienteExiste.Verificaciones2FA.Any(v => v is { Verificado: false, Tipo: Tipo2FA.Sms }) || 
+                clienteExiste.Verificaciones2FA.Any(v => v is { Verificado: false, Tipo: Tipo2FA.Email }))) 
             {
                 // Genera codigo de verificacion y envia por twilio service
                 var verificacion2Fa = await GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
