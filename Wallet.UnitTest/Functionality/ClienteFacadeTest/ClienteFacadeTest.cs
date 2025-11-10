@@ -12,6 +12,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
 {
     [Theory]
     // Successfully case
+    [InlineData("1. Successfully case, create cliente", "+52", "5525212560", true, new string[] { })]
     [InlineData("1. Successfully case, create cliente", "+52", "9818523698", true, new string[] { })]
     // Wrong cases
     [InlineData("2. Wrong case, cliente already exists", "+52", "9812078573", false, new string[] { ServiceErrorsBuilder.ClienteDuplicado })]

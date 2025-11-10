@@ -38,29 +38,35 @@ namespace Wallet.Funcionalidad
             ConfigureServices(services);
             return services;
         }
-        
-        public static string GetConnectionString()
-        {
+
+		public static string GetConnectionString()
+		{
 			// Try to get test connection string from environment variable
 			if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("testDbConnectionString")))
+			{
+				// Retorna la cadena de conexion de la variable de ambiente del windows
 				//return Environment.GetEnvironmentVariable("testDbConnectionString")!;
+				// Retorna la conexion espaecificada
 				return "Server=.;Initial Catalog=WallerService;User Id=sa; password=123;TrustServerCertificate=True;";
-            // Try to get test connection string from environment variables
-            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbServer")) &&
-                !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("Database")) &&
-                !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbUser")) &&
-                !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbPassword")))
-            {
-                return $"Server=tcp:{Environment.GetEnvironmentVariable("DbServer")};" +
-                       $"Initial Catalog={Environment.GetEnvironmentVariable("Database")};" +
-                       $"User Id={Environment.GetEnvironmentVariable("DbUser")};" +
-                       $"password={Environment.GetEnvironmentVariable("DbPassword")}; TrustServerCertificate=true;";
-            }
-            // return empty string
-            return string.Empty;
-        }
-        
-        public static IServiceCollection AddEmTestServices(this IServiceCollection services)
+				// Retorna la conexion del server dev www.winsefweb.net
+				//return "Server=www.winsefweb.net;Initial Catalog=TECOMNET_WALLET;User Id=DesarrolloTecomnet; password=t3comn3t2025*iu;TrustServerCertificate=True;";
+			}
+			// Try to get test connection string from environment variables
+			if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbServer")) &&
+			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("Database")) &&
+			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbUser")) &&
+			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbPassword")))
+			{
+				return $"Server=tcp:{Environment.GetEnvironmentVariable("DbServer")};" +
+				       $"Initial Catalog={Environment.GetEnvironmentVariable("Database")};" +
+				       $"User Id={Environment.GetEnvironmentVariable("DbUser")};" +
+				       $"password={Environment.GetEnvironmentVariable("DbPassword")}; TrustServerCertificate=true;";
+			}
+			// return empty string
+			return string.Empty;
+		}
+
+		public static IServiceCollection AddEmTestServices(this IServiceCollection services)
         {
             services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(GetConnectionString(),
                 optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
