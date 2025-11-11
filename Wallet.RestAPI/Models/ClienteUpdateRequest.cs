@@ -71,15 +71,6 @@ namespace Wallet.RestAPI.Models
         public GeneroEnum Genero { get; set; }
 
         /// <summary>
-        /// Gets or Sets CorreoElectronico
-        /// </summary>
-        [Required]
-
-        [StringLength(150, MinimumLength=1)]
-        [DataMember(Name="correoElectronico")]
-        public string CorreoElectronico { get; set; }
-
-        /// <summary>
         /// Gets or Sets Estado
         /// </summary>
         [Required]
@@ -101,7 +92,6 @@ namespace Wallet.RestAPI.Models
             sb.Append("  SegundoApellido: ").Append(SegundoApellido).Append("\n");
             sb.Append("  FechaNacimiento: ").Append(FechaNacimiento).Append("\n");
             sb.Append("  Genero: ").Append(Genero).Append("\n");
-            sb.Append("  CorreoElectronico: ").Append(CorreoElectronico).Append("\n");
             sb.Append("  Estado: ").Append(Estado).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -165,11 +155,6 @@ namespace Wallet.RestAPI.Models
                     Genero.Equals(other.Genero)
                 ) && 
                 (
-                    CorreoElectronico == other.CorreoElectronico ||
-                    CorreoElectronico != null &&
-                    CorreoElectronico.Equals(other.CorreoElectronico)
-                ) && 
-                (
                     Estado == other.Estado ||
                     Estado != null &&
                     Estado.Equals(other.Estado)
@@ -196,8 +181,6 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + FechaNacimiento.GetHashCode();
                     if (Genero != null)
                     hashCode = hashCode * 59 + Genero.GetHashCode();
-                    if (CorreoElectronico != null)
-                    hashCode = hashCode * 59 + CorreoElectronico.GetHashCode();
                     if (Estado != null)
                     hashCode = hashCode * 59 + Estado.GetHashCode();
                 return hashCode;

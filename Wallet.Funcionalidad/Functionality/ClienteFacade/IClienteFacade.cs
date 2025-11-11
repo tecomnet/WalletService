@@ -39,10 +39,11 @@ public interface IClienteFacade
     /// <param name="segundoApellido"></param>
     /// <param name="fechaNacimiento"></param>
     /// <param name="genero"></param>
-    /// <param name="correoElectronico"></param>
     /// <param name="modificationUser"></param>
     /// <returns></returns>
-    public Task<Cliente> ActualizarClienteDatosPersonalesAsync(int idCliente, string nombre, string primerApellido, string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, string correoElectronico, Guid modificationUser, string? testCase = null);
+    public Task<Cliente> ActualizarClienteDatosPersonalesAsync(int idCliente, string nombre, string primerApellido, string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, Guid modificationUser, string? testCase = null);
+    
+    
     /// <summary>
     /// Guarda la contraseña del cliente
     /// </summary>

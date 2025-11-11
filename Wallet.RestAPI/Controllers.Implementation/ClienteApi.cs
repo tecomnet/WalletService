@@ -93,7 +93,6 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper) 
             nombreEstado: body.Estado,
             fechaNacimiento: DateOnly.FromDateTime(body.FechaNacimiento.Value),
             genero: (DOM.Enums.Genero)body.Genero,
-            correoElectronico: body.CorreoElectronico,
             modificationUser: Guid.Empty);
         // Map to response model
         var response = mapper.Map<ClienteResult>(cliente);

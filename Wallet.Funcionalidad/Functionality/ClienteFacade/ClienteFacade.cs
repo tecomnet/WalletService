@@ -4,13 +4,17 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
-using Wallet.Funcionalidad.Helper;
-using Wallet.Funcionalidad.Remoting.REST.TwilioManagemet;
+using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.Funcionalidad.ServiceClient;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilioService, IEmpresaFacade empresaFacade, IEstadoFacade estadoFacade) : IClienteFacade
+public class ClienteFacade(
+    ServiceDbContext context, 
+    ITwilioServiceFacade twilioService,
+    IChecktonPldServiceFacade checktonPldService,
+    IEmpresaFacade empresaFacade,
+    IEstadoFacade estadoFacade) : IClienteFacade
 {
     public async Task<Cliente> ObtenerClientePorIdAsync(int idCliente)
     {
@@ -57,7 +61,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 clienteExiste.Verificaciones2FA.Any(v => v is { Verificado: false, Tipo: Tipo2FA.Email }))) 
             {
                 // Genera codigo de verificacion y envia por twilio service
-                var verificacion2Fa = await GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
+                var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
                 // El cliente ya existe lo obtenemos
                 cliente = clienteExiste;
                 // Agrega el codigo de verificacion
@@ -70,7 +74,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 // Agregar cliente
                 await context.AddAsync(cliente);
                 // Genera codigo de verificacion y envia por twilio service
-                var verificacion2Fa = await GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
+                var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
                 // Agrega el codigo de verificacion
                 cliente.AgregarVerificacion2FA(verificacion: verificacion2Fa, modificationUser: creationUser);
             }
@@ -102,7 +106,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 .Query()
                 .Where(v => v.Tipo == tipo2FA && v.IsActive)
                 .LoadAsync();
-            // Resultadod de la verificacion
+            // Resultado de la verificacion
             VerificacionResult verificacionResult;
             // Es sms
             if (tipo2FA == Tipo2FA.Sms)
@@ -119,7 +123,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 }
                 verificacionResult = await twilioService.ConfirmarVerificacionEmail(correoElectronico: cliente.CorreoElectronico, codigo: codigoVerificacion);
             }
-            // Se confrimo ok en twilio
+            // Se confirmo ok en twilio
             if (verificacionResult.IsVerified)
             {
                 // Confirma la verificacion
@@ -149,7 +153,6 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         string nombreEstado,
         DateOnly fechaNacimiento,
         Genero genero,
-        string correoElectronico,
         Guid modificationUser,
         string? testCase = null)
     {
@@ -164,10 +167,21 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 segundoApellido: segundoApellido,
                 fechaNacimiento: fechaNacimiento,
                 genero: genero,
-                correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
-            // Se valida la duplicidad, despues de la actualizacion
-            await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
+            // Validar con checkton pld
+            var (validacionCheckton, curpGenerada) = await ValidaDatosPersonalesChecktonPldAsync(
+                nombre: nombre,
+                primerApellido: primerApellido,
+                segundoApellido: segundoApellido,
+                fechaNacimiento: new DateTime(fechaNacimiento.Year, fechaNacimiento.Month, fechaNacimiento.Day),
+                genero: genero,
+                nombreEstado: nombreEstado,
+                creationUser: modificationUser,
+                testCase: testCase);
+            // Agrega validacion checkton
+            cliente.AgregarValidacionCheckton(validacion: validacionCheckton, modificationUser: modificationUser);
+            // Agrega curp
+            cliente.AgregarCurp(curp: curpGenerada, modificationUser: modificationUser);
             // Cargar los codigos de verificacion
             await context.Entry(cliente)
                 .Collection(c => c.Verificaciones2FA)
@@ -182,19 +196,8 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             cliente.AgregarEstado(estado: estado, modificationUser: modificationUser);
             // Agregar direccion pre-registro, TODO EMD: PENDIENTE RECIBIR EL PAIS O IMPLEMENTAR EL CATALOGO PAIS
             var preDireccion = await CrearDireccionPreRegistro(pais: "México", estado: nombreEstado, creationUser: modificationUser, testCase: testCase);
+            // Agrega pre direccion
             cliente.AgregarDireccion(direccion: preDireccion, creationUser: modificationUser);
-            // Generar nuevo codigo de verificacion y envia a twilio service
-            var nuevaVerificacion = await GeneraCodigoVerificacion2FAEmailyEnviaTwilioServiceAsync(
-                correoElectronico: correoElectronico,
-                nombreCliente: cliente.NombreCompleto!,
-                nombreEmpresa: cliente.Empresa!.Nombre,
-                creationUser: modificationUser,
-                testCase: testCase);
-            // Se agrega nuevo codigo para luego confrimar
-            cliente.AgregarVerificacion2FA(verificacion: nuevaVerificacion, modificationUser: modificationUser);
-            // TODO EMD: LLAMAR A API DE CHECKTON PARA VALIDACION RENAPO
-            // Actualizar en db
-            context.Update(cliente);
             // Guardar cambios
             await context.SaveChangesAsync();
             // Retornar cliente
@@ -209,6 +212,10 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
                 exception: exception);
         }
     }
+    
+    
+    
+    
 
     public async Task<Cliente> GuardarContrasenaAsync(int idCliente, string contrasena, Guid modificationUser)
     {
@@ -266,20 +273,18 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         {
             // Obtener cliente
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Cargar empresa 
-            var empresa = context.Entry(cliente).Reference(x => x.Empresa);
             // Actualizar datos del correo electronico
             cliente.ActualizarCorreoElectronico(correoElectronico: correoElectronico, modificationUser: modificationUser);
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
             // Generar nuevo codigo de verificacion y envia a twilio service
-            var nuevaVerificacion = await GeneraCodigoVerificacion2FAEmailyEnviaTwilioServiceAsync(
+            var nuevaVerificacion = await GeneraCodigoVerificacionTwilio2FAEmailAsync(
                 correoElectronico: correoElectronico,
                 nombreCliente: cliente.NombreCompleto!,
                 nombreEmpresa: cliente.Empresa!.Nombre,
                 creationUser: modificationUser,
                 testCase: testCase);
-            // Se agrega nuevo codigo para luego confrimar
+            // Se agrega nuevo codigo para luego confirmar
             cliente.AgregarVerificacion2FA(verificacion: nuevaVerificacion, modificationUser: modificationUser);
             // Guardar cambios
             await context.SaveChangesAsync();
@@ -307,7 +312,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             // Se valida la duplicidad, despues de la actualizacion
             await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono, id: idCliente);
             // Generar nuevo codigo de verificacion 
-            var nuevaVerificacion = await GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(
+            var nuevaVerificacion = await GeneraCodigoVerificacionTwilio2FASMSAsync(
                 codigoPais: codigoPais,
                 telefono: telefono,
                 creationUser: modificationUser,
@@ -420,7 +425,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         }
     }
 
-    private async Task<Verificacion2FA> GeneraCodigoVerificacion2FASMSyEnviaTwilioServiceAsync(string codigoPais, string telefono, Guid creationUser, string? testCase = null)
+    private async Task<Verificacion2FA> GeneraCodigoVerificacionTwilio2FASMSAsync(string codigoPais, string telefono, Guid creationUser, string? testCase = null)
     {
         try
         {
@@ -447,7 +452,7 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
         }
     }
 
-    private async Task<Verificacion2FA> GeneraCodigoVerificacion2FAEmailyEnviaTwilioServiceAsync(
+    private async Task<Verificacion2FA> GeneraCodigoVerificacionTwilio2FAEmailAsync(
         string correoElectronico, string nombreCliente, string nombreEmpresa, Guid creationUser, string? testCase = null)
     {
         try
@@ -464,6 +469,48 @@ public class ClienteFacade(ServiceDbContext context, ITwilioServiceFacade twilio
             );
             // Retorna codigo de verificacion
             return verificacion2Fa;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+    
+    private async Task<(ValidacionCheckton, string)> ValidaDatosPersonalesChecktonPldAsync(
+        string nombre, string primerApellido, string segundoApellido, DateTime fechaNacimiento, Genero genero, string nombreEstado, Guid creationUser, string? testCase = null)
+    {
+        try
+        {
+            // Validar con checkton pld
+            var validacionCurpResult = await checktonPldService.ValidarChecktonPld(
+                nombre: nombre,
+                primerApellido: primerApellido,
+                segundoApellido: segundoApellido,
+                fechaNacimiento: fechaNacimiento,
+                genero: genero,
+                estado: nombreEstado,
+                nombreServicioCliente: DomCommon.ServiceName);
+            // Validar que no haya error en la validacion
+            if (!validacionCurpResult.Success)
+            {
+                throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ClienteChecktonPldError,
+                    dynamicContent: [],
+                    module: this.GetType().Name));
+            }
+            // Crea la validacion con el resultado
+            ValidacionCheckton validacionCheckton = new ValidacionCheckton(
+                tipoCheckton: TipoCheckton.Curp,
+                resultado: validacionCurpResult.Success,
+                creationUser: creationUser,
+                testCase: testCase);
+            
+            // Retorna codigo de verificacion
+            return (validacionCheckton, validacionCurpResult.CurpGenerada);
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

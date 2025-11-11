@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
@@ -122,7 +122,7 @@ namespace Wallet.RestAPI
 						new() {
 							// You can set the Url from the default http request data or by hard coding it
 							// Url = $"{httpReq.Scheme}://{httpReq.Host.Value}",
-							Url = $"https://{httpReq.Host.Value}/api/WalletService",
+							Url = $"https://{httpReq.Host.Value}/Wallet/WalletService",
 							Description = "Deployed Tecom Net"
 						}
 					];
@@ -135,7 +135,7 @@ namespace Wallet.RestAPI
 				foreach (var description in provider.ApiVersionDescriptions)
 				{
 					// TODO Change the name parameter with information of this service
-					c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json"
+					c.SwaggerEndpoint($"/Wallet/WalletService/swagger/{description.GroupName}/swagger.json"
 						, "WalletService " + description.ApiVersion);
 				}
 			});

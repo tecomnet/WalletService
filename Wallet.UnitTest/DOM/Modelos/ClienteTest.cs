@@ -65,19 +65,18 @@ public class ClienteTest : UnitTestTemplate
     [InlineData("1. OK: Todos los campos válidos",
             "Ana", "Lopez", "Gomez",
             "1990-01-01", Genero.Femenino,
-            "ana.lopez@ejemplo.com",
             true, new string[] { })]
     [InlineData("2. OK: Segundo Apellido null",
             "Juan", "Perez", "Gomez",
             "2000-05-15", Genero.Masculino,
-            "juan.perez@ejemplo.com",
+        
             true, new string[] { })]
     [InlineData("3. OK: Longitud máxima (Nombre/Apellido y Email)",
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", // 100 chars
             "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", // 100 chars
             "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", // 100 chars
             "2005-12-31", Genero.NoBinario,
-            "email_max_length_ejemplo_valido_012345675678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345679@ejemplo-max.com", // 156 chars
+        
             true, new string[] { })]
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -86,27 +85,22 @@ public class ClienteTest : UnitTestTemplate
     [InlineData("4. ERROR: Nombre null",
             null, "Perez", null,
             "1990-01-01", Genero.Masculino,
-            "valido@e.com",
             false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("5. ERROR: Primer Apellido vacío",
             "Juan", "", "Gomez",
             "1990-01-01", Genero.Masculino,
-            "valido@e.com",
             false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("6. ERROR: Fecha Nacimiento null",
             "Juan", "Perez", "Gomez",
             null, Genero.Masculino,
-            "valido@e.com",
             false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("7. ERROR: Género null",
             "Juan", "Perez", "Gomez",
             "1990-01-01", null,
-            "valido@e.com",
             false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("8. ERROR: Email null",
             "Juan", "Perez", "Gomez",
             "1990-01-01", Genero.Masculino,
-            null,
             false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -116,12 +110,11 @@ public class ClienteTest : UnitTestTemplate
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", // 101 chars
             "Perez", "Gomez",
             "1990-01-01", Genero.Masculino,
-            "valido@e.com",
+        
             false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
     [InlineData("10. ERROR: Email muy largo (>256)",
             "Juan", "Perez", "Gomez",
             "1990-01-01", Genero.Masculino,
-            "email_excede_256_chars_ejemplo_valido_pero_largo_01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789@ejemplo-max.comX", // 257 chars
             false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -130,7 +123,6 @@ public class ClienteTest : UnitTestTemplate
     [InlineData("11. ERROR: Email sin formato (@missing)",
             "Juan", "Perez", "Gomez",
             "1990-01-01", Genero.Femenino,
-            "invalido-sin-arroba.com",
             false, new string[] { "PROPERTY-VALIDATION-REGEX-INVALID" })]
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -139,7 +131,6 @@ public class ClienteTest : UnitTestTemplate
     [InlineData("12. ERROR: Múltiples fallos críticos",
             "", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Gomez",
             null, null,
-            "abc", // Fallará por LENGTH y REGEX
             false, new string[] {
             "PROPERTY-VALIDATION-REQUIRED-ERROR",   // Nombre
             "PROPERTY-VALIDATION-LENGTH-INVALID",   // PrimerApellido
@@ -159,7 +150,6 @@ public class ClienteTest : UnitTestTemplate
             string? fechaNacimientoString,
             // Test data for Genero?
             Genero? genero,
-            string? correoElectronico,
             // Result
             bool success,
             string[]? expectedErrors = null
@@ -190,7 +180,6 @@ public class ClienteTest : UnitTestTemplate
                 segundoApellido: segundoApellido,
                 fechaNacimiento: fechaNacimiento,
                 genero: genero,
-                correoElectronico: correoElectronico,
                 modificationUser: Guid.NewGuid());
 
             // Verificación de éxito
@@ -202,7 +191,6 @@ public class ClienteTest : UnitTestTemplate
             Assert.Equal(segundoApellido, cliente.SegundoApellido);
             Assert.Equal(fechaNacimiento, cliente.FechaNacimiento);
             Assert.Equal(genero, cliente.Genero);
-            Assert.Equal(correoElectronico, cliente.CorreoElectronico);
         }
         // Capturar y verificar errores gestionados
         catch (EMGeneralAggregateException exception)

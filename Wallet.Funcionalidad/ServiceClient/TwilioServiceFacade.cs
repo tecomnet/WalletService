@@ -1,6 +1,6 @@
 ﻿using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Helper;
-using Wallet.Funcionalidad.Remoting.REST.TwilioManagemet;
+using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 
 namespace Wallet.Funcionalidad.ServiceClient;
 
@@ -63,16 +63,16 @@ public class TwilioServiceFacade(
     private TwilioService BuildLocalServiceClient()
     {
         // Get url 
-        var urlTwilioUri = Environment.GetEnvironmentVariable("twilio-service");
+        var baseUri = Environment.GetEnvironmentVariable(TwilioSettingsData.RemoteServiceNameConfig);
         // 2. Invoca BuildServiceClient
-        var twilioServiceClient = BuilServiceClient<TwilioService>(
-            url: urlTwilioUri, 
+        var serviceClient = BuilServiceClient<TwilioService>(
+            url: baseUri, 
             // La función 'init' toma el cliente HTTP y la URL, y devuelve la instancia de TwilioService
             init: (httpClient, baseUrl) => new TwilioService(httpClient)
             {
                 BaseUrl = baseUrl
             });
-        return twilioServiceClient;
+        return serviceClient;
     }
 
     protected override EMGeneralAggregateException? ExtractEMGeneralAggregateException(Exception exception)

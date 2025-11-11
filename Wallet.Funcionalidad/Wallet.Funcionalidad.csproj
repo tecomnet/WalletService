@@ -24,19 +24,34 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
-<ItemGroup>
-		<OpenApiReference Include="Services\TwilioService.yaml" Options="/DateType:System.DateTime /DateTimeType:System.DateTime /TimeType:System.TimeOnly /GenerateDataAnnotations:false">
-			<Link>Services\TwilioService.yaml</Link>
-			<Namespace>Wallet.Funcionalidad.Remoting.REST.TwilioManagemet</Namespace>
-			<ClassName>TwilioService</ClassName>
-			<OutputPath>OpenAPIs/TwilioService.cs</OutputPath>
-			<OpenApiGenerateCodeOptions>
-				<InjectHttpClient>true</InjectHttpClient>
-				<GenerateExceptionClasses>false</GenerateExceptionClasses>
-				<ExceptionClass>EM.Library.Errors.ApiException</ExceptionClass>
-				<WrapResponses>false</WrapResponses>
-				<GenerateResponseClasses>false</GenerateResponseClasses>
-			</OpenApiGenerateCodeOptions>
-		</OpenApiReference>
-	</ItemGroup>
-</Project>
+    <ItemGroup>
+        <OpenApiReference Include="Services\TwilioService.yaml" Options="/DateType:System.DateTime /DateTimeType:System.DateTime /TimeType:System.TimeOnly">
+            <Link>Services\TwilioService.yaml</Link>
+            <Namespace>Wallet.Funcionalidad.Remoting.REST.TwilioManagement</Namespace>
+            <ClassName>TwilioService</ClassName>
+            <OutputPath>OpenAPIs/TwilioService.cs</OutputPath>
+            <OpenApiGenerateCodeOptions>
+                <InjectHttpClient>true</InjectHttpClient>
+                <GenerateExceptionClasses>false</GenerateExceptionClasses>
+                <ExceptionClass>EM.Library.Errors.ApiException</ExceptionClass>
+                <WrapResponses>false</WrapResponses>
+                <GenerateResponseClasses>false</GenerateResponseClasses>
+            </OpenApiGenerateCodeOptions>
+        </OpenApiReference>
+        <OpenApiReference Include="Services\ChecktonPldService.yaml" Options="/DateType:System.DateTime /DateTimeType:System.DateTime /TimeType:System.TimeOnly">
+            <Link>Services\ChecktonPldService.yaml</Link>
+            <Namespace>Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement</Namespace>
+            <ClassName>ChecktonPldService</ClassName>
+            <OutputPath>OpenAPIs/ChecktonPldService.cs</OutputPath>
+            <OpenApiGenerateCodeOptions>
+                <InjectHttpClient>true</InjectHttpClient>
+                <GenerateExceptionClasses>false</GenerateExceptionClasses>
+                <ExceptionClass>EM.Library.Errors.ApiException</ExceptionClass>
+                <WrapResponses>false</WrapResponses>
+                <GenerateResponseClasses>false</GenerateResponseClasses>
+            </OpenApiGenerateCodeOptions>
+        </OpenApiReference>
+    </ItemGroup>
+</Project>    
+    
+

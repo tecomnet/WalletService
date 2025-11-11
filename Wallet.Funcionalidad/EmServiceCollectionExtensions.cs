@@ -94,6 +94,7 @@ namespace Wallet.Funcionalidad
 		private static void ConfigureExternalConnectionServices(IServiceCollection services)
 		{
 			services.AddScoped<ITwilioServiceFacade, TwilioServiceFacade>();
+			services.AddScoped<IChecktonPldServiceFacade, ChecktonPldServiceFacade>();
 		}
 
 		private static void ConfigureFacadeServices(IServiceCollection services)

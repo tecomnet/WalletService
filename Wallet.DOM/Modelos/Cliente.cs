@@ -203,7 +203,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <param name="segundoApellido"></param>
     /// <param name="fechaNacimiento"></param>
     /// <param name="genero"></param>
-    /// <param name="correoElectronico"></param>
     /// <param name="modificationUser"></param>
     /// <returns></returns>
     /// <exception cref="EMGeneralAggregateException"></exception>
@@ -213,7 +212,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         string? segundoApellido,
         DateOnly? fechaNacimiento,
         Genero? genero,
-        string? correoElectronico,
         Guid modificationUser
     )
     {
@@ -225,7 +223,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(SegundoApellido), value: segundoApellido, ref exceptions);
         IsPropertyValid(propertyName: nameof(FechaNacimiento), value: fechaNacimiento, ref exceptions);
         IsPropertyValid(propertyName: nameof(Genero), value: genero, ref exceptions);
-        IsPropertyValid(propertyName: nameof(CorreoElectronico), value: correoElectronico, ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         this.Nombre = nombre;
@@ -233,7 +230,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         this.SegundoApellido = segundoApellido;
         this.FechaNacimiento = fechaNacimiento;
         this.Genero = genero;
-        this.CorreoElectronico = correoElectronico;
         base.Update(modificationUser: modificationUser);
     }
 
@@ -312,7 +308,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
     public void AgregarVerificacion2FA(Verificacion2FA verificacion, Guid modificationUser)
     {
-     
         // Verifica que el objeto a agregar no sea nulo 
         if (verificacion == null)
         {
@@ -440,18 +435,28 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         base.Update(modificationUser: modificationUser);
     }
 
-    public void AgregarCurpRfc(string curp, string rfc, Guid modificationUser)
+    public void AgregarRfc( string rfc, Guid modificationUser)
+    {
+        // Initialize the list of exceptions
+        List<EMGeneralException> exceptions = new();
+        // Validate the properties
+        IsPropertyValid(propertyName: nameof(Rfc), value: rfc, ref exceptions);
+        // If there are exceptions, throw them
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        // Set rfc
+        this.Rfc = rfc;
+        base.Update(modificationUser: modificationUser);
+    }
+    public void AgregarCurp(string curp, Guid modificationUser)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate the properties
         IsPropertyValid(propertyName: nameof(Curp), value: curp, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Rfc), value: rfc, ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Set curp and rfc
+        // Set curp 
         this.Curp = curp;
-        this.Rfc = rfc;
         base.Update(modificationUser: modificationUser);
     }
 
@@ -537,6 +542,20 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     {
         var dispositivo = this.DispositivoMovilAutorizados.FirstOrDefault(x => x.IdDispositivo == idDispositivo && x.Token == token);
         return dispositivo != null;
+    }
+    
+    public void AgregarValidacionCheckton(ValidacionCheckton validacion, Guid modificationUser)
+    {
+        // Verifica que el validacion no sea nulo
+        if (validacion == null)
+        {
+            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ValidacionChecktonRequerida,
+                    dynamicContent: []));
+        }
+        // Agrega el nuevo validacion a la lista
+        this.ValidacionesChecktons.Add(validacion);
+        base.Update(modificationUser: modificationUser);
     }
 }
 

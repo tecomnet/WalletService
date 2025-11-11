@@ -87,7 +87,8 @@ public class ServiceErrorsBuilder
     public const string ClienteCorreoElectronicoNoConfigurado = "CLIENTE-CORREO-ELECTRONICO-NO-CONFIGURADO";
     public const string Verificacion2FASMSNoConfirmado = "VERIFICACION-2FA-SMS-NO-CONFIRMADO";
     public const string ContrasenaYaExiste = "CONTRASEÑA-YA-EXISTE";
-
+    public const string ClienteChecktonPldError = "CLIENTE-CHECKTON-PLD-ERROR";
+    public const string ValidacionChecktonRequerida = "VALIDACION-CHECKTON-REQUERIDA";
     private void ClienteErrors()
     {
         // Error de dispositivo móvil autorizado requerido
@@ -210,6 +211,16 @@ public class ServiceErrorsBuilder
             errorCode: ContrasenaYaExiste,
             message: "La contraseña ya existe.",
             description: "La contraseña ya existe. Primero debe actualizar la contraseña.");
+        // Error de cliente checkton pld
+        AddServiceError(
+            errorCode: ClienteChecktonPldError,
+            message: "Error en la validación del cliente.",
+            description: "Error en la validación de datos personales del cliente.");
+        // Error de validacion checkton requerida
+        AddServiceError(
+            errorCode: ValidacionChecktonRequerida,
+            message: "La validación checkton es requerida.",
+            description: "La validación checkton es requerida.");
     }
 
 

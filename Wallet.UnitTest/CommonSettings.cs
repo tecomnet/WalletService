@@ -40,7 +40,7 @@ public class CommonSettings
 			testCase: TestCaseId);
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente", primerApellido: "ApellidoPaterno", segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse("1990-01-01"),
-			genero: Genero.Masculino, correoElectronico: "cliente@cliente.com", modificationUser: UserId);
+			genero: Genero.Masculino, modificationUser: UserId);
 		// Agrega pre direccion
 		cliente.AgregarDireccion(direccion: new Direccion(
 			pais: "México",
@@ -56,7 +56,7 @@ public class CommonSettings
 			testCase: TestCaseId);
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente Tecomnet", primerApellido: "Primer Apellido", segundoApellido: "Segundo Apellido", fechaNacimiento: DateOnly.Parse("1990-01-01"),
-			genero: Genero.Femenino, correoElectronico: "cliente@tecomnet.com", modificationUser: UserId);
+			genero: Genero.Femenino, modificationUser: UserId);
 		// Agrega dispositivo movil autorizado
 		cliente.AgregarDispositivoMovilAutorizado(dispositivo: new DispositivoMovilAutorizado(
 			token: "32414",
