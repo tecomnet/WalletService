@@ -69,16 +69,13 @@ public class ClienteTest : UnitTestTemplate
     [InlineData("2. OK: Segundo Apellido null",
             "Juan", "Perez", "Gomez",
             "2000-05-15", Genero.Masculino,
-        
             true, new string[] { })]
     [InlineData("3. OK: Longitud máxima (Nombre/Apellido y Email)",
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", // 100 chars
             "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", // 100 chars
             "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", // 100 chars
             "2005-12-31", Genero.NoBinario,
-        
             true, new string[] { })]
-
     // ----------------------------------------------------------------------------------------------------------------
     // 2. ERRORES DE REQUERIMIENTO (PROPERTY-VALIDATION-REQUIRED-ERROR)
     // ----------------------------------------------------------------------------------------------------------------
@@ -98,37 +95,19 @@ public class ClienteTest : UnitTestTemplate
             "Juan", "Perez", "Gomez",
             "1990-01-01", null,
             false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("8. ERROR: Email null",
-            "Juan", "Perez", "Gomez",
-            "1990-01-01", Genero.Masculino,
-            false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-
     // ----------------------------------------------------------------------------------------------------------------
     // 3. ERRORES DE LONGITUD (PROPERTY-VALIDATION-LENGTH-INVALID)
     // ----------------------------------------------------------------------------------------------------------------
-    [InlineData("9. ERROR: Nombre > 100 caracteres",
+    [InlineData("8. ERROR: Nombre > 100 caracteres",
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", // 101 chars
             "Perez", "Gomez",
             "1990-01-01", Genero.Masculino,
         
             false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
-    [InlineData("10. ERROR: Email muy largo (>256)",
-            "Juan", "Perez", "Gomez",
-            "1990-01-01", Genero.Masculino,
-            false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
-
-    // ----------------------------------------------------------------------------------------------------------------
-    // 4. ERRORES DE REGEX/FORMATO (PROPERTY-VALIDATION-REGEX-INVALID) - Solo CorreoElectronico
-    // ----------------------------------------------------------------------------------------------------------------
-    [InlineData("11. ERROR: Email sin formato (@missing)",
-            "Juan", "Perez", "Gomez",
-            "1990-01-01", Genero.Femenino,
-            false, new string[] { "PROPERTY-VALIDATION-REGEX-INVALID" })]
-
     // ----------------------------------------------------------------------------------------------------------------
     // 5. CASO DE ERRORES MÚLTIPLES 
     // ----------------------------------------------------------------------------------------------------------------
-    [InlineData("12. ERROR: Múltiples fallos críticos",
+    [InlineData("9. ERROR: Múltiples fallos críticos",
             "", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "Gomez",
             null, null,
             false, new string[] {
@@ -167,12 +146,10 @@ public class ClienteTest : UnitTestTemplate
             // Si el test pasa un string mal formado (ej. "2020/02/30"), el TryParse fallará, 
             // pero el test no lo validaría como REQUIRED; esto es aceptable para simplificar el test.
         }
-
         try
         {
             // Crea una instancia de Cliente (asumiendo un constructor base)
             var cliente = new Cliente(codigoPais: "+52", telefono: "9825897845", creationUser: Guid.NewGuid(), testCase: caseName);
-
             // Ejecutar el método a probar
             cliente.AgregarDatosPersonales(
                 nombre: nombre,
@@ -181,10 +158,8 @@ public class ClienteTest : UnitTestTemplate
                 fechaNacimiento: fechaNacimiento,
                 genero: genero,
                 modificationUser: Guid.NewGuid());
-
             // Verificación de éxito
             Assert.True(condition: success, userMessage: $"El caso '{caseName}' falló cuando se esperaba éxito.");
-
             // Verificación de asignación de valores (si success es true)
             Assert.Equal(nombre, cliente.Nombre);
             Assert.Equal(primerApellido, cliente.PrimerApellido);
@@ -204,7 +179,7 @@ public class ClienteTest : UnitTestTemplate
             Assert.Fail($"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
         }
     }
-private const string ContrasenaInicial = "Pass123456789";
+    private const string ContrasenaInicial = "Pass123456789";
     private const string MaxContrasenaMas100Chars = "X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X1X2X3X4X5X6X7X8X9X"; // 100 caracteres
     private const string LongCorreoElectronicoMas150Chars = "largo_excede_maximo_150_caracteres_ejemplo_dominio_de_prueba_y_validación_para_que_este_email_sea_muy_largo@example.comX"; // 151 caracteres
     [Theory]

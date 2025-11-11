@@ -213,9 +213,6 @@ public class ClienteFacade(
         }
     }
     
-    
-    
-    
 
     public async Task<Cliente> GuardarContrasenaAsync(int idCliente, string contrasena, Guid modificationUser)
     {
@@ -508,7 +505,6 @@ public class ClienteFacade(
                 resultado: validacionCurpResult.Success,
                 creationUser: creationUser,
                 testCase: testCase);
-            
             // Retorna codigo de verificacion
             return (validacionCheckton, validacionCurpResult.CurpGenerada);
         }
