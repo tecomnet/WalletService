@@ -1,4 +1,5 @@
-﻿using Wallet.DOM.Errors;
+﻿using Wallet.DOM;
+using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 
@@ -106,11 +107,12 @@ public class TwilioServiceFacade(
     {
         try
         {
-            var serviceClient = BuildLocalServiceClient();
+            var serviceClient = BuildLocalServiceClientApiKey();
             var requestBody = new VerificacionSMSRequest()
             {
                 CodigoPais = codigoPais,
-                Telefono = telefono
+                Telefono = telefono,
+                NombreServicioCliente = DomCommon.ServiceName
             };
             var response = await serviceClient.PostVerificacionSMSAsync(
                 version: TwilioSettingsData.Version, body: requestBody);
@@ -126,12 +128,13 @@ public class TwilioServiceFacade(
     {
         try
         {
-            var serviceClient = BuildLocalServiceClient();
+            var serviceClient = BuildLocalServiceClientApiKey();
             var requestBody = new VerificacionSMSCheckRequest()
             {
                 CodigoPais = codigoPais,
                 Telefono = telefono,
-                CodigoVerificacion = codigo
+                CodigoVerificacion = codigo,
+                NombreServicioCliente = DomCommon.ServiceName
             };
             var response = await serviceClient.PostVerificacionSMSCheckAsync(
                 version: TwilioSettingsData.Version, body: requestBody);
@@ -147,13 +150,14 @@ public class TwilioServiceFacade(
     {
         try
         {
-            var serviceClient = BuildLocalServiceClient();
+            var serviceClient = BuildLocalServiceClientApiKey();
             var requestBody = new VerificacionEmailRequest()
             {
                 CorreoElectronico = correoElectronico,
                 NombreCompleto = nombreCliente,
                 TiempoExpiracion = 10,
-                NombreEmpresa = nombreEmpresa
+                NombreEmpresa = nombreEmpresa,
+                NombreServicioCliente = DomCommon.ServiceName
             };
             var response = await serviceClient.PostVerificacionEmailAsync(
                 version: TwilioSettingsData.Version, body: requestBody);
@@ -169,11 +173,12 @@ public class TwilioServiceFacade(
     {
         try
         {
-            var serviceClient = BuildLocalServiceClient();
+            var serviceClient = BuildLocalServiceClientApiKey();
             var requestBody = new VerificacionEmailCheckRequest()
             {
                 CorreoElectronico = correoElectronico,
-                CodigoVerificacion = codigo
+                CodigoVerificacion = codigo,
+                NombreServicioCliente = DomCommon.ServiceName
             };
             var response = await serviceClient.PostVerificacionEmailCheckAsync(
                 version: TwilioSettingsData.Version, body: requestBody);

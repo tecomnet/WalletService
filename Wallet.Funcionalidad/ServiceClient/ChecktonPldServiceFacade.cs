@@ -1,4 +1,5 @@
-﻿using Wallet.DOM.Enums;
+﻿using Wallet.DOM;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
@@ -16,7 +17,7 @@ internal static class ChecktonPldSettingsData
 
 public interface IChecktonPldServiceFacade
 {
-    Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido, string segundoApellido, Genero genero, DateTime fechaNacimiento, string estado, string nombreServicioCliente);
+    Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido, string segundoApellido, Genero genero, DateTime fechaNacimiento, string estado);
 }
 
 public class ChecktonPldServiceFacade(
@@ -73,7 +74,7 @@ public class ChecktonPldServiceFacade(
 
     protected override EMGeneralAggregateException? ExtractEMGeneralAggregateException(Exception exception)
     {
-// If the exception has inner exceptions
+        // If the exception has inner exceptions
         if (exception is not ApiException<Response> exception1) return null;
         // Get the errors
         var errors = exception1.Result.Errors;
@@ -98,7 +99,7 @@ public class ChecktonPldServiceFacade(
     #endregion
 
 
-    public async Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido, string segundoApellido, Genero genero, DateTime fechaNacimiento, string estado, string nombreServicioCliente)
+    public async Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido, string segundoApellido, Genero genero, DateTime fechaNacimiento, string estado)
     {
         try
         {
@@ -111,7 +112,7 @@ public class ChecktonPldServiceFacade(
                 Genero = (GeneroEnum)genero,
                 FechaNacimiento = fechaNacimiento,
                 Estado = estado,
-                NombreServicioCliente = nombreServicioCliente
+                NombreServicioCliente = DomCommon.ServiceName
             };
             var response = await serviceClient.PostValidaConRenapoAsync(
                 version: ChecktonPldSettingsData.Version, body: requestBody);

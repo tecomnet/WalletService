@@ -22,6 +22,8 @@ public class ServiceErrorsBuilder
         TipoDocumentosErrors();
         // 5. Errores específicos de Estado
         EstadoErrors();
+        // 6. Errores específicos de autenticación
+        AuthenticationErrors();
     }
 
     // Método privado para añadir un error al diccionario
@@ -294,5 +296,19 @@ public class ServiceErrorsBuilder
             message: "El estado no esta activo.",
             description: "El estado {0} no esta activo. Primero debe activarlo.");
     }
+    #endregion
+    
+    #region Autentication errors
+
+    public const string EmClaimUserError = "EM-CLAIM-USER-ERROR";
+    private void AuthenticationErrors()
+    {
+        // Error de autenticación
+        AddServiceError(
+            errorCode: EmClaimUserError,
+            message: "Error de autenticación",
+            description: "El user de autenticación no es válido o no fue encontrado");
+    }
+		
     #endregion
 }
