@@ -108,7 +108,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     [MaxLength(100)]
     public string? SegundoApellido { get; private set; }
     [NotMapped]
-    public string? NombreCompleto { get { return $"{this.Nombre} {this.PrimerApellido} {this.SegundoApellido}"; } }
+    public string? NombreCompleto => $"{this.Nombre} {this.PrimerApellido} {this.SegundoApellido}";
 
     //[Required]
     public DateOnly? FechaNacimiento { get; private set; }
@@ -184,6 +184,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(Telefono), value: telefono, ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+        // Assign properties
         this.CodigoPais = codigoPais;
         this.Telefono = telefono;
         // Inicializa las listas
