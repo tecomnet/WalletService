@@ -44,13 +44,7 @@ paths:
       security: []
   '/{version}/twilio/verificacionSMS':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
+      - $ref: '#/components/parameters/version'
     post:
       summary: Crea verificacion por SMS
       operationId: PostVerificacionSMS
@@ -78,13 +72,7 @@ paths:
         description: ''
   '/{version}/twilio/verificacionSMS/Check':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
+      - $ref: '#/components/parameters/version'
     post:
       summary: Valida la verificacion por SMS
       operationId: PostVerificacionSMSCheck
@@ -111,13 +99,7 @@ paths:
               $ref: '#/components/schemas/VerificacionSMSCheckRequest'
   '/{version}/twilio/verificacionEmail':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
+      - $ref: '#/components/parameters/version'
     post:
       summary: Crea verificacion por email
       operationId: PostVerificacionEmail
@@ -145,13 +127,7 @@ paths:
         description: ''
   '/{version}/twilio/verificacionEmail/Check':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
+      - $ref: '#/components/parameters/version'
     post:
       summary: Valida la verificacion por SMS
       operationId: PostVerificacionEmailCheck
@@ -220,9 +196,16 @@ components:
             id: rwchuhnhlpxaj
           minLength: 9
           maxLength: 10
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 1
+          maxLength: 100
       required:
         - codigoPais
         - telefono
+        - nombreServicioCliente
     VerificacionEmailRequest:
       title: VerificacionEmailRequest
       x-stoplight:
@@ -251,11 +234,20 @@ components:
           type: string
           x-stoplight:
             id: z42vvuay2wrfg
+          minLength: 1
+          maxLength: 100
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: z42vvuay2wrfg
+          minLength: 1
+          maxLength: 100
       required:
         - correoElectronico
         - nombreCompleto
         - tiempoExpiracion
         - nombreEmpresa
+        - nombreServicioCliente
     VerificacionEmailCheckRequest:
       title: VerificacionEmailRequest
       x-stoplight:
@@ -276,9 +268,16 @@ components:
             id: rwchuhnhlpxaj
           maxLength: 4
           minLength: 4
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 1
+          maxLength: 100
       required:
         - correoElectronico
         - codigoVerificacion
+        - nombreServicioCliente
     VerificacionSMSCheckRequest:
       title: VerificacionSMSCheckRequest
       x-stoplight:
@@ -304,10 +303,17 @@ components:
             id: rwchuhnhlpxaj
           maxLength: 4
           minLength: 4
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 1
+          maxLength: 100
       required:
         - codigoPais
         - telefono
         - codigoVerificacion
+        - nombreServicioCliente
   securitySchemes:
     jwsToken:
       type: http

@@ -489,8 +489,7 @@ public class ClienteFacade(
                 segundoApellido: segundoApellido,
                 fechaNacimiento: fechaNacimiento,
                 genero: genero,
-                estado: nombreEstado,
-                nombreServicioCliente: DomCommon.ServiceName);
+                estado: nombreEstado);
             // Validar que no haya error en la validacion
             if (!validacionCurpResult.Success)
             {
