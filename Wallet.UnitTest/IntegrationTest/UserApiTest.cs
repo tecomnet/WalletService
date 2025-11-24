@@ -8,6 +8,8 @@ namespace Wallet.UnitTest.IntegrationTest;
 
 public class UserApiTest : DatabaseTestFixture
 {
+    // Test data
+    private readonly UserData[] testData = new[]
     // Api URI
     private const string API_URI = "users";
     // Api version
