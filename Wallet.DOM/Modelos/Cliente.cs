@@ -87,7 +87,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
 
     [Key]
-    public int Id { get; private set; }
+    public int Id { get; protected internal set; }
     [Required]
     [MaxLength(3)]
     public string CodigoPais { get; private set; }
@@ -156,6 +156,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     public List<DocumentacionAdjunta> DocumentacionAdjuntas { get; private set; } = new();
     public List<ActividadEconomica> ActividadEconomicas { get; private set; } = new();
     public List<ValidacionCheckton> ValidacionesChecktons { get; private set; } = new();
+    public List<ServicioFavorito> ServiciosFavoritos { get; private set; } = new();
 
 
     public Cliente() : base()
@@ -194,6 +195,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         this.DocumentacionAdjuntas = new List<DocumentacionAdjunta>();
         this.ActividadEconomicas = new List<ActividadEconomica>();
         this.ValidacionesChecktons = new List<ValidacionCheckton>();
+        this.ServiciosFavoritos = new List<ServicioFavorito>();
     }
 
     /// <summary>

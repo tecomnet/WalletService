@@ -23,6 +23,8 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0" />
     </ItemGroup>
     <ItemGroup>
         <OpenApiReference Include="Services\TwilioService.yaml" Options="/DateType:System.DateTime /DateTimeType:System.DateTime /TimeType:System.TimeOnly">
@@ -33,7 +35,7 @@
             <OpenApiGenerateCodeOptions>
                 <InjectHttpClient>true</InjectHttpClient>
                 <GenerateExceptionClasses>false</GenerateExceptionClasses>
-                <ExceptionClass>EM.Library.Errors.ApiException</ExceptionClass>
+                <ExceptionClass>Wallet.Funcionalidad.Remoting.REST.ApiException</ExceptionClass>
                 <WrapResponses>false</WrapResponses>
                 <GenerateResponseClasses>false</GenerateResponseClasses>
             </OpenApiGenerateCodeOptions>
@@ -46,7 +48,7 @@
             <OpenApiGenerateCodeOptions>
                 <InjectHttpClient>true</InjectHttpClient>
                 <GenerateExceptionClasses>false</GenerateExceptionClasses>
-                <ExceptionClass>EM.Library.Errors.ApiException</ExceptionClass>
+                <ExceptionClass>Wallet.Funcionalidad.Remoting.REST.ApiException</ExceptionClass>
                 <WrapResponses>false</WrapResponses>
                 <GenerateResponseClasses>false</GenerateResponseClasses>
             </OpenApiGenerateCodeOptions>

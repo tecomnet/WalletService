@@ -1,15 +1,17 @@
 ﻿using Wallet.DOM;
+using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
+using Wallet.Funcionalidad.Remoting.REST;
 using Response = Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement.Response;
 
 namespace Wallet.Funcionalidad.ServiceClient;
 
 internal static class ChecktonPldSettingsData
 {
-    internal const string ServiceName = "ChecktonPldService"; 
+    internal const string ServiceName = "ChecktonPldService";
     internal const string Version = "0.1";
     internal const string RemoteServiceNameConfig = "checkton-pld-service";
     internal const string ServiceErrorCode = "EM-INCORRECT-AUTHORIZATION-TYPE";
@@ -17,7 +19,8 @@ internal static class ChecktonPldSettingsData
 
 public interface IChecktonPldServiceFacade
 {
-    Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido, string segundoApellido, Genero genero, DateTime fechaNacimiento, string estado);
+    Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido, string segundoApellido,
+        Genero genero, DateTime fechaNacimiento, string estado);
 }
 
 public class ChecktonPldServiceFacade(
@@ -30,6 +33,7 @@ public class ChecktonPldServiceFacade(
         version: ChecktonPldSettingsData.Version), IChecktonPldServiceFacade
 {
     #region private methods
+
     private ChecktonPldService BuildLocalServiceClientApiKey()
     {
         // Get api key
@@ -45,6 +49,7 @@ public class ChecktonPldServiceFacade(
             },
             user: User.ToString());
     }
+
     private ChecktonPldService BuildLocalServiceClientBearer(string token)
     {
         // Build service client
@@ -57,13 +62,14 @@ public class ChecktonPldServiceFacade(
                 BaseUrl = baseUrl
             });
     }
+
     private ChecktonPldService BuildLocalServiceClient()
     {
         // Get url 
         var baseUri = Environment.GetEnvironmentVariable(ChecktonPldSettingsData.RemoteServiceNameConfig);
         // 2. Invoca BuildServiceClient
         var serviceClient = BuilServiceClient<ChecktonPldService>(
-            url: baseUri, 
+            url: baseUri,
             // La función 'init' toma el cliente HTTP y la URL, y devuelve la instancia de ChecktonPldService
             init: (httpClient, baseUrl) => new ChecktonPldService(httpClient)
             {
@@ -99,7 +105,8 @@ public class ChecktonPldServiceFacade(
     #endregion
 
 
-    public async Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido, string segundoApellido, Genero genero, DateTime fechaNacimiento, string estado)
+    public async Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido,
+        string segundoApellido, Genero genero, DateTime fechaNacimiento, string estado)
     {
         try
         {

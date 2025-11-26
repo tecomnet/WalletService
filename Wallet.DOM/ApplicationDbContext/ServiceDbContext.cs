@@ -17,7 +17,9 @@ public class ServiceDbContext : DbContext
     public DbSet<Empresa> Empresa { get; set; }
     public DbSet<UbicacionesGeolocalizacion> UbicacionGeolocalizacion { get; set; }
     public DbSet<DispositivoMovilAutorizado> DispositivoMovilAutorizado { get; set; }
-    
+    public DbSet<ProveedorServicio> ProveedorServicio { get; set; }
+    public DbSet<ProductoProveedor> ProductoProveedor { get; set; }
+    public DbSet<ServicioFavorito> ServicioFavorito { get; set; }
 
 
 

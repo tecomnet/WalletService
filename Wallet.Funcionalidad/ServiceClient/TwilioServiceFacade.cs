@@ -1,13 +1,15 @@
 ﻿using Wallet.DOM;
+using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
+using Wallet.Funcionalidad.Remoting.REST;
 
 namespace Wallet.Funcionalidad.ServiceClient;
 
 internal static class TwilioSettingsData
 {
-    internal const string ServiceName = "TwilioService"; 
+    internal const string ServiceName = "TwilioService";
     internal const string Version = "0.1";
     internal const string RemoteServiceNameConfig = "twilio-service";
     internal const string ServiceErrorCode = "EM-INCORRECT-AUTHORIZATION-TYPE";
@@ -30,8 +32,6 @@ public class TwilioServiceFacade(
         remoteServiceNameConfig: TwilioSettingsData.RemoteServiceNameConfig,
         version: TwilioSettingsData.Version), ITwilioServiceFacade
 {
-    
-    
     #region private methods
 
     private TwilioService BuildLocalServiceClientApiKey()
@@ -49,6 +49,7 @@ public class TwilioServiceFacade(
             },
             user: User.ToString());
     }
+
     private TwilioService BuildLocalServiceClientBearer(string token)
     {
         // Build service client
@@ -61,13 +62,14 @@ public class TwilioServiceFacade(
                 BaseUrl = baseUrl
             });
     }
+
     private TwilioService BuildLocalServiceClient()
     {
         // Get url 
         var baseUri = Environment.GetEnvironmentVariable(TwilioSettingsData.RemoteServiceNameConfig);
         // 2. Invoca BuildServiceClient
         var serviceClient = BuilServiceClient<TwilioService>(
-            url: baseUri, 
+            url: baseUri,
             // La función 'init' toma el cliente HTTP y la URL, y devuelve la instancia de TwilioService
             init: (httpClient, baseUrl) => new TwilioService(httpClient)
             {
@@ -146,7 +148,8 @@ public class TwilioServiceFacade(
         }
     }
 
-    public async Task<VerificacionResult> VerificacionEmail(string correoElectronico, string nombreCliente, string nombreEmpresa)
+    public async Task<VerificacionResult> VerificacionEmail(string correoElectronico, string nombreCliente,
+        string nombreEmpresa)
     {
         try
         {

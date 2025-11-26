@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Wallet.Funcionalidad;
 using Wallet.DOM.ApplicationDbContext;
+using Microsoft.Extensions.Configuration;
 
 namespace Wallet.UnitTest.Functionality.Configuration;
 
@@ -25,7 +26,12 @@ public abstract class BaseFacadeTest<T> : UnitTestTemplate, IClassFixture<SetupD
     {
         var services = new ServiceCollection();
         // Configure your services as needed, register dependencies
-        services.AddEmTestServices();
+        var configuration = new ConfigurationBuilder()
+            .AddUserSecrets<SetupDataConfig>()
+            .AddEnvironmentVariables()
+            .Build();
+
+        services.AddEmTestServices(configuration);
         // Build the service provider
         ServiceProvider = services.BuildServiceProvider();
         // Context for test

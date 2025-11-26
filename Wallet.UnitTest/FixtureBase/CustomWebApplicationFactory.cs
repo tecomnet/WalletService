@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Wallet.Funcionalidad;
 
 namespace Wallet.UnitTest.FixtureBase
@@ -31,7 +32,7 @@ namespace Wallet.UnitTest.FixtureBase
         {
             Environment.SetEnvironmentVariable("LogTableName", "ServiceLog");
             Environment.SetEnvironmentVariable("API-Key", "14bb0ffb-7503-4fa6-9969-b721635929db");
-            
+
             base.ConfigureWebHost(builder);
 
             builder.ConfigureTestServices(services =>
@@ -48,7 +49,8 @@ namespace Wallet.UnitTest.FixtureBase
                     defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
                     options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
                 });
-                services.AddEmTestServices();
+                services.AddEmTestServices(services.BuildServiceProvider().GetService<IConfiguration>() ??
+                                           new ConfigurationBuilder().Build());
             });
 
             builder.UseEnvironment("Development");

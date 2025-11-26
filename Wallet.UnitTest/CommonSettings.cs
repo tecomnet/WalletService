@@ -14,12 +14,13 @@ public class CommonSettings
 
 	public CommonSettings()
 	{
-        // Create user data
+		// Create user data
 		CrearEmpresas();
-		CrearEstados();		
+		CrearEstados();
 		CrearClientes();
+		CrearProveedoresServicios();
+		CrearServiciosFavoritos();
 	}
-
 
 
 	private void CrearClientes()
@@ -39,7 +40,8 @@ public class CommonSettings
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega datos personales
-		cliente.AgregarDatosPersonales(nombre: "Cliente", primerApellido: "ApellidoPaterno", segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse("1990-01-01"),
+		cliente.AgregarDatosPersonales(nombre: "Cliente", primerApellido: "ApellidoPaterno",
+			segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse("1990-01-01"),
 			genero: Genero.Masculino, modificationUser: UserId);
 		// Agrega pre direccion
 		cliente.AgregarDireccion(direccion: new Direccion(
@@ -55,7 +57,8 @@ public class CommonSettings
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega datos personales
-		cliente.AgregarDatosPersonales(nombre: "Cliente Tecomnet", primerApellido: "Primer Apellido", segundoApellido: "Segundo Apellido", fechaNacimiento: DateOnly.Parse("1990-01-01"),
+		cliente.AgregarDatosPersonales(nombre: "Cliente Tecomnet", primerApellido: "Primer Apellido",
+			segundoApellido: "Segundo Apellido", fechaNacimiento: DateOnly.Parse("1990-01-01"),
 			genero: Genero.Femenino, modificationUser: UserId);
 		// Agrega dispositivo movil autorizado
 		cliente.AgregarDispositivoMovilAutorizado(dispositivo: new DispositivoMovilAutorizado(
@@ -127,4 +130,49 @@ public class CommonSettings
 		// Agrega empresa
 		Empresas.Add(empresa);
 	}
+
+	private void CrearProveedoresServicios()
+	{
+		// Nuevo proveedor
+		var proveedor = new ProveedorServicio(
+			nombre: "CFE",
+			categoria: ProductoCategoria.Servicios,
+			urlIcono: "https://cfe.mx/logo.png",
+			creationUser: UserId);
+		// Agrega proveedor
+		ProveedoresServicios.Add(proveedor);
+
+		// Nuevo proveedor
+		proveedor = new ProveedorServicio(
+			nombre: "Telmex",
+			categoria: ProductoCategoria.Recargas,
+			urlIcono: "https://telmex.com/logo.png",
+			creationUser: UserId);
+		// Agrega proveedor
+		ProveedoresServicios.Add(proveedor);
+	}
+
+	private void CrearServiciosFavoritos()
+	{
+		// Asumiendo que los IDs se generan secuencialmente y que ya existen clientes y proveedores.
+		// En pruebas unitarias con EF Core In-Memory o similar, los IDs suelen empezar en 1.
+		// Sin embargo, aquí estamos creando objetos antes de guardarlos, por lo que los IDs son 0.
+		// Para ServicioFavorito necesitamos IDs de Cliente y ProveedorServicio.
+		// Esto es complicado porque CommonSettings crea objetos desconectados.
+		// SetupDataConfig los guarda.
+		// Si usamos IDs hardcoded (1, 2, etc.) asumimos que el orden de inserción se respeta y los IDs se generan así.
+		// Vamos a asumir IDs 1 para el primer cliente y primer proveedor.
+
+		var servicioFavorito = new ServicioFavorito(
+			clienteId: 1, // Primer cliente agregado
+			proveedorServicioId: 1, // Primer proveedor agregado
+			alias: "Mi Luz",
+			numeroReferencia: "123456789012",
+			creationUser: UserId);
+
+		ServiciosFavoritos.Add(servicioFavorito);
+	}
+
+	public readonly List<ProveedorServicio> ProveedoresServicios = [];
+	public readonly List<ServicioFavorito> ServiciosFavoritos = [];
 }

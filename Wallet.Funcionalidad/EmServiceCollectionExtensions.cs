@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
+using Wallet.Funcionalidad.Functionality.ProveedorServicioFacade;
+using Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.ServiceClient;
 
@@ -15,8 +17,8 @@ namespace Wallet.Funcionalidad
 	{
 		private static void ConfigureServices(IServiceCollection services)
 		{
-            services.AddLogging();
-            services.AddScoped<UrlBuilder>();
+			services.AddLogging();
+			services.AddScoped<UrlBuilder>();
 			// Setup for external services
 			ConfigureExternalConnectionServices(services: services);
 			// Configure facades
@@ -24,34 +26,37 @@ namespace Wallet.Funcionalidad
 		}
 
 		public static IServiceCollection AddEmServices(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddDbContext<ServiceDbContext>(
-                options =>
-                {
-                    var connString = BuildConnectionString(configuration);
-                    options.UseSqlServer(connString,
-                        optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-                }
-            );
-            ConfigureServices(services);
-            return services;
-        }
+			this IServiceCollection services,
+			IConfiguration configuration)
+		{
+			services.AddDbContext<ServiceDbContext>(options =>
+				{
+					var connString = BuildConnectionString(configuration);
+					options.UseSqlServer(connString,
+						optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+				}
+			);
+			ConfigureServices(services);
+			return services;
+		}
 
-		public static string GetConnectionString()
+		public static string GetConnectionString(IConfiguration configuration)
 		{
 			// Try to get test connection string from environment variable
-			if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("testDbConnectionString")))
+			var envConnectionString = Environment.GetEnvironmentVariable("testDbConnectionString");
+			if (!string.IsNullOrWhiteSpace(envConnectionString))
 			{
-				// Retorna la cadena de conexion de la variable de ambiente del windows
-				//return Environment.GetEnvironmentVariable("testDbConnectionString")!;
-				// Retorna la conexion espaecificada
-				return "Server=.;Initial Catalog=WallerService;User Id=sa; password=123;TrustServerCertificate=True;";
-				// Retorna la conexion del server dev www.winsefweb.net
-				//return "Server=www.winsefweb.net;Initial Catalog=TECOMNET_WALLET;User Id=DesarrolloTecomnet; password=t3comn3t2025*iu;TrustServerCertificate=True;";
+				return envConnectionString;
 			}
-			// Try to get test connection string from environment variables
+
+			// Try to get connection string from configuration (User Secrets or appsettings)
+			var configConnectionString = configuration["dbConnectionString"];
+			if (!string.IsNullOrWhiteSpace(configConnectionString))
+			{
+				return configConnectionString;
+			}
+
+			// Try to get test connection string from environment variables (Azure style)
 			if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbServer")) &&
 			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("Database")) &&
 			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbUser")) &&
@@ -62,30 +67,27 @@ namespace Wallet.Funcionalidad
 				       $"User Id={Environment.GetEnvironmentVariable("DbUser")};" +
 				       $"password={Environment.GetEnvironmentVariable("DbPassword")}; TrustServerCertificate=true;";
 			}
-			// return empty string
+
 			return string.Empty;
 		}
 
-		public static IServiceCollection AddEmTestServices(this IServiceCollection services)
-        {
-            services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(GetConnectionString(),
-                optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
-            ConfigureServices(services);
-            return services;
-        }
-        
-        public static string BuildConnectionString(IConfiguration configuration)
-        {
-            // try to build a connection string from environment variables
-            var connectionString = GetConnectionString();
-            // if we have a connection string, return it
-            if (!string.IsNullOrWhiteSpace(connectionString)) return connectionString;
-            // try to build a connection string from configuration
-            if (!string.IsNullOrWhiteSpace(configuration["dbConnectionString"])) 
-                return configuration["dbConnectionString"]!;
-            
-            throw new Exception("No configuration detected for the service database.");
-        }
+		public static IServiceCollection AddEmTestServices(this IServiceCollection services, IConfiguration configuration)
+		{
+			services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(GetConnectionString(configuration),
+				optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+			ConfigureServices(services);
+			return services;
+		}
+
+		public static string BuildConnectionString(IConfiguration configuration)
+		{
+			// try to build a connection string from configuration
+			var connectionString = GetConnectionString(configuration);
+			// if we have a connection string, return it
+			if (!string.IsNullOrWhiteSpace(connectionString)) return connectionString;
+
+			throw new Exception("No configuration detected for the service database.");
+		}
 
 		/// <summary>
 		/// Setup external connection services
@@ -101,10 +103,12 @@ namespace Wallet.Funcionalidad
 		{
 			services.AddScoped<IClienteFacade, ClienteFacade>();
 			services.AddScoped<IDireccionFacade, DireccionFacade>();
-            services.AddScoped<IUbicacionGeolocalizacionFacade, UbicacionGeolocalizacionFacade>();
-            services.AddScoped<IDispositivoMovilAutorizadoFacade, DispositivoMovilAutorizadoFacadeFacade>();
-            services.AddScoped<IEmpresaFacade, EmpresaFacade>();
-            services.AddScoped<IEstadoFacade, EstadoFacade>();
+			services.AddScoped<IUbicacionGeolocalizacionFacade, UbicacionGeolocalizacionFacade>();
+			services.AddScoped<IDispositivoMovilAutorizadoFacade, DispositivoMovilAutorizadoFacadeFacade>();
+			services.AddScoped<IEmpresaFacade, EmpresaFacade>();
+			services.AddScoped<IEstadoFacade, EstadoFacade>();
+			services.AddScoped<IProveedorServicioFacade, ProveedorServicioFacade>();
+			services.AddScoped<IServicioFavoritoFacade, ServicioFavoritoFacade>();
 		}
 	}
 }
