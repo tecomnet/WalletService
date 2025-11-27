@@ -16,8 +16,6 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
             maximumLength: 100),
     ];
     
-    [Key]
-    public int Id { get; internal set; }
     [Required]
     [MaxLength(100)]
     public string Nombre { get; internal set; }

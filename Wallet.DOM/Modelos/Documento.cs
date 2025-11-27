@@ -18,9 +18,6 @@ public class Documento : ValidatablePersistentObjectLogicalDelete
             propertyName: nameof(TipoPersona),
             isRequired: true)
     ];
-
-    [Key]
-    public int Id { get; private set; }
     
     [Required]
     [MaxLength(100)]

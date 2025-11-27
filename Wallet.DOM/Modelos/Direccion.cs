@@ -64,10 +64,6 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
     ];
 
 
-
-    [Key]
-    public int Id { get; private set; }
-
     //[Required]
     [MaxLength(5)]
     public string? CodigoPostal { get; private set; }

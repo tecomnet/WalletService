@@ -4,7 +4,7 @@ using Wallet.DOM.Errors;
 
 namespace Wallet.DOM.Modelos;
 
-public class DispositivoMovilAutorizado :ValidatablePersistentObjectLogicalDelete
+public class DispositivoMovilAutorizado : ValidatablePersistentObjectLogicalDelete
 {
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
@@ -30,31 +30,21 @@ public class DispositivoMovilAutorizado :ValidatablePersistentObjectLogicalDelet
             maximumLength: 100),
     ];
 
+    [Required] [MaxLength(100)] public string Token { get; private set; }
+    [Required] [MaxLength(100)] public string IdDispositivo { get; private set; }
+    [Required] [MaxLength(100)] public string Nombre { get; private set; }
 
+    [Required] [MaxLength(100)] public string Caracteristicas { get; private set; }
 
-    [Key]
-    public int Id { get; private set; }
-    [Required]
-    [MaxLength(100)]
-    public string Token { get; private set; }
-    [Required]
-    [MaxLength(100)]
-    public string IdDispositivo { get; private set; }
-    [Required]
-    [MaxLength(100)]
-    public string Nombre { get; private set; }
-    
-    [Required]
-    [MaxLength(100)]
-    public string Caracteristicas { get; private set; }
-    
-    [Required]
-    public bool Actual { get; private set; }
+    [Required] public bool Actual { get; private set; }
+
+    public int UsuarioId { get; private set; }
+    public Usuario Usuario { get; private set; }
 
     public DispositivoMovilAutorizado() : base()
     {
-        
     }
+
     public DispositivoMovilAutorizado(
         string token,
         string idDispositivo,
@@ -83,5 +73,4 @@ public class DispositivoMovilAutorizado :ValidatablePersistentObjectLogicalDelet
     {
         Actual = false;
     }
-    
 }

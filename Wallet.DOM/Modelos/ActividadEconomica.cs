@@ -32,10 +32,6 @@ public class ActividadEconomica : ValidatablePersistentObjectLogicalDelete
             minimumLength: 1,
             maximumLength: 500)
     ];
-
-
-    [Key]
-    public int Id { get; private set; }
     
     [Required]
     [MaxLength(100)]

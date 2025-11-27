@@ -18,9 +18,6 @@ public class DocumentacionAdjunta :  ValidatablePersistentObjectLogicalDelete
             propertyName: nameof(Documento),
             isRequired: true)
     ];
-
-    [Key]
-    public int Id { get; private set; }
     
     [Required]
     [MaxLength(500)]

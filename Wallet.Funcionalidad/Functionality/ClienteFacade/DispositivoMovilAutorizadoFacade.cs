@@ -5,15 +5,16 @@ using Wallet.DOM.Modelos;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public class DispositivoMovilAutorizadoFacadeFacade (ServiceDbContext context, IClienteFacade clienteFacade) : IDispositivoMovilAutorizadoFacade 
+public class DispositivoMovilAutorizadoFacadeFacade(ServiceDbContext context, IClienteFacade clienteFacade)
+    : IDispositivoMovilAutorizadoFacade
 {
     public async Task<DispositivoMovilAutorizado> GuardarDispositivoAutorizadoAsync(
-        int idCliente, 
+        int idCliente,
         string token,
         string idDispositivo,
-        string nombre, 
+        string nombre,
         string caracteristicas,
-        Guid creationUser, 
+        Guid creationUser,
         string? testCase = null)
     {
         try
@@ -29,13 +30,13 @@ public class DispositivoMovilAutorizadoFacadeFacade (ServiceDbContext context, I
                 creationUser: creationUser,
                 testCase: testCase);
             // Agregamos el dispositivo
-            cliente.AgregarDispositivoMovilAutorizado(dispositivo: dispositivo, modificationUser: creationUser);
+            cliente.Usuario.AgregarDispositivoMovilAutorizado(dispositivo: dispositivo, modificationUser: creationUser);
             // Guardamos cambios
             await context.SaveChangesAsync();
             // Retornamos el dispositivo
             return dispositivo;
         }
-        catch(Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -52,9 +53,9 @@ public class DispositivoMovilAutorizadoFacadeFacade (ServiceDbContext context, I
             // Obtenemos el cliente
             var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
             // Verificamos si el dispositivo está autorizado
-            return cliente.EsDispositivoAutorizado(idDispositivo: idDispositivo, token: token); 
+            return cliente.Usuario.EsDispositivoAutorizado(idDispositivo: idDispositivo, token: token);
         }
-        catch(Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(

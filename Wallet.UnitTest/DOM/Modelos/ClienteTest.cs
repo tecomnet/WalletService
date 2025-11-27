@@ -29,18 +29,25 @@ public class ClienteTest : UnitTestTemplate
         {
             // Crea un cliente
 #pragma warning disable CS8604 // Possible null reference argument
-            var user = new Cliente(
+            var usuario = new Usuario(
                 codigoPais: codigoPais,
                 telefono: telefono,
+                correoElectronico: null,
+                contrasena: null,
+                estatus: "Activo",
+                creationUser: Guid.NewGuid(),
+                testCase: caseName);
+            var user = new Cliente(
+                usuario: usuario,
                 creationUser: Guid.NewGuid(),
                 testCase: caseName);
             // Check the properties
-            Assert.True(condition: user.Telefono == telefono,
+            Assert.True(condition: user.Usuario.Telefono == telefono,
                 userMessage: $"CodigoPais is not correct. Expected: {codigoPais}. " +
-                             $"Actual: {user.CodigoPais}");
-            Assert.True(condition: user.Telefono == telefono,
+                             $"Actual: {user.Usuario.CodigoPais}");
+            Assert.True(condition: user.Usuario.Telefono == telefono,
                 userMessage: $"Telefono is not correct. Expected: {telefono}. " +
-                             $"Actual: {user.Telefono}");
+                             $"Actual: {user.Usuario.Telefono}");
             // Assert success
             Assert.True(condition: success, userMessage: "Should not reach on failures.");
         }
@@ -153,7 +160,10 @@ public class ClienteTest : UnitTestTemplate
         try
         {
             // Crea una instancia de Cliente (asumiendo un constructor base)
-            var cliente = new Cliente(codigoPais: "+52", telefono: "9825897845", creationUser: Guid.NewGuid(),
+            // Crea una instancia de Cliente (asumiendo un constructor base)
+            var usuario = new Usuario(codigoPais: "+52", telefono: "9825897845", null, null, "Activo", Guid.NewGuid(),
+                testCase: caseName);
+            var cliente = new Cliente(usuario: usuario, creationUser: Guid.NewGuid(),
                 testCase: caseName);
             // Ejecutar el método a probar
             cliente.AgregarDatosPersonales(
@@ -216,9 +226,9 @@ public class ClienteTest : UnitTestTemplate
         "SuperNuevaPass", "SuperNuevaPass1", "PassIncorrecta", null, null, null,
         false, new string[] { ServiceErrorsBuilder.ContrasenasNoCoinciden })]
     // === ERRORES DE CONTRASENA (REQUIRED, LENGTH-INVALID) ===
-    [InlineData("7. ERROR: Contrasena nula", "CrearContrasena",
+    [InlineData("7. OK: Contrasena nula", "CrearContrasena",
         null, null, null, null, null, null,
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
+        true, new string[] { })]
     [InlineData("8. ERROR: Contrasena muy larga (>100)", "CrearContrasena",
         MaxContrasenaMas100Chars, null, null, null, null, null,
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
@@ -241,9 +251,9 @@ public class ClienteTest : UnitTestTemplate
 
     // === ERRORES DE CORREO ELECTRONICO (REQUIRED, LENGTH-INVALID, REGEX-INVALID) ===
     // Restricciones: min 1, max 150, con formato regex
-    [InlineData("13. ERROR: Correo null", "ActualizarCorreoElectronico",
+    [InlineData("13. OK: Correo null", "ActualizarCorreoElectronico",
         null, null, null, null, null, null,
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
+        true, new string[] { })]
     [InlineData("14. ERROR: Correo REGEX-INVALID", "ActualizarCorreoElectronico",
         null, null, null, null, null, "correo@malo",
         false, new string[] { "PROPERTY-VALIDATION-REGEX-INVALID" })]
@@ -274,14 +284,17 @@ public class ClienteTest : UnitTestTemplate
     )
     {
         // 1. Configuración Inicial
-        var cliente = new Cliente(codigoPais: "+52", telefono: "5512345678", creationUser: Guid.NewGuid(),
+        // 1. Configuración Inicial
+        var usuario = new Usuario(codigoPais: "+52", telefono: "5512345678", null, null, "Activo", Guid.NewGuid(),
+            testCase: caseName);
+        var cliente = new Cliente(usuario: usuario, creationUser: Guid.NewGuid(),
             testCase: caseName);
 
         // Si la acción es ActualizarContrasena, debemos inicializar la Contrasena del cliente.
         if (accion == "ActualizarContrasena")
         {
             // Llama al método de dominio para establecer la contraseña inicial.
-            cliente.CrearContrasena(ContrasenaInicial, Guid.NewGuid());
+            cliente.Usuario.CrearContrasena(ContrasenaInicial, Guid.NewGuid());
         }
 
         try
@@ -290,24 +303,24 @@ public class ClienteTest : UnitTestTemplate
             switch (accion)
             {
                 case "CrearContrasena":
-                    cliente.CrearContrasena(nuevaContrasena!, Guid.NewGuid());
-                    Assert.Equal(nuevaContrasena, cliente.Contrasena);
+                    cliente.Usuario.CrearContrasena(nuevaContrasena!, Guid.NewGuid());
+                    Assert.Equal(nuevaContrasena, cliente.Usuario.Contrasena);
                     break;
                 case "ActualizarContrasena":
 #pragma warning disable CS8604 // Possible null reference argument
-                    cliente.ActualizarContrasena(contrasenaNueva: nuevaContrasena!,
+                    cliente.Usuario.ActualizarContrasena(contrasenaNueva: nuevaContrasena!,
                         confirmacionContrasenaNueva: confirmacionNuevaContrasena!, contrasenaActual: contrasenaActual,
                         Guid.NewGuid());
-                    Assert.Equal(nuevaContrasena, cliente.Contrasena);
+                    Assert.Equal(nuevaContrasena, cliente.Usuario.Contrasena);
                     break;
                 case "ActualizarTelefono":
-                    cliente.ActualizarTelefono(codigoPais!, telefono!, Guid.NewGuid());
-                    Assert.Equal(codigoPais, cliente.CodigoPais);
-                    Assert.Equal(telefono, cliente.Telefono);
+                    cliente.Usuario.ActualizarTelefono(codigoPais!, telefono!, Guid.NewGuid());
+                    Assert.Equal(codigoPais, cliente.Usuario.CodigoPais);
+                    Assert.Equal(telefono, cliente.Usuario.Telefono);
                     break;
                 case "ActualizarCorreoElectronico":
-                    cliente.ActualizarCorreoElectronico(correoElectronico!, Guid.NewGuid());
-                    Assert.Equal(correoElectronico, cliente.CorreoElectronico);
+                    cliente.Usuario.ActualizarCorreoElectronico(correoElectronico!, Guid.NewGuid());
+                    Assert.Equal(correoElectronico, cliente.Usuario.CorreoElectronico);
                     break;
                 default:
                     throw new InvalidOperationException($"Acción de prueba '{accion}' no reconocida.");

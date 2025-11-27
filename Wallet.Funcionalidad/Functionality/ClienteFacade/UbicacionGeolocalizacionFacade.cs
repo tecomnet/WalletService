@@ -6,7 +6,8 @@ using Wallet.DOM.Modelos;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
-public class UbicacionGeolocalizacionFacade(IClienteFacade clienteFacade, ServiceDbContext context) : IUbicacionGeolocalizacionFacade
+public class UbicacionGeolocalizacionFacade(IClienteFacade clienteFacade, ServiceDbContext context)
+    : IUbicacionGeolocalizacionFacade
 {
     public async Task<UbicacionesGeolocalizacion> GuardarUbicacionGeolocalizacionAsync(
         int idCliente,
@@ -36,7 +37,8 @@ public class UbicacionGeolocalizacionFacade(IClienteFacade clienteFacade, Servic
                 creationUser: creationUser,
                 testCase: testCase);
             // Agrega ubicacion
-            cliente.AgregarUbicacionGeolocalizacion(ubicacion: ubicacionGeolocalizacion, modificationUser: creationUser);
+            cliente.Usuario.AgregarUbicacionGeolocalizacion(ubicacion: ubicacionGeolocalizacion,
+                modificationUser: creationUser);
             // Guarda cambios
             await context.SaveChangesAsync();
             // Retorna ubicacion

@@ -43,16 +43,17 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             // Assert user created
             Assert.NotNull(cliente);
             // Assert user properties
-            Assert.True(cliente.CodigoPais == codigoPais &&
-                        cliente.Telefono == telefono &&
+            Assert.True(cliente.Usuario.CodigoPais == codigoPais &&
+                        cliente.Usuario.Telefono == telefono &&
                         cliente.CreationUser == SetupConfig.UserId);
             // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext = await Context.Cliente.Include(x => x.Usuario).AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == cliente.Id);
             // Confirm user created in context
             Assert.NotNull(clienteContext);
             // Assert user properties
-            Assert.True(clienteContext.CodigoPais == codigoPais &&
-                        clienteContext.Telefono == telefono &&
+            Assert.True(clienteContext.Usuario.CodigoPais == codigoPais &&
+                        clienteContext.Usuario.Telefono == telefono &&
                         clienteContext.CreationUser == SetupConfig.UserId);
             // Assert successful test
             Assert.True(success);
@@ -105,13 +106,14 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 .ReturnsAsync(new ValidacionCurpResult { Success = true, CurpGenerada = "AAAA000000HDFXXX00" });
 
             // Pre-requisite: Client must have verified SMS for this test
-            var clientToUpdate = await Context.Cliente.FirstOrDefaultAsync(x => x.Id == idCliente);
+            var clientToUpdate =
+                await Context.Cliente.Include(x => x.Usuario).FirstOrDefaultAsync(x => x.Id == idCliente);
             if (clientToUpdate != null)
             {
                 var verificacion = new Verificacion2FA("SID_PRE_VERIFIED", DateTime.Now.AddMinutes(10), Tipo2FA.Sms,
                     SetupConfig.UserId);
-                clientToUpdate.AgregarVerificacion2FA(verificacion, SetupConfig.UserId);
-                clientToUpdate.ConfirmarVerificacion2FA(Tipo2FA.Sms, "0000", SetupConfig.UserId);
+                clientToUpdate.Usuario.AgregarVerificacion2FA(verificacion, SetupConfig.UserId);
+                clientToUpdate.Usuario.ConfirmarVerificacion2FA(Tipo2FA.Sms, "0000", SetupConfig.UserId);
                 await Context.SaveChangesAsync();
                 // Detach to ensure Facade fetches fresh data if needed, though same context should track changes.
                 Context.Entry(clientToUpdate).State = EntityState.Detached;
@@ -135,7 +137,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             Assert.True(cliente.Nombre == nombre &&
                         cliente.PrimerApellido == primerApellido &&
                         cliente.SegundoApellido == segundoApellido &&
-                        cliente.Estado.Nombre == nombreEstado &&
+                        cliente.Estado!.Nombre == nombreEstado &&
                         cliente.FechaNacimiento == fechaNacimientoDateOnly &&
                         cliente.Genero == genero &&
                         cliente.ModificationUser == SetupConfig.UserId);
@@ -148,7 +150,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             Assert.True(clienteContext.Nombre == nombre &&
                         clienteContext.PrimerApellido == primerApellido &&
                         clienteContext.SegundoApellido == segundoApellido &&
-                        clienteContext.Estado.Nombre == nombreEstado &&
+                        clienteContext.Estado!.Nombre == nombreEstado &&
                         clienteContext.FechaNacimiento == fechaNacimientoDateOnly &&
                         clienteContext.Genero == genero &&
                         clienteContext.ModificationUser == SetupConfig.UserId);
@@ -207,23 +209,24 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             Assert.NotNull(cliente);
             // Assert user properties
             Assert.True(cliente.Id == idCliente &&
-                        cliente.Contrasena == contrasena &&
-                        cliente.ModificationUser == SetupConfig.UserId);
+                        cliente.Usuario.Contrasena == contrasena &&
+                        cliente.Usuario.ModificationUser == SetupConfig.UserId);
             // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext = await Context.Cliente.Include(x => x.Usuario).AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == cliente.Id);
             // Confirm user created in context
             Assert.NotNull(clienteContext);
             // Assert user properties
             Assert.True(clienteContext.Id == idCliente &&
-                        clienteContext.Contrasena == contrasena &&
-                        clienteContext.ModificationUser == SetupConfig.UserId);
+                        clienteContext.Usuario.Contrasena == contrasena &&
+                        clienteContext.Usuario.ModificationUser == SetupConfig.UserId);
 
             if (aplicaActualizacion)
             {
                 // Call facade method
                 cliente = await Facade.ActualizarContrasenaAsync(
                     idCliente: idCliente,
-                    contrasenaActual: cliente.Contrasena,
+                    contrasenaActual: cliente.Usuario.Contrasena,
                     contrasenaNueva: contrasenaNueva,
                     confirmacionContrasenaNueva: contrasenaConfirmacion,
                     modificationUser: SetupConfig.UserId);
@@ -231,16 +234,17 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 Assert.NotNull(cliente);
                 // Assert user properties
                 Assert.True(cliente.Id == idCliente &&
-                            cliente.Contrasena == contrasenaNueva &&
-                            cliente.ModificationUser == SetupConfig.UserId);
+                            cliente.Usuario.Contrasena == contrasenaNueva &&
+                            cliente.Usuario.ModificationUser == SetupConfig.UserId);
                 // Get the user from context
-                clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+                clienteContext = await Context.Cliente.Include(x => x.Usuario).AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == cliente.Id);
                 // Confirm user created in context
                 Assert.NotNull(clienteContext);
                 // Assert user properties
                 Assert.True(clienteContext.Id == idCliente &&
-                            clienteContext.Contrasena == contrasenaNueva &&
-                            clienteContext.ModificationUser == SetupConfig.UserId);
+                            clienteContext.Usuario.Contrasena == contrasenaNueva &&
+                            clienteContext.Usuario.ModificationUser == SetupConfig.UserId);
             }
 
             // Assert successful test
@@ -289,17 +293,18 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             // Assert user created
             Assert.NotNull(cliente);
             // Assert user properties
-            Assert.True(cliente.CodigoPais == codigoPais &&
-                        cliente.Telefono == telefono &&
-                        cliente.ModificationUser == SetupConfig.UserId);
+            Assert.True(cliente.Usuario.CodigoPais == codigoPais &&
+                        cliente.Usuario.Telefono == telefono &&
+                        cliente.Usuario.ModificationUser == SetupConfig.UserId);
             // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext = await Context.Cliente.Include(x => x.Usuario).AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == cliente.Id);
             // Confirm user created in context
             Assert.NotNull(clienteContext);
             // Assert user properties
-            Assert.True(clienteContext.CodigoPais == codigoPais &&
-                        clienteContext.Telefono == telefono &&
-                        clienteContext.ModificationUser == SetupConfig.UserId);
+            Assert.True(clienteContext.Usuario.CodigoPais == codigoPais &&
+                        clienteContext.Usuario.Telefono == telefono &&
+                        clienteContext.Usuario.ModificationUser == SetupConfig.UserId);
             // Assert successful test
             Assert.True(success);
         }
@@ -339,8 +344,10 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             // Pre-requisite: Inject duplicate client if needed
             if (expectedErrors.Contains(ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico))
             {
-                var duplicateClient = new Cliente("+52", "9999999999", SetupConfig.UserId);
-                duplicateClient.ActualizarCorreoElectronico(correoElectronico, SetupConfig.UserId);
+                var usuario = new Usuario("+52", "9999999999", null, null, "Activo", SetupConfig.UserId);
+                var duplicateClient = new Cliente(usuario, SetupConfig.UserId);
+                duplicateClient.Usuario.ActualizarCorreoElectronico(correoElectronico, SetupConfig.UserId);
+                Context.Usuario.Add(usuario);
                 Context.Cliente.Add(duplicateClient);
                 await Context.SaveChangesAsync();
             }
@@ -356,15 +363,16 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             // Assert user created
             Assert.NotNull(cliente);
             // Assert user properties
-            Assert.True(cliente.CorreoElectronico == correoElectronico &&
-                        cliente.ModificationUser == SetupConfig.UserId);
+            Assert.True(cliente.Usuario.CorreoElectronico == correoElectronico &&
+                        cliente.Usuario.ModificationUser == SetupConfig.UserId);
             // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext = await Context.Cliente.Include(x => x.Usuario).AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == cliente.Id);
             // Confirm user created in context
             Assert.NotNull(clienteContext);
             // Assert user properties
-            Assert.True(clienteContext.CorreoElectronico == correoElectronico &&
-                        clienteContext.ModificationUser == SetupConfig.UserId);
+            Assert.True(clienteContext.Usuario.CorreoElectronico == correoElectronico &&
+                        clienteContext.Usuario.ModificationUser == SetupConfig.UserId);
             // Assert successful test
             Assert.True(success);
         }

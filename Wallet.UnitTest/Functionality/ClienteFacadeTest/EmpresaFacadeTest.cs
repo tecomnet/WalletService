@@ -6,15 +6,15 @@ using Wallet.UnitTest.Functionality.Configuration;
 namespace Wallet.UnitTest.Functionality.ClienteFacadeTest;
 
 public class EmpresaFacadeTest(SetupDataConfig setupConfig)
-    : BaseFacadeTest<IEmpresaFacade>(setupConfig) 
+    : BaseFacadeTest<IEmpresaFacade>(setupConfig)
 {
-     // =============================
+    // =============================
     // --- OBTENER POR ID ---
     // =============================
 
     [Theory(DisplayName = "ObtenerPorIdAsync: Retorna la empresa existente por ID")]
-    [InlineData(1, "Tecomnet")] 
-    [InlineData(2, "EmpresaInactiva")] 
+    [InlineData(1, "Tecomnet")]
+    [InlineData(2, "EmpresaInactiva")]
     public async Task ObtenerPorIdAsync_Existente_RetornaEmpresa(int id, string nombreEsperado)
     {
         // Act
@@ -26,11 +26,10 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
     }
 
     [Theory(DisplayName = "ObtenerPorIdAsync: Lanza excepción si la empresa no existe")]
-    [InlineData(100)] 
-    [InlineData(0)]   
+    [InlineData(100)]
+    [InlineData(0)]
     public async Task ObtenerPorIdAsync_NoExistente_LanzaEmpresaNoEncontrada(int id)
     {
-
         // Act & Assert
         await Assert.ThrowsAsync<EMGeneralAggregateException>(() => Facade.ObtenerPorIdAsync(id));
     }
@@ -72,28 +71,30 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         const string nombreNuevo = "EmpresaTestGuardar";
 
         // Act
-        var result = await Facade.GuardarEmpresaAsync(nombre: nombreNuevo, creationUser: SetupConfig.UserId, testCase: SetupConfig.TestCaseId);
+        var result = await Facade.GuardarEmpresaAsync(nombre: nombreNuevo, creationUser: SetupConfig.UserId,
+            testCase: SetupConfig.TestCaseId);
 
         // Assert
         Assert.NotNull(result);
         Assert.True(result.Id > 0); // EF Core asignó un ID
         Assert.Equal(nombreNuevo, result.Nombre);
-        
+
         // Verifica que se guardó en la DB
         var savedEntity = await Context.Empresa.AsNoTracking().FirstAsync(x => x.Id == result.Id);
         Assert.NotNull(savedEntity);
     }
 
     [Theory(DisplayName = "GuardarEmpresaAsync: Lanza excepción por duplicidad de nombre")]
-    [InlineData("Tecomnet")] 
-    [InlineData("EmpresaInactiva")] 
+    [InlineData("Tecomnet")]
+    [InlineData("EmpresaInactiva")]
     public async Task GuardarEmpresaAsync_Duplicado_LanzaEmpresaDuplicada(string nombreDuplicado)
     {
         // Act & Assert
-        await Assert.ThrowsAsync<EMGeneralAggregateException>(() => 
-            Facade.GuardarEmpresaAsync(nombre: nombreDuplicado, creationUser: SetupConfig.UserId, testCase: SetupConfig.TestCaseId));
+        await Assert.ThrowsAsync<EMGeneralAggregateException>(() =>
+            Facade.GuardarEmpresaAsync(nombre: nombreDuplicado, creationUser: SetupConfig.UserId,
+                testCase: SetupConfig.TestCaseId));
     }
-    
+
     // =============================
     // --- ACTUALIZAR EMPRESA ---
     // =============================
@@ -106,11 +107,12 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         const string nuevoNombre = "TecomnetActualizada";
 
         // Act
-        var result = await Facade.ActualizaEmpresaAsync(idEmpresa: idAActualizar, nombre: nuevoNombre, modificationUser: SetupConfig.UserId);
+        var result = await Facade.ActualizaEmpresaAsync(idEmpresa: idAActualizar, nombre: nuevoNombre,
+            modificationUser: SetupConfig.UserId);
 
         // Assert
         Assert.Equal(nuevoNombre, result.Nombre);
-        
+
         // Verifica el cambio en la DB
         var savedEntity = await Context.Empresa.AsNoTracking().FirstAsync(x => x.Id == idAActualizar);
         Assert.Equal(nuevoNombre, savedEntity.Nombre);
@@ -122,26 +124,28 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         // Arrange
         const int idAActualizar = 1; // Tecomnet
         const string nombreDuplicado = "EmpresaInactiva"; // Ya existe
-        
+
         // Act & Assert
-        await Assert.ThrowsAsync<EMGeneralAggregateException>(() => 
-            Facade.ActualizaEmpresaAsync(idEmpresa: idAActualizar, nombre: nombreDuplicado, modificationUser: SetupConfig.UserId));
+        await Assert.ThrowsAsync<EMGeneralAggregateException>(() =>
+            Facade.ActualizaEmpresaAsync(idEmpresa: idAActualizar, nombre: nombreDuplicado,
+                modificationUser: SetupConfig.UserId));
     }
-    
+
     [Fact(DisplayName = "ActualizaEmpresaAsync: Lanza excepción si la empresa está inactiva")]
     public async Task ActualizaEmpresaAsync_Inactiva_LanzaEmpresaInactiva()
     {
         // Arrange
-        const int idInactiva = 2; 
-        
+        const int idInactiva = 2;
+
         // Inactivar la entidad en la DB antes de la prueba (Simulación)
         var empresaToDeactivate = await Context.Empresa.FindAsync(idInactiva);
-        empresaToDeactivate.Deactivate(SetupConfig.UserId);
+        empresaToDeactivate!.Deactivate(SetupConfig.UserId);
         await Context.SaveChangesAsync();
-        
+
         // Act & Assert
-        await Assert.ThrowsAsync<EMGeneralAggregateException>(() => 
-            Facade.ActualizaEmpresaAsync(idEmpresa: idInactiva, nombre: "NombreNoImporta", modificationUser: SetupConfig.UserId));
+        await Assert.ThrowsAsync<EMGeneralAggregateException>(() =>
+            Facade.ActualizaEmpresaAsync(idEmpresa: idInactiva, nombre: "NombreNoImporta",
+                modificationUser: SetupConfig.UserId));
     }
 
 
@@ -153,14 +157,14 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
     public async Task EliminaEmpresaAsync_Valido_DesactivaEmpresa()
     {
         // Arrange
-        const int idAEliminar = 1; 
-        
+        const int idAEliminar = 1;
+
         // Act
         var result = await Facade.EliminaEmpresaAsync(idAEliminar, SetupConfig.UserId);
 
         // Assert
         Assert.False(result.IsActive);
-        
+
         // Verifica el cambio en la DB
         var savedEntity = await Context.Empresa.AsNoTracking().FirstAsync(x => x.Id == idAEliminar);
         Assert.False(savedEntity.IsActive);
@@ -170,19 +174,19 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
     public async Task ActivaEmpresaAsync_Inactiva_ActivaEmpresa()
     {
         // Arrange
-        const int idAActivar = 2; 
-        
+        const int idAActivar = 2;
+
         // 1. Desactivar la entidad primero (Simulación)
         var empresaToDeactivate = await Context.Empresa.FindAsync(idAActivar);
-        empresaToDeactivate.Deactivate(SetupConfig.UserId);
+        empresaToDeactivate!.Deactivate(SetupConfig.UserId);
         await Context.SaveChangesAsync();
-        
+
         // Act
         var result = await Facade.ActivaEmpresaAsync(idAActivar, SetupConfig.UserId);
 
         // Assert
         Assert.True(result.IsActive);
-        
+
         // Verifica el cambio en la DB
         var savedEntity = await Context.Empresa.AsNoTracking().FirstAsync(x => x.Id == idAActivar);
         Assert.True(savedEntity.IsActive);

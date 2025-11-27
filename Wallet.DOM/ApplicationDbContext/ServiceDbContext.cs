@@ -5,11 +5,11 @@ namespace Wallet.DOM.ApplicationDbContext;
 
 public class ServiceDbContext : DbContext
 {
-
     public ServiceDbContext(DbContextOptions<ServiceDbContext> options) : base(options)
     {
     }
 
+    public DbSet<Usuario> Usuario { get; set; }
     public DbSet<Cliente> Cliente { get; set; }
     public DbSet<Verificacion2FA> Verificacion2FA { get; set; }
     public DbSet<Direccion> Direccion { get; set; }
@@ -20,7 +20,6 @@ public class ServiceDbContext : DbContext
     public DbSet<ProveedorServicio> ProveedorServicio { get; set; }
     public DbSet<ProductoProveedor> ProductoProveedor { get; set; }
     public DbSet<ServicioFavorito> ServicioFavorito { get; set; }
-
 
 
     // Sobrescribimos este método para configurar el modelo y agregar los datos iniciales
@@ -45,23 +44,23 @@ public class ServiceDbContext : DbContext
         /*modelBuilder.Entity<Empresa>().HasData(
             new Empresa
             {
-                Id = 1, 
-                Nombre = "Tecomnet", 
+                Id = 1,
+                Nombre = "Tecomnet",
                 CreationUser = Guid.Empty,
                 TestCaseID = "Seeding",
                 IsActive = true
             },
             new Empresa
             {
-                Id = 2, 
-                Nombre = "NuevaEmpresa", 
+                Id = 2,
+                Nombre = "NuevaEmpresa",
                 CreationUser = Guid.Empty,
                 TestCaseID = "Seeding",
                 IsActive = true
             }
         );
 
-        // B. Seed para la entidad Estados de Mexico 
+        // B. Seed para la entidad Estados de Mexico
         modelBuilder.Entity<Estado>().HasData(
             new Estado { Id = 1, Nombre = "Aguascalientes", CreationUser = Guid.Empty, TestCaseID = "Seeding", IsActive = true},
             new Estado { Id = 2, Nombre = "Baja California", CreationUser = Guid.Empty, TestCaseID = "Seeding", IsActive = true },

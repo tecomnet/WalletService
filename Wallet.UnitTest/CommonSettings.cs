@@ -11,6 +11,7 @@ public class CommonSettings
 	public readonly List<Cliente> Clientes = [];
 	public readonly List<Estado> Estados = [];
 	public readonly List<Empresa> Empresas = [];
+	public readonly List<Usuario> Usuarios = [];
 
 	public CommonSettings()
 	{
@@ -26,21 +27,39 @@ public class CommonSettings
 	{
 		var tecomnet = Empresas.First(e => e.Nombre == "Tecomnet");
 		// Cliente pre registro
-		var cliente = new Cliente(
+		var usuario = new Usuario(
 			codigoPais: "+52",
 			telefono: "9812078573",
+			correoElectronico: null,
+			contrasena: null,
+			estatus: "Activo",
 			creationUser: UserId,
 			testCase: TestCaseId);
-		cliente.AgregarEmpresa(tecomnet, UserId);
+		usuario.AgregarEmpresa(tecomnet, UserId);
+		Usuarios.Add(usuario);
+
+		var cliente = new Cliente(
+			usuario: usuario,
+			creationUser: UserId,
+			testCase: TestCaseId);
 		// Agrega cliente
 		Clientes.Add(cliente);
 		// Nuevo cliente con datos completos
-		cliente = new Cliente(
+		usuario = new Usuario(
 			codigoPais: "+52",
 			telefono: "1234567890",
+			correoElectronico: null,
+			contrasena: null,
+			estatus: "Activo",
 			creationUser: UserId,
 			testCase: TestCaseId);
-		cliente.AgregarEmpresa(tecomnet, UserId);
+		usuario.AgregarEmpresa(tecomnet, UserId);
+		Usuarios.Add(usuario);
+
+		cliente = new Cliente(
+			usuario: usuario,
+			creationUser: UserId,
+			testCase: TestCaseId);
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente", primerApellido: "ApellidoPaterno",
 			segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse("1990-01-01"),
@@ -53,18 +72,27 @@ public class CommonSettings
 			testCase: TestCaseId), creationUser: UserId);
 		Clientes.Add(cliente);
 		// Nuevo cliente con datos completos
-		cliente = new Cliente(
+		usuario = new Usuario(
 			codigoPais: "+52",
 			telefono: "9876543210",
+			correoElectronico: null,
+			contrasena: null,
+			estatus: "Activo",
 			creationUser: UserId,
 			testCase: TestCaseId);
-		cliente.AgregarEmpresa(tecomnet, UserId);
+		usuario.AgregarEmpresa(tecomnet, UserId);
+		Usuarios.Add(usuario);
+
+		cliente = new Cliente(
+			usuario: usuario,
+			creationUser: UserId,
+			testCase: TestCaseId);
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente Tecomnet", primerApellido: "Primer Apellido",
 			segundoApellido: "Segundo Apellido", fechaNacimiento: DateOnly.Parse("1990-01-01"),
 			genero: Genero.Femenino, modificationUser: UserId);
 		// Agrega dispositivo movil autorizado
-		cliente.AgregarDispositivoMovilAutorizado(dispositivo: new DispositivoMovilAutorizado(
+		cliente.Usuario.AgregarDispositivoMovilAutorizado(dispositivo: new DispositivoMovilAutorizado(
 			token: "32414",
 			idDispositivo: "32414",
 			nombre: "nombre dispositivo",
@@ -134,44 +162,44 @@ public class CommonSettings
 		Empresas.Add(empresa);
 	}
 
-    private void CrearProveedoresServicios()
-    {
-        // Nuevo proveedor
-        var proveedor = new ProveedorServicio(
-            nombre: "CFE",
-            categoria: ProductoCategoria.Servicios,
-            urlIcono: "https://cfe.mx/logo.png",
-            creationUser: UserId);
-        // Agrega proveedor
-        ProveedoresServicios.Add(proveedor);
+	private void CrearProveedoresServicios()
+	{
+		// Nuevo proveedor
+		var proveedor = new ProveedorServicio(
+			nombre: "CFE",
+			categoria: ProductoCategoria.Servicios,
+			urlIcono: "https://cfe.mx/logo.png",
+			creationUser: UserId);
+		// Agrega proveedor
+		ProveedoresServicios.Add(proveedor);
 
-        proveedor.AgregarProducto(
-            sku: "SKU123",
-            nombre: "Netflix Premium",
-            monto: 15.99m,
-            descripcion: "Premium subscription",
-            creationUser: UserId);
+		proveedor.AgregarProducto(
+			sku: "SKU123",
+			nombre: "Netflix Premium",
+			monto: 15.99m,
+			descripcion: "Premium subscription",
+			creationUser: UserId);
 
-        // Nuevo proveedor
-        proveedor = new ProveedorServicio(
-            nombre: "Telmex",
-            categoria: ProductoCategoria.Recargas,
-            urlIcono: "https://telmex.com/logo.png",
-            creationUser: UserId);
-        // Agrega proveedor
-        ProveedoresServicios.Add(proveedor);
-    }
+		// Nuevo proveedor
+		proveedor = new ProveedorServicio(
+			nombre: "Telmex",
+			categoria: ProductoCategoria.Recargas,
+			urlIcono: "https://telmex.com/logo.png",
+			creationUser: UserId);
+		// Agrega proveedor
+		ProveedoresServicios.Add(proveedor);
+	}
 
-    public void CrearServiciosFavoritos(Cliente primerCliente, ProveedorServicio primerProveedor)
-    {
-        var servicioFavorito = new ServicioFavorito(
-            cliente: primerCliente,
-            proveedorServicio: primerProveedor,
-            alias: "Mi Luz",
-            numeroReferencia: "123456789012",
-            creationUser: UserId);
-        ServiciosFavoritos.Add(servicioFavorito);
-    }
+	public void CrearServiciosFavoritos(Cliente primerCliente, ProveedorServicio primerProveedor)
+	{
+		var servicioFavorito = new ServicioFavorito(
+			cliente: primerCliente,
+			proveedorServicio: primerProveedor,
+			alias: "Mi Luz",
+			numeroReferencia: "123456789012",
+			creationUser: UserId);
+		ServiciosFavoritos.Add(servicioFavorito);
+	}
 
 
 	public readonly List<ProveedorServicio> ProveedoresServicios = [];

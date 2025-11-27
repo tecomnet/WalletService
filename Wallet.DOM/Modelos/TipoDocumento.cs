@@ -15,9 +15,6 @@ public class TipoDocumento : ValidatablePersistentObjectLogicalDelete
             maximumLength: 100)
     ];
 
-    [Key]
-    public int Id { get; private set; }
-
     [Required]
     [MaxLength(100)]
     public string Nombre { get; private set; }

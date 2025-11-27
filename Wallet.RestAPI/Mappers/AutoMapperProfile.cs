@@ -24,7 +24,13 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Estado,
                 opt => opt.MapFrom(src => src.Estado.Nombre))
             .ForMember(dest => dest.Empresa,
-                opt => opt.MapFrom(src => src.Empresa.Nombre));
+                opt => opt.MapFrom(src => src.Usuario.Empresa.Nombre))
+            .ForMember(dest => dest.CodigoPais,
+                opt => opt.MapFrom(src => src.Usuario.CodigoPais))
+            .ForMember(dest => dest.Telefono,
+                opt => opt.MapFrom(src => src.Usuario.Telefono))
+            .ForMember(dest => dest.CorreoElectronico,
+                opt => opt.MapFrom(src => src.Usuario.CorreoElectronico));
         CreateMap<UbicacionesGeolocalizacion, UbicacionResult>();
         CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>();
         CreateMap<Direccion, DireccionResult>();

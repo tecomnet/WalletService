@@ -17,9 +17,6 @@ public class ValidacionCheckton : ValidatablePersistentObjectLogicalDelete
             isRequired: true)
     ];
 
-
-    [Key]
-    public int Id { get; private set; }
     [Required]
     public TipoCheckton TipoCheckton { get; private set; }
     [Required]

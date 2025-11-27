@@ -49,10 +49,6 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
             maximumLength: 45),
     ];
 
-
-    [Key]
-    public int Id { get; private set; }
-
     [Required]
     [Column(TypeName = "decimal(11, 8)")]
     public decimal Latitud { get; private set; }
@@ -61,30 +57,22 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
     [Column(TypeName = "decimal(11, 8)")]
     public decimal Longitud { get; private set; }
 
-    [Required]
-    public Dispositivo Dispositivo { get; private set; }
+    [Required] public Dispositivo Dispositivo { get; private set; }
 
-    [Required]
-    [MaxLength(100)]
-    public string TipoEvento { get; private set; }
+    [Required] [MaxLength(100)] public string TipoEvento { get; private set; }
 
-    [Required]
-    [MaxLength(100)]
-    public string TipoDispositivo { get; private set; }
-    [Required]
-    [MaxLength(100)]
-    public string Agente { get; private set; }
+    [Required] [MaxLength(100)] public string TipoDispositivo { get; private set; }
+    [Required] [MaxLength(100)] public string Agente { get; private set; }
 
-    [Required]
-    [MaxLength(45)]
-    public string DireccionIp { get; private set; }
-    
-    public Cliente Cliente { get; private set; }
+    [Required] [MaxLength(45)] public string DireccionIp { get; private set; }
+
+    public int UsuarioId { get; private set; }
+    public Usuario Usuario { get; private set; }
 
     public UbicacionesGeolocalizacion() : base()
     {
-        
     }
+
     public UbicacionesGeolocalizacion(
         decimal latitud,
         decimal longitud,
@@ -116,6 +104,4 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
         Agente = agente;
         DireccionIp = direccionIp;
     }
-
-
 }
