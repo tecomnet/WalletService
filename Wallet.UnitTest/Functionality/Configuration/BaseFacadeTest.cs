@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Wallet.Funcionalidad;
 using Wallet.DOM.ApplicationDbContext;
 using Microsoft.Extensions.Configuration;
+using Moq; // Add Moq namespace
+using Wallet.Funcionalidad.ServiceClient; // Add namespace for facades
 
 namespace Wallet.UnitTest.Functionality.Configuration;
 
@@ -19,6 +21,10 @@ public abstract class BaseFacadeTest<T> : UnitTestTemplate, IClassFixture<SetupD
     // Defines a facade for test
     protected readonly T Facade;
 
+    // Mocks for external services
+    public Mock<ITwilioServiceFacade> TwilioServiceFacadeMock { get; }
+    public Mock<IChecktonPldServiceFacade> ChecktonPldServiceFacadeMock { get; }
+
     // Dependency injection container
     private IServiceProvider ServiceProvider { get; }
 
@@ -32,6 +38,15 @@ public abstract class BaseFacadeTest<T> : UnitTestTemplate, IClassFixture<SetupD
             .Build();
 
         services.AddEmTestServices(configuration);
+
+        // Instantiate mocks
+        TwilioServiceFacadeMock = new Mock<ITwilioServiceFacade>();
+        ChecktonPldServiceFacadeMock = new Mock<IChecktonPldServiceFacade>();
+
+        // Override with mocked services
+        services.AddSingleton(TwilioServiceFacadeMock.Object);
+        services.AddSingleton(ChecktonPldServiceFacadeMock.Object);
+
         // Build the service provider
         ServiceProvider = services.BuildServiceProvider();
         // Context for test

@@ -97,6 +97,33 @@ namespace Wallet.DOM.Modelos
             NumeroReferencia = numeroReferencia;
         }
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase <see cref="ServicioFavorito"/> con objetos de Cliente y ProveedorServicio.
+        /// </summary>
+        /// <param name="cliente">El objeto Cliente.</param>
+        /// <param name="proveedorServicio">El objeto ProveedorServicio.</param>
+        /// <param name="alias">El alias para el servicio.</param>
+        /// <param name="numeroReferencia">El número de referencia del servicio.</param>
+        /// <param name="creationUser">El usuario que crea el registro.</param>
+        public ServicioFavorito(Cliente cliente, ProveedorServicio proveedorServicio, string alias,
+            string numeroReferencia, Guid creationUser) : base(creationUser)
+        {
+            var exceptions = new List<EMGeneralException>();
+            IsPropertyValid(nameof(Alias), alias, ref exceptions);
+            IsPropertyValid(nameof(NumeroReferencia), numeroReferencia, ref exceptions);
+            if (exceptions.Count > 0)
+            {
+                throw new EMGeneralAggregateException(exceptions);
+            }
+
+            Cliente = cliente;
+            ClienteId = cliente.Id;
+            ProveedorServicio = proveedorServicio;
+            ProveedorServicioId = proveedorServicio.Id;
+            Alias = alias;
+            NumeroReferencia = numeroReferencia;
+        }
+
 
         /// <summary>
         /// Actualiza los datos del servicio favorito.

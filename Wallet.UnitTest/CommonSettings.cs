@@ -19,18 +19,19 @@ public class CommonSettings
 		CrearEstados();
 		CrearClientes();
 		CrearProveedoresServicios();
-		CrearServiciosFavoritos();
 	}
 
 
 	private void CrearClientes()
 	{
+		var tecomnet = Empresas.First(e => e.Nombre == "Tecomnet");
 		// Cliente pre registro
 		var cliente = new Cliente(
 			codigoPais: "+52",
 			telefono: "9812078573",
 			creationUser: UserId,
 			testCase: TestCaseId);
+		cliente.AgregarEmpresa(tecomnet, UserId);
 		// Agrega cliente
 		Clientes.Add(cliente);
 		// Nuevo cliente con datos completos
@@ -39,6 +40,7 @@ public class CommonSettings
 			telefono: "1234567890",
 			creationUser: UserId,
 			testCase: TestCaseId);
+		cliente.AgregarEmpresa(tecomnet, UserId);
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente", primerApellido: "ApellidoPaterno",
 			segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse("1990-01-01"),
@@ -56,6 +58,7 @@ public class CommonSettings
 			telefono: "9876543210",
 			creationUser: UserId,
 			testCase: TestCaseId);
+		cliente.AgregarEmpresa(tecomnet, UserId);
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente Tecomnet", primerApellido: "Primer Apellido",
 			segundoApellido: "Segundo Apellido", fechaNacimiento: DateOnly.Parse("1990-01-01"),
@@ -131,48 +134,47 @@ public class CommonSettings
 		Empresas.Add(empresa);
 	}
 
-	private void CrearProveedoresServicios()
-	{
-		// Nuevo proveedor
-		var proveedor = new ProveedorServicio(
-			nombre: "CFE",
-			categoria: ProductoCategoria.Servicios,
-			urlIcono: "https://cfe.mx/logo.png",
-			creationUser: UserId);
-		// Agrega proveedor
-		ProveedoresServicios.Add(proveedor);
+    private void CrearProveedoresServicios()
+    {
+        // Nuevo proveedor
+        var proveedor = new ProveedorServicio(
+            nombre: "CFE",
+            categoria: ProductoCategoria.Servicios,
+            urlIcono: "https://cfe.mx/logo.png",
+            creationUser: UserId);
+        // Agrega proveedor
+        ProveedoresServicios.Add(proveedor);
 
-		// Nuevo proveedor
-		proveedor = new ProveedorServicio(
-			nombre: "Telmex",
-			categoria: ProductoCategoria.Recargas,
-			urlIcono: "https://telmex.com/logo.png",
-			creationUser: UserId);
-		// Agrega proveedor
-		ProveedoresServicios.Add(proveedor);
-	}
+        proveedor.AgregarProducto(
+            sku: "SKU123",
+            nombre: "Netflix Premium",
+            monto: 15.99m,
+            descripcion: "Premium subscription",
+            creationUser: UserId);
 
-	private void CrearServiciosFavoritos()
-	{
-		// Asumiendo que los IDs se generan secuencialmente y que ya existen clientes y proveedores.
-		// En pruebas unitarias con EF Core In-Memory o similar, los IDs suelen empezar en 1.
-		// Sin embargo, aquí estamos creando objetos antes de guardarlos, por lo que los IDs son 0.
-		// Para ServicioFavorito necesitamos IDs de Cliente y ProveedorServicio.
-		// Esto es complicado porque CommonSettings crea objetos desconectados.
-		// SetupDataConfig los guarda.
-		// Si usamos IDs hardcoded (1, 2, etc.) asumimos que el orden de inserción se respeta y los IDs se generan así.
-		// Vamos a asumir IDs 1 para el primer cliente y primer proveedor.
+        // Nuevo proveedor
+        proveedor = new ProveedorServicio(
+            nombre: "Telmex",
+            categoria: ProductoCategoria.Recargas,
+            urlIcono: "https://telmex.com/logo.png",
+            creationUser: UserId);
+        // Agrega proveedor
+        ProveedoresServicios.Add(proveedor);
+    }
 
-		var servicioFavorito = new ServicioFavorito(
-			clienteId: 1, // Primer cliente agregado
-			proveedorServicioId: 1, // Primer proveedor agregado
-			alias: "Mi Luz",
-			numeroReferencia: "123456789012",
-			creationUser: UserId);
+    public void CrearServiciosFavoritos(Cliente primerCliente, ProveedorServicio primerProveedor)
+    {
+        var servicioFavorito = new ServicioFavorito(
+            cliente: primerCliente,
+            proveedorServicio: primerProveedor,
+            alias: "Mi Luz",
+            numeroReferencia: "123456789012",
+            creationUser: UserId);
+        ServiciosFavoritos.Add(servicioFavorito);
+    }
 
-		ServiciosFavoritos.Add(servicioFavorito);
-	}
 
 	public readonly List<ProveedorServicio> ProveedoresServicios = [];
 	public readonly List<ServicioFavorito> ServiciosFavoritos = [];
+	public readonly List<ProductoProveedor> ProductosProveedores = [];
 }

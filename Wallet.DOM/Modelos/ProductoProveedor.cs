@@ -38,8 +38,8 @@ namespace Wallet.DOM.Modelos
         /// ID del proveedor de servicios al que pertenece este producto.
         /// </summary>
         [Required]
-        public int ProveedorServicioId { get; private set; }
-        
+        public int ProveedorServicioId { get; internal set; }
+
         /// <summary>
         /// Objeto de navegación para el proveedor de servicios.
         /// </summary>
@@ -66,7 +66,7 @@ namespace Wallet.DOM.Modelos
         [Required]
         [Column(TypeName = "decimal(19, 2)")]
         public decimal Monto { get; private set; }
-        
+
         /// <summary>
         /// Descripción opcional del producto.
         /// </summary>
@@ -83,13 +83,14 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="ProductoProveedor"/>.
         /// </summary>
-        /// <param name="proveedorServicioId">El ID del proveedor de servicios.</param>
+        /// <param name="proveedorServicio">El ID del proveedor de servicios.</param>
         /// <param name="sku">El SKU del producto.</param>
         /// <param name="nombre">El nombre del producto.</param>
         /// <param name="monto">El monto del producto.</param>
         /// <param name="descripcion">La descripción del producto.</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
-        public ProductoProveedor(int proveedorServicioId, string sku, string nombre, decimal monto, string descripcion, Guid creationUser) : base(creationUser)
+        internal ProductoProveedor(ProveedorServicio proveedorServicio, string sku, string nombre, decimal monto, string descripcion,
+            Guid creationUser) : base(creationUser)
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(nameof(Sku), sku, ref exceptions);
@@ -100,12 +101,39 @@ namespace Wallet.DOM.Modelos
                 throw new EMGeneralAggregateException(exceptions);
             }
 
-            ProveedorServicioId = proveedorServicioId;
+            ProveedorServicio = proveedorServicio;
+            ProveedorServicioId = proveedorServicio.Id;
             Sku = sku;
             Nombre = nombre;
             Monto = monto;
             // La descripción es opcional, no se valida en el constructor.
-            Descripcion = descripcion; 
+            Descripcion = descripcion;
+        }
+
+        /// <summary>
+        /// Actualiza los datos del producto.
+        /// </summary>
+        /// <param name="sku">El nuevo SKU.</param>
+        /// <param name="nombre">El nuevo nombre.</param>
+        /// <param name="monto">El nuevo monto.</param>
+        /// <param name="descripcion">La nueva descripción.</param>
+        /// <param name="modificationUser">El usuario que modifica el registro.</param>
+        public void Update(string sku, string nombre, decimal monto, string descripcion, Guid modificationUser)
+        {
+            var exceptions = new List<EMGeneralException>();
+            IsPropertyValid(nameof(Sku), sku, ref exceptions);
+            IsPropertyValid(nameof(Nombre), nombre, ref exceptions);
+            IsPropertyValid(nameof(Monto), monto, ref exceptions);
+            if (exceptions.Count > 0)
+            {
+                throw new EMGeneralAggregateException(exceptions);
+            }
+
+            Sku = sku;
+            Nombre = nombre;
+            Monto = monto;
+            Descripcion = descripcion;
+            base.Update(modificationUser);
         }
     }
 }

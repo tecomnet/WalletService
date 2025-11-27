@@ -33,15 +33,16 @@ public class ProveedorServicioTest : UnitTestTemplate
         false, new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     public void ConstructorValidation_Test(
         string caseName,
-        string nombre,
+        string? nombre,
         ProductoCategoria categoria,
-        string urlIcono,
+        string? urlIcono,
         bool success,
         string[]? expectedErrors = null)
     {
         try
         {
             // Act
+#pragma warning disable CS8604 // Possible null reference argument
             var proveedor = new ProveedorServicio(
                 nombre: nombre,
                 categoria: categoria,

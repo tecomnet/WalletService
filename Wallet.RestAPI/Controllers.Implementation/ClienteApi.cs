@@ -4,11 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Wallet.DOM;
-using Wallet.DOM.Errors;
-using Wallet.Funcionalidad.Functionality;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
-using Wallet.RestAPI.Helpers;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation;

@@ -280,7 +280,7 @@ public class PropertyConstraint
       flag1 = this.IsRequiredValid((TimeOnly?) value);
     if (!flag1)
     {
-      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-REQUIRED-ERROR");
+      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationRequiredError);
       List<object> descriptionDynamicContents = new List<object>()
       {
         (object) this.PropertyName,
@@ -290,7 +290,7 @@ public class PropertyConstraint
     }
     if (!flag8)
     {
-      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-CURRENCY-INVALID");
+      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationCurrencyInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
         (object) this.PropertyName,
@@ -300,7 +300,7 @@ public class PropertyConstraint
     }
     if (!flag2)
     {
-      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-LENGTH-INVALID");
+      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationLengthInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
         (object) this.PropertyName,
@@ -312,7 +312,7 @@ public class PropertyConstraint
     }
     if (!flag3)
     {
-      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-REGEX-INVALID");
+      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationRegexInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
         (object) this.PropertyName,
@@ -323,7 +323,7 @@ public class PropertyConstraint
     }
     if (!flag4)
     {
-      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-NEGATIVE-INVALID");
+      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationNegativeInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
         (object) this.PropertyName,
@@ -333,7 +333,7 @@ public class PropertyConstraint
     }
     if (!flag5)
     {
-      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-ZERO-INVALID");
+      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationZeroInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
         (object) this.PropertyName,
@@ -343,7 +343,7 @@ public class PropertyConstraint
     }
     if (!flag6)
     {
-      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-POSITIVE-INVALID");
+      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationPositiveInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
         (object) this.PropertyName,
@@ -353,7 +353,7 @@ public class PropertyConstraint
     }
     if (!flag7)
     {
-      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-DECIMALS-INVALID");
+      IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationDecimalsInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
         (object) this.PropertyName,

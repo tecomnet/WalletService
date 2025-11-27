@@ -24,6 +24,12 @@ public class ServiceErrorsBuilder
         EstadoErrors();
         // 6. Errores específicos de autenticación
         AuthenticationErrors();
+        // 7. Errores específicos de ProveedorServicio
+        ProveedorServicioErrors();
+        // 8. Errores de validación de propiedades
+        PropertyValidationErrors();
+        // 9. Errores de ServicioFavorito
+        ServicioFavoritoErrors();
     }
 
     // Método privado para añadir un error al diccionario
@@ -310,5 +316,59 @@ public class ServiceErrorsBuilder
             description: "El user de autenticación no es válido o no fue encontrado");
     }
 		
+    #endregion
+
+    #region ProveedorServicio
+    public const string ProveedorServicioNoEncontrado = "PROVEEDOR-SERVICIO-NOT-FOUND";
+    public const string ProductoProveedorNoEncontrado = "PRODUCTO-PROVEEDOR-NOT-FOUND";
+
+    private void ProveedorServicioErrors()
+    {
+        AddServiceError(
+            errorCode: ProveedorServicioNoEncontrado,
+            message: "El proveedor de servicio no fue encontrado.",
+            description: "El proveedor de servicio con id {0} no existe.");
+        AddServiceError(
+            errorCode: ProductoProveedorNoEncontrado,
+            message: "El producto del proveedor de servicio no fue encontrado.",
+            description: "El producto del proveedor de servicio con id {0} no existe.");
+    }
+    #endregion
+
+    #region PropertyValidation
+    public const string PropertyValidationRequiredError = "PROPERTY-VALIDATION-REQUIRED-ERROR";
+    public const string PropertyValidationLengthInvalid = "PROPERTY-VALIDATION-LENGTH-INVALID";
+    public const string PropertyValidationRegexInvalid = "PROPERTY-VALIDATION-REGEX-INVALID";
+    public const string PropertyValidationNegativeInvalid = "PROPERTY-VALIDATION-NEGATIVE-INVALID";
+    public const string PropertyValidationZeroInvalid = "PROPERTY-VALIDATION-ZERO-INVALID";
+    public const string PropertyValidationPositiveInvalid = "PROPERTY-VALIDATION-POSITIVE-INVALID";
+    public const string PropertyValidationDecimalsInvalid = "PROPERTY-VALIDATION-DECIMALS-INVALID";
+    public const string PropertyValidationCurrencyInvalid = "PROPERTY-VALIDATION-CURRENCY-INVALID";
+    public const string PropertyValidationPropertyNotFound = "PROPERTY-VALIDATION-PROPERTY-NOT-FOUND";
+
+    private void PropertyValidationErrors()
+    {
+        AddServiceError(PropertyValidationRequiredError, "Error de validación de propiedad", "La propiedad {0} es requerida.");
+        AddServiceError(PropertyValidationLengthInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} debe tener entre {2} y {3} caracteres de longitud.");
+        AddServiceError(PropertyValidationRegexInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no es válida según el patrón proporcionado {2}.");
+        AddServiceError(PropertyValidationNegativeInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no permite valores negativos.");
+        AddServiceError(PropertyValidationZeroInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no permite valores cero.");
+        AddServiceError(PropertyValidationPositiveInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no permite valores positivos.");
+        AddServiceError(PropertyValidationDecimalsInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no permite más de {2} decimales.");
+        AddServiceError(PropertyValidationCurrencyInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no es una divisa/moneda válida.");
+        AddServiceError(PropertyValidationPropertyNotFound, "Error de validación de propiedad", "La propiedad {0} no fue encontrada en la definición de la propiedad.");
+    }
+    #endregion
+
+    #region ServicioFavorito
+    public const string ServicioFavoritoNoEncontrado = "SERVICIO-FAVORITO-NOT-FOUND";
+
+    private void ServicioFavoritoErrors()
+    {
+        AddServiceError(
+            errorCode: ServicioFavoritoNoEncontrado,
+            message: "Servicio Favorito no encontrado",
+            description: "El servicio favorito con id {0} no fue encontrado.");
+    }
     #endregion
 }

@@ -1,0 +1,243 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
+
+namespace Wallet.RestAPI.Models
+{
+    /// <summary>
+    /// Estructura para consultar proveedores de servicio
+    /// </summary>
+    [DataContract]
+    public class ProveedorServicioResult : IEquatable<ProveedorServicioResult>
+    {
+        /// <summary>
+        /// Gets or Sets Id
+        /// </summary>
+        [Required]
+        [DataMember(Name="id")]
+        public int? Id { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Nombre
+        /// </summary>
+        [Required]
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="nombre")]
+        public string Nombre { get; set; }
+
+        /// <summary>
+        /// Categoria del producto (Servicios, Recargas, Movilidad)
+        /// </summary>
+        /// <value>Categoria del producto (Servicios, Recargas, Movilidad)</value>
+        [Required]
+        [DataMember(Name="categoria")]
+        public string Categoria { get; set; }
+
+        /// <summary>
+        /// Gets or Sets UrlIcono
+        /// </summary>
+        [MaxLength(500)]
+        [DataMember(Name="urlIcono")]
+        public string UrlIcono { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Guid
+        /// </summary>
+        [Required]
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
+
+        /// <summary>
+        /// Gets or Sets CreationTimestamp
+        /// </summary>
+        [Required]
+        [DataMember(Name="creationTimestamp")]
+        public DateTime? CreationTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ModificationTimestamp
+        /// </summary>
+        [Required]
+        [DataMember(Name="modificationTimestamp")]
+        public DateTime? ModificationTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or Sets CreationUser
+        /// </summary>
+        [Required]
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ModificationUser
+        /// </summary>
+        [Required]
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
+
+        /// <summary>
+        /// Gets or Sets IsActive
+        /// </summary>
+        [Required]
+        [DataMember(Name="isActive")]
+        public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Returns the string presentation of the object
+        /// </summary>
+        /// <returns>String presentation of the object</returns>
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("class ProveedorServicioResult {\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
+            sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
+            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("}\n");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Returns the JSON string presentation of the object
+        /// </summary>
+        /// <returns>JSON string presentation of the object</returns>
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        /// <summary>
+        /// Returns true if objects are equal
+        /// </summary>
+        /// <param name="obj">Object to be compared</param>
+        /// <returns>Boolean</returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((ProveedorServicioResult)obj);
+        }
+
+        /// <summary>
+        /// Returns true if ProveedorServicioResult instances are equal
+        /// </summary>
+        /// <param name="other">Instance of ProveedorServicioResult to be compared</param>
+        /// <returns>Boolean</returns>
+        public bool Equals(ProveedorServicioResult other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return 
+                (
+                    Id == other.Id ||
+                    Id != null &&
+                    Id.Equals(other.Id)
+                ) && 
+                (
+                    Nombre == other.Nombre ||
+                    Nombre != null &&
+                    Nombre.Equals(other.Nombre)
+                ) && 
+                (
+                    Categoria == other.Categoria ||
+                    Categoria != null &&
+                    Categoria.Equals(other.Categoria)
+                ) && 
+                (
+                    UrlIcono == other.UrlIcono ||
+                    UrlIcono != null &&
+                    UrlIcono.Equals(other.UrlIcono)
+                ) && 
+                (
+                    Guid == other.Guid ||
+                    Guid != null &&
+                    Guid.Equals(other.Guid)
+                ) && 
+                (
+                    CreationTimestamp == other.CreationTimestamp ||
+                    CreationTimestamp != null &&
+                    CreationTimestamp.Equals(other.CreationTimestamp)
+                ) && 
+                (
+                    ModificationTimestamp == other.ModificationTimestamp ||
+                    ModificationTimestamp != null &&
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
+                ) && 
+                (
+                    IsActive == other.IsActive ||
+                    IsActive != null &&
+                    IsActive.Equals(other.IsActive)
+                );
+        }
+
+        /// <summary>
+        /// Gets the hash code
+        /// </summary>
+        /// <returns>Hash code</returns>
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                var hashCode = 41;
+                // Suitable nullity checks etc, of course :)
+                    if (Id != null)
+                    hashCode = hashCode * 59 + Id.GetHashCode();
+                    if (Nombre != null)
+                    hashCode = hashCode * 59 + Nombre.GetHashCode();
+                    if (Categoria != null)
+                    hashCode = hashCode * 59 + Categoria.GetHashCode();
+                    if (UrlIcono != null)
+                    hashCode = hashCode * 59 + UrlIcono.GetHashCode();
+                    if (Guid != null)
+                    hashCode = hashCode * 59 + Guid.GetHashCode();
+                    if (CreationTimestamp != null)
+                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
+                    if (ModificationTimestamp != null)
+                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+                    if (IsActive != null)
+                    hashCode = hashCode * 59 + IsActive.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        #region Operators
+        #pragma warning disable 1591
+
+        public static bool operator ==(ProveedorServicioResult left, ProveedorServicioResult right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(ProveedorServicioResult left, ProveedorServicioResult right)
+        {
+            return !Equals(left, right);
+        }
+
+        #pragma warning restore 1591
+        #endregion Operators
+    }
+}

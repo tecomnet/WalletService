@@ -4,6 +4,10 @@ using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.UnitTest.Functionality.Configuration;
 using Xunit.Sdk;
+using Moq;
+using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
+using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
+using Wallet.DOM.Modelos;
 
 namespace Wallet.UnitTest.Functionality.ClienteFacadeTest;
 
@@ -15,7 +19,8 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
     [InlineData("1. Successfully case, create cliente", "+52", "5525212560", true, new string[] { })]
     [InlineData("1. Successfully case, create cliente", "+52", "9818523698", true, new string[] { })]
     // Wrong cases
-    [InlineData("2. Wrong case, cliente already exists", "+52", "9812078573", false, new string[] { ServiceErrorsBuilder.ClienteDuplicado })]
+    [InlineData("2. Wrong case, cliente already exists", "+52", "9812078573", false,
+        new string[] { ServiceErrorsBuilder.ClienteDuplicado })]
     public async Task GuardarPreRegistroClienteTest(
         string caseName,
         string codigoPais,
@@ -25,6 +30,10 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
     {
         try
         {
+            // Setup mocks
+            TwilioServiceFacadeMock.Setup(x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new VerificacionResult { Sid = "SID123", IsVerified = true });
+
             // Call facade method
             var cliente = await Facade.GuardarClientePreRegistroAsync(
                 creationUser: SetupConfig.UserId,
@@ -65,29 +74,49 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
 
     [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, se actualiza el cliente", 1, "Edilberto", "Martinez", "Diaz", "Campeche", "1991-01-01", Genero.Masculino,
+    [InlineData("1. Successfully case, se actualiza el cliente", 1, "Edilberto", "Martinez", "Diaz", "Campeche",
+        "1991-01-01", Genero.Masculino,
         true, new string[] { })]
     // Wrong cases
-    [InlineData("2. Caso de error, el cliente no existe por id", 25, "Nombre", "Apellido", "Apellido", "Aguascalientes", "2000-01-01", Genero.Masculino,
+    [InlineData("2. Caso de error, el cliente no existe por id", 25, "Nombre", "Apellido", "Apellido", "Aguascalientes",
+        "2000-01-01", Genero.Masculino,
         false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
-    [InlineData("3. Caso de error, el correo electronico ya lo tiene otro cliente", 1, "Nombre", "Apellido", "Apellido", "Aguascalientes", "2000-01-01", Genero.Masculino,
-         false, new string[] { ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico })]
-    [InlineData("3. Caso de error, el estado no existe", 1, "Nombre", "Apellido", "Apellido", "Merida", "2000-01-01", Genero.Masculino,
-         false, new string[] { ServiceErrorsBuilder.EstadoNoEncontrado })]
+    [InlineData("3. Caso de error, el estado no existe", 1, "Nombre", "Apellido", "Apellido", "Merida", "2000-01-01",
+        Genero.Masculino,
+        false, new string[] { ServiceErrorsBuilder.EstadoNoEncontrado })]
     public async Task ActualizarDatosPersonalesTest(
-         string caseName,
-         int idCliente,
-         string nombre,
-         string primerApellido,
-         string segundoApellido,
-         string nombreEstado,
-         string fechaNacimiento,
-         Genero genero,
-         bool success,
-         string[] expectedErrors)
+        string caseName,
+        int idCliente,
+        string nombre,
+        string primerApellido,
+        string segundoApellido,
+        string nombreEstado,
+        string fechaNacimiento,
+        Genero genero,
+        bool success,
+        string[] expectedErrors)
     {
         try
         {
+            // Setup mocks
+            ChecktonPldServiceFacadeMock.Setup(x => x.ValidarChecktonPld(
+                    It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<Genero>(), It.IsAny<DateTime>(), It.IsAny<string>()))
+                .ReturnsAsync(new ValidacionCurpResult { Success = true, CurpGenerada = "AAAA000000HDFXXX00" });
+
+            // Pre-requisite: Client must have verified SMS for this test
+            var clientToUpdate = await Context.Cliente.FirstOrDefaultAsync(x => x.Id == idCliente);
+            if (clientToUpdate != null)
+            {
+                var verificacion = new Verificacion2FA("SID_PRE_VERIFIED", DateTime.Now.AddMinutes(10), Tipo2FA.Sms,
+                    SetupConfig.UserId);
+                clientToUpdate.AgregarVerificacion2FA(verificacion, SetupConfig.UserId);
+                clientToUpdate.ConfirmarVerificacion2FA(Tipo2FA.Sms, "0000", SetupConfig.UserId);
+                await Context.SaveChangesAsync();
+                // Detach to ensure Facade fetches fresh data if needed, though same context should track changes.
+                Context.Entry(clientToUpdate).State = EntityState.Detached;
+            }
+
             // Convierte la fecha nacimiento a date only
             DateOnly fechaNacimientoDateOnly = DateOnly.Parse(fechaNacimiento);
             // Call facade method
@@ -111,7 +140,8 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                         cliente.Genero == genero &&
                         cliente.ModificationUser == SetupConfig.UserId);
             // Get the user from context
-            var clienteContext = await Context.Cliente.Include(x => x.Estado).AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext = await Context.Cliente.Include(x => x.Estado).AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == cliente.Id);
             // Confirm user created in context
             Assert.NotNull(clienteContext);
             // Assert user properties
@@ -143,24 +173,28 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
 
     [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, guarda contrasena cliente", 1, "micontrasena", false, "nuevacontrasena", "nuevacontrasena",
-       true, new string[] { })]
-    [InlineData("1.1. Successfully case, guarda y actualiza contrasena cliente", 1, "micontrasena", true, "nuevacontrasena", "nuevacontrasena",
-       true, new string[] { })]
+    [InlineData("1. Successfully case, guarda contrasena cliente", 1, "micontrasena", false, "nuevacontrasena",
+        "nuevacontrasena",
+        true, new string[] { })]
+    [InlineData("1.1. Successfully case, guarda y actualiza contrasena cliente", 1, "micontrasena", true,
+        "nuevacontrasena", "nuevacontrasena",
+        true, new string[] { })]
     // Wrong cases
-    [InlineData("2. Caso error, cliente no encontrado", 25, "micontrasena", false, "nuevacontrasena", "nuevacontrasena",
-       false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
-    [InlineData("3. Caso error, la nueva contrasena con coincide con la confirmacion", 2, "micontrasena", true, "nuevacontrasena", "nocoincide",
-       false, new string[] { ServiceErrorsBuilder.ContrasenasNoCoinciden })]
+    [InlineData("2. Caso error, cliente no encontrado", 25, "micontrasena", false, "nuevacontrasena",
+        "nuevacontrasena",
+        false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
+    [InlineData("3. Caso error, la nueva contrasena con coincide con la confirmacion", 2, "micontrasena", true,
+        "nuevacontrasena", "nocoincide",
+        false, new string[] { ServiceErrorsBuilder.ContrasenasNoCoinciden })]
     public async Task GuardarYActualizarContrasenaClienteTest(
-       string caseName,
-       int idCliente,
-       string contrasena,
-       bool aplicaActualizacion,
-       string contrasenaNueva,
-       string contrasenaConfirmacion,
-       bool success,
-       string[] expectedErrors)
+        string caseName,
+        int idCliente,
+        string contrasena,
+        bool aplicaActualizacion,
+        string contrasenaNueva,
+        string contrasenaConfirmacion,
+        bool success,
+        string[] expectedErrors)
     {
         try
         {
@@ -208,6 +242,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                             clienteContext.Contrasena == contrasenaNueva &&
                             clienteContext.ModificationUser == SetupConfig.UserId);
             }
+
             // Assert successful test
             Assert.True(success);
         }
@@ -230,22 +265,27 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
     [Theory]
     // Successfully case
     [InlineData("1. Successfully case, actualiza telefono cliente", 1, "+55", "5528631488",
-       true, new string[] { })]
+        true, new string[] { })]
     // Wrong cases
     [InlineData("2. Wrong case, otro cliente con el mismo telefono", 2, "+52", "9812078573",
-       false, new string[] { ServiceErrorsBuilder.ClienteDuplicado })]
+        false, new string[] { ServiceErrorsBuilder.ClienteDuplicado })]
     public async Task ActualizaTelefonoClienteTest(
-       string caseName,
-       int idCliente,
-       string codigoPais,
-       string telefono,
-       bool success,
-       string[] expectedErrors)
+        string caseName,
+        int idCliente,
+        string codigoPais,
+        string telefono,
+        bool success,
+        string[] expectedErrors)
     {
         try
         {
+            // Setup mocks
+            TwilioServiceFacadeMock.Setup(x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new VerificacionResult { Sid = "SID123", IsVerified = true });
+
             // Call facade method
-            var cliente = await Facade.ActualizarTelefonoAsync(idCliente: idCliente, codigoPais: codigoPais, telefono: telefono, modificationUser: SetupConfig.UserId);
+            var cliente = await Facade.ActualizarTelefonoAsync(idCliente: idCliente, codigoPais: codigoPais,
+                telefono: telefono, modificationUser: SetupConfig.UserId);
             // Assert user created
             Assert.NotNull(cliente);
             // Assert user properties
@@ -277,26 +317,42 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             Assert.Fail($"Uncaught exception. {exception.Message}");
         }
     }
+
     [Theory]
     // Successfully case
     [InlineData("1. Successfully case, actualiza correo electronico cliente", 2, "hola@hotmail.com",
-           true, new string[] { })]
+        true, new string[] { })]
     [InlineData("2. Caso ok, actualiza correo electronico cliente de cliente pre registro", 1, "hola@hotmail.com",
-           true, new string[] { })]
+        true, new string[] { })]
     // Wrong cases
     [InlineData("3. Wrong case, otro cliente con el mismo correo electronico", 1, "cliente@cliente.com",
-           false, new string[] { ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico })]
+        false, new string[] { ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico })]
     public async Task ActualizaCorreoElectronicoClienteTest(
-           string caseName,
-           int idCliente,
-           string correoElectronico,
-           bool success,
-           string[] expectedErrors)
+        string caseName,
+        int idCliente,
+        string correoElectronico,
+        bool success,
+        string[] expectedErrors)
     {
         try
         {
+            // Pre-requisite: Inject duplicate client if needed
+            if (expectedErrors.Contains(ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico))
+            {
+                var duplicateClient = new Cliente("+52", "9999999999", SetupConfig.UserId);
+                duplicateClient.ActualizarCorreoElectronico(correoElectronico, SetupConfig.UserId);
+                Context.Cliente.Add(duplicateClient);
+                await Context.SaveChangesAsync();
+            }
+
+            // Setup mocks
+            TwilioServiceFacadeMock.Setup(x =>
+                    x.VerificacionEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new VerificacionResult { Sid = "SID123", IsVerified = true });
+
             // Call facade method
-            var cliente = await Facade.ActualizarCorreoElectronicoAsync(idCliente: idCliente, correoElectronico: correoElectronico, modificationUser: SetupConfig.UserId);
+            var cliente = await Facade.ActualizarCorreoElectronicoAsync(idCliente: idCliente,
+                correoElectronico: correoElectronico, modificationUser: SetupConfig.UserId);
             // Assert user created
             Assert.NotNull(cliente);
             // Assert user properties
@@ -331,7 +387,8 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
     // Successfully case
     [InlineData("1. Successfully case, elimina cliente", 1, true, new string[] { })]
     // Wrong cases
-    [InlineData("2. Caso error, el cliente no existe por id", 25, false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
+    [InlineData("2. Caso error, el cliente no existe por id", 25, false,
+        new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
     public async Task EliminarClienteTest(
         string caseName,
         int idCliente,
@@ -341,7 +398,8 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
         try
         {
             // Call facade method
-            var cliente = await Facade.EliminarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
+            var cliente =
+                await Facade.EliminarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
             // Assert cliente returned
             Assert.NotNull(cliente);
             // Assert cliente properties
@@ -377,17 +435,19 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
     // Successfully case
     [InlineData("1. Successfully case, activa cliente", 1, true, new string[] { })]
     // Wrong cases
-    [InlineData("2. Caso error, el cliente no existe por id", 25, false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
+    [InlineData("2. Caso error, el cliente no existe por id", 25, false,
+        new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
     public async Task ActivarClienteTest(
-    string caseName,
-    int idCliente,
-    bool success,
-    string[] expectedErrors)
+        string caseName,
+        int idCliente,
+        bool success,
+        string[] expectedErrors)
     {
         try
         {
             // Call facade method
-            var cliente = await Facade.ActivarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
+            var cliente =
+                await Facade.ActivarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
             // Assert cliente returned
             Assert.NotNull(cliente);
             // Assert cliente properties

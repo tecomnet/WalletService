@@ -4,7 +4,6 @@ using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
-using Wallet.Funcionalidad.Remoting.REST;
 using Response = Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement.Response;
 
 namespace Wallet.Funcionalidad.ServiceClient;

@@ -1,33 +1,32 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
-using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
-using Wallet.Funcionalidad.Helper;
+using Wallet.Funcionalidad.Functionality.ClienteFacade;
+using Wallet.Funcionalidad.Functionality.ProveedorServicioFacade;
 
 namespace Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 
-public class ServicioFavoritoFacade : IServicioFavoritoFacade
+public class ServicioFavoritoFacade(ServiceDbContext context,
+    IClienteFacade clienteFacade,
+    IProveedorServicioFacade proveedorServicioFacade) : IServicioFavoritoFacade
 {
-    private readonly ServiceDbContext _context;
-
-    public ServicioFavoritoFacade(ServiceDbContext context)
-    {
-        _context = context;
-    }
 
     public async Task<ServicioFavorito> GuardarServicioFavoritoAsync(int clienteId, int proveedorServicioId,
         string alias, string numeroReferencia, Guid creationUser, string? testCase = null)
     {
         try
         {
-            var servicioFavorito =
-                new ServicioFavorito(clienteId, proveedorServicioId, alias, numeroReferencia, creationUser);
-            // Ignoring testCase as per previous decision
+            // 1. Fetch Cliente
+            var cliente = await clienteFacade.ObtenerClientePorIdAsync(clienteId);
+            // 2. Fetch ProveedorServicio
+            var proveedorServicio = await proveedorServicioFacade.ObtenerProveedorServicioPorIdAsync(proveedorServicioId);
+            // 3. Create ServicioFavorito using the new constructor
+            var servicioFavorito = new ServicioFavorito(cliente, proveedorServicio, alias, numeroReferencia, creationUser);
 
-            await _context.ServicioFavorito.AddAsync(servicioFavorito);
-            await _context.SaveChangesAsync();
+            await context.ServicioFavorito.AddAsync(servicioFavorito);
+            await context.SaveChangesAsync();
             return servicioFavorito;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -43,26 +42,16 @@ public class ServicioFavoritoFacade : IServicioFavoritoFacade
     {
         try
         {
-            var servicioFavorito = await _context.ServicioFavorito
+            var servicioFavorito = await context.ServicioFavorito
                 .Include(s => s.ProveedorServicio)
                 .FirstOrDefaultAsync(x => x.Id == idServicioFavorito);
 
             if (servicioFavorito == null)
             {
-                var serviceError = new ServiceErrors().GetServiceErrorForCode("SERVICIO-FAVORITO-NOT-FOUND");
-                throw new EMGeneralAggregateException(
-                    new EMGeneralException(
-                        serviceError.Message,
-                        serviceError.ErrorCode,
-                        serviceError.Title,
-                        serviceError.Description(new object[] { idServicioFavorito }),
-                        "ServicioFavorito",
-                        null,
-                        null,
-                        "DOM",
-                        new List<object> { idServicioFavorito }
-                    )
-                );
+                throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ServicioFavoritoNoEncontrado,
+                    dynamicContent: [idServicioFavorito],
+                    module: this.GetType().Name));
             }
 
             return servicioFavorito;
@@ -86,7 +75,7 @@ public class ServicioFavoritoFacade : IServicioFavoritoFacade
             // Need to add Update method to ServicioFavorito as well
             servicioFavorito.Update(alias, numeroReferencia, modificationUser);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return servicioFavorito;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -104,7 +93,7 @@ public class ServicioFavoritoFacade : IServicioFavoritoFacade
         {
             var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito);
             servicioFavorito.Deactivate(modificationUser);
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return servicioFavorito;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -122,7 +111,7 @@ public class ServicioFavoritoFacade : IServicioFavoritoFacade
         {
             var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito);
             servicioFavorito.Activate(modificationUser);
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return servicioFavorito;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -138,7 +127,7 @@ public class ServicioFavoritoFacade : IServicioFavoritoFacade
     {
         try
         {
-            return await _context.ServicioFavorito
+            return await context.ServicioFavorito
                 .Where(x => x.ClienteId == clienteId)
                 .Include(s => s.ProveedorServicio)
                 .ToListAsync();

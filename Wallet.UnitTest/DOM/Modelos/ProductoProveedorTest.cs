@@ -1,5 +1,6 @@
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Moq;
 using Xunit.Sdk;
 
 namespace Wallet.UnitTest.DOM.Modelos;
@@ -47,18 +48,23 @@ public class ProductoProveedorTest : UnitTestTemplate
     public void ConstructorValidation_Test(
         string caseName,
         int proveedorServicioId,
-        string sku,
-        string nombre,
+        string? sku,
+        string? nombre,
         decimal monto,
-        string descripcion,
+        string? descripcion,
         bool success,
         string[]? expectedErrors = null)
     {
         try
         {
+            // Arrange
+            var mockProveedor = new Mock<ProveedorServicio>();
+            mockProveedor.SetupGet(p => p.Id).Returns(proveedorServicioId);
+            
             // Act
+#pragma warning disable CS8604 // Possible null reference argument
             var producto = new ProductoProveedor(
-                proveedorServicioId: proveedorServicioId,
+                proveedorServicio: mockProveedor.Object,
                 sku: sku,
                 nombre: nombre,
                 monto: monto,

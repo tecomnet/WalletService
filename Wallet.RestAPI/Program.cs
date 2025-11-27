@@ -37,11 +37,8 @@ namespace Wallet.RestAPI
 			AddSwagger(builder.Services);
 			builder.Services.AddControllers();
 			builder.Services.AddEndpointsApiExplorer();
-			builder.Services.AddAutoMapper(cfg =>
-			{
-				cfg.AddProfile<AutoMapperProfile>();
-			});
-			
+			builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<AutoMapperProfile>(); });
+
 			builder.Services.AddEmServices(builder.Configuration);
 			AddApiVersioning(builder.Services);
 
@@ -86,17 +83,18 @@ namespace Wallet.RestAPI
 					// Adds ObsoleteMethodFilter
 					options.Filters.Add<ObsoleteMethodFilter>();
 					// AÑADIDO: Agrega el filtro global para el manejo de excepciones de negocio/sistema.
-                    options.Filters.Add<ServiceExceptionFilter>();
+					options.Filters.Add<ServiceExceptionFilter>();
 				})
 				.AddNewtonsoftJson(opts =>
 				{
 					opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-					opts.SerializerSettings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy() { OverrideSpecifiedNames = true }));
+					opts.SerializerSettings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()
+						{ OverrideSpecifiedNames = true }));
 				})
 				.AddXmlSerializerFormatters();
-			
-            var app = builder.Build();
-            
+
+			var app = builder.Build();
+
 			app.UseExceptionHandler("/Error");
 			app.UseRouting();
 			app.MapOpenApi();
@@ -112,17 +110,19 @@ namespace Wallet.RestAPI
 					swagger.Servers =
 					[
 						// You can add as many OpenApiServer instances as you want by creating them like below
-						new() {
+						new()
+						{
 							// You can set the Url from the default http request data or by hard coding it
 							// Url = $"{httpReq.Scheme}://{httpReq.Host.Value}",
 							Url = $"https://{httpReq.Host.Value}",
 							Description = "Local Tecom Net"
 						},
 						// You can add as many OpenApiServer instances as you want by creating them like below
-						new() {
+						new()
+						{
 							// You can set the Url from the default http request data or by hard coding it
 							// Url = $"{httpReq.Scheme}://{httpReq.Host.Value}",
-							Url = $"https://{httpReq.Host.Value}/Wallet/WalletService",
+							Url = $"https://{httpReq.Host.Value}",
 							Description = "Deployed Tecom Net"
 						}
 					];
@@ -135,7 +135,7 @@ namespace Wallet.RestAPI
 				foreach (var description in provider.ApiVersionDescriptions)
 				{
 					// TODO Change the name parameter with information of this service
-					c.SwaggerEndpoint($"/Wallet/WalletService/swagger/{description.GroupName}/swagger.json"
+					c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json"
 						, "WalletService " + description.ApiVersion);
 				}
 			});
@@ -144,10 +144,7 @@ namespace Wallet.RestAPI
 			// app.UseHttpsRedirection();
 
 #pragma warning disable ASP0014 // Suggest using top level route registrations
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-			});
+			app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 
 			app.MapScalarApiReference(opt =>
@@ -158,7 +155,6 @@ namespace Wallet.RestAPI
 				opt.OpenApiRoutePattern = "/swagger/{documentName}/swagger.json";
 				// FIXME: User EndpointPrefix when it is available
 				opt.EndpointPathPrefix = "/em-api/{documentName}";
-
 			});
 
 			if (builder.Environment.IsDevelopment())
@@ -175,7 +171,7 @@ namespace Wallet.RestAPI
 			app.Run();
 		}
 
-		
+
 		private static void AddApiVersioning(IServiceCollection builderServices)
 		{
 			builderServices.AddApiVersioning(setup =>

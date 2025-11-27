@@ -34,14 +34,15 @@ public class ServicioFavoritoTest : UnitTestTemplate
         string caseName,
         int clienteId,
         int proveedorServicioId,
-        string alias,
-        string numeroReferencia,
+        string? alias,
+        string? numeroReferencia,
         bool success,
         string[]? expectedErrors = null)
     {
         try
         {
             // Act
+#pragma warning disable CS8604 // Possible null reference argument
             var servicioFavorito = new ServicioFavorito(
                 clienteId: clienteId,
                 proveedorServicioId: proveedorServicioId,

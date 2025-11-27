@@ -1,4 +1,3 @@
-using System;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
@@ -78,11 +77,13 @@ public class DocumentacionAdjuntaTest : UnitTestTemplate
         Documento? documento = null;
         if (documentoKey != DOCUMENTO_NULL_SIMULATION)
         {
+#pragma warning disable CS8604 // Possible null reference argument
             documento = new Documento(documentoKey, tipoPersona, creationUser: Guid.NewGuid());
         }
         try
         {
             // Act: Crear la instancia de DocumentacionAdjunta
+#pragma warning disable CS8604 // Possible null reference argument
             var documentacion = new DocumentacionAdjunta(
                 documento: documento!, // Usamos '!' para permitir el paso de null en la prueba
                 archivoAWS: archivoAWS!,

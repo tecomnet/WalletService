@@ -18,17 +18,21 @@ public class AutoMapperProfile : Profile
         //src.FechaNacimiento es DateOnly? (anulable) y dest.FechaNacimiento es DateTime? (anulable)
         CreateMap<Wallet.DOM.Modelos.Cliente, ClienteResult>()
             .ForMember(dest => dest.FechaNacimiento,
-                       opt => opt.MapFrom(src => src.FechaNacimiento.HasValue
-                               ? src.FechaNacimiento.Value.ToDateTime(TimeOnly.MinValue)
-                               : (DateTime?)null))
+                opt => opt.MapFrom(src => src.FechaNacimiento.HasValue
+                    ? src.FechaNacimiento.Value.ToDateTime(TimeOnly.MinValue)
+                    : (DateTime?)null))
             .ForMember(dest => dest.Estado,
-                       opt => opt.MapFrom(src => src.Estado.Nombre))
+                opt => opt.MapFrom(src => src.Estado.Nombre))
             .ForMember(dest => dest.Empresa,
-            opt => opt.MapFrom(src => src.Empresa.Nombre));
+                opt => opt.MapFrom(src => src.Empresa.Nombre));
         CreateMap<UbicacionesGeolocalizacion, UbicacionResult>();
         CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>();
         CreateMap<Direccion, DireccionResult>();
         CreateMap<Empresa, EmpresaResult>();
         CreateMap<Estado, EstadoResult>();
+        CreateMap<ProveedorServicio, ProveedorServicioResult>()
+            .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()));
+        CreateMap<ServicioFavorito, ServicioFavoritoResult>();
+        CreateMap<ProductoProveedor, ProductoProveedorResult>();
     }
 }

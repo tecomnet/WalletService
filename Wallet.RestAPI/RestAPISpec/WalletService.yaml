@@ -609,6 +609,395 @@ paths:
               $ref: '#/components/schemas/EmpresaRequest'
       tags:
         - Empresa
+  '/{version}/proveedorServicio/{idProveedorServicio}/producto':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idProveedorServicio'
+    post:
+      summary: Guarda un producto
+      operationId: postProductoProveedor
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda un producto asociado a un proveedor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoProveedorRequest'
+      tags:
+        - ProductoProveedor
+  '/{version}/productoProveedor/{idProducto}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idProducto
+        in: path
+        schema:
+          type: integer
+        description: Id del producto
+        required: true
+    get:
+      summary: Obtiene un producto por id
+      operationId: getProductoProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene un producto por id
+      tags:
+        - ProductoProveedor
+    put:
+      summary: Actualiza un producto
+      operationId: putProductoProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza un producto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoProveedorRequest'
+      tags:
+        - ProductoProveedor
+    delete:
+      summary: Elimina un producto
+      operationId: deleteProductoProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Elimina un producto
+      tags:
+        - ProductoProveedor
+  '/{version}/productoProveedor/{idProducto}/activar':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idProducto
+        in: path
+        schema:
+          type: integer
+        description: Id del producto
+        required: true
+    put:
+      summary: Activa un producto
+      operationId: putActivarProductoProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Activa un producto
+      tags:
+        - ProductoProveedor
+  '/{version}/proveedorServicio/{idProveedorServicio}/productos':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idProveedorServicio'
+    get:
+      summary: Obtiene los productos de un proveedor
+      operationId: getProductosPorProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductoProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los productos de un proveedor
+      tags:
+        - ProductoProveedor
+  '/{version}/proveedorServicio':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Guarda un proveedor de servicio
+      operationId: postProveedorServicio
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorServicioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda un proveedor de servicio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProveedorServicioRequest'
+      tags:
+        - ProveedorServicio
+    get:
+      summary: Obtiene todos los proveedores de servicio
+      operationId: getProveedoresServicio
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProveedorServicioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene todos los proveedores de servicio
+      parameters: []
+      tags:
+        - ProveedorServicio
+  '/{version}/proveedorServicio/{idProveedorServicio}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idProveedorServicio'
+    get:
+      summary: Obtiene un proveedor de servicio por id
+      operationId: getProveedorServicio
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorServicioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene un proveedor de servicio por id
+      tags:
+        - ProveedorServicio
+    put:
+      summary: Actualiza un proveedor de servicio
+      operationId: putProveedorServicio
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorServicioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza un proveedor de servicio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProveedorServicioRequest'
+      tags:
+        - ProveedorServicio
+    delete:
+      summary: Elimina un proveedor de servicio
+      operationId: deleteProveedorServicio
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorServicioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Elimina un proveedor de servicio
+      tags:
+        - ProveedorServicio
+  '/{version}/proveedorServicio/{idProveedorServicio}/activar':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idProveedorServicio'
+    put:
+      summary: Activa un proveedor de servicio
+      operationId: putActivarProveedorServicio
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorServicioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Activa un proveedor de servicio
+      tags:
+        - ProveedorServicio
+  '/{version}/servicioFavorito':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Guarda un servicio favorito
+      operationId: postServicioFavorito
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicioFavoritoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda un servicio favorito
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicioFavoritoRequest'
+      tags:
+        - ServicioFavorito
+  '/{version}/servicioFavorito/cliente/{idCliente}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
+    get:
+      summary: Obtiene los servicios favoritos de un cliente
+      operationId: getServiciosFavoritos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServicioFavoritoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los servicios favoritos de un cliente
+      tags:
+        - ServicioFavorito
+  '/{version}/servicioFavorito/{idServicioFavorito}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idServicioFavorito'
+    put:
+      summary: Actualiza un servicio favorito
+      operationId: putServicioFavorito
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicioFavoritoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza un servicio favorito
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicioFavoritoRequest'
+      tags:
+        - ServicioFavorito
+    delete:
+      summary: Elimina un servicio favorito
+      operationId: deleteServicioFavorito
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicioFavoritoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Elimina un servicio favorito
+      tags:
+        - ServicioFavorito
 components:
   schemas:
     ClienteResult:
@@ -1514,6 +1903,185 @@ components:
         - creationUser
         - modificationUser
         - isActive
+    ProveedorServicioResult:
+      title: ProveedorServicioResult
+      type: object
+      description: Estructura para consultar proveedores de servicio
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        categoria:
+          type: string
+          description: Categoria del producto (Servicios, Recargas, Movilidad)
+        urlIcono:
+          type: string
+          maxLength: 500
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+      required:
+        - id
+        - nombre
+        - categoria
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    ProveedorServicioRequest:
+      title: ProveedorServicioRequest
+      type: object
+      description: Estructura para crear/actualizar proveedor de servicio
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        categoria:
+          type: string
+          description: Categoria del producto (Servicios, Recargas, Movilidad)
+        urlIcono:
+          type: string
+          maxLength: 500
+      required:
+        - nombre
+        - categoria
+    ServicioFavoritoResult:
+      title: ServicioFavoritoResult
+      type: object
+      description: Estructura para consultar servicios favoritos
+      properties:
+        id:
+          type: integer
+        clienteId:
+          type: integer
+        proveedorServicioId:
+          type: integer
+        alias:
+          type: string
+          maxLength: 100
+        numeroReferencia:
+          type: string
+          maxLength: 50
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+      required:
+        - id
+        - clienteId
+        - proveedorServicioId
+        - alias
+        - numeroReferencia
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    ServicioFavoritoRequest:
+      title: ServicioFavoritoRequest
+      type: object
+      description: Estructura para crear/actualizar servicio favorito
+      properties:
+        clienteId:
+          type: integer
+        proveedorServicioId:
+          type: integer
+        alias:
+          type: string
+          maxLength: 100
+        numeroReferencia:
+          type: string
+          maxLength: 50
+      required:
+        - clienteId
+        - proveedorServicioId
+        - alias
+        - numeroReferencia
+    ProductoProveedorResult:
+      title: ProductoProveedorResult
+      type: object
+      description: Estructura para consultar productos de proveedor
+      properties:
+        id:
+          type: integer
+        proveedorServicioId:
+          type: integer
+        sku:
+          type: string
+          maxLength: 50
+        nombre:
+          type: string
+          maxLength: 100
+        monto:
+          type: number
+          format: double
+        descripcion:
+          type: string
+          maxLength: 255
+        isActive:
+          type: boolean
+      required:
+        - id
+        - proveedorServicioId
+        - sku
+        - nombre
+        - monto
+        - isActive
+    ProductoProveedorRequest:
+      title: ProductoProveedorRequest
+      type: object
+      description: Estructura para crear/actualizar producto de proveedor
+      properties:
+        sku:
+          type: string
+          maxLength: 50
+        nombre:
+          type: string
+          maxLength: 100
+        monto:
+          type: number
+          format: double
+        descripcion:
+          type: string
+          maxLength: 255
+      required:
+        - sku
+        - nombre
+        - monto
   securitySchemes:
     jwsToken:
       type: http
@@ -1548,10 +2116,25 @@ components:
     idEstado:
       name: idEstado
       in: path
-      required: true
       schema:
         type: integer
       description: Id del estado
+      required: true
+    idProveedorServicio:
+      name: idProveedorServicio
+      in: path
+      schema:
+        type: integer
+      description: Id del proveedor de servicio
+      required: true
+    idServicioFavorito:
+      name: idServicioFavorito
+      in: path
+      schema:
+        type: integer
+      description: Id del servicio favorito
+      required: true
+
   responses:
     HTTP_Error_400:
       description: Response to client error satus code
@@ -1652,6 +2235,7 @@ tags:
   - name: Estado
   - name: Health
   - name: UbicacionGeolocalizacion
+  - name: ProductoProveedor
 security:
   - jwsToken: []
   - X-API-Key: []

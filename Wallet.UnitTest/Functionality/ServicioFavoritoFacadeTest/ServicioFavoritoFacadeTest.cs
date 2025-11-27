@@ -16,6 +16,10 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
     // Wrong cases
     [InlineData("2. Wrong case, empty alias", 1, 1, "", "987654321", false,
         new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
+    [InlineData("3. Wrong case, Cliente not found", 99, 1, "Mi Internet", "987654321", false,
+        new string[] { "CLIENTE-NO-ENCONTRADO" })]
+    [InlineData("4. Wrong case, ProveedorServicio not found", 1, 99, "Mi Internet", "987654321", false,
+        new string[] { "PROVEEDOR-SERVICIO-NOT-FOUND" })]
     public async Task GuardarServicioFavoritoTest(
         string caseName,
         int clienteId,

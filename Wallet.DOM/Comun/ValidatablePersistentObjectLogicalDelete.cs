@@ -26,7 +26,7 @@ public class ValidatablePersistentObjectLogicalDelete : PersistentClassLogicalDe
         List<EMGeneralException> newExceptions = new List<EMGeneralException>();
         if (this.PropertyConstraints.All<PropertyConstraint>((Func<PropertyConstraint, bool>) (pc => pc.PropertyName != propertyName)))
         {
-            IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode("PROPERTY-VALIDATION-PROPERTY-NOT-FOUND");
+            IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(ServiceErrorsBuilder.PropertyValidationPropertyNotFound);
             List<object> descriptionDynamicContents = new List<object>()
             {
                 (object) propertyName

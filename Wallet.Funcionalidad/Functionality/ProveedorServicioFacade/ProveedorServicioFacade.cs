@@ -1,35 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
-using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
-using Wallet.Funcionalidad.Helper;
 
 namespace Wallet.Funcionalidad.Functionality.ProveedorServicioFacade;
 
-public class ProveedorServicioFacade : IProveedorServicioFacade
+public class ProveedorServicioFacade(ServiceDbContext context) : IProveedorServicioFacade
 {
-    private readonly ServiceDbContext _context;
-
-    public ProveedorServicioFacade(ServiceDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<ProveedorServicio> GuardarProveedorServicioAsync(string nombre,
-        Wallet.DOM.Enums.ProductoCategoria categoria, string? urlIcono, Guid creationUser, string? testCase = null)
+        DOM.Enums.ProductoCategoria categoria, string? urlIcono, Guid creationUser, string? testCase = null)
     {
         try
         {
             var proveedorServicio = new ProveedorServicio(nombre, categoria, urlIcono, creationUser);
-            if (testCase != null)
-            {
-                // Ignoring testCase as per previous decision
-            }
-
-            await _context.ProveedorServicio.AddAsync(proveedorServicio);
-            await _context.SaveChangesAsync();
+            await context.ProveedorServicio.AddAsync(proveedorServicio);
+            await context.SaveChangesAsync();
             return proveedorServicio;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -45,25 +31,16 @@ public class ProveedorServicioFacade : IProveedorServicioFacade
     {
         try
         {
-            var proveedorServicio = await _context.ProveedorServicio
+            var proveedorServicio = await context.ProveedorServicio
+                .Include(p => p.Productos)
                 .FirstOrDefaultAsync(x => x.Id == idProveedorServicio);
 
             if (proveedorServicio == null)
             {
-                var serviceError = new ServiceErrors().GetServiceErrorForCode("PROVEEDOR-SERVICIO-NOT-FOUND");
-                throw new EMGeneralAggregateException(
-                    new EMGeneralException(
-                        serviceError.Message,
-                        serviceError.ErrorCode,
-                        serviceError.Title,
-                        serviceError.Description(new object[] { idProveedorServicio }),
-                        "ProveedorServicio",
-                        null,
-                        null,
-                        "DOM",
-                        new List<object> { idProveedorServicio }
-                    )
-                );
+                throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ProveedorServicioNoEncontrado,
+                    dynamicContent: [idProveedorServicio],
+                    module: this.GetType().Name));
             }
 
             return proveedorServicio;
@@ -83,19 +60,9 @@ public class ProveedorServicioFacade : IProveedorServicioFacade
         try
         {
             var proveedorServicio = await ObtenerProveedorServicioPorIdAsync(idProveedorServicio);
-
-            // Since properties are private set, we might need methods on the domain object to update them.
-            // Checking ProveedorServicio.cs again...
-            // It has private set for properties.
-            // It does NOT have Update methods.
-            // This is a problem. I might need to add Update methods to ProveedorServicio in DOM.
-            // The user prompt said: "es posible que se deban agregar metodos adicionales o errores en las clases correspondientes"
-            // So I should add an Update method to ProveedorServicio.
-
-            // For now I will write the facade assuming the method exists, and then I will update the DOM class.
             proveedorServicio.Update(nombre, categoria, urlIcono, modificationUser);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return proveedorServicio;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -113,7 +80,7 @@ public class ProveedorServicioFacade : IProveedorServicioFacade
         {
             var proveedorServicio = await ObtenerProveedorServicioPorIdAsync(idProveedorServicio);
             proveedorServicio.Deactivate(modificationUser);
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return proveedorServicio;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -131,7 +98,7 @@ public class ProveedorServicioFacade : IProveedorServicioFacade
         {
             var proveedorServicio = await ObtenerProveedorServicioPorIdAsync(idProveedorServicio);
             proveedorServicio.Activate(modificationUser);
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return proveedorServicio;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -147,7 +114,131 @@ public class ProveedorServicioFacade : IProveedorServicioFacade
     {
         try
         {
-            return await _context.ProveedorServicio.ToListAsync();
+            return await context.ProveedorServicio.ToListAsync();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    public async Task<ProductoProveedor> GuardarProductoAsync(int proveedorServicioId, string sku, string nombre,
+        decimal monto, string descripcion, Guid creationUser)
+    {
+        try
+        {
+            var proveedor = await ObtenerProveedorServicioPorIdAsync(proveedorServicioId);
+            var producto = proveedor.AgregarProducto(sku, nombre, monto, descripcion, creationUser);
+
+            await context.SaveChangesAsync();
+            return producto;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    public async Task<ProductoProveedor> ObtenerProductoPorIdAsync(int idProducto)
+    {
+        try
+        {
+            var producto = await context.ProductoProveedor
+                .FirstOrDefaultAsync(x => x.Id == idProducto);
+
+            if (producto == null)
+            {
+                throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ProductoProveedorNoEncontrado,
+                    dynamicContent: [idProducto],
+                    module: this.GetType().Name));
+            }
+
+            return producto;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    public async Task<List<ProductoProveedor>> ObtenerProductosPorProveedorAsync(int proveedorServicioId)
+    {
+        try
+        {
+            // Verify provider exists
+            await ObtenerProveedorServicioPorIdAsync(proveedorServicioId);
+
+            return await context.ProductoProveedor
+                .Where(x => x.ProveedorServicioId == proveedorServicioId)
+                .ToListAsync();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    public async Task<ProductoProveedor> ActualizarProductoAsync(int idProducto, string sku, string nombre,
+        decimal monto, string descripcion, Guid modificationUser)
+    {
+        try
+        {
+            var producto = await ObtenerProductoPorIdAsync(idProducto);
+            producto.Update(sku, nombre, monto, descripcion, modificationUser);
+
+            await context.SaveChangesAsync();
+            return producto;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    public async Task<ProductoProveedor> EliminarProductoAsync(int idProducto, Guid modificationUser)
+    {
+        try
+        {
+            var producto = await ObtenerProductoPorIdAsync(idProducto);
+            producto.Deactivate(modificationUser);
+
+            await context.SaveChangesAsync();
+            return producto;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    public async Task<ProductoProveedor> ActivarProductoAsync(int idProducto, Guid modificationUser)
+    {
+        try
+        {
+            var producto = await ObtenerProductoPorIdAsync(idProducto);
+            producto.Activate(modificationUser);
+
+            await context.SaveChangesAsync();
+            return producto;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

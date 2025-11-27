@@ -58,7 +58,7 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Constructor privado para uso de Entity Framework.
         /// </summary>
-        private ProveedorServicio() : base()
+        protected ProveedorServicio() : base()
         {
         }
 
@@ -108,6 +108,13 @@ namespace Wallet.DOM.Modelos
             Categoria = categoria;
             UrlIcono = urlIcono;
             base.Update(modificationUser);
+        }
+
+        public ProductoProveedor AgregarProducto(string sku, string nombre, decimal monto, string descripcion, Guid creationUser)
+        {
+            var producto = new ProductoProveedor(this, sku, nombre, monto, descripcion, creationUser);
+            this.Productos.Add(producto);
+            return producto;
         }
     }
 }

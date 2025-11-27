@@ -63,3 +63,33 @@ Para crear una nueva migración después de realizar cambios en los modelos:
 ```bash
 dotnet ef migrations add <NombreDeLaMigracion> --project Wallet.DOM --startup-project Wallet.RestAPI
 ```
+
+### Docker
+
+El proyecto incluye configuración para Docker y Docker Compose, facilitando el despliegue en entornos de desarrollo.
+
+#### 1. Configurar Variables de Entorno
+
+Crea un archivo `.env` en la raíz del proyecto basándote en el archivo de ejemplo `.env.example`.
+
+```bash
+cp .env.example .env
+```
+
+Asegúrate de configurar las variables según tus necesidades:
+
+- `ASPNETCORE_ENVIRONMENT`: Entorno de ejecución (ej. Development).
+- `MSSQL_SA_PASSWORD`: Contraseña para el usuario `sa` de SQL Server.
+- `DB_PORT`: Puerto expuesto para la base de datos (por defecto 1433).
+- `API_PORT_HTTP`: Puerto HTTP para la API (por defecto 8080).
+- `API_PORT_HTTPS`: Puerto HTTPS para la API (por defecto 8081).
+
+#### 2. Ejecutar con Docker Compose
+
+Para levantar la aplicación y la base de datos:
+
+```bash
+docker-compose up --build
+```
+
+La API estará disponible en `http://localhost:<API_PORT_HTTP>` y la base de datos en `localhost:<DB_PORT>`.

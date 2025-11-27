@@ -1,4 +1,3 @@
-using System;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
 using Xunit.Sdk;
@@ -16,9 +15,9 @@ public class ActividadEconomicaTest : UnitTestTemplate
         "A", 0.01, "O", "A",
         true, new string[] { })]
     [InlineData("3. OK: Max length",
-        "Nombre muy largo que tiene exactamente 100 caracteres. Un total de cien caracteres para el nombre.", 
-        9999999999999999.99, 
-        "Origen largo que tiene 100 caracteres, justo el máximo permitido.", 
+        "Nombre muy largo que tiene exactamente 100 caracteres. Un total de cien caracteres para el nombre.",
+        9999999999999999.99,
+        "Origen largo que tiene 100 caracteres, justo el máximo permitido.",
         "https://ruta-muy-larga-para-el-archivo-aws.com/ejemplo/nombre-archivo-aws-500-caracteres-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-ejemplo-de-una-ruta-muy.pdf",
         true, new string[] { })]
 
@@ -28,9 +27,10 @@ public class ActividadEconomicaTest : UnitTestTemplate
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("5. ERROR: Nombre empty",
         "", 100.00, "Ventas", "s3://ruta/archivo.pdf",
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })] // Ojo: Si mínimo 1, string.Empty falla como requerido.
+        false,
+        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })] // Ojo: Si mínimo 1, string.Empty falla como requerido.
     [InlineData("6. ERROR: Nombre too long",
-        "Este nombre es demasiado largo y tiene más de 100 caracteres. Superamos el límite de cien caracteres por poco.", 
+        "Este nombre es demasiado largo y tiene más de 100 caracteres. Superamos el límite de cien caracteres por poco.",
         100.00, "Ventas", "s3://ruta/archivo.pdf",
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
 
@@ -50,8 +50,9 @@ public class ActividadEconomicaTest : UnitTestTemplate
         "Ventas", 100.00, null, "s3://ruta/archivo.pdf",
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("11. ERROR: OrigenRecurso too long",
-        "Este origen de recurso es demasiado largo y tiene más de 100 caracteres, lo cual es inválido lo cual es inválido.", 
-        100.00, "Un origen muy muy muy muy largo que supera los cien caracteres establecidos en la restricción.", "s3://ruta/archivo.pdf",
+        "Este origen de recurso es demasiado largo y tiene más de 100 caracteres, lo cual es inválido lo cual es inválido.",
+        100.00, "Un origen muy muy muy muy largo que supera los cien caracteres establecidos en la restricción.",
+        "s3://ruta/archivo.pdf",
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
 
     // CASOS DE ERROR PARA ARCHIVO AWS (string, min 1, max 500)
@@ -62,28 +63,29 @@ public class ActividadEconomicaTest : UnitTestTemplate
         "Ventas", 100.00, "Ventas", "",
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("14. ERROR: ArchivoAWS too long",
-        "Ventas", 100.00, "Ventas", 
+        "Ventas", 100.00, "Ventas",
         // 501 caracteres (ejemplo de una cadena que excede por poco los 500)
         "https://ejemplo-de-ruta-muy-larga-para-el-archivo-aws.com/ejemplo/ruta-archivo-aws-500-caracteres-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo-ejemplo-de-una-ruta-muy-larga-para-el-archivo-aws-ejemplo.pdf",
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
-    
+
     // CASO DE ERROR MÚLTIPLE
     [InlineData("15. ERROR: Multiple errors",
         "", 0.00, null, "",
-        false, new string[] { 
+        false, new string[]
+        {
             "PROPERTY-VALIDATION-REQUIRED-ERROR", // Nombre
-            "PROPERTY-VALIDATION-ZERO-INVALID",  // Ingreso (cero)
+            "PROPERTY-VALIDATION-ZERO-INVALID", // Ingreso (cero)
             "PROPERTY-VALIDATION-REQUIRED-ERROR", // OrigenRecurso
-            "PROPERTY-VALIDATION-REQUIRED-ERROR"  // ArchivoAWS
+            "PROPERTY-VALIDATION-REQUIRED-ERROR" // ArchivoAWS
         })]
     public void BasicActividadEconomicaTest(
         // Case name
         string caseName,
         // Test data
-        string nombre,
+        string? nombre,
         decimal ingreso,
-        string origenRecurso,
-        string archivoAWS,
+        string? origenRecurso,
+        string? archivoAWS,
         // Result
         bool success,
         string[]? expectedErrors = null
@@ -92,6 +94,7 @@ public class ActividadEconomicaTest : UnitTestTemplate
         try
         {
             // Crea la Actividad Económica
+#pragma warning disable CS8604 // Possible null reference argument
             var actividad = new ActividadEconomica(
                 nombre: nombre,
                 ingreso: ingreso,
@@ -101,10 +104,14 @@ public class ActividadEconomicaTest : UnitTestTemplate
                 testCase: caseName);
 
             // Check the properties (solo si es éxito)
-            Assert.True(condition: actividad.Nombre == nombre, userMessage: $"Nombre no es correcto. Actual: {actividad.Nombre}");
-            Assert.True(condition: actividad.Ingreso == ingreso, userMessage: $"Ingreso no es correcto. Actual: {actividad.Ingreso}");
-            Assert.True(condition: actividad.OrigenRecurso == origenRecurso, userMessage: $"OrigenRecurso no es correcto. Actual: {actividad.OrigenRecurso}");
-            Assert.True(condition: actividad.ArchivoAWS == archivoAWS, userMessage: $"ArchivoAWS no es correcto. Actual: {actividad.ArchivoAWS}");
+            Assert.True(condition: actividad.Nombre == nombre,
+                userMessage: $"Nombre no es correcto. Actual: {actividad.Nombre}");
+            Assert.True(condition: actividad.Ingreso == ingreso,
+                userMessage: $"Ingreso no es correcto. Actual: {actividad.Ingreso}");
+            Assert.True(condition: actividad.OrigenRecurso == origenRecurso,
+                userMessage: $"OrigenRecurso no es correcto. Actual: {actividad.OrigenRecurso}");
+            Assert.True(condition: actividad.ArchivoAWS == archivoAWS,
+                userMessage: $"ArchivoAWS no es correcto. Actual: {actividad.ArchivoAWS}");
 
             // Assert success
             Assert.True(condition: success, userMessage: "Should not reach on failures.");
@@ -117,7 +124,7 @@ public class ActividadEconomicaTest : UnitTestTemplate
         }
         // Catch any non managed errors and display them to understand the root cause
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
-                                             exception is not TrueException && exception is not FalseException)
+                                          exception is not TrueException && exception is not FalseException)
         {
             // Should not reach for unmanaged errors
             Assert.Fail($"Uncaught exception. {exception.Message}");

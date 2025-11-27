@@ -24,7 +24,7 @@ public abstract class PersistentClass
         this.ModificationUser = modificationUser;
     }
 
-    [Key] public int Id { get; protected internal set; }
+    [Key] public virtual int Id { get; protected internal set; }
 
     [Timestamp]
     public

@@ -1,4 +1,3 @@
-using System;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
 using Xunit.Sdk;
@@ -7,7 +6,6 @@ namespace Wallet.UnitTest.DOM.Modelos;
 
 public class DireccionTest : UnitTestTemplate
 {
-
     [Theory]
     // CASOS DE ÉXITO
     [InlineData("1. OK: Full Valid",
@@ -15,7 +13,7 @@ public class DireccionTest : UnitTestTemplate
         true, new string[] { })]
     [InlineData("2. OK: Min length",
         "12345", "A", "B", "C", "D", "E", "F", "1", "G",
-        true, new string[] { })]    
+        true, new string[] { })]
     [InlineData("3. OK: Max length",
         "99999",
         "Nombre de país con exactamente cien caracteres. Un total de cien caracteres para el nombre del país.",
@@ -25,7 +23,7 @@ public class DireccionTest : UnitTestTemplate
         "Nombre de calle con exactamente cien caracteres.Total de cien caracteres para el nombre de la calle",
         "123456",
         "123456",
-        "Referencia con exactamente doscientos cincuenta caracteres. Un total de doscientos cincuenta caracteres para la referencia.",        
+        "Referencia con exactamente doscientos cincuenta caracteres. Un total de doscientos cincuenta caracteres para la referencia.",
         true, new string[] { })]
 
     // CASOS DE ERROR PARA CÓDIGO POSTAL (string, min 5, max 5)
@@ -40,7 +38,7 @@ public class DireccionTest : UnitTestTemplate
         false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
     [InlineData("7. ERROR: Codigo Postal too long",
         "123456", "México", "Jalisco", "Guadalajara", "Centro", "Av. Principal", "123", "Apto 1", "Cerca del parque",
-        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]  
+        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
     // CASOS DE ERROR PARA PAÍS (string, min 1, max 100)
     [InlineData("8. ERROR: País null",
         "12345", null, "Jalisco", "Guadalajara", "Centro", "Av. Principal", "123", "Apto 1", "Cerca del parque",
@@ -49,7 +47,8 @@ public class DireccionTest : UnitTestTemplate
         "12345", "", "Jalisco", "Guadalajara", "Centro", "Av. Principal", "123", "Apto 1", "Cerca del parque",
         false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
     [InlineData("10. ERROR: País too long",
-        "12345", "Nombre de país con exactamente cien caracteres. Un total de cien caracteres para el nombre del país. Mas de cien",
+        "12345",
+        "Nombre de país con exactamente cien caracteres. Un total de cien caracteres para el nombre del país. Mas de cien",
         "Nombre de estado con exactamente cien caracteres.Total de cien caracteres para el nombre del estado",
         "Nombre de municipio con exactamente cien caracteres.De cien caracteres para el nombre del municipio",
         "Nombre de colonia con exactamente cien caracteres. De cien caracteres para el nombre de la colonia",
@@ -61,8 +60,8 @@ public class DireccionTest : UnitTestTemplate
     // MÁS CASOS DE ERROR PARA OTRAS PROPIEDADES SE PUEDEN AGREGAR AQUÍ...
     public void Direccion_Constructor_Tests(
         string caseName,
-        string codigoPostal,
-        string pais,
+        string? codigoPostal,
+        string? pais,
         string estado,
         string municipio,
         string colonia,
@@ -76,6 +75,7 @@ public class DireccionTest : UnitTestTemplate
         try
         {
             // Crea direccion con país y estado
+#pragma warning disable CS8604 // Possible null reference argument
             Direccion direccion = new Direccion(
                 pais: pais,
                 estado: estado,
@@ -86,6 +86,7 @@ public class DireccionTest : UnitTestTemplate
             Assert.Equal(estado, direccion.Estado);
 
             // Actualiza el resto de la dirección
+#pragma warning disable CS8604 // Possible null reference argument
             direccion.ActualizarDireccion(
                 codigoPostal: codigoPostal,
                 municipio: municipio,
@@ -108,7 +109,7 @@ public class DireccionTest : UnitTestTemplate
             // 3. Verificación Final de Éxito
             Assert.True(success, $"El caso '{caseName}' falló cuando se esperaba éxito.");
         }
-       // Catch the managed errors and check them with the expected ones in the case of failures
+        // Catch the managed errors and check them with the expected ones in the case of failures
         catch (EMGeneralAggregateException exception)
         {
             // Treat the raised error
@@ -116,11 +117,10 @@ public class DireccionTest : UnitTestTemplate
         }
         // Catch any non managed errors and display them to understand the root cause
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
-                                             exception is not TrueException && exception is not FalseException)
+                                          exception is not TrueException && exception is not FalseException)
         {
             // Should not reach for unmanaged errors
             Assert.Fail($"Uncaught exception. {exception.Message}");
         }
-    }       
-
+    }
 }

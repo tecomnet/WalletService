@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Wallet.Funcionalidad;
+using Moq;
+using Wallet.Funcionalidad.ServiceClient;
+using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 
 namespace Wallet.UnitTest.FixtureBase
 {
@@ -20,7 +23,7 @@ namespace Wallet.UnitTest.FixtureBase
             _configureTestServices = configureTestServices;
         }
 
-        public HttpClient? CreateAuthenticatedClient()
+        public HttpClient CreateAuthenticatedClient()
         {
             var client = CreateClient();
             client.DefaultRequestHeaders.Authorization =
@@ -32,6 +35,14 @@ namespace Wallet.UnitTest.FixtureBase
         {
             Environment.SetEnvironmentVariable("LogTableName", "ServiceLog");
             Environment.SetEnvironmentVariable("API-Key", "14bb0ffb-7503-4fa6-9969-b721635929db");
+
+            builder.ConfigureAppConfiguration((context, config) =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    { "twilio-service", "http://localhost:4001" }
+                });
+            });
 
             base.ConfigureWebHost(builder);
 
@@ -51,6 +62,17 @@ namespace Wallet.UnitTest.FixtureBase
                 });
                 services.AddEmTestServices(services.BuildServiceProvider().GetService<IConfiguration>() ??
                                            new ConfigurationBuilder().Build());
+
+                // Mock TwilioServiceFacade
+                services.AddScoped<ITwilioServiceFacade>(sp =>
+                {
+                    var mock = new Mock<ITwilioServiceFacade>();
+                    mock.Setup(x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
+                        .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                    mock.Setup(x => x.VerificacionEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                        .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                    return mock.Object;
+                });
             });
 
             builder.UseEnvironment("Development");
