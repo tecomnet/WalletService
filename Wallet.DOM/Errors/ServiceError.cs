@@ -11,7 +11,7 @@ public class ServiceError : IServiceError
 
     public string Description(object[]? args = null)
     {
-        return args == null || args.Length == 0 ? this._description : string.Format(this._description, args);
+        return args == null || args.Length == 0 ? this._description : string.Format(format: this._description, args: args);
     }
     public ServiceError(string errorCode, string message, string description)
     {

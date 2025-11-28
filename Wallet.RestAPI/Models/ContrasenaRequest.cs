@@ -26,7 +26,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="contrasena")]
         public string Contrasena { get; set; }
 
@@ -37,9 +37,9 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ContrasenaRequest {\n");
-            sb.Append("  Contrasena: ").Append(Contrasena).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class ContrasenaRequest {\n");
+            sb.Append(value: "  Contrasena: ").Append(value: Contrasena).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -49,7 +49,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ContrasenaRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (ContrasenaRequest)obj);
         }
 
         /// <summary>
@@ -71,14 +71,14 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ContrasenaRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Contrasena == other.Contrasena ||
                     Contrasena != null &&
-                    Contrasena.Equals(other.Contrasena)
+                    Contrasena.Equals(value: other.Contrasena)
                 );
         }
 
@@ -103,12 +103,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ContrasenaRequest left, ContrasenaRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(ContrasenaRequest left, ContrasenaRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

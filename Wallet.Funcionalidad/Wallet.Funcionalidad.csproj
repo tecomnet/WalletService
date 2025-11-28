@@ -25,6 +25,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     </ItemGroup>
     <ItemGroup>
         <OpenApiReference Include="Services\TwilioService.yaml" Options="/DateType:System.DateTime /DateTimeType:System.DateTime /TimeType:System.TimeOnly">

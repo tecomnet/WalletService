@@ -20,7 +20,7 @@ public class Documento : ValidatablePersistentObjectLogicalDelete
     ];
     
     [Required]
-    [MaxLength(100)]
+    [MaxLength(length: 100)]
     public string Nombre { get; private set; }
     [Required]
     public TipoPersona TipoPersona { get; private set; }
@@ -31,13 +31,13 @@ public class Documento : ValidatablePersistentObjectLogicalDelete
         
     }
 
-    public Documento(string nombre, TipoPersona tipoPersona, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
+    public Documento(string nombre, TipoPersona tipoPersona, Guid creationUser, string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate properties
-        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, ref exceptions);
-        IsPropertyValid(propertyName: nameof(TipoPersona), value: tipoPersona, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(TipoPersona), value: tipoPersona, exceptions: ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Seteo de propiedades

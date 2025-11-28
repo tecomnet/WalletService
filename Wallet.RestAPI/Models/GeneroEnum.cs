@@ -19,7 +19,7 @@ namespace Wallet.RestAPI.Models
           /// Estructura enum para genero
           /// </summary>
           /// <value>Estructura enum para genero</value>
-          [JsonConverter(typeof(CustomStringToEnumConverter<GeneroEnum>))] 
+          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<GeneroEnum>))] 
           public enum GeneroEnum
           {
               /// <summary>

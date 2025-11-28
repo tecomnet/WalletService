@@ -26,13 +26,13 @@ public class ObsoleteMethodFilter : IActionFilter
 	{
 		var requestedApiVersion = context.HttpContext.GetRequestedApiVersion();
 		var obsoleteOperation =
-			(context.ActionDescriptor as ControllerActionDescriptor)?.MethodInfo.CustomAttributes.Any(type =>
+			(context.ActionDescriptor as ControllerActionDescriptor)?.MethodInfo.CustomAttributes.Any(predicate: type =>
 				type.AttributeType.Name == "ObsoleteAttribute");
 		if (obsoleteOperation.HasValue && obsoleteOperation.Value)
 		{
 			context.HttpContext.Response.Headers.Add(
-				"deprecated-method-version",
-				$"Requested version '{requestedApiVersion}' is deprecated for this method.");
+				key: "deprecated-method-version",
+				value: $"Requested version '{requestedApiVersion}' is deprecated for this method.");
 		}
 	}
 }

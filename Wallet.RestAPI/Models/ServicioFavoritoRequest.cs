@@ -30,7 +30,7 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Alias
         /// </summary>
         [Required]
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="alias")]
         public string Alias { get; set; }
 
@@ -38,7 +38,7 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets NumeroReferencia
         /// </summary>
         [Required]
-        [StringLength(50, MinimumLength=1)]
+        [StringLength(maximumLength: 50, MinimumLength=1)]
         [DataMember(Name="numeroReferencia")]
         public string NumeroReferencia { get; set; }
 
@@ -49,12 +49,12 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ServicioFavoritoRequest {\n");
-            sb.Append("  ClienteId: ").Append(ClienteId).Append("\n");
-            sb.Append("  ProveedorServicioId: ").Append(ProveedorServicioId).Append("\n");
-            sb.Append("  Alias: ").Append(Alias).Append("\n");
-            sb.Append("  NumeroReferencia: ").Append(NumeroReferencia).Append("\n");
-            sb.Append("  }\n");
+            sb.Append(value: "class ServicioFavoritoRequest {\n");
+            sb.Append(value: "  ClienteId: ").Append(value: ClienteId).Append(value: "\n");
+            sb.Append(value: "  ProveedorServicioId: ").Append(value: ProveedorServicioId).Append(value: "\n");
+            sb.Append(value: "  Alias: ").Append(value: Alias).Append(value: "\n");
+            sb.Append(value: "  NumeroReferencia: ").Append(value: NumeroReferencia).Append(value: "\n");
+            sb.Append(value: "  }\n");
             return sb.ToString();
         }
 
@@ -64,7 +64,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -74,9 +74,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ServicioFavoritoRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (ServicioFavoritoRequest)obj);
         }
 
         /// <summary>
@@ -86,29 +86,29 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ServicioFavoritoRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     ClienteId == other.ClienteId ||
                     ClienteId != null &&
-                    ClienteId.Equals(other.ClienteId)
+                    ClienteId.Equals(other: other.ClienteId)
                 ) && 
                 (
                     ProveedorServicioId == other.ProveedorServicioId ||
                     ProveedorServicioId != null &&
-                    ProveedorServicioId.Equals(other.ProveedorServicioId)
+                    ProveedorServicioId.Equals(other: other.ProveedorServicioId)
                 ) && 
                 (
                     Alias == other.Alias ||
                     Alias != null &&
-                    Alias.Equals(other.Alias)
+                    Alias.Equals(value: other.Alias)
                 ) && 
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
-                    NumeroReferencia.Equals(other.NumeroReferencia)
+                    NumeroReferencia.Equals(value: other.NumeroReferencia)
                 );
         }
 
@@ -139,12 +139,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ServicioFavoritoRequest left, ServicioFavoritoRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(ServicioFavoritoRequest left, ServicioFavoritoRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

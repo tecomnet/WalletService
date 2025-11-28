@@ -43,21 +43,21 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Objeto de navegación para el proveedor de servicios.
         /// </summary>
-        [ForeignKey("ProveedorServicioId")]
+        [ForeignKey(name: "ProveedorServicioId")]
         public ProveedorServicio ProveedorServicio { get; set; }
 
         /// <summary>
         /// SKU (Stock Keeping Unit) del producto.
         /// </summary>
         [Required]
-        [MaxLength(50)]
+        [MaxLength(length: 50)]
         public string Sku { get; private set; }
 
         /// <summary>
         /// Nombre del producto.
         /// </summary>
         [Required]
-        [MaxLength(100)]
+        [MaxLength(length: 100)]
         public string Nombre { get; private set; }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Descripción opcional del producto.
         /// </summary>
-        [MaxLength(255)]
+        [MaxLength(length: 255)]
         public string Descripcion { get; private set; }
 
         /// <summary>
@@ -90,15 +90,15 @@ namespace Wallet.DOM.Modelos
         /// <param name="descripcion">La descripción del producto.</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
         internal ProductoProveedor(ProveedorServicio proveedorServicio, string sku, string nombre, decimal monto, string descripcion,
-            Guid creationUser) : base(creationUser)
+            Guid creationUser) : base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
-            IsPropertyValid(nameof(Sku), sku, ref exceptions);
-            IsPropertyValid(nameof(Nombre), nombre, ref exceptions);
-            IsPropertyValid(nameof(Monto), monto, ref exceptions);
+            IsPropertyValid(propertyName: nameof(Sku), value: sku, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Monto), value: monto, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
-                throw new EMGeneralAggregateException(exceptions);
+                throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
             ProveedorServicio = proveedorServicio;
@@ -121,19 +121,19 @@ namespace Wallet.DOM.Modelos
         public void Update(string sku, string nombre, decimal monto, string descripcion, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
-            IsPropertyValid(nameof(Sku), sku, ref exceptions);
-            IsPropertyValid(nameof(Nombre), nombre, ref exceptions);
-            IsPropertyValid(nameof(Monto), monto, ref exceptions);
+            IsPropertyValid(propertyName: nameof(Sku), value: sku, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Monto), value: monto, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
-                throw new EMGeneralAggregateException(exceptions);
+                throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
             Sku = sku;
             Nombre = nombre;
             Monto = monto;
             Descripcion = descripcion;
-            base.Update(modificationUser);
+            base.Update(modificationUser: modificationUser);
         }
     }
 }

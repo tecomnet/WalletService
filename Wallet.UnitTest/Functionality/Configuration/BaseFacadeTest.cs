@@ -7,7 +7,7 @@ using Wallet.Funcionalidad.ServiceClient; // Add namespace for facades
 
 namespace Wallet.UnitTest.Functionality.Configuration;
 
-[Collection("FunctionalCollection")]
+[Collection(name: "FunctionalCollection")]
 public abstract class BaseFacadeTest<T> : UnitTestTemplate, IClassFixture<SetupDataConfig> where T : class
 {
     #region Config
@@ -37,15 +37,15 @@ public abstract class BaseFacadeTest<T> : UnitTestTemplate, IClassFixture<SetupD
             .AddEnvironmentVariables()
             .Build();
 
-        services.AddEmTestServices(configuration);
+        services.AddEmTestServices(configuration: configuration);
 
         // Instantiate mocks
         TwilioServiceFacadeMock = new Mock<ITwilioServiceFacade>();
         ChecktonPldServiceFacadeMock = new Mock<IChecktonPldServiceFacade>();
 
         // Override with mocked services
-        services.AddSingleton(TwilioServiceFacadeMock.Object);
-        services.AddSingleton(ChecktonPldServiceFacadeMock.Object);
+        services.AddSingleton(implementationInstance: TwilioServiceFacadeMock.Object);
+        services.AddSingleton(implementationInstance: ChecktonPldServiceFacadeMock.Object);
 
         // Build the service provider
         ServiceProvider = services.BuildServiceProvider();

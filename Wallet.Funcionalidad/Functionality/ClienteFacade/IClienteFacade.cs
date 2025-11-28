@@ -6,17 +6,6 @@ namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 public interface IClienteFacade
 {
     /// <summary>
-    /// Guarda un nuevo cliente, es un preregistro por codigo de país y teléfono
-    /// </summary>
-    /// <param name="codigoPais"></param>
-    /// <param name="telefono"></param>
-    /// <param name="creationUser"></param>
-    /// <param name="testCase"></param>
-    /// <returns></returns>
-    public Task<Cliente> GuardarClientePreRegistroAsync(string codigoPais, string telefono, Guid creationUser,
-        string? testCase = null);
-
-    /// <summary>
     /// Obtiene el cliente por su Id
     /// </summary>
     /// <param name="idCliente"></param>

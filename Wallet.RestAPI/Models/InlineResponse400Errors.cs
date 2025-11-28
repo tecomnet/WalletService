@@ -64,7 +64,7 @@ namespace Wallet.RestAPI.Models
         /// <value>Full detail of the error</value>
         [Required]
 
-        [MinLength(15)]
+        [MinLength(length: 15)]
         [DataMember(Name="detail")]
         public string Detail { get; private set; }
 
@@ -74,7 +74,7 @@ namespace Wallet.RestAPI.Models
         /// <value>Specific instance where the error occurs without the base URI</value>
         [Required]
 
-        [MinLength(1)]
+        [MinLength(length: 1)]
         [DataMember(Name="instance")]
         public string Instance { get; private set; }
 
@@ -92,15 +92,15 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class InlineResponse400Errors {\n");
-            sb.Append("  ErrorCode: ").Append(ErrorCode).Append("\n");
-            sb.Append("  Type: ").Append(Type).Append("\n");
-            sb.Append("  Title: ").Append(Title).Append("\n");
-            sb.Append("  Status: ").Append(Status).Append("\n");
-            sb.Append("  Detail: ").Append(Detail).Append("\n");
-            sb.Append("  Instance: ").Append(Instance).Append("\n");
-            sb.Append("  ExtraAttributes: ").Append(ExtraAttributes).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class InlineResponse400Errors {\n");
+            sb.Append(value: "  ErrorCode: ").Append(value: ErrorCode).Append(value: "\n");
+            sb.Append(value: "  Type: ").Append(value: Type).Append(value: "\n");
+            sb.Append(value: "  Title: ").Append(value: Title).Append(value: "\n");
+            sb.Append(value: "  Status: ").Append(value: Status).Append(value: "\n");
+            sb.Append(value: "  Detail: ").Append(value: Detail).Append(value: "\n");
+            sb.Append(value: "  Instance: ").Append(value: Instance).Append(value: "\n");
+            sb.Append(value: "  ExtraAttributes: ").Append(value: ExtraAttributes).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -110,7 +110,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -120,9 +120,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((InlineResponse400Errors)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (InlineResponse400Errors)obj);
         }
 
         /// <summary>
@@ -132,44 +132,44 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(InlineResponse400Errors other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     ErrorCode == other.ErrorCode ||
                     ErrorCode != null &&
-                    ErrorCode.Equals(other.ErrorCode)
+                    ErrorCode.Equals(value: other.ErrorCode)
                 ) && 
                 (
                     Type == other.Type ||
                     Type != null &&
-                    Type.Equals(other.Type)
+                    Type.Equals(value: other.Type)
                 ) && 
                 (
                     Title == other.Title ||
                     Title != null &&
-                    Title.Equals(other.Title)
+                    Title.Equals(value: other.Title)
                 ) && 
                 (
                     Status == other.Status ||
                     Status != null &&
-                    Status.Equals(other.Status)
+                    Status.Equals(other: other.Status)
                 ) && 
                 (
                     Detail == other.Detail ||
                     Detail != null &&
-                    Detail.Equals(other.Detail)
+                    Detail.Equals(value: other.Detail)
                 ) && 
                 (
                     Instance == other.Instance ||
                     Instance != null &&
-                    Instance.Equals(other.Instance)
+                    Instance.Equals(value: other.Instance)
                 ) && 
                 (
                     ExtraAttributes == other.ExtraAttributes ||
                     ExtraAttributes != null &&
-                    ExtraAttributes.Equals(other.ExtraAttributes)
+                    ExtraAttributes.Equals(other: other.ExtraAttributes)
                 );
         }
 
@@ -206,12 +206,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(InlineResponse400Errors left, InlineResponse400Errors right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(InlineResponse400Errors left, InlineResponse400Errors right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

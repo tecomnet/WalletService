@@ -25,7 +25,7 @@ public class CommonSettings
 
 	private void CrearClientes()
 	{
-		var tecomnet = Empresas.First(e => e.Nombre == "Tecomnet");
+		var tecomnet = Empresas.First(predicate: e => e.Nombre == "Tecomnet");
 		// Cliente pre registro
 		var usuario = new Usuario(
 			codigoPais: "+52",
@@ -35,15 +35,15 @@ public class CommonSettings
 			estatus: "Activo",
 			creationUser: UserId,
 			testCase: TestCaseId);
-		usuario.AgregarEmpresa(tecomnet, UserId);
-		Usuarios.Add(usuario);
+		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
+		Usuarios.Add(item: usuario);
 
 		var cliente = new Cliente(
 			usuario: usuario,
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega cliente
-		Clientes.Add(cliente);
+		Clientes.Add(item: cliente);
 		// Nuevo cliente con datos completos
 		usuario = new Usuario(
 			codigoPais: "+52",
@@ -53,8 +53,8 @@ public class CommonSettings
 			estatus: "Activo",
 			creationUser: UserId,
 			testCase: TestCaseId);
-		usuario.AgregarEmpresa(tecomnet, UserId);
-		Usuarios.Add(usuario);
+		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
+		Usuarios.Add(item: usuario);
 
 		cliente = new Cliente(
 			usuario: usuario,
@@ -62,7 +62,7 @@ public class CommonSettings
 			testCase: TestCaseId);
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente", primerApellido: "ApellidoPaterno",
-			segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse("1990-01-01"),
+			segundoApellido: "ApellidoMaterno", fechaNacimiento: DateOnly.Parse(s: "1990-01-01"),
 			genero: Genero.Masculino, modificationUser: UserId);
 		// Agrega pre direccion
 		cliente.AgregarDireccion(direccion: new Direccion(
@@ -70,7 +70,7 @@ public class CommonSettings
 			estado: "Campeche",
 			creationUser: UserId,
 			testCase: TestCaseId), creationUser: UserId);
-		Clientes.Add(cliente);
+		Clientes.Add(item: cliente);
 		// Nuevo cliente con datos completos
 		usuario = new Usuario(
 			codigoPais: "+52",
@@ -80,8 +80,8 @@ public class CommonSettings
 			estatus: "Activo",
 			creationUser: UserId,
 			testCase: TestCaseId);
-		usuario.AgregarEmpresa(tecomnet, UserId);
-		Usuarios.Add(usuario);
+		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
+		Usuarios.Add(item: usuario);
 
 		cliente = new Cliente(
 			usuario: usuario,
@@ -89,7 +89,7 @@ public class CommonSettings
 			testCase: TestCaseId);
 		// Agrega datos personales
 		cliente.AgregarDatosPersonales(nombre: "Cliente Tecomnet", primerApellido: "Primer Apellido",
-			segundoApellido: "Segundo Apellido", fechaNacimiento: DateOnly.Parse("1990-01-01"),
+			segundoApellido: "Segundo Apellido", fechaNacimiento: DateOnly.Parse(s: "1990-01-01"),
 			genero: Genero.Femenino, modificationUser: UserId);
 		// Agrega dispositivo movil autorizado
 		cliente.Usuario.AgregarDispositivoMovilAutorizado(dispositivo: new DispositivoMovilAutorizado(
@@ -100,7 +100,7 @@ public class CommonSettings
 			creationUser: UserId,
 			testCase: TestCaseId), modificationUser: UserId);
 		// Agrega cliente
-		Clientes.Add(cliente);
+		Clientes.Add(item: cliente);
 	}
 
 	private void CrearEstados()
@@ -111,36 +111,36 @@ public class CommonSettings
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega estado
-		Estados.Add(estado);
+		Estados.Add(item: estado);
 		// Nuevo estado
 		estado = new Estado(
 			nombre: "Baja California",
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega estado
-		Estados.Add(estado);
+		Estados.Add(item: estado);
 		// Nuevo estado
 		estado = new Estado(
 			nombre: "Baja California Sur",
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega estado
-		Estados.Add(estado);
+		Estados.Add(item: estado);
 		// Nuevo estado
 		estado = new Estado(
 			nombre: "Campeche",
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega estado
-		Estados.Add(estado);
+		Estados.Add(item: estado);
 		// Nuevo estado
 		estado = new Estado(
 			nombre: "EstadoInactivo",
 			creationUser: UserId,
 			testCase: TestCaseId);
-		estado.Deactivate(UserId);
+		estado.Deactivate(modificationUser: UserId);
 		// Agrega estado
-		Estados.Add(estado);
+		Estados.Add(item: estado);
 	}
 
 	private void CrearEmpresas()
@@ -151,7 +151,7 @@ public class CommonSettings
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega empresa
-		Empresas.Add(empresa);
+		Empresas.Add(item: empresa);
 		// Nueva empresa
 		empresa = new Empresa(
 			nombre: "EmpresaInactiva",
@@ -159,7 +159,7 @@ public class CommonSettings
 			testCase: TestCaseId);
 		empresa.Deactivate(modificationUser: UserId);
 		// Agrega empresa
-		Empresas.Add(empresa);
+		Empresas.Add(item: empresa);
 	}
 
 	private void CrearProveedoresServicios()
@@ -171,7 +171,7 @@ public class CommonSettings
 			urlIcono: "https://cfe.mx/logo.png",
 			creationUser: UserId);
 		// Agrega proveedor
-		ProveedoresServicios.Add(proveedor);
+		ProveedoresServicios.Add(item: proveedor);
 
 		proveedor.AgregarProducto(
 			sku: "SKU123",
@@ -187,7 +187,7 @@ public class CommonSettings
 			urlIcono: "https://telmex.com/logo.png",
 			creationUser: UserId);
 		// Agrega proveedor
-		ProveedoresServicios.Add(proveedor);
+		ProveedoresServicios.Add(item: proveedor);
 	}
 
 	public void CrearServiciosFavoritos(Cliente primerCliente, ProveedorServicio primerProveedor)
@@ -198,7 +198,7 @@ public class CommonSettings
 			alias: "Mi Luz",
 			numeroReferencia: "123456789012",
 			creationUser: UserId);
-		ServiciosFavoritos.Add(servicioFavorito);
+		ServiciosFavoritos.Add(item: servicioFavorito);
 	}
 
 

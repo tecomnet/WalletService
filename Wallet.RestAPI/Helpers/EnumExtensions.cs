@@ -23,15 +23,15 @@ public class CustomStringToEnumConverter<T> : StringEnumConverter where T : stru
             return null;
         }
         string value = reader.Value.ToString();
-        if (string.IsNullOrWhiteSpace(value)) return null;
+        if (string.IsNullOrWhiteSpace(value: value)) return null;
         try
         {
-            return EnumExtensions.GetValueFromEnumMember<T>(value);
+            return EnumExtensions.GetValueFromEnumMember<T>(value: value);
         }
         catch (ArgumentException)
         {
-            string validValues = string.Join(", ", EnumExtensions.GetEnumMemberValues<T>());
-            throw new JsonSerializationException($"Valor '{value}' no es válido. Valores permitidos: {validValues}.");
+            string validValues = string.Join(separator: ", ", value: EnumExtensions.GetEnumMemberValues<T>());
+            throw new JsonSerializationException(message: $"Valor '{value}' no es válido. Valores permitidos: {validValues}.");
         }
     }
 }
@@ -46,7 +46,7 @@ public static class EnumExtensions
     /// </summary>
     public static string GetEnumMemberValue(Enum enumValue)
     {
-        var member = enumValue.GetType().GetMember(enumValue.ToString()).FirstOrDefault();
+        var member = enumValue.GetType().GetMember(name: enumValue.ToString()).FirstOrDefault();
         return member?.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? enumValue.ToString();
     }
 
@@ -55,8 +55,8 @@ public static class EnumExtensions
     /// </summary>
     public static string[] GetEnumMemberValues<T>() where T : struct, Enum
     {
-        return typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static)
-                        .Select(f => $"{f.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? f.Name} ({(int)f.GetValue(null)})")
+        return typeof(T).GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Static)
+                        .Select(selector: f => $"{f.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? f.Name} ({(int)f.GetValue(obj: null)})")
                         .ToArray();
     }
 
@@ -66,31 +66,31 @@ public static class EnumExtensions
     public static T GetValueFromEnumMember<T>(string value) where T : struct, Enum
     {
         var type = typeof(T);
-        if (!type.IsEnum) throw new InvalidOperationException($"{type.Name} no es un enum.");
+        if (!type.IsEnum) throw new InvalidOperationException(message: $"{type.Name} no es un enum.");
 
         // Intentar parsear como número
-        if (int.TryParse(value, out int numericValue) && Enum.IsDefined(type, numericValue))
+        if (int.TryParse(s: value, result: out int numericValue) && Enum.IsDefined(enumType: type, value: numericValue))
         {
-            return (T)Enum.ToObject(type, numericValue);
+            return (T)Enum.ToObject(enumType: type, value: numericValue);
         }
 
         // Buscar por EnumMember o nombre del enum
-        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static))
+        foreach (var field in type.GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Static))
         {
             var attribute = field.GetCustomAttribute<EnumMemberAttribute>();
-            if ((attribute != null && attribute.Value.Equals(value, StringComparison.OrdinalIgnoreCase)) ||
-                field.Name.Equals(value, StringComparison.OrdinalIgnoreCase))
+            if ((attribute != null && attribute.Value.Equals(value: value, comparisonType: StringComparison.OrdinalIgnoreCase)) ||
+                field.Name.Equals(value: value, comparisonType: StringComparison.OrdinalIgnoreCase))
             {
-                return (T)field.GetValue(null);
+                return (T)field.GetValue(obj: null);
             }
         }
 
         // Obtener todos los valores válidos del enum
-        var validValues = Enum.GetValues(type)
+        var validValues = Enum.GetValues(enumType: type)
             .Cast<T>()
-            .Select(e => $"{Convert.ToInt32(e)} ({e})")
+            .Select(selector: e => $"{Convert.ToInt32(value: e)} ({e})")
             .ToList();
 
-        throw new ArgumentException($"Valor '{value}' no es válido. Valores permitidos: {string.Join(", ", validValues)}.");
+        throw new ArgumentException(message: $"Valor '{value}' no es válido. Valores permitidos: {string.Join(separator: ", ", values: validValues)}.");
     }
 }

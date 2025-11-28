@@ -22,7 +22,7 @@ public class RestAPIError : DefaultRestAPIError
         this.Status = status;
         this._detail = detail;
         this.Instance = instance;
-        this.ExtraAttributes = new RestAPIErrorExtraAttributes(descriptionDynamicContents, module, serviceName, serviceLocation);
+        this.ExtraAttributes = new RestAPIErrorExtraAttributes(descriptionDynamicContents: descriptionDynamicContents, module: module, serviceName: serviceName, serviceLocation: serviceLocation);
     }
 
     public RestAPIError(
@@ -42,7 +42,7 @@ public class RestAPIError : DefaultRestAPIError
         this.Status = status;
         this._detail = detail;
         this.Instance = instance;
-        this.ExtraAttributes = new RestAPIErrorExtraAttributes(new List<string>(), module, serviceName, serviceLocation);
+        this.ExtraAttributes = new RestAPIErrorExtraAttributes(descriptionDynamicContents: new List<string>(), module: module, serviceName: serviceName, serviceLocation: serviceLocation);
     }
 
     public RestAPIErrorExtraAttributes ExtraAttributes { get; private set; }

@@ -36,9 +36,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpDelete]
-        [Route("/{version:apiVersion}/cliente/{idCliente}")]
+        [Route(template: "/{version:apiVersion}/cliente/{idCliente}")]
         [ValidateModelState]
-        [SwaggerOperation("DeleteCliente")]
+        [SwaggerOperation(summary: "DeleteCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -47,7 +47,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> DeleteClienteAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromRoute] [Required] int idCliente);
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/cliente/{idCliente}")]
+        [Route(template: "/{version:apiVersion}/cliente/{idCliente}")]
         [ValidateModelState]
-        [SwaggerOperation("GetCliente")]
+        [SwaggerOperation(summary: "GetCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -72,7 +72,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetClienteAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromRoute] [Required] int idCliente);
 
         /// <summary>
@@ -85,9 +85,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/cliente")]
+        [Route(template: "/{version:apiVersion}/cliente")]
         [ValidateModelState]
-        [SwaggerOperation("GetClientes")]
+        [SwaggerOperation(summary: "GetClientes")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<ClienteResult>), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -96,7 +96,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetClientesAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
 
         /// <summary>
         /// Crea un cliente
@@ -111,16 +111,16 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost]
-        [Route("/{version:apiVersion}/cliente")]
+        [Route(template: "/{version:apiVersion}/cliente")]
         [ValidateModelState]
-        [SwaggerOperation("PostCliente")]
+        [SwaggerOperation(summary: "PostCliente")]
         [SwaggerResponse(statusCode: 201, type: typeof(ClienteResult), description: "Created")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PostClienteAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromBody] ClienteRequest body);
 
 
@@ -135,9 +135,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version:apiVersion}/cliente/{idCliente}/activar")]
+        [Route(template: "/{version:apiVersion}/cliente/{idCliente}/activar")]
         [ValidateModelState]
-        [SwaggerOperation("PutActivarCliente")]
+        [SwaggerOperation(summary: "PutActivarCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -146,7 +146,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutActivarClienteAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromRoute] [Required] int idCliente);
 
         /// <summary>
@@ -161,9 +161,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version:apiVersion}/cliente/{idCliente}")]
+        [Route(template: "/{version:apiVersion}/cliente/{idCliente}")]
         [ValidateModelState]
-        [SwaggerOperation("PutCliente")]
+        [SwaggerOperation(summary: "PutCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -172,7 +172,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutClienteAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromRoute] [Required] int idCliente, [FromBody] ClienteUpdateRequest body);
     }
 }

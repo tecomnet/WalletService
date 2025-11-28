@@ -26,7 +26,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="contrasenaActual")]
         public string ContrasenaActual { get; set; }
 
@@ -35,7 +35,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="contrasenaNueva")]
         public string ContrasenaNueva { get; set; }
 
@@ -44,7 +44,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="contrasenaNuevaConfrimacion")]
         public string ContrasenaNuevaConfrimacion { get; set; }
 
@@ -55,11 +55,11 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ContrasenaUpdateRequest {\n");
-            sb.Append("  ContrasenaActual: ").Append(ContrasenaActual).Append("\n");
-            sb.Append("  ContrasenaNueva: ").Append(ContrasenaNueva).Append("\n");
-            sb.Append("  ContrasenaNuevaConfrimacion: ").Append(ContrasenaNuevaConfrimacion).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class ContrasenaUpdateRequest {\n");
+            sb.Append(value: "  ContrasenaActual: ").Append(value: ContrasenaActual).Append(value: "\n");
+            sb.Append(value: "  ContrasenaNueva: ").Append(value: ContrasenaNueva).Append(value: "\n");
+            sb.Append(value: "  ContrasenaNuevaConfrimacion: ").Append(value: ContrasenaNuevaConfrimacion).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -69,7 +69,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -79,9 +79,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ContrasenaUpdateRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (ContrasenaUpdateRequest)obj);
         }
 
         /// <summary>
@@ -91,24 +91,24 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ContrasenaUpdateRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     ContrasenaActual == other.ContrasenaActual ||
                     ContrasenaActual != null &&
-                    ContrasenaActual.Equals(other.ContrasenaActual)
+                    ContrasenaActual.Equals(value: other.ContrasenaActual)
                 ) && 
                 (
                     ContrasenaNueva == other.ContrasenaNueva ||
                     ContrasenaNueva != null &&
-                    ContrasenaNueva.Equals(other.ContrasenaNueva)
+                    ContrasenaNueva.Equals(value: other.ContrasenaNueva)
                 ) && 
                 (
                     ContrasenaNuevaConfrimacion == other.ContrasenaNuevaConfrimacion ||
                     ContrasenaNuevaConfrimacion != null &&
-                    ContrasenaNuevaConfrimacion.Equals(other.ContrasenaNuevaConfrimacion)
+                    ContrasenaNuevaConfrimacion.Equals(value: other.ContrasenaNuevaConfrimacion)
                 );
         }
 
@@ -137,12 +137,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ContrasenaUpdateRequest left, ContrasenaUpdateRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(ContrasenaUpdateRequest left, ContrasenaUpdateRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

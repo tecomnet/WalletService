@@ -8,16 +8,14 @@ using Xunit.Sdk;
 namespace Wallet.UnitTest.Functionality.ProveedorServicioFacadeTest;
 
 public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
-    : BaseFacadeTest<IProveedorServicioFacade>(setupConfig)
+    : BaseFacadeTest<IProveedorServicioFacade>(setupConfig: setupConfig)
 {
     [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, create proveedor", "Netflix", ProductoCategoria.Servicios,
-        "https://netflix.com/icon.png", true, new string[] { })]
+    [InlineData(data: ["1. Successfully case, create proveedor", "Netflix", ProductoCategoria.Servicios, "https://netflix.com/icon.png", true, new string[] { }])]
     // Wrong cases
     // Add validation error cases if any validation exists in DOM constructor
-    [InlineData("2. Wrong case, empty name", "", ProductoCategoria.Servicios, "url", false,
-        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
+    [InlineData(data: ["2. Wrong case, empty name", "", ProductoCategoria.Servicios, "url", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
     public async Task GuardarProveedorServicioTest(
         string caseName,
         string nombre,
@@ -37,23 +35,23 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
                 testCase: SetupConfig.TestCaseId);
 
             // Assert proveedor created
-            Assert.NotNull(proveedor);
+            Assert.NotNull(@object: proveedor);
             // Assert properties
-            Assert.True(proveedor.Nombre == nombre &&
-                        proveedor.Categoria == categoria &&
-                        proveedor.UrlIcono == urlIcono &&
-                        proveedor.CreationUser == SetupConfig.UserId);
+            Assert.True(condition: proveedor.Nombre == nombre &&
+                                   proveedor.Categoria == categoria &&
+                                   proveedor.UrlIcono == urlIcono &&
+                                   proveedor.CreationUser == SetupConfig.UserId);
 
             // Get from context
             var proveedorContext = await Context.ProveedorServicio.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == proveedor.Id);
-            Assert.NotNull(proveedorContext);
-            Assert.True(proveedorContext.Nombre == nombre &&
-                        proveedorContext.Categoria == categoria &&
-                        proveedorContext.UrlIcono == urlIcono &&
-                        proveedorContext.CreationUser == SetupConfig.UserId);
+                .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
+            Assert.NotNull(@object: proveedorContext);
+            Assert.True(condition: proveedorContext.Nombre == nombre &&
+                                   proveedorContext.Categoria == categoria &&
+                                   proveedorContext.UrlIcono == urlIcono &&
+                                   proveedorContext.CreationUser == SetupConfig.UserId);
 
-            Assert.True(success);
+            Assert.True(condition: success);
         }
         catch (EMGeneralAggregateException exception)
         {
@@ -62,17 +60,15 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
                                           exception is not TrueException && exception is not FalseException)
         {
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 
     [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, update proveedor", 1, "CFE Updated", ProductoCategoria.Movilidad, "new_url",
-        true, new string[] { })]
+    [InlineData(data: ["1. Successfully case, update proveedor", 1, "CFE Updated", ProductoCategoria.Movilidad, "new_url", true, new string[] { }])]
     // Wrong cases
-    [InlineData("2. Wrong case, not found", 99, "Name", ProductoCategoria.Servicios, "url", false,
-        new string[] { "PROVEEDOR-SERVICIO-NOT-FOUND" })]
+    [InlineData(data: ["2. Wrong case, not found", 99, "Name", ProductoCategoria.Servicios, "url", false, new string[] { "PROVEEDOR-SERVICIO-NOT-FOUND" }])]
     public async Task ActualizarProveedorServicioTest(
         string caseName,
         int idProveedor,
@@ -92,21 +88,21 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
                 modificationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 
-            Assert.NotNull(proveedor);
-            Assert.True(proveedor.Nombre == nombre &&
-                        proveedor.Categoria == categoria &&
-                        proveedor.UrlIcono == urlIcono &&
-                        proveedor.ModificationUser == SetupConfig.UserId);
+            Assert.NotNull(@object: proveedor);
+            Assert.True(condition: proveedor.Nombre == nombre &&
+                                   proveedor.Categoria == categoria &&
+                                   proveedor.UrlIcono == urlIcono &&
+                                   proveedor.ModificationUser == SetupConfig.UserId);
 
             var proveedorContext = await Context.ProveedorServicio.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == proveedor.Id);
-            Assert.NotNull(proveedorContext);
-            Assert.True(proveedorContext.Nombre == nombre &&
-                        proveedorContext.Categoria == categoria &&
-                        proveedorContext.UrlIcono == urlIcono &&
-                        proveedorContext.ModificationUser == SetupConfig.UserId);
+                .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
+            Assert.NotNull(@object: proveedorContext);
+            Assert.True(condition: proveedorContext.Nombre == nombre &&
+                                   proveedorContext.Categoria == categoria &&
+                                   proveedorContext.UrlIcono == urlIcono &&
+                                   proveedorContext.ModificationUser == SetupConfig.UserId);
 
-            Assert.True(success);
+            Assert.True(condition: success);
         }
         catch (EMGeneralAggregateException exception)
         {
@@ -115,13 +111,13 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
                                           exception is not TrueException && exception is not FalseException)
         {
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 
     [Theory]
-    [InlineData("1. Successfully case, delete proveedor", 1, true, new string[] { })]
-    [InlineData("2. Wrong case, not found", 99, false, new string[] { "PROVEEDOR-SERVICIO-NOT-FOUND" })]
+    [InlineData(data: ["1. Successfully case, delete proveedor", 1, true, new string[] { }])]
+    [InlineData(data: ["2. Wrong case, not found", 99, false, new string[] { "PROVEEDOR-SERVICIO-NOT-FOUND" }])]
     public async Task EliminarProveedorServicioTest(
         string caseName,
         int idProveedor,
@@ -130,16 +126,16 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
     {
         try
         {
-            var proveedor = await Facade.EliminarProveedorServicioAsync(idProveedor, SetupConfig.UserId);
-            Assert.NotNull(proveedor);
-            Assert.False(proveedor.IsActive);
+            var proveedor = await Facade.EliminarProveedorServicioAsync(idProveedorServicio: idProveedor, modificationUser: SetupConfig.UserId);
+            Assert.NotNull(@object: proveedor);
+            Assert.False(condition: proveedor.IsActive);
 
             var proveedorContext = await Context.ProveedorServicio.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == proveedor.Id);
-            Assert.NotNull(proveedorContext);
-            Assert.False(proveedorContext.IsActive);
+                .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
+            Assert.NotNull(@object: proveedorContext);
+            Assert.False(condition: proveedorContext.IsActive);
 
-            Assert.True(success);
+            Assert.True(condition: success);
         }
         catch (EMGeneralAggregateException exception)
         {
@@ -148,13 +144,13 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
                                           exception is not TrueException && exception is not FalseException)
         {
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 
     [Theory]
-    [InlineData("1. Successfully case, activate proveedor", 1, true, new string[] { })]
-    [InlineData("2. Wrong case, not found", 99, false, new string[] { "PROVEEDOR-SERVICIO-NOT-FOUND" })]
+    [InlineData(data: ["1. Successfully case, activate proveedor", 1, true, new string[] { }])]
+    [InlineData(data: ["2. Wrong case, not found", 99, false, new string[] { "PROVEEDOR-SERVICIO-NOT-FOUND" }])]
     public async Task ActivarProveedorServicioTest(
         string caseName,
         int idProveedor,
@@ -166,16 +162,16 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
             // First deactivate it to ensure activation changes state (though it is active by default)
             // But we can just call Activate, it sets IsActive = true.
 
-            var proveedor = await Facade.ActivarProveedorServicioAsync(idProveedor, SetupConfig.UserId);
-            Assert.NotNull(proveedor);
-            Assert.True(proveedor.IsActive);
+            var proveedor = await Facade.ActivarProveedorServicioAsync(idProveedorServicio: idProveedor, modificationUser: SetupConfig.UserId);
+            Assert.NotNull(@object: proveedor);
+            Assert.True(condition: proveedor.IsActive);
 
             var proveedorContext = await Context.ProveedorServicio.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == proveedor.Id);
-            Assert.NotNull(proveedorContext);
-            Assert.True(proveedorContext.IsActive);
+                .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
+            Assert.NotNull(@object: proveedorContext);
+            Assert.True(condition: proveedorContext.IsActive);
 
-            Assert.True(success);
+            Assert.True(condition: success);
         }
         catch (EMGeneralAggregateException exception)
         {
@@ -184,7 +180,7 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
                                           exception is not TrueException && exception is not FalseException)
         {
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 }

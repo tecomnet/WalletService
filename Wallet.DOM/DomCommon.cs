@@ -20,8 +20,8 @@ namespace Wallet.DOM
 
         public static EMGeneralException BuildEmGeneralException(string errorCode, List<object> dynamicContent, string module = ModuleName)
         {
-            var serviceError = ServiceError.GetError(errorCode);
-            var itaGeneralException = BuildEmGeneralException(serviceError, dynamicContent, module);
+            var serviceError = ServiceError.GetError(errorCode: errorCode);
+            var itaGeneralException = BuildEmGeneralException(serviceError: serviceError, dynamicContent: dynamicContent, module: module);
             return itaGeneralException;
         }
     }

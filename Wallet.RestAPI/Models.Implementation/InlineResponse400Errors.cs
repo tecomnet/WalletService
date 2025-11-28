@@ -104,7 +104,7 @@ namespace Wallet.RestAPI.Models
 #nullable disable
             int status,
             EMGeneralException exception) :
-            this(type, status, exception.Code, exception.Title, exception.Description, exception.ServiceInstance)
+            this(type: type, status: status, errorCode: exception.Code, title: exception.Title, detail: exception.Description, instance: exception.ServiceInstance)
         {
             // Instantiate the ExtraAttributes
             global::Wallet.RestAPI.Models.InlineResponse400ExtraAttributes extraAttributes = new(
@@ -168,7 +168,7 @@ namespace Wallet.RestAPI.Models
                 try
                 {
                     // Instantiate the error and add it to the list
-                    newErrors.Add(new InlineResponse400Errors(
+                    newErrors.Add(item: new InlineResponse400Errors(
                         type: null,
                         status: 400,
                         exception: exception));
@@ -176,7 +176,7 @@ namespace Wallet.RestAPI.Models
                 catch (Exception exc)
                 {
                     // Instantiate the error for creating the error
-                    newErrors.Add(new InlineResponse400Errors(
+                    newErrors.Add(item: new InlineResponse400Errors(
                         type: null,
                         status: 400,
                         errorCode: "EM-GENERAL-ERROR-PROBLEM-PROCESSING-ERROR",
@@ -203,7 +203,7 @@ namespace Wallet.RestAPI.Models
             foreach (var exception in aggregateException.InnerExceptions)
             {
                 // Add the cast exception into the list
-                emGeneralExceptions.Add((EMGeneralException)exception);
+                emGeneralExceptions.Add(item: (EMGeneralException)exception);
             }
             // Use the basic factory passing the list of EMGeneralExceptions within the AggregatedException
             return CreateFromExceptionList(exceptions: emGeneralExceptions);
@@ -221,7 +221,7 @@ namespace Wallet.RestAPI.Models
             // Iterate the list of RestAPIErrors
             foreach (var restAPIError in restAPIErrors)
                 // Add the new instance of InlineResponse400Errors to the list
-                newErrors.Add(new InlineResponse400Errors(restAPIError: restAPIError));
+                newErrors.Add(item: new InlineResponse400Errors(restAPIError: restAPIError));
             // Return the list
             return newErrors;
         }

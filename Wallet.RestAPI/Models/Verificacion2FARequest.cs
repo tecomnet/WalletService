@@ -34,7 +34,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(4, MinimumLength=4)]
+        [StringLength(maximumLength: 4, MinimumLength=4)]
         [DataMember(Name="Codigo")]
         public string Codigo { get; set; }
 
@@ -45,10 +45,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class Verificacion2FARequest {\n");
-            sb.Append("  Tipo: ").Append(Tipo).Append("\n");
-            sb.Append("  Codigo: ").Append(Codigo).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class Verificacion2FARequest {\n");
+            sb.Append(value: "  Tipo: ").Append(value: Tipo).Append(value: "\n");
+            sb.Append(value: "  Codigo: ").Append(value: Codigo).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -58,7 +58,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((Verificacion2FARequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (Verificacion2FARequest)obj);
         }
 
         /// <summary>
@@ -80,19 +80,19 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(Verificacion2FARequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Tipo == other.Tipo ||
                     Tipo != null &&
-                    Tipo.Equals(other.Tipo)
+                    Tipo.Equals(obj: other.Tipo)
                 ) && 
                 (
                     Codigo == other.Codigo ||
                     Codigo != null &&
-                    Codigo.Equals(other.Codigo)
+                    Codigo.Equals(value: other.Codigo)
                 );
         }
 
@@ -119,12 +119,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(Verificacion2FARequest left, Verificacion2FARequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(Verificacion2FARequest left, Verificacion2FARequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

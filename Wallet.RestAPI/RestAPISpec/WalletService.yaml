@@ -854,6 +854,34 @@ paths:
       description: Elimina un servicio favorito
       tags:
         - ServicioFavorito
+  '/{version}/usuario/preregistro':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Pre-registro de usuario
+      operationId: PostUsuarioPreRegistro
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '500':
+          description: Internal Server Error
+      description: Realiza el pre-registro de un usuario, creando el usuario y el cliente asociado.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreRegistroRequest'
+        description: ''
+      tags:
+        - Usuario
   '/{version}/usuario/{idUsuario}':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -1221,6 +1249,22 @@ components:
         - codigoPais
         - telefono
         - estatus
+    PreRegistroRequest:
+      title: PreRegistroRequest
+      type: object
+      description: Estructura para pre registrar un usuario
+      properties:
+        codigoPais:
+          type: string
+          minLength: 3
+          maxLength: 3
+        telefono:
+          type: string
+          minLength: 9
+          maxLength: 10
+      required:
+        - codigoPais
+        - telefono
     ClienteRequest:
       title: ClienteRequest
       x-stoplight:
@@ -2316,3 +2360,113 @@ tags:
 security:
   - jwsToken: []
   - X-API-Key: []
+  '/{version}/auth/login':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Login with credentials
+      operationId: Login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Login with credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      tags:
+        - Auth
+  '/{version}/auth/refresh':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Refresh access token
+      operationId: Refresh
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Refresh access token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      tags:
+        - Auth
+  '/{version}/auth/revoke':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Revoke refresh token
+      operationId: Revoke
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Revoke refresh token
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevokeTokenRequest'
+      tags:
+        - Auth
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+      required:
+        - login
+        - password
+    RefreshTokenRequest:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - accessToken
+        - refreshToken
+    RevokeTokenRequest:
+      type: object
+      properties:
+        username:
+          type: string
+      required:
+        - username
+    AuthResult:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string

@@ -19,13 +19,13 @@ public class ServicioFavoritoFacade(ServiceDbContext context,
         try
         {
             // 1. Fetch Cliente
-            var cliente = await clienteFacade.ObtenerClientePorIdAsync(clienteId);
+            var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: clienteId);
             // 2. Fetch ProveedorServicio
-            var proveedorServicio = await proveedorServicioFacade.ObtenerProveedorServicioPorIdAsync(proveedorServicioId);
+            var proveedorServicio = await proveedorServicioFacade.ObtenerProveedorServicioPorIdAsync(idProveedorServicio: proveedorServicioId);
             // 3. Create ServicioFavorito using the new constructor
-            var servicioFavorito = new ServicioFavorito(cliente, proveedorServicio, alias, numeroReferencia, creationUser);
+            var servicioFavorito = new ServicioFavorito(cliente: cliente, proveedorServicio: proveedorServicio, alias: alias, numeroReferencia: numeroReferencia, creationUser: creationUser);
 
-            await context.ServicioFavorito.AddAsync(servicioFavorito);
+            await context.ServicioFavorito.AddAsync(entity: servicioFavorito);
             await context.SaveChangesAsync();
             return servicioFavorito;
         }
@@ -43,12 +43,12 @@ public class ServicioFavoritoFacade(ServiceDbContext context,
         try
         {
             var servicioFavorito = await context.ServicioFavorito
-                .Include(s => s.ProveedorServicio)
-                .FirstOrDefaultAsync(x => x.Id == idServicioFavorito);
+                .Include(navigationPropertyPath: s => s.ProveedorServicio)
+                .FirstOrDefaultAsync(predicate: x => x.Id == idServicioFavorito);
 
             if (servicioFavorito == null)
             {
-                throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                     errorCode: ServiceErrorsBuilder.ServicioFavoritoNoEncontrado,
                     dynamicContent: [idServicioFavorito],
                     module: this.GetType().Name));
@@ -70,10 +70,10 @@ public class ServicioFavoritoFacade(ServiceDbContext context,
     {
         try
         {
-            var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito);
+            var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito: idServicioFavorito);
 
             // Need to add Update method to ServicioFavorito as well
-            servicioFavorito.Update(alias, numeroReferencia, modificationUser);
+            servicioFavorito.Update(alias: alias, numeroReferencia: numeroReferencia, modificationUser: modificationUser);
 
             await context.SaveChangesAsync();
             return servicioFavorito;
@@ -91,8 +91,8 @@ public class ServicioFavoritoFacade(ServiceDbContext context,
     {
         try
         {
-            var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito);
-            servicioFavorito.Deactivate(modificationUser);
+            var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito: idServicioFavorito);
+            servicioFavorito.Deactivate(modificationUser: modificationUser);
             await context.SaveChangesAsync();
             return servicioFavorito;
         }
@@ -109,8 +109,8 @@ public class ServicioFavoritoFacade(ServiceDbContext context,
     {
         try
         {
-            var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito);
-            servicioFavorito.Activate(modificationUser);
+            var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito: idServicioFavorito);
+            servicioFavorito.Activate(modificationUser: modificationUser);
             await context.SaveChangesAsync();
             return servicioFavorito;
         }
@@ -128,8 +128,8 @@ public class ServicioFavoritoFacade(ServiceDbContext context,
         try
         {
             return await context.ServicioFavorito
-                .Where(x => x.ClienteId == clienteId)
-                .Include(s => s.ProveedorServicio)
+                .Where(predicate: x => x.ClienteId == clienteId)
+                .Include(navigationPropertyPath: s => s.ProveedorServicio)
                 .ToListAsync();
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)

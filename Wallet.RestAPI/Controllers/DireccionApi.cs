@@ -36,13 +36,13 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version:apiVersion}/direccion/{idCliente}")]
+        [Route(template: "/{version:apiVersion}/direccion/{idCliente}")]
         [ValidateModelState]
-        [SwaggerOperation("PutDireccion")]
+        [SwaggerOperation(summary: "PutDireccion")]
 		[SwaggerResponse(statusCode: 200, type: typeof(DireccionResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutDireccionAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idCliente, [FromBody] DireccionUpdateRequest body);
+        public abstract Task<IActionResult> PutDireccionAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idCliente, [FromBody] DireccionUpdateRequest body);
     }
 }

@@ -12,8 +12,8 @@ namespace Wallet.Funcionalidad.Helper
 		/// <returns>URL of the service</returns>
 		public string BuildUrl(string serviceName)
 		{
-			var clusterNamespace = Environment.GetEnvironmentVariable("namespace");
-			if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable($"{serviceName}")))
+			var clusterNamespace = Environment.GetEnvironmentVariable(variable: "namespace");
+			if (string.IsNullOrEmpty(value: Environment.GetEnvironmentVariable(variable: $"{serviceName}")))
 			{
 				// Build the URL for the service, esto es para kubernates
 				var serviceUrl = $"http://{serviceName}-service.{clusterNamespace}.svc.cluster.local:80";
@@ -22,7 +22,7 @@ namespace Wallet.Funcionalidad.Helper
 			else
 			{
 				// Get the service URL from the environment variables
-				var serviceUrl = Environment.GetEnvironmentVariable($"{serviceName}");
+				var serviceUrl = Environment.GetEnvironmentVariable(variable: $"{serviceName}");
 				return serviceUrl;
 			}
 		}

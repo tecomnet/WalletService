@@ -35,7 +35,7 @@ public class ServiceExceptionFilter : IExceptionFilter
             }
             
             // Establecemos el resultado, deteniendo la propagación
-            context.Result = new ObjectResult(responseBody)
+            context.Result = new ObjectResult(value: responseBody)
             {
                 StatusCode = statusCode
             };
@@ -57,7 +57,7 @@ public class ServiceExceptionFilter : IExceptionFilter
             var responseBody = new InlineResponse400(aggregateException: encapsulatedException);
 
             // 3. Establecer el resultado
-            context.Result = new ObjectResult(responseBody)
+            context.Result = new ObjectResult(value: responseBody)
             {
                 StatusCode = statusCode
             };

@@ -9,7 +9,7 @@ public abstract class PersistentClassLogicalDelete : PersistentClass
     }
 
     protected internal PersistentClassLogicalDelete(Guid creationUser, string? testCase = null)
-        : base(creationUser, testCase)
+        : base(creationUser: creationUser, testCase: testCase)
     {
         this.IsActive = true;
     }
@@ -20,12 +20,12 @@ public abstract class PersistentClassLogicalDelete : PersistentClass
     public virtual void Deactivate(Guid modificationUser)
     {
         this.IsActive = false;
-        this.Update(modificationUser);
+        this.Update(modificationUser: modificationUser);
     }
 
     public virtual void Activate(Guid modificationUser)
     {
         this.IsActive = true;
-        this.Update(modificationUser);
+        this.Update(modificationUser: modificationUser);
     }
 }

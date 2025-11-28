@@ -12,14 +12,14 @@ public static class RegionInfoHelper
     public static bool IsCountryCodeValid(string countryCode)
     {
         // Get all iso region names
-        IEnumerable<string> source = from x in (from culture in CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+        IEnumerable<string> source = from x in (from culture in CultureInfo.GetCultures(types: CultureTypes.SpecificCultures)
                                                 where culture.LCID != 127
                                                 select culture
                 into x
-                                                select new RegionInfo(x.Name).TwoLetterISORegionName).Distinct()
+                                                select new RegionInfo(name: x.Name).TwoLetterISORegionName).Distinct()
                                      orderby x
                                      select x;
         // Exists any iso region name with the country code
-        return source.Any((string x) => x == countryCode.ToUpper());
+        return source.Any(predicate: (string x) => x == countryCode.ToUpper());
     }
 }

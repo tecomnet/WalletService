@@ -17,7 +17,7 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
             // Obtiene la direccion
             var direccion = cliente.Direccion;
             // Validamos que la direccion no sea nula
-            if (direccion is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            if (direccion is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.DireccionNoConfigurada,
                 dynamicContent: []));
             // Actualiza la direccion

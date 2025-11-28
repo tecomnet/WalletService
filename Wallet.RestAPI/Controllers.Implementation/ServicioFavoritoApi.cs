@@ -15,7 +15,7 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
 {
     /// <inheritdoc/>
     public override async Task<IActionResult> DeleteServicioFavoritoAsync(
-        [FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
         [FromRoute, Required] int idServicioFavorito)
     {
         // Call facade method
@@ -23,27 +23,27 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
             await servicioFavoritoFacade.EliminarServicioFavoritoAsync(idServicioFavorito: idServicioFavorito,
                 modificationUser: Guid.Empty);
         // Map to response model
-        var response = mapper.Map<ServicioFavoritoResult>(servicio);
+        var response = mapper.Map<ServicioFavoritoResult>(source: servicio);
         // Return OK response
         return Ok(value: response);
     }
 
     /// <inheritdoc/>
     public override async Task<IActionResult> GetServiciosFavoritosAsync(
-        [FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
         [FromRoute, Required] int idCliente)
     {
         // Call facade method
         var servicios = await servicioFavoritoFacade.ObtenerServiciosFavoritosPorClienteAsync(clienteId: idCliente);
         // Map to response model
-        var response = mapper.Map<List<ServicioFavoritoResult>>(servicios);
+        var response = mapper.Map<List<ServicioFavoritoResult>>(source: servicios);
         // Return OK response
         return Ok(value: response);
     }
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PostServicioFavoritoAsync(
-        [FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
         [FromBody] ServicioFavoritoRequest body)
     {
         // Call facade method
@@ -54,14 +54,14 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
             numeroReferencia: body.NumeroReferencia,
             creationUser: Guid.Empty);
         // Map to result
-        var result = mapper.Map<ServicioFavoritoResult>(servicio);
+        var result = mapper.Map<ServicioFavoritoResult>(source: servicio);
         // Return created
-        return Created(uri: $"/{version}/servicioFavorito/{servicio.Id}", result);
+        return Created(uri: $"/{version}/servicioFavorito/{servicio.Id}", value: result);
     }
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutServicioFavoritoAsync(
-        [FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
         [FromRoute, Required] int idServicioFavorito, [FromBody] ServicioFavoritoRequest body)
     {
         // Call facade method
@@ -71,7 +71,7 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
             numeroReferencia: body.NumeroReferencia,
             modificationUser: Guid.Empty);
         // Map to response model
-        var response = mapper.Map<ServicioFavoritoResult>(servicio);
+        var response = mapper.Map<ServicioFavoritoResult>(source: servicio);
         // Return OK response
         return Ok(value: response);
     }

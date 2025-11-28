@@ -15,7 +15,7 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
 
     public ProductoProveedorApiTest()
     {
-        SetupDataAsync(async context => { await context.SaveChangesAsync(); }).GetAwaiter().GetResult();
+        SetupDataAsync(setupDataAction: async context => { await context.SaveChangesAsync(); }).GetAwaiter().GetResult();
     }
 
     private readonly JsonSerializerSettings _jsonSettings = new()
@@ -29,7 +29,7 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
         // Create provider
-        var provider = await CreateProveedor(client);
+        var provider = await CreateProveedor(client: client);
 
         var request = new ProductoProveedorRequest
         {
@@ -38,19 +38,19 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
             Monto = 15.99m,
             Descripcion = "Premium Subscription"
         };
-        var content = CreateContent(request);
+        var content = CreateContent(body: request);
 
         // Act
-        var response = await client.PostAsync($"{API_VERSION}/{PROVEEDOR_API_URI}/{provider.Id}/producto", content);
+        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{provider.Id}/producto", content: content);
 
         // Assert
-        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.Created, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProductoProveedorResult>(await response.Content.ReadAsStringAsync(),
-                _jsonSettings);
-        Assert.NotNull(result);
-        Assert.Equal(request.Sku, result.Sku);
-        Assert.Equal(provider.Id, result.ProveedorServicioId);
+            JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: request.Sku, actual: result.Sku);
+        Assert.Equal(expected: provider.Id, actual: result.ProveedorServicioId);
     }
 
     [Fact]
@@ -58,19 +58,19 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
-        var provider = await CreateProveedor(client);
-        var product = await CreateProducto(client, provider.Id.GetValueOrDefault());
+        var provider = await CreateProveedor(client: client);
+        var product = await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
 
         // Act
-        var response = await client.GetAsync($"{API_VERSION}/{API_URI}/{product.Id}");
+        var response = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}/{product.Id}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProductoProveedorResult>(await response.Content.ReadAsStringAsync(),
-                _jsonSettings);
-        Assert.NotNull(result);
-        Assert.Equal(product.Id, result.Id);
+            JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: product.Id, actual: result.Id);
     }
 
     [Fact]
@@ -78,8 +78,8 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
-        var provider = await CreateProveedor(client);
-        var product = await CreateProducto(client, provider.Id.GetValueOrDefault());
+        var provider = await CreateProveedor(client: client);
+        var product = await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
 
         var updateRequest = new ProductoProveedorRequest
         {
@@ -90,16 +90,16 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         };
 
         // Act
-        var response = await client.PutAsync($"{API_VERSION}/{API_URI}/{product.Id}", CreateContent(updateRequest));
+        var response = await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{product.Id}", content: CreateContent(body: updateRequest));
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProductoProveedorResult>(await response.Content.ReadAsStringAsync(),
-                _jsonSettings);
-        Assert.NotNull(result);
-        Assert.Equal(updateRequest.Sku, result.Sku);
-        Assert.Equal(updateRequest.Monto, result.Monto);
+            JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: updateRequest.Sku, actual: result.Sku);
+        Assert.Equal(expected: updateRequest.Monto, actual: result.Monto);
     }
 
     [Fact]
@@ -107,19 +107,19 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
-        var provider = await CreateProveedor(client);
-        var product = await CreateProducto(client, provider.Id.GetValueOrDefault());
+        var provider = await CreateProveedor(client: client);
+        var product = await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
 
         // Act
-        var response = await client.DeleteAsync($"{API_VERSION}/{API_URI}/{product.Id}");
+        var response = await client.DeleteAsync(requestUri: $"{API_VERSION}/{API_URI}/{product.Id}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProductoProveedorResult>(await response.Content.ReadAsStringAsync(),
-                _jsonSettings);
-        Assert.NotNull(result);
-        Assert.False(result.IsActive);
+            JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(@object: result);
+        Assert.False(condition: result.IsActive);
     }
 
     [Fact]
@@ -127,20 +127,20 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
-        var provider = await CreateProveedor(client);
-        await CreateProducto(client, provider.Id.GetValueOrDefault());
-        await CreateProducto(client, provider.Id.GetValueOrDefault(), "OTHER-SKU");
+        var provider = await CreateProveedor(client: client);
+        await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
+        await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault(), sku: "OTHER-SKU");
 
         // Act
-        var response = await client.GetAsync($"{API_VERSION}/{PROVEEDOR_API_URI}/{provider.Id}/productos");
+        var response = await client.GetAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{provider.Id}/productos");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<List<ProductoProveedorResult>>(await response.Content.ReadAsStringAsync(),
-                _jsonSettings);
-        Assert.NotNull(result);
-        Assert.True(result.Count >= 2);
+            JsonConvert.DeserializeObject<List<ProductoProveedorResult>>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(@object: result);
+        Assert.True(condition: result.Count >= 2);
     }
 
     private async Task<ProveedorServicioResult> CreateProveedor(HttpClient client)
@@ -151,11 +151,11 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
             Categoria = "Servicios",
             UrlIcono = "http://test.com/icon.png"
         };
-        var response = await client.PostAsync($"{API_VERSION}/{PROVEEDOR_API_URI}", CreateContent(request));
-        Assert.True(response.IsSuccessStatusCode,
-            "Failed to create provider: " + await response.Content.ReadAsStringAsync());
-        return JsonConvert.DeserializeObject<ProveedorServicioResult>(await response.Content.ReadAsStringAsync(),
-            _jsonSettings)!;
+        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}", content: CreateContent(body: request));
+        Assert.True(condition: response.IsSuccessStatusCode,
+            userMessage: "Failed to create provider: " + await response.Content.ReadAsStringAsync());
+        return JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
+            settings: _jsonSettings)!;
     }
 
     private async Task<ProductoProveedorResult> CreateProducto(HttpClient client, int providerId,
@@ -168,17 +168,17 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
             Monto = 10.0m,
             Descripcion = "Test Description"
         };
-        var response = await client.PostAsync($"{API_VERSION}/{PROVEEDOR_API_URI}/{providerId}/producto",
-            CreateContent(request));
-        Assert.True(response.IsSuccessStatusCode,
-            "Failed to create product: " + await response.Content.ReadAsStringAsync());
-        return JsonConvert.DeserializeObject<ProductoProveedorResult>(await response.Content.ReadAsStringAsync(),
-            _jsonSettings)!;
+        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{providerId}/producto",
+            content: CreateContent(body: request));
+        Assert.True(condition: response.IsSuccessStatusCode,
+            userMessage: "Failed to create product: " + await response.Content.ReadAsStringAsync());
+        return JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+            settings: _jsonSettings)!;
     }
 
     private StringContent CreateContent(object body)
     {
-        var json = JsonConvert.SerializeObject(body, _jsonSettings);
-        return new StringContent(json, Encoding.UTF8, "application/json");
+        var json = JsonConvert.SerializeObject(value: body, settings: _jsonSettings);
+        return new StringContent(content: json, encoding: Encoding.UTF8, mediaType: "application/json");
     }
 }

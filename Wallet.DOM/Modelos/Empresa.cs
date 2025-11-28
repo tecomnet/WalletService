@@ -17,7 +17,7 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
     ];
     
     [Required]
-    [MaxLength(100)]
+    [MaxLength(length: 100)]
     public string Nombre { get; internal set; }
     
     public List<Cliente> Clientes { get; private set; }
@@ -25,12 +25,12 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
     public Empresa() : base() { }
 
     public Empresa(string nombre, Guid creationUser,
-        string? testCase = null) : base(creationUser, testCase)
+        string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate the properties
-        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Seteo de propiedades
@@ -43,7 +43,7 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate the properties
-        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Seteo de propiedades

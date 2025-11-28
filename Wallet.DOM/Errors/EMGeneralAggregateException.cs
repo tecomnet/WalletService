@@ -5,17 +5,17 @@ namespace Wallet.DOM.Errors;
 public class EMGeneralAggregateException : AggregateException
 {
     public EMGeneralAggregateException(EMGeneralException exception)
-        : base((Exception) exception)
+        : base(innerExceptions: (Exception) exception)
     {
     }
 
     public EMGeneralAggregateException(List<EMGeneralException> exceptions)
-        : base((IEnumerable<Exception>) exceptions)
+        : base(innerExceptions: (IEnumerable<Exception>) exceptions)
     {
     }
 
     protected EMGeneralAggregateException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
+        : base(info: info, context: context)
     {
     }
 
@@ -25,7 +25,7 @@ public class EMGeneralAggregateException : AggregateException
     {
         get
         {
-            return base.InnerExceptions.Select<Exception, EMGeneralException>((Func<Exception, EMGeneralException>) (innerException => (EMGeneralException) innerException)).ToList<EMGeneralException>();
+            return base.InnerExceptions.Select<Exception, EMGeneralException>(selector: (Func<Exception, EMGeneralException>) (innerException => (EMGeneralException) innerException)).ToList<EMGeneralException>();
         }
     }
 }

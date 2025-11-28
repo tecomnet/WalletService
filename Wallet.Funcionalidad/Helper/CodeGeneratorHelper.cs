@@ -14,7 +14,7 @@ public class CodeGeneratorHelper
     public static string GenerateFourDigitCode()
     {
         // Utilizamos un StringBuilder para construir el código de manera eficiente.
-        StringBuilder code = new StringBuilder(4);
+        StringBuilder code = new StringBuilder(capacity: 4);
         
         // El dígito cero (0) está excluido, por lo que el rango es [1, 10), 
         // lo que genera números enteros del 1 al 9.
@@ -25,10 +25,10 @@ public class CodeGeneratorHelper
         for (int i = 0; i < 4; i++)
         {
             // Genera un número entre 1 y 9 (ambos inclusive)
-            int digit = Random.Next(minDigit, maxDigitExclusive); 
+            int digit = Random.Next(minValue: minDigit, maxValue: maxDigitExclusive); 
             
             // Concatena el dígito como un carácter
-            code.Append(digit);
+            code.Append(value: digit);
         }
 
         return code.ToString();

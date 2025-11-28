@@ -29,7 +29,7 @@ namespace Wallet.DOM.Modelos
         /// Nombre del proveedor de servicios.
         /// </summary>
         [Required]
-        [MaxLength(100)]
+        [MaxLength(length: 100)]
         public string Nombre { get; private set; }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// URL del ícono representativo del proveedor.
         /// </summary>
-        [MaxLength(255)]
+        [MaxLength(length: 255)]
         public string? UrlIcono { get; private set; }
 
         /// <summary>
@@ -70,14 +70,14 @@ namespace Wallet.DOM.Modelos
         /// <param name="urlIcono">La URL del ícono del proveedor (opcional).</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
         public ProveedorServicio(string nombre, ProductoCategoria categoria, string? urlIcono, Guid creationUser) :
-            base(creationUser)
+            base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
-            IsPropertyValid(nameof(Nombre), nombre, ref exceptions);
-            IsPropertyValid(nameof(Categoria), categoria, ref exceptions);
+            IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Categoria), value: categoria, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
-                throw new EMGeneralAggregateException(exceptions);
+                throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
             Nombre = nombre;
@@ -97,23 +97,23 @@ namespace Wallet.DOM.Modelos
         public void Update(string nombre, ProductoCategoria categoria, string? urlIcono, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
-            IsPropertyValid(nameof(Nombre), nombre, ref exceptions);
-            IsPropertyValid(nameof(Categoria), categoria, ref exceptions);
+            IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Categoria), value: categoria, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
-                throw new EMGeneralAggregateException(exceptions);
+                throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
             Nombre = nombre;
             Categoria = categoria;
             UrlIcono = urlIcono;
-            base.Update(modificationUser);
+            base.Update(modificationUser: modificationUser);
         }
 
         public ProductoProveedor AgregarProducto(string sku, string nombre, decimal monto, string descripcion, Guid creationUser)
         {
-            var producto = new ProductoProveedor(this, sku, nombre, monto, descripcion, creationUser);
-            this.Productos.Add(producto);
+            var producto = new ProductoProveedor(proveedorServicio: this, sku: sku, nombre: nombre, monto: monto, descripcion: descripcion, creationUser: creationUser);
+            this.Productos.Add(item: producto);
             return producto;
         }
     }

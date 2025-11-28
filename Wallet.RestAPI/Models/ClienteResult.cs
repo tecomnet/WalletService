@@ -34,7 +34,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(3, MinimumLength=3)]
+        [StringLength(maximumLength: 3, MinimumLength=3)]
         [DataMember(Name="codigoPais")]
         public string CodigoPais { get; set; }
 
@@ -43,7 +43,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(10, MinimumLength=9)]
+        [StringLength(maximumLength: 10, MinimumLength=9)]
         [DataMember(Name="telefono")]
         public string Telefono { get; set; }
 
@@ -52,7 +52,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
@@ -61,7 +61,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="primerApellido")]
         public string PrimerApellido { get; set; }
 
@@ -70,7 +70,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="segundoApellido")]
         public string SegundoApellido { get; set; }
 
@@ -87,7 +87,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(50, MinimumLength=1)]
+        [StringLength(maximumLength: 50, MinimumLength=1)]
         [DataMember(Name="genero")]
         public string Genero { get; set; }
 
@@ -96,7 +96,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(150, MinimumLength=1)]
+        [StringLength(maximumLength: 150, MinimumLength=1)]
         [DataMember(Name="correoElectronico")]
         public string CorreoElectronico { get; set; }
 
@@ -105,7 +105,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(50, MinimumLength=1)]
+        [StringLength(maximumLength: 50, MinimumLength=1)]
         [DataMember(Name="tipoPersona")]
         public string TipoPersona { get; set; }
 
@@ -114,7 +114,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(18, MinimumLength=1)]
+        [StringLength(maximumLength: 18, MinimumLength=1)]
         [DataMember(Name="curp")]
         public string Curp { get; set; }
 
@@ -123,7 +123,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(13, MinimumLength=1)]
+        [StringLength(maximumLength: 13, MinimumLength=1)]
         [DataMember(Name="rfc")]
         public string Rfc { get; set; }
 
@@ -132,7 +132,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(500, MinimumLength=1)]
+        [StringLength(maximumLength: 500, MinimumLength=1)]
         [DataMember(Name="foto")]
         public string Foto { get; set; }
 
@@ -141,7 +141,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(500, MinimumLength=1)]
+        [StringLength(maximumLength: 500, MinimumLength=1)]
         [DataMember(Name="estado")]
         public string Estado { get; set; }
 
@@ -150,7 +150,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(13, MinimumLength=1)]
+        [StringLength(maximumLength: 13, MinimumLength=1)]
         [DataMember(Name="empresa")]
         public string Empresa { get; set; }
 
@@ -215,29 +215,29 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ClienteResult {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  CodigoPais: ").Append(CodigoPais).Append("\n");
-            sb.Append("  Telefono: ").Append(Telefono).Append("\n");
-            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
-            sb.Append("  PrimerApellido: ").Append(PrimerApellido).Append("\n");
-            sb.Append("  SegundoApellido: ").Append(SegundoApellido).Append("\n");
-            sb.Append("  FechaNacimiento: ").Append(FechaNacimiento).Append("\n");
-            sb.Append("  Genero: ").Append(Genero).Append("\n");
-            sb.Append("  CorreoElectronico: ").Append(CorreoElectronico).Append("\n");
-            sb.Append("  TipoPersona: ").Append(TipoPersona).Append("\n");
-            sb.Append("  Curp: ").Append(Curp).Append("\n");
-            sb.Append("  Rfc: ").Append(Rfc).Append("\n");
-            sb.Append("  Foto: ").Append(Foto).Append("\n");
-            sb.Append("  Estado: ").Append(Estado).Append("\n");
-            sb.Append("  Empresa: ").Append(Empresa).Append("\n");
-            sb.Append("  Guid: ").Append(Guid).Append("\n");
-            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
-            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
-            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
-            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
-            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class ClienteResult {\n");
+            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
+            sb.Append(value: "  CodigoPais: ").Append(value: CodigoPais).Append(value: "\n");
+            sb.Append(value: "  Telefono: ").Append(value: Telefono).Append(value: "\n");
+            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
+            sb.Append(value: "  PrimerApellido: ").Append(value: PrimerApellido).Append(value: "\n");
+            sb.Append(value: "  SegundoApellido: ").Append(value: SegundoApellido).Append(value: "\n");
+            sb.Append(value: "  FechaNacimiento: ").Append(value: FechaNacimiento).Append(value: "\n");
+            sb.Append(value: "  Genero: ").Append(value: Genero).Append(value: "\n");
+            sb.Append(value: "  CorreoElectronico: ").Append(value: CorreoElectronico).Append(value: "\n");
+            sb.Append(value: "  TipoPersona: ").Append(value: TipoPersona).Append(value: "\n");
+            sb.Append(value: "  Curp: ").Append(value: Curp).Append(value: "\n");
+            sb.Append(value: "  Rfc: ").Append(value: Rfc).Append(value: "\n");
+            sb.Append(value: "  Foto: ").Append(value: Foto).Append(value: "\n");
+            sb.Append(value: "  Estado: ").Append(value: Estado).Append(value: "\n");
+            sb.Append(value: "  Empresa: ").Append(value: Empresa).Append(value: "\n");
+            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
+            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
+            sb.Append(value: "  ModificationTimestamp: ").Append(value: ModificationTimestamp).Append(value: "\n");
+            sb.Append(value: "  CreationUser: ").Append(value: CreationUser).Append(value: "\n");
+            sb.Append(value: "  ModificationUser: ").Append(value: ModificationUser).Append(value: "\n");
+            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -247,7 +247,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -257,9 +257,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ClienteResult)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (ClienteResult)obj);
         }
 
         /// <summary>
@@ -269,114 +269,114 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ClienteResult other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other.Id)
+                    Id.Equals(other: other.Id)
                 ) && 
                 (
                     CodigoPais == other.CodigoPais ||
                     CodigoPais != null &&
-                    CodigoPais.Equals(other.CodigoPais)
+                    CodigoPais.Equals(value: other.CodigoPais)
                 ) && 
                 (
                     Telefono == other.Telefono ||
                     Telefono != null &&
-                    Telefono.Equals(other.Telefono)
+                    Telefono.Equals(value: other.Telefono)
                 ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(other.Nombre)
+                    Nombre.Equals(value: other.Nombre)
                 ) && 
                 (
                     PrimerApellido == other.PrimerApellido ||
                     PrimerApellido != null &&
-                    PrimerApellido.Equals(other.PrimerApellido)
+                    PrimerApellido.Equals(value: other.PrimerApellido)
                 ) && 
                 (
                     SegundoApellido == other.SegundoApellido ||
                     SegundoApellido != null &&
-                    SegundoApellido.Equals(other.SegundoApellido)
+                    SegundoApellido.Equals(value: other.SegundoApellido)
                 ) && 
                 (
                     FechaNacimiento == other.FechaNacimiento ||
                     FechaNacimiento != null &&
-                    FechaNacimiento.Equals(other.FechaNacimiento)
+                    FechaNacimiento.Equals(other: other.FechaNacimiento)
                 ) && 
                 (
                     Genero == other.Genero ||
                     Genero != null &&
-                    Genero.Equals(other.Genero)
+                    Genero.Equals(value: other.Genero)
                 ) && 
                 (
                     CorreoElectronico == other.CorreoElectronico ||
                     CorreoElectronico != null &&
-                    CorreoElectronico.Equals(other.CorreoElectronico)
+                    CorreoElectronico.Equals(value: other.CorreoElectronico)
                 ) && 
                 (
                     TipoPersona == other.TipoPersona ||
                     TipoPersona != null &&
-                    TipoPersona.Equals(other.TipoPersona)
+                    TipoPersona.Equals(value: other.TipoPersona)
                 ) && 
                 (
                     Curp == other.Curp ||
                     Curp != null &&
-                    Curp.Equals(other.Curp)
+                    Curp.Equals(value: other.Curp)
                 ) && 
                 (
                     Rfc == other.Rfc ||
                     Rfc != null &&
-                    Rfc.Equals(other.Rfc)
+                    Rfc.Equals(value: other.Rfc)
                 ) && 
                 (
                     Foto == other.Foto ||
                     Foto != null &&
-                    Foto.Equals(other.Foto)
+                    Foto.Equals(value: other.Foto)
                 ) && 
                 (
                     Estado == other.Estado ||
                     Estado != null &&
-                    Estado.Equals(other.Estado)
+                    Estado.Equals(value: other.Estado)
                 ) && 
                 (
                     Empresa == other.Empresa ||
                     Empresa != null &&
-                    Empresa.Equals(other.Empresa)
+                    Empresa.Equals(value: other.Empresa)
                 ) && 
                 (
                     Guid == other.Guid ||
                     Guid != null &&
-                    Guid.Equals(other.Guid)
+                    Guid.Equals(other: other.Guid)
                 ) && 
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other.CreationTimestamp)
+                    CreationTimestamp.Equals(other: other.CreationTimestamp)
                 ) && 
                 (
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
-                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                    ModificationTimestamp.Equals(other: other.ModificationTimestamp)
                 ) && 
                 (
                     CreationUser == other.CreationUser ||
                     CreationUser != null &&
-                    CreationUser.Equals(other.CreationUser)
+                    CreationUser.Equals(other: other.CreationUser)
                 ) && 
                 (
                     ModificationUser == other.ModificationUser ||
                     ModificationUser != null &&
-                    ModificationUser.Equals(other.ModificationUser)
+                    ModificationUser.Equals(other: other.ModificationUser)
                 ) && 
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
-                    IsActive.Equals(other.IsActive)
+                    IsActive.Equals(other: other.IsActive)
                 );
         }
 
@@ -441,12 +441,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ClienteResult left, ClienteResult right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(ClienteResult left, ClienteResult right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

@@ -1,3 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Wallet.UnitTest")]
+[assembly: InternalsVisibleTo(assemblyName: "Wallet.UnitTest")]

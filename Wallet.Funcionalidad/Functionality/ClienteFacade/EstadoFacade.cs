@@ -13,8 +13,8 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
     {
         try
         {
-            var estado = await context.Estado.FirstOrDefaultAsync(x => x.Id == idEstado);
-            if (estado is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            var estado = await context.Estado.FirstOrDefaultAsync(predicate: x => x.Id == idEstado);
+            if (estado is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EstadoNoEncontrado,
                 dynamicContent: [idEstado]));
             return estado;
@@ -33,8 +33,8 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
     {
         try
         {
-            var estado = await context.Estado.FirstOrDefaultAsync(x => x.Nombre == nombre);
-            if (estado is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            var estado = await context.Estado.FirstOrDefaultAsync(predicate: x => x.Nombre == nombre);
+            if (estado is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EstadoNoEncontrado,
                 dynamicContent: [nombre]));
             return estado;
@@ -60,7 +60,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             {
                 // Si activo es true o false, filtramos donde IsActive coincida con ese valor.
                 // Esto ignorará el filtro si 'activo' es null.
-                query = query.Where(x => x.IsActive == activo.Value);
+                query = query.Where(predicate: x => x.IsActive == activo.Value);
             }
             // 3. Ejecutamos la consulta y devolvemos el resultado.
             // Si 'activo' fue null, devolverá todos los estados.
@@ -86,7 +86,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             // Marcamos como activo
             estado.Activate(modificationUser: modificationUser);
             // Guardamos cambios
-            context.Update(estado);
+            context.Update(entity: estado);
             await context.SaveChangesAsync();
             return estado;
         }
@@ -112,7 +112,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             // Actualizamos el estado
             estado.Actualizar(nombre: nombre, modificationUser: modificationUser);
             // Guardamos cambios
-            context.Update(estado);
+            context.Update(entity: estado);
             await context.SaveChangesAsync();
             return estado;
         }
@@ -134,7 +134,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             // Eliminamos el estado
             estado.Deactivate(modificationUser: modificationUser);
             // Guardamos cambios
-            context.Update(estado);
+            context.Update(entity: estado);
             await context.SaveChangesAsync();
             return estado;
         }
@@ -157,7 +157,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             // Validamos duplicidad
             ValidarDuplicidad(nombre: nombre);
             // Guardamos cambios
-            context.Add(estado);
+            context.Add(entity: estado);
             await context.SaveChangesAsync();
             return estado;
         }
@@ -175,11 +175,11 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
     public void ValidarDuplicidad(string nombre, int id = 0)
     {
         // Obtiene estado existente
-        var estadoExistente = context.Estado.FirstOrDefault(x => x.Nombre == nombre && x.Id != id);
+        var estadoExistente = context.Estado.FirstOrDefault(predicate: x => x.Nombre == nombre && x.Id != id);
         // Duplicado por nombre
         if (estadoExistente != null)
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EstadoDuplicado,
                 dynamicContent: [nombre],
                 module: this.GetType().Name));
@@ -190,7 +190,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
     {
         if (!estado.IsActive)
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EstadoInactivo,
                 dynamicContent: [estado.Nombre]));
         }

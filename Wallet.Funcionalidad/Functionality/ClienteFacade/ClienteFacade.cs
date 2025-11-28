@@ -4,7 +4,6 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
-using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.Funcionalidad.ServiceClient;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
@@ -21,88 +20,23 @@ public class ClienteFacade(
         try
         {
             // Obtener cliente
-            var cliente = await context.Cliente.Include(x => x.Direccion).Include(x => x.Usuario)
-                .ThenInclude(u => u.DispositivoMovilAutorizados).Include(x => x.Usuario)
-                .ThenInclude(u => u.Verificaciones2FA).Include(x => x.Estado).Include(x => x.Usuario)
-                .ThenInclude(u => u.Empresa).FirstOrDefaultAsync(x => x.Id == idCliente);
+            var cliente = await context.Cliente.Include(navigationPropertyPath: x => x.Direccion)
+                .Include(navigationPropertyPath: x => x.Usuario)
+                .ThenInclude(navigationPropertyPath: u => u.DispositivoMovilAutorizados)
+                .Include(navigationPropertyPath: x => x.Usuario)
+                .ThenInclude(navigationPropertyPath: u => u.Verificaciones2Fa)
+                .Include(navigationPropertyPath: x => x.Estado).Include(navigationPropertyPath: x => x.Usuario)
+                .ThenInclude(navigationPropertyPath: u => u.Empresa)
+                .FirstOrDefaultAsync(predicate: x => x.Id == idCliente);
             // Validar cliente
             if (cliente == null)
             {
-                throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                     errorCode: ServiceErrorsBuilder.ClienteNoEncontrado,
                     dynamicContent: [idCliente],
                     module: this.GetType().Name));
             }
 
-            // Retornar cliente
-            return cliente;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    public async Task<Cliente> GuardarClientePreRegistroAsync(string codigoPais, string telefono, Guid creationUser,
-        string? testCase = null)
-    {
-        try
-        {
-            // Existe pre registro incompleto
-            var usuario = await context.Usuario.Include(x => x.Verificaciones2FA.Where(x => x.IsActive))
-                .FirstOrDefaultAsync(x => x.CodigoPais == codigoPais && x.Telefono == telefono);
-
-            Cliente cliente = null;
-
-            if (usuario != null)
-            {
-                // Find associated cliente
-                cliente = await context.Cliente.FirstOrDefaultAsync(c => c.UsuarioId == usuario.Id);
-
-                // Existe, pero no finalizo la confirmacion, ya sea por sms o email, iniciar el proceso de verificacion con sms
-                if (usuario.Verificaciones2FA.Any(v => v is { Verificado: false, Tipo: Tipo2FA.Sms }) ||
-                    usuario.Verificaciones2FA.Any(v => v is { Verificado: false, Tipo: Tipo2FA.Email }))
-                {
-                    // Genera codigo de verificacion y envia por twilio service
-                    var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(codigoPais: codigoPais,
-                        telefono: telefono, creationUser: creationUser, testCase: testCase);
-                    // Agrega el codigo de verificacion
-                    usuario.AgregarVerificacion2FA(verificacion: verificacion2Fa, modificationUser: creationUser);
-                }
-                else
-                {
-                    throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                        errorCode: ServiceErrorsBuilder.ClienteDuplicado,
-                        dynamicContent: [codigoPais, telefono],
-                        module: this.GetType().Name));
-                }
-            }
-            else
-            {
-                // Validamos duplicidad 
-                await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono);
-
-                // Crea un nuevo usuario
-                usuario = new Usuario(codigoPais, telefono, null, null, "PreRegistrado", creationUser, testCase);
-                await context.Usuario.AddAsync(usuario);
-
-                // Crea un nuevo cliente vinculado al usuario
-                cliente = new Cliente(usuario, creationUser, testCase);
-                await context.Cliente.AddAsync(cliente);
-
-                // Genera codigo de verificacion y envia por twilio service
-                var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(codigoPais: codigoPais,
-                    telefono: telefono, creationUser: creationUser, testCase: testCase);
-                // Agrega el codigo de verificacion
-                usuario.AgregarVerificacion2FA(verificacion: verificacion2Fa, modificationUser: creationUser);
-            }
-
-            // Guardar cambios
-            await context.SaveChangesAsync();
             // Retornar cliente
             return cliente;
         }
@@ -145,7 +79,8 @@ public class ClienteFacade(
                 nombre: nombre,
                 primerApellido: primerApellido,
                 segundoApellido: segundoApellido,
-                fechaNacimiento: new DateTime(fechaNacimiento.Year, fechaNacimiento.Month, fechaNacimiento.Day),
+                fechaNacimiento: new DateTime(year: fechaNacimiento.Year, month: fechaNacimiento.Month,
+                    day: fechaNacimiento.Day),
                 genero: genero,
                 nombreEstado: nombreEstado,
                 creationUser: modificationUser,
@@ -155,16 +90,16 @@ public class ClienteFacade(
             // Agrega curp
             cliente.AgregarCurp(curp: curpGenerada, modificationUser: modificationUser);
             // Cargar los codigos de verificacion
-            await context.Entry(cliente.Usuario)
-                .Collection(c => c.Verificaciones2FA)
+            await context.Entry(entity: cliente.Usuario)
+                .Collection(propertyExpression: c => c.Verificaciones2Fa)
                 .LoadAsync();
             // Validar que ya haya confirmado el código de verificación por SMS
             ValidarConfirmacionCodigoVerificacionSMS2FA(cliente: cliente);
             // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
-            var empresa = await empresaFacade.ObtenerPorNombreAsync("Tecomnet");
+            var empresa = await empresaFacade.ObtenerPorNombreAsync(nombre: "Tecomnet");
             cliente.Usuario.AgregarEmpresa(empresa: empresa, modificationUser: modificationUser);
             // Agregar estado
-            var estado = await estadoFacade.ObtenerEstadoPorNombreAsync(nombreEstado);
+            var estado = await estadoFacade.ObtenerEstadoPorNombreAsync(nombre: nombreEstado);
             cliente.AgregarEstado(estado: estado, modificationUser: modificationUser);
             // Agregar direccion pre-registro, TODO EMD: PENDIENTE RECIBIR EL PAIS O IMPLEMENTAR EL CATALOGO PAIS
             var preDireccion = await CrearDireccionPreRegistro(pais: "México", estado: nombreEstado,
@@ -232,7 +167,7 @@ public class ClienteFacade(
         try
         {
             // Obtener lista de clientes
-            var clientes = await context.Cliente.Include(c => c.Usuario).ToListAsync();
+            var clientes = await context.Cliente.Include(navigationPropertyPath: c => c.Usuario).ToListAsync();
             // Retornar lista de clientes
             return clientes;
         }
@@ -248,52 +183,6 @@ public class ClienteFacade(
 
 
     #region Metodos privados
-
-    private async Task ValidarDuplicidad(string codigoPais, string telefono, int id = 0)
-    {
-        // Obtiene cliente existente
-        // Check Usuario instead of Cliente
-        var usuarioExistente = await context.Usuario.FirstOrDefaultAsync(x =>
-            x.CodigoPais == codigoPais && x.Telefono == telefono && x.Cliente.Id != id);
-        // Duplicado por telefono
-        if (usuarioExistente != null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.ClienteDuplicado,
-                dynamicContent: [codigoPais, telefono],
-                module: this.GetType().Name));
-        }
-    }
-
-
-    private async Task<Verificacion2FA> GeneraCodigoVerificacionTwilio2FASMSAsync(string codigoPais, string telefono,
-        Guid creationUser, string? testCase = null)
-    {
-        try
-        {
-            // Llamamos a twilio service
-            var verificacion = await twilioService.VerificacionSMS(codigoPais: codigoPais, telefono: telefono);
-            // Creamos la verificacion 2fa
-            Verificacion2FA verificacion2Fa = new Verificacion2FA(
-                twilioSid: verificacion.Sid, //"sid test",
-                fechaVencimiento: DateTime.Now.AddMinutes(10),
-                tipo: Tipo2FA.Sms,
-                creationUser: creationUser,
-                testCase: testCase
-            );
-            // Retorna codigo de verificacion
-            return verificacion2Fa;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
 
     private async Task<(ValidacionCheckton, string)> ValidaDatosPersonalesChecktonPldAsync(
         string nombre, string primerApellido, string segundoApellido, DateTime fechaNacimiento, Genero genero,
@@ -312,7 +201,7 @@ public class ClienteFacade(
             // Validar que no haya error en la validacion
             if (!validacionCurpResult.Success)
             {
-                throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                     errorCode: ServiceErrorsBuilder.ClienteChecktonPldError,
                     dynamicContent: [],
                     module: this.GetType().Name));
@@ -367,7 +256,7 @@ public class ClienteFacade(
     {
         if (!cliente.IsActive)
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ClienteInactivo,
                 dynamicContent: [cliente.NombreCompleto!],
                 module: this.GetType().Name));
@@ -383,11 +272,12 @@ public class ClienteFacade(
     {
         // Obtiene el código de verificación SMS
         var confirmacionSmsCode =
-            cliente.Usuario.Verificaciones2FA.FirstOrDefault(x => x is { Tipo: Tipo2FA.Sms, Verificado: true });
+            cliente.Usuario.Verificaciones2Fa.FirstOrDefault(predicate: x =>
+                x is { Tipo: Tipo2FA.Sms, Verificado: true });
         // Valida que exista el código de verificación SMS
         if (confirmacionSmsCode is null)
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.Verificacion2FASMSNoConfirmado,
                 dynamicContent: [],
                 module: this.GetType().Name));
@@ -403,10 +293,10 @@ public class ClienteFacade(
     private async Task<bool> ClienteYaVerificoPorSmsAsync(string codigoPais, string telefono)
     {
         var estaVerificado = await context.Usuario
-            .AnyAsync(c =>
+            .AnyAsync(predicate: c =>
                 c.CodigoPais == codigoPais &&
                 c.Telefono == telefono &&
-                c.Verificaciones2FA.Any(v => v.Tipo == Tipo2FA.Sms && v.Verificado));
+                c.Verificaciones2Fa.Any(v => v.Tipo == Tipo2FA.Sms && v.Verificado));
 
         return estaVerificado;
     }

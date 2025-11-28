@@ -820,6 +820,13 @@ namespace Wallet.DOM.Migrations
                     b.Property<Guid>("ModificationUser")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("RefreshToken")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Telefono")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -832,6 +839,9 @@ namespace Wallet.DOM.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmpresaId");
+
+                    b.HasIndex("Telefono")
+                        .IsUnique();
 
                     b.ToTable("Usuario");
                 });
@@ -947,7 +957,7 @@ namespace Wallet.DOM.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Verificacion2FA");
+                    b.ToTable("Verificacion2Fa");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.ActividadEconomica", b =>
@@ -1075,7 +1085,7 @@ namespace Wallet.DOM.Migrations
             modelBuilder.Entity("Wallet.DOM.Modelos.Verificacion2FA", b =>
                 {
                     b.HasOne("Wallet.DOM.Modelos.Usuario", "Usuario")
-                        .WithMany("Verificaciones2FA")
+                        .WithMany("Verificaciones2Fa")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1121,7 +1131,7 @@ namespace Wallet.DOM.Migrations
 
                     b.Navigation("UbicacionesGeolocalizacion");
 
-                    b.Navigation("Verificaciones2FA");
+                    b.Navigation("Verificaciones2Fa");
                 });
 #pragma warning restore 612, 618
         }

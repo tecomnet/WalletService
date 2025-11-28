@@ -26,13 +26,13 @@ public class ValidacionCheckton : ValidatablePersistentObjectLogicalDelete
     {
         
     }
-    public ValidacionCheckton(TipoCheckton tipoCheckton, bool resultado, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
+    public ValidacionCheckton(TipoCheckton tipoCheckton, bool resultado, Guid creationUser, string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate properties
-        IsPropertyValid(propertyName: nameof(TipoCheckton), value: tipoCheckton, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Resultado), value: resultado, ref exceptions);
+        IsPropertyValid(propertyName: nameof(TipoCheckton), value: tipoCheckton, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(Resultado), value: resultado, exceptions: ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Seteo de propiedades

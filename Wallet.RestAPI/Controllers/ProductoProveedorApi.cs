@@ -26,14 +26,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpDelete]
-        [Route("/{version:apiVersion}/productoProveedor/{idProducto}")]
+        [Route(template: "/{version:apiVersion}/productoProveedor/{idProducto}")]
         [ValidateModelState]
-        [SwaggerOperation("DeleteProductoProveedor")]
+        [SwaggerOperation(summary: "DeleteProductoProveedor")]
         [SwaggerResponse(statusCode: 200, type: typeof(ProductoProveedorResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> DeleteProductoProveedorAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProducto);
+        public abstract Task<IActionResult> DeleteProductoProveedorAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProducto);
 
         /// <summary>
         /// Obtiene un producto por id
@@ -46,14 +46,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/productoProveedor/{idProducto}")]
+        [Route(template: "/{version:apiVersion}/productoProveedor/{idProducto}")]
         [ValidateModelState]
-        [SwaggerOperation("GetProductoProveedor")]
+        [SwaggerOperation(summary: "GetProductoProveedor")]
         [SwaggerResponse(statusCode: 200, type: typeof(ProductoProveedorResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetProductoProveedorAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProducto);
+        public abstract Task<IActionResult> GetProductoProveedorAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProducto);
 
         /// <summary>
         /// Obtiene los productos de un proveedor
@@ -66,14 +66,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/proveedorServicio/{idProveedorServicio}/productos")]
+        [Route(template: "/{version:apiVersion}/proveedorServicio/{idProveedorServicio}/productos")]
         [ValidateModelState]
-        [SwaggerOperation("GetProductosPorProveedor")]
+        [SwaggerOperation(summary: "GetProductosPorProveedor")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<ProductoProveedorResult>), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetProductosPorProveedorAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProveedorServicio);
+        public abstract Task<IActionResult> GetProductosPorProveedorAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProveedorServicio);
 
         /// <summary>
         /// Guarda un producto
@@ -87,14 +87,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPost]
-        [Route("/{version:apiVersion}/proveedorServicio/{idProveedorServicio}/producto")]
+        [Route(template: "/{version:apiVersion}/proveedorServicio/{idProveedorServicio}/producto")]
         [ValidateModelState]
-        [SwaggerOperation("PostProductoProveedor")]
+        [SwaggerOperation(summary: "PostProductoProveedor")]
         [SwaggerResponse(statusCode: 201, type: typeof(ProductoProveedorResult), description: "Created")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PostProductoProveedorAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProveedorServicio, [FromBody] ProductoProveedorRequest body);
+        public abstract Task<IActionResult> PostProductoProveedorAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProveedorServicio, [FromBody] ProductoProveedorRequest body);
 
         /// <summary>
         /// Activa un producto
@@ -107,14 +107,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version:apiVersion}/productoProveedor/{idProducto}/activar")]
+        [Route(template: "/{version:apiVersion}/productoProveedor/{idProducto}/activar")]
         [ValidateModelState]
-        [SwaggerOperation("PutActivarProductoProveedor")]
+        [SwaggerOperation(summary: "PutActivarProductoProveedor")]
         [SwaggerResponse(statusCode: 200, type: typeof(ProductoProveedorResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutActivarProductoProveedorAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProducto);
+        public abstract Task<IActionResult> PutActivarProductoProveedorAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProducto);
 
         /// <summary>
         /// Actualiza un producto
@@ -128,13 +128,13 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version:apiVersion}/productoProveedor/{idProducto}")]
+        [Route(template: "/{version:apiVersion}/productoProveedor/{idProducto}")]
         [ValidateModelState]
-        [SwaggerOperation("PutProductoProveedor")]
+        [SwaggerOperation(summary: "PutProductoProveedor")]
         [SwaggerResponse(statusCode: 200, type: typeof(ProductoProveedorResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutProductoProveedorAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProducto, [FromBody] ProductoProveedorRequest body);
+        public abstract Task<IActionResult> PutProductoProveedorAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProducto, [FromBody] ProductoProveedorRequest body);
     }
 }

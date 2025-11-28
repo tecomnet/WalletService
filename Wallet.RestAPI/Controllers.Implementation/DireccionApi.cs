@@ -12,7 +12,7 @@ public class DireccionApiController(IDireccionFacade direccionFacade, IMapper ma
 {
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> PutDireccionAsync([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] DireccionUpdateRequest body)
+    public override async Task<IActionResult> PutDireccionAsync([FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] DireccionUpdateRequest body)
     {
         // Call facade method
         var direccion = await direccionFacade.ActualizarDireccionCliente(
@@ -26,9 +26,9 @@ public class DireccionApiController(IDireccionFacade direccionFacade, IMapper ma
             referencia: body.Referencia,
             modificationUser: Guid.Empty);
         // Map to response model
-        var response = mapper.Map<DireccionResult>(direccion);
+        var response = mapper.Map<DireccionResult>(source: direccion);
         // Return OK response
-        return Ok(response);
+        return Ok(value: response);
     }
 
 }

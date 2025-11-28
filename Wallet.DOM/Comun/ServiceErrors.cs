@@ -12,6 +12,6 @@ public class ServiceErrors
 
     public IServiceError GetServiceErrorForCode(string errorCode)
     {
-        return this._errorCatalog.GetError(errorCode);
+        return this._errorCatalog.GetError(errorCode: errorCode);
     }
 }

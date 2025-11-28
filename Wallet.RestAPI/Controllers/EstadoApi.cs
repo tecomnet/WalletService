@@ -35,14 +35,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/estado")]
+        [Route(template: "/{version:apiVersion}/estado")]
         [ValidateModelState]
-        [SwaggerOperation("GetEstados")]
+        [SwaggerOperation(summary: "GetEstados")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<EstadoResult>), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetEstadosAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
+        public abstract Task<IActionResult> GetEstadosAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
 
         /// <summary>
         /// Guarda un estado de mexico
@@ -55,14 +55,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPost]
-        [Route("/{version:apiVersion}/estado")]
+        [Route(template: "/{version:apiVersion}/estado")]
         [ValidateModelState]
-        [SwaggerOperation("PostEstado")]
+        [SwaggerOperation(summary: "PostEstado")]
         [SwaggerResponse(statusCode: 201, type: typeof(EstadoResult), description: "Created")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PostEstadoAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromBody]EstadoRequest body);
+        public abstract Task<IActionResult> PostEstadoAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromBody]EstadoRequest body);
 
         /// <summary>
         /// Actualiza un estado de mexico
@@ -76,13 +76,13 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version:apiVersion}/estado/{idEstado}")]
+        [Route(template: "/{version:apiVersion}/estado/{idEstado}")]
         [ValidateModelState]
-        [SwaggerOperation("PutEstado")]
+        [SwaggerOperation(summary: "PutEstado")]
         [SwaggerResponse(statusCode: 200, type: typeof(EstadoResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutEstadoAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int? idEstado, [FromBody] EstadoRequest body);
+        public abstract Task<IActionResult> PutEstadoAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int? idEstado, [FromBody] EstadoRequest body);
     }
 }

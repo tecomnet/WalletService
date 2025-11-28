@@ -20,7 +20,7 @@ namespace Wallet.RestAPI.Models
           /// </summary>
           /// <value>Estructura enum para dispositivo cliente</value>
           //[JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-          [JsonConverter(typeof(CustomStringToEnumConverter<DispositivoEnum>))] 
+          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<DispositivoEnum>))] 
           public enum DispositivoEnum
           {
               /// <summary>

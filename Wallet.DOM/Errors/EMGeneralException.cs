@@ -25,12 +25,12 @@ public class EMGeneralException : Exception
         string? serviceLocation,
         string module,
         List<object>? descriptionDynamicContents = null)
-        : base(message)
+        : base(message: message)
     {
         this.Code = code;
         this.Title = title;
         this.Description = description;
-        this.DescriptionDynamicContents = EMGeneralException.ProcessDynamicContent(descriptionDynamicContents);
+        this.DescriptionDynamicContents = EMGeneralException.ProcessDynamicContent(dynamicContent: descriptionDynamicContents);
         this.ServiceName = serviceName;
         this.ServiceInstance = serviceInstance ?? "NA";
         this.ServiceLocation = serviceLocation ?? "NA";
@@ -41,17 +41,17 @@ public class EMGeneralException : Exception
         string serviceName,
         string module = "DOM",
         List<object> descriptionDynamicContents = null)
-        : base(serviceError.Message)
+        : base(message: serviceError.Message)
     {
         this.Code = serviceError.ErrorCode;
         this.Title = serviceError.Message;
-        this.Description = serviceError.Description(descriptionDynamicContents.ToArray());
-        this.DescriptionDynamicContents = EMGeneralException.ProcessDynamicContent(descriptionDynamicContents);
+        this.Description = serviceError.Description(args: descriptionDynamicContents.ToArray());
+        this.DescriptionDynamicContents = EMGeneralException.ProcessDynamicContent(dynamicContent: descriptionDynamicContents);
         this.ServiceName = serviceName;
         this.Module = module;
     }
     public EMGeneralException(string message, Exception inner)
-        : base(message, inner)
+        : base(message: message, innerException: inner)
     {
     }
     
@@ -61,7 +61,7 @@ public class EMGeneralException : Exception
             return (List<string>) null;
         List<string> stringList = new List<string>();
         foreach (object obj in dynamicContent)
-            stringList.Add($"{obj}");
+            stringList.Add(item: $"{obj}");
         return stringList;
     }
 }

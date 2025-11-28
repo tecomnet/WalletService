@@ -30,10 +30,10 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
             isRequired: true)
     ];
 
-    [Required] [MaxLength(100)] public string TwilioSid { get; private set; }
+    [Required] [MaxLength(length: 100)] public string TwilioSid { get; private set; }
 
     // TODO EMD: AGREGAR SID DE CONFIRMACION
-    [MaxLength(4)] public string? Codigo { get; private set; }
+    [MaxLength(length: 4)] public string? Codigo { get; private set; }
     [Required] public DateTime FechaVencimiento { get; private set; }
     [Required] public Tipo2FA Tipo { get; private set; }
     [Required] public bool Verificado { get; private set; }
@@ -48,14 +48,14 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
     }
 
     public Verificacion2FA(string twilioSid, DateTime fechaVencimiento, Tipo2FA tipo, Guid creationUser,
-        string? testCase = null) : base(creationUser, testCase)
+        string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate properties
-        IsPropertyValid(propertyName: nameof(TwilioSid), value: twilioSid, ref exceptions);
-        IsPropertyValid(propertyName: nameof(FechaVencimiento), value: fechaVencimiento, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Tipo), value: tipo, ref exceptions);
+        IsPropertyValid(propertyName: nameof(TwilioSid), value: twilioSid, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(FechaVencimiento), value: fechaVencimiento, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(Tipo), value: tipo, exceptions: ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Assign properties
@@ -70,7 +70,7 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate properties
-        IsPropertyValid(propertyName: nameof(Codigo), value: codigo, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Codigo), value: codigo, exceptions: ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Assign properties

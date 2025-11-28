@@ -21,7 +21,7 @@ namespace Wallet.Funcionalidad.Functionality
 
             while (localException != null)
             {
-                exceptions.Add(new EMGeneralException(
+                exceptions.Add(item: new EMGeneralException(
                     message: localException.Message,
                     code: localException.Message,
                     title: localException.Message,

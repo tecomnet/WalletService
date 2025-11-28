@@ -8,6 +8,8 @@ using Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.ServiceClient;
+using Wallet.Funcionalidad.Functionality.AuthFacade;
+using Wallet.Funcionalidad.Services.TokenService;
 
 namespace Wallet.Funcionalidad
 {
@@ -24,42 +26,44 @@ namespace Wallet.Funcionalidad
 			ConfigureExternalConnectionServices(services: services);
 			// Configure facades
 			ConfigureFacadeServices(services: services);
+			// Configure internal services
+			ConfigureInternalServices(services: services);
 		}
 
 		public static IServiceCollection AddEmServices(
 			this IServiceCollection services,
 			IConfiguration configuration)
 		{
-			services.AddDbContext<ServiceDbContext>(options =>
+			services.AddDbContext<ServiceDbContext>(optionsAction: options =>
 				{
-					var connString = BuildConnectionString(configuration);
-					options.UseSqlServer(connString,
-						optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+					var connString = BuildConnectionString(configuration: configuration);
+					options.UseSqlServer(connectionString: connString,
+						sqlServerOptionsAction: optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery));
 				}
 			);
-			ConfigureServices(services);
+			ConfigureServices(services: services);
 			return services;
 		}
 
 		public static string GetConnectionString(IConfiguration configuration)
 		{
 			// Try to get connection string from configuration (User Secrets or appsettings)
-			var configConnectionString = configuration["dbConnectionString"];
-			if (!string.IsNullOrWhiteSpace(configConnectionString))
+			var configConnectionString = configuration[key: "dbConnectionString"];
+			if (!string.IsNullOrWhiteSpace(value: configConnectionString))
 			{
 				return configConnectionString;
 			}
 
 			// Try to get test connection string from environment variables (Azure style)
-			if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbServer")) &&
-			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("Database")) &&
-			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbUser")) &&
-			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbPassword")))
+			if (!string.IsNullOrWhiteSpace(value: Environment.GetEnvironmentVariable(variable: "DbServer")) &&
+			    !string.IsNullOrWhiteSpace(value: Environment.GetEnvironmentVariable(variable: "Database")) &&
+			    !string.IsNullOrWhiteSpace(value: Environment.GetEnvironmentVariable(variable: "DbUser")) &&
+			    !string.IsNullOrWhiteSpace(value: Environment.GetEnvironmentVariable(variable: "DbPassword")))
 			{
-				return $"Server=tcp:{Environment.GetEnvironmentVariable("DbServer")};" +
-				       $"Initial Catalog={Environment.GetEnvironmentVariable("Database")};" +
-				       $"User Id={Environment.GetEnvironmentVariable("DbUser")};" +
-				       $"password={Environment.GetEnvironmentVariable("DbPassword")}; TrustServerCertificate=true;";
+				return $"Server=tcp:{Environment.GetEnvironmentVariable(variable: "DbServer")};" +
+				       $"Initial Catalog={Environment.GetEnvironmentVariable(variable: "Database")};" +
+				       $"User Id={Environment.GetEnvironmentVariable(variable: "DbUser")};" +
+				       $"password={Environment.GetEnvironmentVariable(variable: "DbPassword")}; TrustServerCertificate=true;";
 			}
 
 			return string.Empty;
@@ -67,20 +71,20 @@ namespace Wallet.Funcionalidad
 
 		public static IServiceCollection AddEmTestServices(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(GetConnectionString(configuration),
-				optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
-			ConfigureServices(services);
+			services.AddDbContext<ServiceDbContext>(optionsAction: options => options.UseSqlServer(connectionString: GetConnectionString(configuration: configuration),
+				sqlServerOptionsAction: optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery)));
+			ConfigureServices(services: services);
 			return services;
 		}
 
 		public static string BuildConnectionString(IConfiguration configuration)
 		{
 			// try to build a connection string from configuration
-			var connectionString = GetConnectionString(configuration);
+			var connectionString = GetConnectionString(configuration: configuration);
 			// if we have a connection string, return it
-			if (!string.IsNullOrWhiteSpace(connectionString)) return connectionString;
+			if (!string.IsNullOrWhiteSpace(value: connectionString)) return connectionString;
 
-			throw new Exception("No configuration detected for the service database.");
+			throw new Exception(message: "No configuration detected for the service database.");
 		}
 
 		/// <summary>
@@ -104,6 +108,12 @@ namespace Wallet.Funcionalidad
 			services.AddScoped<IProveedorServicioFacade, ProveedorServicioFacade>();
 			services.AddScoped<IServicioFavoritoFacade, ServicioFavoritoFacade>();
 			services.AddScoped<IUsuarioFacade, UsuarioFacade>();
+			services.AddScoped<IAuthFacade, AuthFacade>();
+		}
+
+		private static void ConfigureInternalServices(IServiceCollection services)
+		{
+			services.AddScoped<ITokenService, TokenService>();
 		}
 	}
 }

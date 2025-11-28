@@ -32,7 +32,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
         // add swagger document for every API version discovered
         foreach (var description in _provider.ApiVersionDescriptions)
         {
-            options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
+            options.SwaggerDoc(name: description.GroupName, info: CreateInfoForApiVersion(description: description));
         }
     }
     /// <summary>
@@ -42,7 +42,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
     /// <param name="options"></param>
     public void Configure(string? name, SwaggerGenOptions options)
     {
-        Configure(options);
+        Configure(options: options);
     }
     /// <summary>
     /// Create info for API version
@@ -59,10 +59,10 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
             Contact = new OpenApiContact()
             {
                 Name = "Swagger Codegen Contributors",
-                Url = new Uri("https://github.com/swagger-api/swagger-codegen"),
+                Url = new Uri(uriString: "https://github.com/swagger-api/swagger-codegen"),
                 Email = "edilberto_diaz14@hotmail.com"
             },
-            TermsOfService = new Uri("https://github.com/swagger-api/swagger-codegen"),
+            TermsOfService = new Uri(uriString: "https://github.com/swagger-api/swagger-codegen"),
             Version = description.ApiVersion.ToString()
         };
 

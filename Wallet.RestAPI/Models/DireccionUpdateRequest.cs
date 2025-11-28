@@ -26,7 +26,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(5, MinimumLength=5)]
+        [StringLength(maximumLength: 5, MinimumLength=5)]
         [DataMember(Name="codigoPostal")]
         public string CodigoPostal { get; set; }
 
@@ -35,7 +35,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="pais")]
         public string Pais { get; set; }
 
@@ -44,7 +44,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="estado")]
         public string Estado { get; set; }
 
@@ -53,7 +53,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="municipio")]
         public string Municipio { get; set; }
 
@@ -62,7 +62,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="colonia")]
         public string Colonia { get; set; }
 
@@ -71,7 +71,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="calle")]
         public string Calle { get; set; }
 
@@ -80,7 +80,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(50, MinimumLength=1)]
+        [StringLength(maximumLength: 50, MinimumLength=1)]
         [DataMember(Name="numeroExterior")]
         public string NumeroExterior { get; set; }
 
@@ -89,7 +89,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(6, MinimumLength=1)]
+        [StringLength(maximumLength: 6, MinimumLength=1)]
         [DataMember(Name="numeroInterior")]
         public string NumeroInterior { get; set; }
 
@@ -98,7 +98,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(250, MinimumLength=1)]
+        [StringLength(maximumLength: 250, MinimumLength=1)]
         [DataMember(Name="referencia")]
         public string Referencia { get; set; }
 
@@ -109,17 +109,17 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class DireccionUpdateRequest {\n");
-            sb.Append("  CodigoPostal: ").Append(CodigoPostal).Append("\n");
-            sb.Append("  Pais: ").Append(Pais).Append("\n");
-            sb.Append("  Estado: ").Append(Estado).Append("\n");
-            sb.Append("  Municipio: ").Append(Municipio).Append("\n");
-            sb.Append("  Colonia: ").Append(Colonia).Append("\n");
-            sb.Append("  Calle: ").Append(Calle).Append("\n");
-            sb.Append("  NumeroExterior: ").Append(NumeroExterior).Append("\n");
-            sb.Append("  NumeroInterior: ").Append(NumeroInterior).Append("\n");
-            sb.Append("  Referencia: ").Append(Referencia).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class DireccionUpdateRequest {\n");
+            sb.Append(value: "  CodigoPostal: ").Append(value: CodigoPostal).Append(value: "\n");
+            sb.Append(value: "  Pais: ").Append(value: Pais).Append(value: "\n");
+            sb.Append(value: "  Estado: ").Append(value: Estado).Append(value: "\n");
+            sb.Append(value: "  Municipio: ").Append(value: Municipio).Append(value: "\n");
+            sb.Append(value: "  Colonia: ").Append(value: Colonia).Append(value: "\n");
+            sb.Append(value: "  Calle: ").Append(value: Calle).Append(value: "\n");
+            sb.Append(value: "  NumeroExterior: ").Append(value: NumeroExterior).Append(value: "\n");
+            sb.Append(value: "  NumeroInterior: ").Append(value: NumeroInterior).Append(value: "\n");
+            sb.Append(value: "  Referencia: ").Append(value: Referencia).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -129,7 +129,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -139,9 +139,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((DireccionUpdateRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (DireccionUpdateRequest)obj);
         }
 
         /// <summary>
@@ -151,54 +151,54 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(DireccionUpdateRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     CodigoPostal == other.CodigoPostal ||
                     CodigoPostal != null &&
-                    CodigoPostal.Equals(other.CodigoPostal)
+                    CodigoPostal.Equals(value: other.CodigoPostal)
                 ) && 
                 (
                     Pais == other.Pais ||
                     Pais != null &&
-                    Pais.Equals(other.Pais)
+                    Pais.Equals(value: other.Pais)
                 ) && 
                 (
                     Estado == other.Estado ||
                     Estado != null &&
-                    Estado.Equals(other.Estado)
+                    Estado.Equals(value: other.Estado)
                 ) && 
                 (
                     Municipio == other.Municipio ||
                     Municipio != null &&
-                    Municipio.Equals(other.Municipio)
+                    Municipio.Equals(value: other.Municipio)
                 ) && 
                 (
                     Colonia == other.Colonia ||
                     Colonia != null &&
-                    Colonia.Equals(other.Colonia)
+                    Colonia.Equals(value: other.Colonia)
                 ) && 
                 (
                     Calle == other.Calle ||
                     Calle != null &&
-                    Calle.Equals(other.Calle)
+                    Calle.Equals(value: other.Calle)
                 ) && 
                 (
                     NumeroExterior == other.NumeroExterior ||
                     NumeroExterior != null &&
-                    NumeroExterior.Equals(other.NumeroExterior)
+                    NumeroExterior.Equals(value: other.NumeroExterior)
                 ) && 
                 (
                     NumeroInterior == other.NumeroInterior ||
                     NumeroInterior != null &&
-                    NumeroInterior.Equals(other.NumeroInterior)
+                    NumeroInterior.Equals(value: other.NumeroInterior)
                 ) && 
                 (
                     Referencia == other.Referencia ||
                     Referencia != null &&
-                    Referencia.Equals(other.Referencia)
+                    Referencia.Equals(value: other.Referencia)
                 );
         }
 
@@ -239,12 +239,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(DireccionUpdateRequest left, DireccionUpdateRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(DireccionUpdateRequest left, DireccionUpdateRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

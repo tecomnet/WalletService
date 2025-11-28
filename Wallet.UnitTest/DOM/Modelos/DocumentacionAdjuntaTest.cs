@@ -29,42 +29,22 @@ public class DocumentacionAdjuntaTest : UnitTestTemplate
     // PARÁMETROS: CaseName, Documento_Key (string), ArchivoAWS (string), Success, ExpectedErrors
     
     // === 1. CASOS DE ÉXITO ===
-    [InlineData("1. OK: Full Valid (Fisica)", 
-        TipoPersona.Fisica, "INE", ValidArchivoAWS, 
-        true, new string[] { })]
-    [InlineData("2. OK: Full Valid (Moral)", 
-        TipoPersona.Moral, "Passaporte", "s3://ruta/otro_doc.jpg", 
-        true, new string[] { })]
-    [InlineData("3. OK: ArchivoAWS Min Length (1)", 
-        TipoPersona.Extranjero,  "VISA", "A", 
-        true, new string[] { })]
-    [InlineData("4. OK: ArchivoAWS Max Length (500)", 
-        TipoPersona.Fisica, "Acta de nacimiento", Max500Chars, 
-        true, new string[] { })]
+    [InlineData(data: ["1. OK: Full Valid (Fisica)", TipoPersona.Fisica, "INE", ValidArchivoAWS, true, new string[] { }])]
+    [InlineData(data: ["2. OK: Full Valid (Moral)", TipoPersona.Moral, "Passaporte", "s3://ruta/otro_doc.jpg", true, new string[] { }])]
+    [InlineData(data: ["3. OK: ArchivoAWS Min Length (1)", TipoPersona.Extranjero, "VISA", "A", true, new string[] { }])]
+    [InlineData(data: ["4. OK: ArchivoAWS Max Length (500)", TipoPersona.Fisica, "Acta de nacimiento", Max500Chars, true, new string[] { }])]
     
     // === 2. ERRORES DE ArchivoAWS (string, required, min 1, max 500) ===
-    [InlineData("5. ERROR: ArchivoAWS null", 
-        TipoPersona.Fisica, "Documento test", null, 
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("6. ERROR: ArchivoAWS empty", 
-        TipoPersona.Moral, "Documento test", "", 
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("7. ERROR: ArchivoAWS too long (501)", 
-        TipoPersona.Extranjero, "Documento test", Over500Chars, 
-        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
+    [InlineData(data: ["5. ERROR: ArchivoAWS null", TipoPersona.Fisica, "Documento test", null, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [InlineData(data: ["6. ERROR: ArchivoAWS empty", TipoPersona.Moral, "Documento test", "", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [InlineData(data: ["7. ERROR: ArchivoAWS too long (501)", TipoPersona.Extranjero, "Documento test", Over500Chars, false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }])]
     
     // === 3. ERRORES DE Documento (object, required) ===
-    [InlineData("8. ERROR: Documento null", 
-        TipoPersona.Fisica, DOCUMENTO_NULL_SIMULATION, ValidArchivoAWS, 
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
+    [InlineData(data: ["8. ERROR: Documento null", TipoPersona.Fisica, DOCUMENTO_NULL_SIMULATION, ValidArchivoAWS, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
 
     // === 4. ERRORES MÚLTIPLES ===
-    [InlineData("9. ERROR: Multiple (Documento null + ArchivoAWS empty)", 
-        TipoPersona.Fisica, DOCUMENTO_NULL_SIMULATION, "", 
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR", "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("10. ERROR: Multiple (Documento null + ArchivoAWS too long)", 
-        TipoPersona.Fisica, DOCUMENTO_NULL_SIMULATION, Over500Chars, 
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR", "PROPERTY-VALIDATION-LENGTH-INVALID" })]
+    [InlineData(data: ["9. ERROR: Multiple (Documento null + ArchivoAWS empty)", TipoPersona.Fisica, DOCUMENTO_NULL_SIMULATION, "", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR", "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [InlineData(data: ["10. ERROR: Multiple (Documento null + ArchivoAWS too long)", TipoPersona.Fisica, DOCUMENTO_NULL_SIMULATION, Over500Chars, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR", "PROPERTY-VALIDATION-LENGTH-INVALID" }])]
     public void DocumentacionAdjunta_ConstructorTest(
         string caseName,
         TipoPersona tipoPersona,
@@ -78,7 +58,7 @@ public class DocumentacionAdjuntaTest : UnitTestTemplate
         if (documentoKey != DOCUMENTO_NULL_SIMULATION)
         {
 #pragma warning disable CS8604 // Possible null reference argument
-            documento = new Documento(documentoKey, tipoPersona, creationUser: Guid.NewGuid());
+            documento = new Documento(nombre: documentoKey, tipoPersona: tipoPersona, creationUser: Guid.NewGuid());
         }
         try
         {
@@ -91,11 +71,11 @@ public class DocumentacionAdjuntaTest : UnitTestTemplate
                 testCase: caseName);
 
             // Assert Success
-            Assert.True(success, $"El caso '{caseName}' falló cuando se esperaba éxito.");
+            Assert.True(condition: success, userMessage: $"El caso '{caseName}' falló cuando se esperaba éxito.");
             
             // Comprobar la asignación de propiedades (solo si hay éxito)
-            Assert.Equal(documento, documentacion.Documento);
-            Assert.Equal(archivoAWS, documentacion.ArchivoAWS);
+            Assert.Equal(expected: documento, actual: documentacion.Documento);
+            Assert.Equal(expected: archivoAWS, actual: documentacion.ArchivoAWS);
         }
         catch (EMGeneralAggregateException exception)
         {
@@ -103,7 +83,7 @@ public class DocumentacionAdjuntaTest : UnitTestTemplate
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException && exception is not TrueException && exception is not FalseException)
         {
-            Assert.Fail($"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
+            Assert.Fail(message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
         }
     }
 }

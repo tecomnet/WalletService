@@ -36,13 +36,13 @@ public class ChecktonPldServiceFacade(
     private ChecktonPldService BuildLocalServiceClientApiKey()
     {
         // Get api key
-        var apiKey = Environment.GetEnvironmentVariable("API-Key");
+        var apiKey = Environment.GetEnvironmentVariable(variable: "API-Key");
         // Build service client
         return BuildServiceClient(
             authorizationType: AuthorizationType.API_KEY,
             authorization: apiKey,
             serviceErrorCode: ChecktonPldSettingsData.ServiceErrorCode,
-            init: (client, baseUrl) => new ChecktonPldService(client)
+            init: (client, baseUrl) => new ChecktonPldService(httpClient: client)
             {
                 BaseUrl = baseUrl
             },
@@ -56,7 +56,7 @@ public class ChecktonPldServiceFacade(
             authorizationType: AuthorizationType.BEARER,
             authorization: token,
             serviceErrorCode: ChecktonPldSettingsData.ServiceErrorCode,
-            init: (client, baseUrl) => new ChecktonPldService(client)
+            init: (client, baseUrl) => new ChecktonPldService(httpClient: client)
             {
                 BaseUrl = baseUrl
             });
@@ -65,12 +65,12 @@ public class ChecktonPldServiceFacade(
     private ChecktonPldService BuildLocalServiceClient()
     {
         // Get url 
-        var baseUri = Environment.GetEnvironmentVariable(ChecktonPldSettingsData.RemoteServiceNameConfig);
+        var baseUri = Environment.GetEnvironmentVariable(variable: ChecktonPldSettingsData.RemoteServiceNameConfig);
         // 2. Invoca BuildServiceClient
         var serviceClient = BuilServiceClient<ChecktonPldService>(
             url: baseUri,
             // La función 'init' toma el cliente HTTP y la URL, y devuelve la instancia de ChecktonPldService
-            init: (httpClient, baseUrl) => new ChecktonPldService(httpClient)
+            init: (httpClient, baseUrl) => new ChecktonPldService(httpClient: httpClient)
             {
                 BaseUrl = baseUrl
             });
@@ -88,7 +88,7 @@ public class ChecktonPldServiceFacade(
         // Iterate through the errors
         foreach (var error in errors)
             // Add the exception
-            exceptions.Add(new EMGeneralException(
+            exceptions.Add(item: new EMGeneralException(
                 message: error.Detail,
                 code: error.ErrorCode,
                 title: error.Title,
@@ -126,7 +126,7 @@ public class ChecktonPldServiceFacade(
         }
         catch (Exception e)
         {
-            throw HandelAPIException(e);
+            throw HandelAPIException(exception: e);
         }
     }
 }

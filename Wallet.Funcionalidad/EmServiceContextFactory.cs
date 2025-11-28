@@ -15,9 +15,9 @@ public class EmServiceContextFactory : IDesignTimeDbContextFactory<ServiceDbCont
 
         var optionsBuilder = new DbContextOptionsBuilder<ServiceDbContext>();
         optionsBuilder.UseSqlServer(
-            connectionString: EmServiceCollectionExtensions.GetConnectionString(configuration),
-            builder => builder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+            connectionString: EmServiceCollectionExtensions.GetConnectionString(configuration: configuration),
+            sqlServerOptionsAction: builder => builder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery));
 
-        return new ServiceDbContext(optionsBuilder.Options);
+        return new ServiceDbContext(options: optionsBuilder.Options);
     }
 }

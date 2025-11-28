@@ -36,14 +36,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
+        [Route(template: "/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
         [ValidateModelState]
-        [SwaggerOperation("GetDispositivoMovilAutorizado")]
+        [SwaggerOperation(summary: "GetDispositivoMovilAutorizado")]
         [SwaggerResponse(statusCode: 200, type: typeof(bool?), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetDispositivoMovilAutorizadoAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int? idCliente, [FromQuery] string idDispositivo, [FromQuery] string token);
+        public abstract Task<IActionResult> GetDispositivoMovilAutorizadoAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int? idCliente, [FromQuery] string idDispositivo, [FromQuery] string token);
         /// <summary>
         /// Guarda dispositivo movil autorizado
         /// </summary>
@@ -57,10 +57,10 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="403">Forbidden</response>
         /// <response code="404">Not Found</response>
         [HttpPost]
-        [Route("/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
+        [Route(template: "/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
         [ValidateModelState]
-        [SwaggerOperation("PostDispositivoMovilAutorizado")]
+        [SwaggerOperation(summary: "PostDispositivoMovilAutorizado")]
         [SwaggerResponse(statusCode: 201, type: typeof(DispositivoMovilAutorizadoResult), description: "Created")]
-        public abstract Task<IActionResult> PostDispositivoMovilAutorizadoAsync([FromRoute][Required][RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idCliente, [FromBody] DispositivoMovilAutorizadoRequest body);
+        public abstract Task<IActionResult> PostDispositivoMovilAutorizadoAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idCliente, [FromBody] DispositivoMovilAutorizadoRequest body);
     }
 }

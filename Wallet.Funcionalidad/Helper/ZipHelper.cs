@@ -11,18 +11,18 @@ public static class ZipHelper
         using (var zipStream = new MemoryStream())
         {
             // Create a new zip archive to write to the memory stream
-            using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+            using (var archive = new ZipArchive(stream: zipStream, mode: ZipArchiveMode.Create, leaveOpen: true))
             {
                 foreach (var jsonFile in jsonFiles)
                 {
                     // Create a new entry in the zip for each JSON file
-                    var zipEntry = archive.CreateEntry(jsonFile.Key + ".json", CompressionLevel.Fastest);
+                    var zipEntry = archive.CreateEntry(entryName: jsonFile.Key + ".json", compressionLevel: CompressionLevel.Fastest);
 
                     // Write the JSON content to the entry
                     using (var entryStream = zipEntry.Open())
-                    using (var streamWriter = new StreamWriter(entryStream, Encoding.UTF8))
+                    using (var streamWriter = new StreamWriter(stream: entryStream, encoding: Encoding.UTF8))
                     {
-                        await streamWriter.WriteAsync(jsonFile.Value);
+                        await streamWriter.WriteAsync(value: jsonFile.Value);
                     }
                 }
             }

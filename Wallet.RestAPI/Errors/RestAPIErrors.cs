@@ -35,10 +35,10 @@ namespace Wallet.RestAPI.Errors
         public IRestAPIError GetRestAPIError(string errorCode, List<string>? dynamicContent = null)
         {
             // Check the existence of the error code in the dictionary
-            if (_restAPIErrors.ContainsKey(errorCode))
+            if (_restAPIErrors.ContainsKey(key: errorCode))
             {
                 // Get the error instance
-                var error = _restAPIErrors[errorCode];
+                var error = _restAPIErrors[key: errorCode];
                 // Update the dynamic contents
                 if (dynamicContent is not null)
                     ((RestAPIError)error).UpdateDynamicContent(dynamicContent: dynamicContent);
@@ -59,8 +59,8 @@ namespace Wallet.RestAPI.Errors
         {
             // Bad version error
             _restAPIErrors.Add(
-                "REST-API-BAD-VERSION",
-                new RestAPIError(
+                key: "REST-API-BAD-VERSION",
+                value: new RestAPIError(
                 type: null,
                 status: 400,
                 errorCode: "REST-API-BAD-VERSION",

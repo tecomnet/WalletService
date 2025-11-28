@@ -16,7 +16,7 @@ public class TipoDocumento : ValidatablePersistentObjectLogicalDelete
     ];
 
     [Required]
-    [MaxLength(100)]
+    [MaxLength(length: 100)]
     public string Nombre { get; private set; }
 
     public List<Documento> Documentos { get; private set; }
@@ -30,12 +30,12 @@ public class TipoDocumento : ValidatablePersistentObjectLogicalDelete
     /// <param name="creationUser"></param>
     /// <param name="testCase"></param>
     /// <exception cref="EMGeneralAggregateException"></exception>
-    public TipoDocumento(string nombre, Guid creationUser, string? testCase = null) : base(creationUser, testCase)
+    public TipoDocumento(string nombre, Guid creationUser, string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate properties
-        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Seteo de propiedades);
@@ -55,17 +55,17 @@ public class TipoDocumento : ValidatablePersistentObjectLogicalDelete
         }
         if (documento == null)
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                    errorCode: ServiceErrorsBuilder.DocumentoRequerido,
                    dynamicContent: []));
         }
-        if (this.Documentos.Any(d => d.Nombre == documento.Nombre && d.TipoPersona == documento.TipoPersona))
+        if (this.Documentos.Any(predicate: d => d.Nombre == documento.Nombre && d.TipoPersona == documento.TipoPersona))
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                    errorCode: ServiceErrorsBuilder.DocumentoYaExisteEnTipoDocumento,
                    dynamicContent: [documento.Nombre, documento.TipoPersona]));
         }
-        this.Documentos.Add(documento);
+        this.Documentos.Add(item: documento);
     }
 
 }

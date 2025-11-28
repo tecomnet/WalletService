@@ -12,7 +12,7 @@ namespace Wallet.Funcionalidad.ServiceClient
         string version)
     {
         private readonly string _unmanagedServiceErrorCode = "EM-UNMANAGED-SERVICE-CLIENT-ERROR";
-        protected readonly Guid User = new Guid("75BAF9A7-BBBC-4BCF-B65B-2AAE35F31050");
+        protected readonly Guid User = new Guid(g: "75BAF9A7-BBBC-4BCF-B65B-2AAE35F31050");
         protected T BuildServiceClient<T>(
             AuthorizationType authorizationType,
             string? authorization,
@@ -22,7 +22,7 @@ namespace Wallet.Funcionalidad.ServiceClient
             string? satellite = null) where T : class
         {
             ServiceClient<T> serviceClient;
-            var baseUrl = urlBuilder.BuildUrl(remoteServiceNameConfig);
+            var baseUrl = urlBuilder.BuildUrl(serviceName: remoteServiceNameConfig);
 
             switch (authorizationType)
             {
@@ -48,14 +48,14 @@ namespace Wallet.Funcionalidad.ServiceClient
                     break;
                 default:
                     {
-                        throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+                        throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                             errorCode: serviceErrorCode,
                             dynamicContent: [authorizationType, user ?? "N/A"],
                             module: runningModuleName));
                     }
             }
             // Instantiate the service client with the corresponding HTTP client
-            serviceClient.Client = init.Invoke(serviceClient.HttpClient, baseUrl);
+            serviceClient.Client = init.Invoke(arg1: serviceClient.HttpClient, arg2: baseUrl);
             return serviceClient.Client;
         }
         
@@ -71,7 +71,7 @@ namespace Wallet.Funcionalidad.ServiceClient
                 xIdDistribuidor: xIdDistribuidor);
 
             // Instantiate the service client with the corresponding HTTP client
-            serviceClient.Client = init.Invoke(serviceClient.HttpClient, url);
+            serviceClient.Client = init.Invoke(arg1: serviceClient.HttpClient, arg2: url);
             return serviceClient.Client;
         }
         
@@ -87,7 +87,7 @@ namespace Wallet.Funcionalidad.ServiceClient
                 xIdAcceso: xAcceso);
 
             // Instantiate the service client with the corresponding HTTP client
-            serviceClient.Client = init.Invoke(serviceClient.HttpClient, url);
+            serviceClient.Client = init.Invoke(arg1: serviceClient.HttpClient, arg2: url);
             return serviceClient.Client;
         }
 
@@ -102,7 +102,7 @@ namespace Wallet.Funcionalidad.ServiceClient
                 bearerToken: authorization);
 
             // Instantiate the service client with the corresponding HTTP client
-            serviceClient.Client = init.Invoke(serviceClient.HttpClient, url);
+            serviceClient.Client = init.Invoke(arg1: serviceClient.HttpClient, arg2: url);
             return serviceClient.Client;
         }
         
@@ -114,7 +114,7 @@ namespace Wallet.Funcionalidad.ServiceClient
             var serviceClient = ServiceClient<T>.CreateServiceClientFacadeFreeAccess(baseUrl: url, version: version);
 
             // Instantiate the service client with the corresponding HTTP client
-            serviceClient.Client = init.Invoke(serviceClient.HttpClient, url);
+            serviceClient.Client = init.Invoke(arg1: serviceClient.HttpClient, arg2: url);
             return serviceClient.Client;
         }
 
@@ -122,7 +122,7 @@ namespace Wallet.Funcionalidad.ServiceClient
         protected virtual EMGeneralAggregateException HandelAPIException(Exception exception)
         {
             // If the exception has inner exceptions
-            var itaGeneralAggregateException = ExtractEMGeneralAggregateException(exception);
+            var itaGeneralAggregateException = ExtractEMGeneralAggregateException(exception: exception);
             if (itaGeneralAggregateException == null)
             {
                 // Create a generic ITA general exception

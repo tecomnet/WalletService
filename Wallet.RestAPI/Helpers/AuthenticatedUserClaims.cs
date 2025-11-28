@@ -20,17 +20,17 @@ public static class AuthenticatedUserClaims
     public static Guid GetAuthenticatedUserGuid(this ControllerBase cb)
     {
         // Returns the generated guid
-        var guidClaim = cb.User.Identities.ElementAt(0).Claims.SingleOrDefault(c => c.Type == "Guid");
+        var guidClaim = cb.User.Identities.ElementAt(index: 0).Claims.SingleOrDefault(predicate: c => c.Type == "Guid");
         // If guidClaim is null
         if (guidClaim is null)
         {
             // Lanza exception
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EmClaimUserError,
                 dynamicContent: [],
                 module: "REST-API"));
         }
-        return new Guid(guidClaim.Value);
+        return new Guid(g: guidClaim.Value);
     }
     
     /// <summary>
@@ -41,7 +41,7 @@ public static class AuthenticatedUserClaims
     public static string GetToken(this ControllerBase cb)
     {
         // Extract the authorization information from the header
-        var authHeader = AuthenticationHeaderValue.Parse(cb.Request.Headers["Authorization"]);
+        var authHeader = AuthenticationHeaderValue.Parse(input: cb.Request.Headers[key: "Authorization"]);
         // Get the token from the parameters
         var jwsToken = authHeader.Parameter;
         // Returns the generated guid

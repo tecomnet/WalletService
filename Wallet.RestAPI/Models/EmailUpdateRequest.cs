@@ -36,9 +36,9 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class EmailUpdateRequest {\n");
-            sb.Append("  CorreoElectronico: ").Append(CorreoElectronico).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class EmailUpdateRequest {\n");
+            sb.Append(value: "  CorreoElectronico: ").Append(value: CorreoElectronico).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -48,7 +48,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((EmailUpdateRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (EmailUpdateRequest)obj);
         }
 
         /// <summary>
@@ -70,14 +70,14 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(EmailUpdateRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     CorreoElectronico == other.CorreoElectronico ||
                     CorreoElectronico != null &&
-                    CorreoElectronico.Equals(other.CorreoElectronico)
+                    CorreoElectronico.Equals(value: other.CorreoElectronico)
                 );
         }
 
@@ -102,12 +102,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(EmailUpdateRequest left, EmailUpdateRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(EmailUpdateRequest left, EmailUpdateRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

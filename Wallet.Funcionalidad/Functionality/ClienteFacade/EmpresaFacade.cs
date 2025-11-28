@@ -12,8 +12,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     {
         try
         {
-            var empresa = await context.Empresa.FirstOrDefaultAsync(x => x.Id == idEmpresa);
-            if (empresa is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            var empresa = await context.Empresa.FirstOrDefaultAsync(predicate: x => x.Id == idEmpresa);
+            if (empresa is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
                 dynamicContent: [idEmpresa]));
             return empresa;
@@ -32,8 +32,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     {
         try
         {
-            var empresa = await context.Empresa.FirstOrDefaultAsync(x => x.Nombre == nombre);
-            if (empresa is null) throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            var empresa = await context.Empresa.FirstOrDefaultAsync(predicate: x => x.Nombre == nombre);
+            if (empresa is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
                 dynamicContent: [nombre]));
             return empresa;
@@ -73,7 +73,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             // Validamos duplicidad
             ValidarDuplicidad(nombre: nombre);
             // Guardamos cambios
-            context.Add(empresa);
+            context.Add(entity: empresa);
             await context.SaveChangesAsync();
             return empresa;
         }
@@ -99,7 +99,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             // Actualizamos la empresa
             empresa.Actualizar(nombre: nombre, modificationUser: modificationUser);
             // Guardamos cambios
-            context.Update(empresa);
+            context.Update(entity: empresa);
             await context.SaveChangesAsync();
             return empresa;
         }
@@ -121,7 +121,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             // Eliminamos la empresa
             empresa.Deactivate(modificationUser: modificationUser);
             // Guardamos cambios
-            context.Update(empresa);
+            context.Update(entity: empresa);
             await context.SaveChangesAsync();
             return empresa;
         }
@@ -143,7 +143,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             // Activamos la empresa
             empresa.Activate(modificationUser: modificationUser);
             // Guardamos cambios
-            context.Update(empresa);
+            context.Update(entity: empresa);
             await context.SaveChangesAsync();
             return empresa;
         }
@@ -162,11 +162,11 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     private void ValidarDuplicidad(string nombre, int id = 0)
     {
         // Obtiene estado existente
-        var estadoExistente = context.Empresa.FirstOrDefault(x => x.Nombre == nombre && x.Id != id);
+        var estadoExistente = context.Empresa.FirstOrDefault(predicate: x => x.Nombre == nombre && x.Id != id);
         // Duplicado por nombre
         if (estadoExistente != null)
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EmpresaDuplicada,
                 dynamicContent: [nombre],
                 module: this.GetType().Name));
@@ -177,7 +177,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     {
         if (!empresa.IsActive)
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EmpresaInactiva,
                 dynamicContent: [empresa.Nombre]));
         }

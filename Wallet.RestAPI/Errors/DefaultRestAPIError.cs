@@ -26,6 +26,6 @@ public class DefaultRestAPIError : IRestAPIError
 
     public string Detail(string[]? args = null)
     {
-        return args == null || args.Length == 0 ? this._detail : string.Format(this._detail, (object[]) args);
+        return args == null || args.Length == 0 ? this._detail : string.Format(format: this._detail, args: (object[]) args);
     }
 }

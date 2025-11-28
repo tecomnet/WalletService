@@ -17,21 +17,21 @@ public class SetupDataConfig : DatabaseTestFixture
 	/// </summary>
 	public SetupDataConfig()
 	{
-		SetupDataAsync(async context =>
+		SetupDataAsync(setupDataAction: async context =>
 		{
-			await context.AddRangeAsync(_commonSettings.Empresas);
-			await context.AddRangeAsync(_commonSettings.Estados);
-			await context.AddRangeAsync(_commonSettings.Usuarios);
-			await context.AddRangeAsync(_commonSettings.Clientes);
-			await context.AddRangeAsync(_commonSettings.ProveedoresServicios);
+			await context.AddRangeAsync(entities: _commonSettings.Empresas);
+			await context.AddRangeAsync(entities: _commonSettings.Estados);
+			await context.AddRangeAsync(entities: _commonSettings.Usuarios);
+			await context.AddRangeAsync(entities: _commonSettings.Clientes);
+			await context.AddRangeAsync(entities: _commonSettings.ProveedoresServicios);
 			await context.SaveChangesAsync();
 
 			// After SaveChangesAsync, IDs are assigned to Clientes and ProveedoresServicios
 			var primerCliente = _commonSettings.Clientes.First();
 			var primerProveedor = _commonSettings.ProveedoresServicios.First();
-			_commonSettings.CrearServiciosFavoritos(primerCliente, primerProveedor); // Call new method
+			_commonSettings.CrearServiciosFavoritos(primerCliente: primerCliente, primerProveedor: primerProveedor); // Call new method
 
-			await context.AddRangeAsync(_commonSettings.ServiciosFavoritos);
+			await context.AddRangeAsync(entities: _commonSettings.ServiciosFavoritos);
 			await context.SaveChangesAsync();
 		}).GetAwaiter().GetResult();
 	}

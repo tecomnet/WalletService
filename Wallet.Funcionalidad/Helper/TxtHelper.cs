@@ -14,9 +14,9 @@ public static class TxtHelper
         // Create memoryStream
         using (var memoryStream = new MemoryStream())
         {
-            using (var sw = new StreamWriter(memoryStream))
+            using (var sw = new StreamWriter(stream: memoryStream))
             {
-                await sw.WriteLineAsync(fileContent);
+                await sw.WriteLineAsync(value: fileContent);
                 await sw.FlushAsync();
                 byteArray = memoryStream.ToArray();
             }

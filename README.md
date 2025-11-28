@@ -11,8 +11,8 @@ La API expone las siguientes funcionalidades:
 El registro de un nuevo usuario sigue un flujo secuencial para garantizar la seguridad y la integridad de los datos:
 
 1.  **Pre-registro**:
-    - **Endpoint**: `POST /{version}/cliente`
-    - **Descripción**: El usuario proporciona su número de teléfono y código de país. El sistema crea un registro inicial de `Cliente` y `Usuario`, y envía un código de verificación (OTP) por SMS.
+    - **Endpoint**: `POST /{version}/usuario/preregistro`
+    - **Descripción**: El usuario proporciona su número de teléfono y código de país. El sistema crea un registro inicial de `Usuario` (con estatus `PreRegistrado`) y un `Cliente` asociado, y envía un código de verificación (OTP) por SMS.
     - **Body**: `{ "codigoPais": "52", "telefono": "5512345678" }`
 
 2.  **Verificación de Teléfono (2FA)**:
@@ -79,7 +79,27 @@ dotnet user-secrets set "dbConnectionString" "Server=localhost,1433;Database=Wal
 dotnet user-secrets set "dbConnectionString" "Server=localhost,1433;Database=WalletServiceDb;User Id=sa;Password=TuPasswordFuerte123!;TrustServerCertificate=True;" --project Wallet.UnitTest
 ```
 
-#### 2. Migraciones de Base de Datos
+#### 2. Configurar JWT Secrets
+
+El servicio utiliza JWT para la autenticación. Es necesario configurar la clave secreta, el emisor y la audiencia.
+
+**Para el proyecto RestAPI:**
+
+```bash
+dotnet user-secrets set "Jwt:Key" "TuSuperSecretoKey123!" --project Wallet.RestAPI
+dotnet user-secrets set "Jwt:Issuer" "WalletService" --project Wallet.RestAPI
+dotnet user-secrets set "Jwt:Audience" "WalletServiceUsers" --project Wallet.RestAPI
+```
+
+**Para el proyecto UnitTest:**
+
+```bash
+dotnet user-secrets set "Jwt:Key" "TuSuperSecretoKey123!" --project Wallet.UnitTest
+dotnet user-secrets set "Jwt:Issuer" "WalletService" --project Wallet.UnitTest
+dotnet user-secrets set "Jwt:Audience" "WalletServiceUsers" --project Wallet.UnitTest
+```
+
+#### 3. Migraciones de Base de Datos
 
 Para aplicar las migraciones y actualizar la base de datos, utiliza el siguiente comando:
 
@@ -112,6 +132,9 @@ Asegúrate de configurar las variables según tus necesidades:
 - `DB_PORT`: Puerto expuesto para la base de datos (por defecto 1433).
 - `API_PORT_HTTP`: Puerto HTTP para la API (por defecto 8080).
 - `API_PORT_HTTPS`: Puerto HTTPS para la API (por defecto 8081).
+- `JWT_KEY`: Clave secreta para firmar los tokens JWT.
+- `JWT_ISSUER`: Emisor del token JWT.
+- `JWT_AUDIENCE`: Audiencia del token JWT.
 
 #### 2. Ejecutar con Docker Compose
 

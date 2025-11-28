@@ -59,15 +59,15 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
 
     [Required] public Dispositivo Dispositivo { get; private set; }
 
-    [Required] [MaxLength(100)] public string TipoEvento { get; private set; }
+    [Required] [MaxLength(length: 100)] public string TipoEvento { get; private set; }
 
-    [Required] [MaxLength(100)] public string TipoDispositivo { get; private set; }
-    [Required] [MaxLength(100)] public string Agente { get; private set; }
+    [Required] [MaxLength(length: 100)] public string TipoDispositivo { get; private set; }
+    [Required] [MaxLength(length: 100)] public string Agente { get; private set; }
 
-    [Required] [MaxLength(45)] public string DireccionIp { get; private set; }
+    [Required] [MaxLength(length: 45)] public string DireccionIp { get; private set; }
 
     public int UsuarioId { get; private set; }
-    public Usuario Usuario { get; private set; }
+    public virtual Usuario Usuario { get; protected internal set; }
 
     public UbicacionesGeolocalizacion() : base()
     {
@@ -82,17 +82,17 @@ public class UbicacionesGeolocalizacion : ValidatablePersistentObjectLogicalDele
         string agente,
         string direccionIp,
         Guid creationUser,
-        string? testCase = null) : base(creationUser, testCase)
+        string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
         // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
         // Validate the properties
-        IsPropertyValid(propertyName: nameof(Latitud), value: latitud, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Longitud), value: longitud, ref exceptions);
-        IsPropertyValid(propertyName: nameof(TipoEvento), value: tipoEvento, ref exceptions);
-        IsPropertyValid(propertyName: nameof(TipoDispositivo), value: tipoDispositivo, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Agente), value: agente, ref exceptions);
-        IsPropertyValid(propertyName: nameof(DireccionIp), value: direccionIp, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Latitud), value: latitud, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(Longitud), value: longitud, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(TipoEvento), value: tipoEvento, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(TipoDispositivo), value: tipoDispositivo, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(Agente), value: agente, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(DireccionIp), value: direccionIp, exceptions: ref exceptions);
         // If there are exceptions, throw them
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
         // Seteo de propiedades

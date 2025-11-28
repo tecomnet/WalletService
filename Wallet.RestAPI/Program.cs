@@ -31,18 +31,40 @@ namespace Wallet.RestAPI
 		/// <param name="args"></param>
 		public static void Main(string[] args)
 		{
-			var builder = WebApplication.CreateBuilder(args);
+			var builder = WebApplication.CreateBuilder(args: args);
 			builder.Configuration.AddEnvironmentVariables();
 			builder.Services.AddOpenApi();
-			AddSwagger(builder.Services);
+			AddSwagger(builderServices: builder.Services);
 			builder.Services.AddControllers();
 			builder.Services.AddEndpointsApiExplorer();
-			builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<AutoMapperProfile>(); });
+			builder.Services.AddAutoMapper(configAction: cfg => { cfg.AddProfile<AutoMapperProfile>(); });
 
-			builder.Services.AddEmServices(builder.Configuration);
-			AddApiVersioning(builder.Services);
+			builder.Services.AddEmServices(configuration: builder.Configuration);
+			AddApiVersioning(builderServices: builder.Services);
 
-			builder.Services.AddProblemDetails(options =>
+			builder.Services.AddAuthentication(configureOptions: options =>
+				{
+					options.DefaultAuthenticateScheme =
+						Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+					options.DefaultChallengeScheme =
+						Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+				})
+				.AddJwtBearer(configureOptions: options =>
+				{
+					options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+					{
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidateIssuerSigningKey = true,
+						ValidIssuer = builder.Configuration[key: "Jwt:Issuer"],
+						ValidAudience = builder.Configuration[key: "Jwt:Audience"],
+						IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+							key: System.Text.Encoding.UTF8.GetBytes(s: builder.Configuration[key: "Jwt:Key"]))
+					};
+				});
+
+			builder.Services.AddProblemDetails(configure: options =>
 				options.CustomizeProblemDetails = (problemDetailsContext) =>
 				{
 					var requestedApiVersion = problemDetailsContext.HttpContext.GetRequestedApiVersion();
@@ -54,8 +76,8 @@ namespace Wallet.RestAPI
 					var allowedVersions = SupportedVersions;
 					if (problemDetailsContext?.HttpContext?.Request?.Path != null)
 					{
-						var segments = problemDetailsContext.HttpContext.Request.Path.ToString().Split('/');
-						if (segments.Length > 1 && allowedVersions.Contains(segments[1]))
+						var segments = problemDetailsContext.HttpContext.Request.Path.ToString().Split(separator: '/');
+						if (segments.Length > 1 && allowedVersions.Contains(value: segments[1]))
 						{
 							return;
 						}
@@ -65,16 +87,16 @@ namespace Wallet.RestAPI
 					problemDetailsContext.ProblemDetails.Detail =
 						"The API version provided is not supported or it wasn't specified.";
 					problemDetailsContext.ProblemDetails.Type = "EM-CustomProblemDetails";
-					problemDetailsContext.ProblemDetails.Extensions.Add("RestAPIErrors", new RestAPIErrors()
+					problemDetailsContext.ProblemDetails.Extensions.Add(key: "RestAPIErrors", value: new RestAPIErrors()
 						.GetRestAPIError(
-							"REST-API-BAD-VERSION",
-							["The API version provided is not supported or it wasn't specified."]));
+							errorCode: "REST-API-BAD-VERSION",
+							dynamicContent: ["The API version provided is not supported or it wasn't specified."]));
 				}
 			);
 
 			// Add framework services.
 			builder.Services
-				.AddMvc(options =>
+				.AddMvc(setupAction: options =>
 				{
 					options.InputFormatters.RemoveType<Microsoft.AspNetCore.Mvc.Formatters
 						.SystemTextJsonInputFormatter>();
@@ -85,17 +107,17 @@ namespace Wallet.RestAPI
 					// AÑADIDO: Agrega el filtro global para el manejo de excepciones de negocio/sistema.
 					options.Filters.Add<ServiceExceptionFilter>();
 				})
-				.AddNewtonsoftJson(opts =>
+				.AddNewtonsoftJson(setupAction: opts =>
 				{
 					opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-					opts.SerializerSettings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()
+					opts.SerializerSettings.Converters.Add(item: new StringEnumConverter(namingStrategy: new CamelCaseNamingStrategy()
 						{ OverrideSpecifiedNames = true }));
 				})
 				.AddXmlSerializerFormatters();
 
 			var app = builder.Build();
 
-			app.UseExceptionHandler("/Error");
+			app.UseExceptionHandler(errorHandlingPath: "/Error");
 			app.UseRouting();
 			app.MapOpenApi();
 			app.UseAuthentication();
@@ -103,9 +125,9 @@ namespace Wallet.RestAPI
 
 			app.UseMiddleware<NotFoundMiddleware>();
 
-			app.UseSwagger(options =>
+			app.UseSwagger(setupAction: options =>
 			{
-				options.PreSerializeFilters.Add((swagger, httpReq) =>
+				options.PreSerializeFilters.Add(item: (swagger, httpReq) =>
 				{
 					swagger.Servers =
 					[
@@ -128,15 +150,15 @@ namespace Wallet.RestAPI
 					];
 				});
 			});
-			app.UseSwaggerUI(c =>
+			app.UseSwaggerUI(setupAction: c =>
 			{
 				var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 				// Loop for map all available versions
 				foreach (var description in provider.ApiVersionDescriptions)
 				{
 					// TODO Change the name parameter with information of this service
-					c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json"
-						, "WalletService " + description.ApiVersion);
+					c.SwaggerEndpoint(url: $"/swagger/{description.GroupName}/swagger.json"
+						, name: "WalletService " + description.ApiVersion);
 				}
 			});
 
@@ -144,14 +166,14 @@ namespace Wallet.RestAPI
 			// app.UseHttpsRedirection();
 
 #pragma warning disable ASP0014 // Suggest using top level route registrations
-			app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+			app.UseEndpoints(configure: endpoints => { endpoints.MapControllers(); });
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 
-			app.MapScalarApiReference(opt =>
+			app.MapScalarApiReference(configureOptions: opt =>
 			{
 				opt.Title = "Wallet Service";
 				opt.Theme = ScalarTheme.Saturn;
-				opt.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+				opt.DefaultHttpClient = new(key: ScalarTarget.CSharp, value: ScalarClient.HttpClient);
 				opt.OpenApiRoutePattern = "/swagger/{documentName}/swagger.json";
 				// FIXME: User EndpointPrefix when it is available
 				opt.EndpointPathPrefix = "/em-api/{documentName}";
@@ -174,12 +196,12 @@ namespace Wallet.RestAPI
 
 		private static void AddApiVersioning(IServiceCollection builderServices)
 		{
-			builderServices.AddApiVersioning(setup =>
+			builderServices.AddApiVersioning(setupAction: setup =>
 			{
-				setup.DefaultApiVersion = new ApiVersion(0, 1);
+				setup.DefaultApiVersion = new ApiVersion(majorVersion: 0, minorVersion: 1);
 				setup.AssumeDefaultVersionWhenUnspecified = true;
 				setup.ReportApiVersions = true;
-			}).AddApiExplorer(setup =>
+			}).AddApiExplorer(setupAction: setup =>
 			{
 				setup.GroupNameFormat = "V.v";
 				setup.SubstituteApiVersionInUrl = true;
@@ -188,11 +210,11 @@ namespace Wallet.RestAPI
 
 		private static void AddSwagger(IServiceCollection builderServices)
 		{
-			builderServices.AddSwaggerGen(options =>
+			builderServices.AddSwaggerGen(setupAction: options =>
 			{
 				options.OperationFilter<DeprecatedVersionFilter>();
 				options.IgnoreObsoleteProperties();
-				options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
+				options.CustomSchemaIds(schemaIdSelector: type => type.FullName?.Replace(oldValue: "+", newValue: "."));
 			});
 
 			builderServices.ConfigureOptions<ConfigureSwaggerOptions>();

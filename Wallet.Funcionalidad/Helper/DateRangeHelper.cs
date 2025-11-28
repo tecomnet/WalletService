@@ -13,9 +13,9 @@
         public static bool DateRangeIsYear(DateTime fromDate, DateTime toDate)
         {
             //convert fromDate to date time
-            var startDate = DateTime.Parse(fromDate.ToShortDateString());
+            var startDate = DateTime.Parse(s: fromDate.ToShortDateString());
             //convert toDate to date time
-            var endDate = DateTime.Parse(toDate.ToShortDateString());
+            var endDate = DateTime.Parse(s: toDate.ToShortDateString());
             //The date difference of the range is obtained 
             var dateDifference = endDate - startDate;
             //Get total days of dateDifference

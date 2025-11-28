@@ -5,13 +5,13 @@ namespace Wallet.DOM.ApplicationDbContext;
 
 public class ServiceDbContext : DbContext
 {
-    public ServiceDbContext(DbContextOptions<ServiceDbContext> options) : base(options)
+    public ServiceDbContext(DbContextOptions<ServiceDbContext> options) : base(options: options)
     {
     }
 
     public DbSet<Usuario> Usuario { get; set; }
     public DbSet<Cliente> Cliente { get; set; }
-    public DbSet<Verificacion2FA> Verificacion2FA { get; set; }
+    public DbSet<Verificacion2FA> Verificacion2Fa { get; set; }
     public DbSet<Direccion> Direccion { get; set; }
     public DbSet<Estado> Estado { get; set; }
     public DbSet<Empresa> Empresa { get; set; }
@@ -25,7 +25,7 @@ public class ServiceDbContext : DbContext
     // Sobrescribimos este método para configurar el modelo y agregar los datos iniciales
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder: modelBuilder);
 
         // -----------------------------------------------------
         // 1. CONFIGURACIÓN DE RELACIONES (Opcional, pero buena práctica)
@@ -34,6 +34,15 @@ public class ServiceDbContext : DbContext
             .HasMany(c => c.Direcciones) // Cliente tiene muchas Direcciones
             .WithOne(d => d.Cliente) // Direccion pertenece a un Cliente
             .HasForeignKey(d => d.ClienteId); // La clave foránea es ClienteId*/
+
+        modelBuilder.Entity<Usuario>()
+            .HasIndex(indexExpression: u => u.Telefono)
+            .IsUnique();
+
+        modelBuilder.Entity<UbicacionesGeolocalizacion>()
+            .HasOne(navigationExpression: u => u.Usuario)
+            .WithMany(navigationExpression: u => u.UbicacionesGeolocalizacion)
+            .HasForeignKey(foreignKeyExpression: u => u.UsuarioId);
 
 
         // -----------------------------------------------------

@@ -4,10 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Wallet.Funcionalidad;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.RestAPI;
+using Wallet.DOM.Modelos;
 
 namespace Wallet.UnitTest.FixtureBase
 {
-    [Collection("FunctionalCollection")]
+    [Collection(name: "FunctionalCollection")]
     public class DatabaseTestFixture : IClassFixture<CustomWebApplicationFactory<Program>>
     {
         protected readonly CustomWebApplicationFactory<Program> Factory;
@@ -19,14 +20,20 @@ namespace Wallet.UnitTest.FixtureBase
             // Build configuration with User Secrets
             var builder = new ConfigurationBuilder()
                 .AddUserSecrets<DatabaseTestFixture>()
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables()
+                .AddInMemoryCollection(initialData: new Dictionary<string, string?>
+                {
+                    { "Jwt:Key", "SuperSecretKeyForTestingPurposesOnly123!" },
+                    { "Jwt:Issuer", "WalletService" },
+                    { "Jwt:Audience", "WalletServiceUser" }
+                });
             _configuration = builder.Build();
 
-            _connectionString = EmServiceCollectionExtensions.GetConnectionString(_configuration);
+            _connectionString = EmServiceCollectionExtensions.GetConnectionString(configuration: _configuration);
 
             SetEnvironmentalVariables();
             var factory = new CustomWebApplicationFactory<Program>();
-            factory.ConfigureWebApplicationFactory(services => { services.AddSingleton(_configuration); });
+            factory.ConfigureWebApplicationFactory(configureTestServices: services => { services.AddSingleton(implementationInstance: _configuration); });
             Factory = factory;
 
             using var context = CreateContext();
@@ -37,21 +44,72 @@ namespace Wallet.UnitTest.FixtureBase
         protected async Task SetupDataAsync(Func<ServiceDbContext, Task> setupDataAction)
         {
             await using var context = CreateContext();
-            await setupDataAction(context);
+            await setupDataAction(arg: context);
         }
 
         protected internal ServiceDbContext CreateContext()
             => new(
-                new DbContextOptionsBuilder<ServiceDbContext>()
-                    .UseSqlServer(_connectionString,
-                        optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                options: new DbContextOptionsBuilder<ServiceDbContext>()
+                    .UseSqlServer(connectionString: _connectionString,
+                        sqlServerOptionsAction: optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery))
                     .Options);
+
+        public async Task<(Usuario User, string Token)> CreateAuthenticatedUserAsync()
+        {
+            await using var context = CreateContext();
+            var user = new Usuario(
+                codigoPais: "+52",
+                telefono: $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
+                correoElectronico: $"user{Guid.NewGuid()}@test.com",
+                contrasena: "Password123!",
+                estatus: "Activo",
+                creationUser: Guid.NewGuid(),
+                testCase: "IntegrationTest");
+
+            await context.Usuario.AddAsync(entity: user);
+            await context.SaveChangesAsync();
+
+            using var scope = Factory.Services.CreateScope();
+            var tokenService = scope.ServiceProvider
+                .GetRequiredService<Wallet.Funcionalidad.Services.TokenService.ITokenService>();
+
+            var claims = new List<System.Security.Claims.Claim>
+            {
+                new(type: System.Security.Claims.ClaimTypes.Name, value: user.CorreoElectronico ?? user.Telefono),
+                new(type: System.Security.Claims.ClaimTypes.NameIdentifier, value: user.Id.ToString())
+            };
+
+            var token = tokenService.GenerateAccessToken(claims: claims);
+
+            return (user, token);
+        }
+
+        public async Task<List<Usuario>> CreateUsersAsync(int count)
+        {
+            await using var context = CreateContext();
+            var users = new List<Usuario>();
+            for (var i = 0; i < count; i++)
+            {
+                users.Add(item: new Usuario(
+                    codigoPais: "+52",
+                    telefono: $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
+                    correoElectronico: $"user{Guid.NewGuid()}@test.com",
+                    contrasena: "Password123!",
+                    estatus: "Activo",
+                    creationUser: Guid.NewGuid(),
+                    testCase: "IntegrationTest"));
+            }
+
+            await context.Usuario.AddRangeAsync(entities: users);
+            await context.SaveChangesAsync();
+            return users;
+        }
 
         private void SetEnvironmentalVariables()
         {
             Environment.SetEnvironmentVariable(
-                "dbConnectionString",
-                _connectionString);
+                variable: "dbConnectionString",
+                value: _connectionString);
         }
     }
 }

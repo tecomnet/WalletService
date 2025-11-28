@@ -36,13 +36,13 @@ public class TwilioServiceFacade(
     private TwilioService BuildLocalServiceClientApiKey()
     {
         // Get api key
-        var apiKey = Environment.GetEnvironmentVariable("API-Key");
+        var apiKey = Environment.GetEnvironmentVariable(variable: "API-Key");
         // Build service client
         return BuildServiceClient(
             authorizationType: AuthorizationType.API_KEY,
             authorization: apiKey,
             serviceErrorCode: TwilioSettingsData.ServiceErrorCode,
-            init: (client, baseUrl) => new TwilioService(client)
+            init: (client, baseUrl) => new TwilioService(httpClient: client)
             {
                 BaseUrl = baseUrl
             },
@@ -56,7 +56,7 @@ public class TwilioServiceFacade(
             authorizationType: AuthorizationType.BEARER,
             authorization: token,
             serviceErrorCode: TwilioSettingsData.ServiceErrorCode,
-            init: (client, baseUrl) => new TwilioService(client)
+            init: (client, baseUrl) => new TwilioService(httpClient: client)
             {
                 BaseUrl = baseUrl
             });
@@ -65,12 +65,12 @@ public class TwilioServiceFacade(
     private TwilioService BuildLocalServiceClient()
     {
         // Get url 
-        var baseUri = Environment.GetEnvironmentVariable(TwilioSettingsData.RemoteServiceNameConfig);
+        var baseUri = Environment.GetEnvironmentVariable(variable: TwilioSettingsData.RemoteServiceNameConfig);
         // 2. Invoca BuildServiceClient
         var serviceClient = BuilServiceClient<TwilioService>(
             url: baseUri,
             // La función 'init' toma el cliente HTTP y la URL, y devuelve la instancia de TwilioService
-            init: (httpClient, baseUrl) => new TwilioService(httpClient)
+            init: (httpClient, baseUrl) => new TwilioService(httpClient: httpClient)
             {
                 BaseUrl = baseUrl
             });
@@ -88,7 +88,7 @@ public class TwilioServiceFacade(
         // Iterate through the errors
         foreach (var error in errors)
             // Add the exception
-            exceptions.Add(new EMGeneralException(
+            exceptions.Add(item: new EMGeneralException(
                 message: error.Detail,
                 code: error.ErrorCode,
                 title: error.Title,
@@ -121,7 +121,7 @@ public class TwilioServiceFacade(
         }
         catch (Exception e)
         {
-            throw HandelAPIException(e);
+            throw HandelAPIException(exception: e);
         }
     }
 
@@ -143,7 +143,7 @@ public class TwilioServiceFacade(
         }
         catch (Exception e)
         {
-            throw HandelAPIException(e);
+            throw HandelAPIException(exception: e);
         }
     }
 
@@ -167,7 +167,7 @@ public class TwilioServiceFacade(
         }
         catch (Exception e)
         {
-            throw HandelAPIException(e);
+            throw HandelAPIException(exception: e);
         }
     }
 
@@ -188,7 +188,7 @@ public class TwilioServiceFacade(
         }
         catch (Exception e)
         {
-            throw HandelAPIException(e);
+            throw HandelAPIException(exception: e);
         }
     }
 }

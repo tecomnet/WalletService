@@ -17,21 +17,13 @@ public class UbicacionesGeolocalizacionTest : UnitTestTemplate
     // ----------------------------------------------------------------------------------------------------------------
     // 1. CASOS DE ÉXITO (Datos mínimos y máximos válidos)
     // ----------------------------------------------------------------------------------------------------------------
-    [InlineData("1. OK: Datos mínimos válidos",
-        "1", "-1", Dispositivo.App,"Login", "Mobile", "Chrome", "1.1.1.1", 
-        true, new string[] { })]
-    [InlineData("2. OK: Latitud/Longitud compleja y Máx 8 decimales",
-        "89.99999999", 
-        "-179.99999999", 
-        Dispositivo.Web,
-        Max100Chars, Max100Chars, Max100Chars, IpV6Valid, // Max 100 para los 3 strings
-        true, new string[] { })]
-    [InlineData("3. OK: IP Máxima (45 chars)",
-        LatLongValid, LatLongValid, Dispositivo.App, "Logout", "Desktop", "Firefox", Max45Chars, 
-        true, new string[] { })]
-    [InlineData("4. OK: IP IPv4 Válida",
-        LatLongValid, LatLongValid, Dispositivo.App, "View", "Tablet", "Safari", IpV4Valid, 
-        true, new string[] { })]
+    [InlineData(data: ["1. OK: Datos mínimos válidos", "1", "-1", Dispositivo.App, "Login", "Mobile", "Chrome", "1.1.1.1", true, new string[] { }])]
+    [InlineData(data:
+    ["2. OK: Latitud/Longitud compleja y Máx 8 decimales", "89.99999999", "-179.99999999", Dispositivo.Web, Max100Chars, Max100Chars, Max100Chars, IpV6Valid, // Max 100 para los 3 strings
+        true, new string[] { }
+    ])]
+    [InlineData(data: ["3. OK: IP Máxima (45 chars)", LatLongValid, LatLongValid, Dispositivo.App, "Logout", "Desktop", "Firefox", Max45Chars, true, new string[] { }])]
+    [InlineData(data: ["4. OK: IP IPv4 Válida", LatLongValid, LatLongValid, Dispositivo.App, "View", "Tablet", "Safari", IpV4Valid, true, new string[] { }])]
     
     // ----------------------------------------------------------------------------------------------------------------
     // 2. ERRORES DE REQUERIMIENTO (PROPERTY-VALIDATION-REQUIRED-ERROR)
@@ -42,39 +34,32 @@ public class UbicacionesGeolocalizacionTest : UnitTestTemplate
     // [InlineData("6. ERROR: Longitud empty",
     //     LatLongValid, "", Dispositivo.App, "Login", "Mobile", "Chrome", IpV4Valid, 
     //     false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("7. ERROR: TipoEvento null",
-        LatLongValid, LatLongValid, Dispositivo.App, null, "Mobile", "Chrome", IpV4Valid, 
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("8. ERROR: DireccionIp null",
-        LatLongValid, LatLongValid, Dispositivo.App, "Login", "Mobile", "Chrome", null, 
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
+    [InlineData(data: ["7. ERROR: TipoEvento null", LatLongValid, LatLongValid, Dispositivo.App, null, "Mobile", "Chrome", IpV4Valid, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [InlineData(data: ["8. ERROR: DireccionIp null", LatLongValid, LatLongValid, Dispositivo.App, "Login", "Mobile", "Chrome", null, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
     
     // ----------------------------------------------------------------------------------------------------------------
     // 3. ERRORES DE LONGITUD (PROPERTY-VALIDATION-LENGTH-INVALID)
     // ----------------------------------------------------------------------------------------------------------------
-    [InlineData("9. ERROR: Latitud > 8 decimales",
-        "19.1234567891", LatLongValid, Dispositivo.App, "Login", "Mobile", "Chrome", IpV4Valid, 
-        false, new string[] { "PROPERTY-VALIDATION-DECIMALS-INVALID" })]
-    [InlineData("10. ERROR: Agente > 100 caracteres",
-        LatLongValid, LatLongValid, Dispositivo.App, "Login", "Mobile", Max100Chars + "X", IpV4Valid, 
-        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
-    [InlineData("11. ERROR: DireccionIp > 45 caracteres",
-        LatLongValid, LatLongValid, Dispositivo.App, "Login", "Mobile", "Chrome", Max45Chars + "X", // 46 chars
-        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
+    [InlineData(data: ["9. ERROR: Latitud > 8 decimales", "19.1234567891", LatLongValid, Dispositivo.App, "Login", "Mobile", "Chrome", IpV4Valid, false, new string[] { "PROPERTY-VALIDATION-DECIMALS-INVALID" }])]
+    [InlineData(data: ["10. ERROR: Agente > 100 caracteres", LatLongValid, LatLongValid, Dispositivo.App, "Login", "Mobile", Max100Chars + "X", IpV4Valid, false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }])]
+    [InlineData(data:
+    ["11. ERROR: DireccionIp > 45 caracteres", LatLongValid, LatLongValid, Dispositivo.App, "Login", "Mobile", "Chrome", Max45Chars + "X", // 46 chars
+        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+    ])]
     
     // ----------------------------------------------------------------------------------------------------------------
     // 4. CASO DE ERRORES MÚLTIPLES 
     // ----------------------------------------------------------------------------------------------------------------
-    [InlineData("12. ERROR: Múltiples fallos críticos",
-        "1", "1", Dispositivo.App, null, "", Max100Chars + "X", "",
-        false, new string[] { 
+    [InlineData(data:
+    ["12. ERROR: Múltiples fallos críticos", "1", "1", Dispositivo.App, null, "", Max100Chars + "X", "", false, new string[] { 
             "PROPERTY-VALIDATION-REQUIRED-ERROR", // Latitud
             "PROPERTY-VALIDATION-REQUIRED-ERROR", // Longitud
             "PROPERTY-VALIDATION-REQUIRED-ERROR", // TipoEvento
             "PROPERTY-VALIDATION-REQUIRED-ERROR", // TipoDispositivo
             "PROPERTY-VALIDATION-LENGTH-INVALID", // Agente
             "PROPERTY-VALIDATION-REQUIRED-ERROR"  // DireccionIp
-        })]
+        }
+    ])]
     public void UbicacionesGeolocalizacionConstructorTest(
         // Case name
         string caseName,
@@ -91,8 +76,8 @@ public class UbicacionesGeolocalizacionTest : UnitTestTemplate
         string[]? expectedErrors = null
     )
     {
-        decimal? latitudConverted = latitud == null ? null : decimal.Parse(latitud);
-        decimal? longitudConverted = longitud == null ? null : decimal.Parse(longitud);
+        decimal? latitudConverted = latitud == null ? null : decimal.Parse(s: latitud);
+        decimal? longitudConverted = longitud == null ? null : decimal.Parse(s: longitud);
         try
         {
             
@@ -108,12 +93,12 @@ public class UbicacionesGeolocalizacionTest : UnitTestTemplate
                 creationUser: Guid.NewGuid(),
                 testCase: caseName);         
             // Verificación de asignación de valores (si success es true)
-            Assert.Equal(latitudConverted, ubicacion.Latitud);
-            Assert.Equal(longitudConverted, ubicacion.Longitud);
-            Assert.Equal(tipoEvento, ubicacion.TipoEvento);
-            Assert.Equal(tipoDispositivo, ubicacion.TipoDispositivo);
-            Assert.Equal(agente, ubicacion.Agente);
-            Assert.Equal(direccionIp, ubicacion.DireccionIp);
+            Assert.Equal(expected: latitudConverted, actual: ubicacion.Latitud);
+            Assert.Equal(expected: longitudConverted, actual: ubicacion.Longitud);
+            Assert.Equal(expected: tipoEvento, actual: ubicacion.TipoEvento);
+            Assert.Equal(expected: tipoDispositivo, actual: ubicacion.TipoDispositivo);
+            Assert.Equal(expected: agente, actual: ubicacion.Agente);
+            Assert.Equal(expected: direccionIp, actual: ubicacion.DireccionIp);
             // Verificación de éxito
             Assert.True(condition: success, userMessage: $"El caso '{caseName}' falló cuando se esperaba éxito.");            
         }
@@ -126,7 +111,7 @@ public class UbicacionesGeolocalizacionTest : UnitTestTemplate
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
                                              exception is not Xunit.Sdk.TrueException && exception is not Xunit.Sdk.FalseException)
         {
-            Assert.Fail($"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
+            Assert.Fail(message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
         }
     }
 }

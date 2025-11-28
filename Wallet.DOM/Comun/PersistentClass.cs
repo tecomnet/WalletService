@@ -34,18 +34,18 @@ public abstract class PersistentClass
     public Guid Guid { get; protected internal set; }
 
     [Required]
-    [DataType(DataType.DateTime)]
+    [DataType(dataType: DataType.DateTime)]
     public DateTime CreationTimestamp { get; protected internal set; }
 
     [Required]
-    [DataType(DataType.DateTime)]
+    [DataType(dataType: DataType.DateTime)]
     public DateTime ModificationTimestamp { get; protected internal set; }
 
     [Required] public Guid CreationUser { get; protected internal set; }
 
     [Required] public Guid ModificationUser { get; protected internal set; }
 
-    [MaxLength(100)]
+    [MaxLength(length: 100)]
     public
 #nullable enable
         string? TestCaseID { get; [param: AllowNull] protected internal set; }

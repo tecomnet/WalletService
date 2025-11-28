@@ -36,7 +36,7 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Objeto de navegación para el cliente.
         /// </summary>
-        [ForeignKey("ClienteId")]
+        [ForeignKey(name: "ClienteId")]
         public Cliente Cliente { get; set; }
 
         /// <summary>
@@ -48,21 +48,21 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Objeto de navegación para el proveedor de servicios.
         /// </summary>
-        [ForeignKey("ProveedorServicioId")]
+        [ForeignKey(name: "ProveedorServicioId")]
         public ProveedorServicio ProveedorServicio { get; set; }
 
         /// <summary>
         /// Alias o nombre personalizado para el servicio favorito.
         /// </summary>
         [Required]
-        [MaxLength(50)]
+        [MaxLength(length: 50)]
         public string Alias { get; private set; }
 
         /// <summary>
         /// Número de referencia asociado al servicio (ej. número de cuenta, contrato).
         /// </summary>
         [Required]
-        [MaxLength(50)]
+        [MaxLength(length: 50)]
         public string NumeroReferencia { get; private set; }
 
         /// <summary>
@@ -81,14 +81,14 @@ namespace Wallet.DOM.Modelos
         /// <param name="numeroReferencia">El número de referencia del servicio.</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
         public ServicioFavorito(int clienteId, int proveedorServicioId, string alias, string numeroReferencia,
-            Guid creationUser) : base(creationUser)
+            Guid creationUser) : base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
-            IsPropertyValid(nameof(Alias), alias, ref exceptions);
-            IsPropertyValid(nameof(NumeroReferencia), numeroReferencia, ref exceptions);
+            IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
-                throw new EMGeneralAggregateException(exceptions);
+                throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
             ClienteId = clienteId;
@@ -106,14 +106,14 @@ namespace Wallet.DOM.Modelos
         /// <param name="numeroReferencia">El número de referencia del servicio.</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
         public ServicioFavorito(Cliente cliente, ProveedorServicio proveedorServicio, string alias,
-            string numeroReferencia, Guid creationUser) : base(creationUser)
+            string numeroReferencia, Guid creationUser) : base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
-            IsPropertyValid(nameof(Alias), alias, ref exceptions);
-            IsPropertyValid(nameof(NumeroReferencia), numeroReferencia, ref exceptions);
+            IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
-                throw new EMGeneralAggregateException(exceptions);
+                throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
             Cliente = cliente;
@@ -134,16 +134,16 @@ namespace Wallet.DOM.Modelos
         public void Update(string alias, string numeroReferencia, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
-            IsPropertyValid(nameof(Alias), alias, ref exceptions);
-            IsPropertyValid(nameof(NumeroReferencia), numeroReferencia, ref exceptions);
+            IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
-                throw new EMGeneralAggregateException(exceptions);
+                throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
             Alias = alias;
             NumeroReferencia = numeroReferencia;
-            base.Update(modificationUser);
+            base.Update(modificationUser: modificationUser);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
@@ -35,7 +35,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="primerApellido")]
         public string PrimerApellido { get; set; }
 
@@ -44,7 +44,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="segundoApellido")]
         public string SegundoApellido { get; set; }
 
@@ -69,7 +69,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(500, MinimumLength=1)]
+        [StringLength(maximumLength: 500, MinimumLength=1)]
         [DataMember(Name="estado")]
         public string Estado { get; set; }
 
@@ -80,14 +80,14 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ClienteUpdateRequest {\n");
-            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
-            sb.Append("  PrimerApellido: ").Append(PrimerApellido).Append("\n");
-            sb.Append("  SegundoApellido: ").Append(SegundoApellido).Append("\n");
-            sb.Append("  FechaNacimiento: ").Append(FechaNacimiento).Append("\n");
-            sb.Append("  Genero: ").Append(Genero).Append("\n");
-            sb.Append("  Estado: ").Append(Estado).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class ClienteUpdateRequest {\n");
+            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
+            sb.Append(value: "  PrimerApellido: ").Append(value: PrimerApellido).Append(value: "\n");
+            sb.Append(value: "  SegundoApellido: ").Append(value: SegundoApellido).Append(value: "\n");
+            sb.Append(value: "  FechaNacimiento: ").Append(value: FechaNacimiento).Append(value: "\n");
+            sb.Append(value: "  Genero: ").Append(value: Genero).Append(value: "\n");
+            sb.Append(value: "  Estado: ").Append(value: Estado).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -97,7 +97,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -107,9 +107,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ClienteUpdateRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (ClienteUpdateRequest)obj);
         }
 
         /// <summary>
@@ -119,39 +119,39 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ClienteUpdateRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(other.Nombre)
+                    Nombre.Equals(value: other.Nombre)
                 ) && 
                 (
                     PrimerApellido == other.PrimerApellido ||
                     PrimerApellido != null &&
-                    PrimerApellido.Equals(other.PrimerApellido)
+                    PrimerApellido.Equals(value: other.PrimerApellido)
                 ) && 
                 (
                     SegundoApellido == other.SegundoApellido ||
                     SegundoApellido != null &&
-                    SegundoApellido.Equals(other.SegundoApellido)
+                    SegundoApellido.Equals(value: other.SegundoApellido)
                 ) && 
                 (
                     FechaNacimiento == other.FechaNacimiento ||
                     FechaNacimiento != null &&
-                    FechaNacimiento.Equals(other.FechaNacimiento)
+                    FechaNacimiento.Equals(other: other.FechaNacimiento)
                 ) && 
                 (
                     Genero == other.Genero ||
                     Genero != null &&
-                    Genero.Equals(other.Genero)
+                    Genero.Equals(obj: other.Genero)
                 ) && 
                 (
                     Estado == other.Estado ||
                     Estado != null &&
-                    Estado.Equals(other.Estado)
+                    Estado.Equals(value: other.Estado)
                 );
         }
 
@@ -186,12 +186,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ClienteUpdateRequest left, ClienteUpdateRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(ClienteUpdateRequest left, ClienteUpdateRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

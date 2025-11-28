@@ -21,7 +21,7 @@ namespace Wallet.RestAPI.Helpers
 
         public async Task InvokeAsync(HttpContext context)
         {
-            await _next(context);
+            await _next(context: context);
 
             if (context.Response.StatusCode == 404)
             {
@@ -34,8 +34,8 @@ namespace Wallet.RestAPI.Helpers
                 var allowedVersions = new[] { "0.1" };
                 if (context.Request.Path != null)
                 {
-                    var segments = context.Request.Path.ToString().Split('/');
-                    if (segments.Length > 1 && allowedVersions.Contains(segments[1]))
+                    var segments = context.Request.Path.ToString().Split(separator: '/');
+                    if (segments.Length > 1 && allowedVersions.Contains(value: segments[1]))
                     {
                         return;
                     }
@@ -45,13 +45,13 @@ namespace Wallet.RestAPI.Helpers
                 var problemDetails = new ProblemDetails();
                 problemDetails.Detail = "The API version provided is not supported or it wasn't specified.";
                 problemDetails.Type = "EM-CustomProblemDetails";
-                problemDetails.Extensions.Add("RestAPIErrors", new
+                problemDetails.Extensions.Add(key: "RestAPIErrors", value: new
                 {
                     // Las propiedades se serializarán directamente en el JSON
                     ErrorCode = "REST-API-BAD-VERSION",
                     Messages = new[] { "The API version provided is not supported or it wasn't specified." }
                 });
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(problemDetails));
+                await context.Response.WriteAsync(text: JsonConvert.SerializeObject(value: problemDetails));
             }
         }
     }

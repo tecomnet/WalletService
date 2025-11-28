@@ -211,7 +211,7 @@ namespace Wallet.Funcionalidad.ServiceClient
 			// Create an instance of the class
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version);
 			// Set the beare token
-			AuthenticationHeaderValue authenticationHeaderValue = new("Bearer", bearerToken);
+			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
 			// Return the client instance
 			return clientFacade;
@@ -230,7 +230,7 @@ namespace Wallet.Funcionalidad.ServiceClient
 			// Create an instance of the class
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl);
 			// Set the beare token
-			AuthenticationHeaderValue authenticationHeaderValue = new("Bearer", bearerToken);
+			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
 			// Return the client instance
 			return clientFacade;
@@ -264,7 +264,7 @@ namespace Wallet.Funcionalidad.ServiceClient
 			// Create an instance of the class
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl);
 			// Set the beare token
-			AuthenticationHeaderValue authenticationHeaderValue = new("Bearer", bearerToken);
+			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
 			// Add the Postman API key
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
@@ -288,7 +288,7 @@ namespace Wallet.Funcionalidad.ServiceClient
 			// Create an instance of the class
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl);
 			// Set the beare token
-			AuthenticationHeaderValue authenticationHeaderValue = new("Bearer", bearerToken);
+			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
 			// Add the Postman API key
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
@@ -314,7 +314,7 @@ namespace Wallet.Funcionalidad.ServiceClient
 			// Create an instance of the class
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version, httpClient: httpClient);
 			// Set the beare token
-			AuthenticationHeaderValue authenticationHeaderValue = new("Bearer", bearerToken);
+			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
 			// Return the client instance
 			return clientFacade;

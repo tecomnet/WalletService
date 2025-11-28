@@ -6,7 +6,7 @@ public class ServiceErrorsBuilder
 {
     // Almacena todos los errores de servicio por su código
     private readonly Dictionary<string, IServiceError> _errors = new();
-    private static readonly Lazy<ServiceErrorsBuilder> _instance = new(() => new ServiceErrorsBuilder());
+    private static readonly Lazy<ServiceErrorsBuilder> _instance = new(valueFactory: () => new ServiceErrorsBuilder());
 
     public static ServiceErrorsBuilder Instance() => _instance.Value;
 
@@ -35,7 +35,7 @@ public class ServiceErrorsBuilder
     // Método privado para añadir un error al diccionario
     public void AddServiceError(string errorCode, string message, string description)
     {
-        _errors[errorCode] = new ServiceError(errorCode, message, description);
+        _errors[key: errorCode] = new ServiceError(errorCode: errorCode, message: message, description: description);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public class ServiceErrorsBuilder
     /// <returns>El objeto ServiceError con todos los detalles.</returns>
     public IServiceError GetError(string errorCode)
     {
-        if (_errors.TryGetValue(errorCode, out var error))
+        if (_errors.TryGetValue(key: errorCode, value: out var error))
         {
             return error;
         }
@@ -371,24 +371,24 @@ public class ServiceErrorsBuilder
 
     private void PropertyValidationErrors()
     {
-        AddServiceError(PropertyValidationRequiredError, "Error de validación de propiedad",
-            "La propiedad {0} es requerida.");
-        AddServiceError(PropertyValidationLengthInvalid, "Error de validación de propiedad",
-            "La propiedad {0} con valor {1} debe tener entre {2} y {3} caracteres de longitud.");
-        AddServiceError(PropertyValidationRegexInvalid, "Error de validación de propiedad",
-            "La propiedad {0} con valor {1} no es válida según el patrón proporcionado {2}.");
-        AddServiceError(PropertyValidationNegativeInvalid, "Error de validación de propiedad",
-            "La propiedad {0} con valor {1} no permite valores negativos.");
-        AddServiceError(PropertyValidationZeroInvalid, "Error de validación de propiedad",
-            "La propiedad {0} con valor {1} no permite valores cero.");
-        AddServiceError(PropertyValidationPositiveInvalid, "Error de validación de propiedad",
-            "La propiedad {0} con valor {1} no permite valores positivos.");
-        AddServiceError(PropertyValidationDecimalsInvalid, "Error de validación de propiedad",
-            "La propiedad {0} con valor {1} no permite más de {2} decimales.");
-        AddServiceError(PropertyValidationCurrencyInvalid, "Error de validación de propiedad",
-            "La propiedad {0} con valor {1} no es una divisa/moneda válida.");
-        AddServiceError(PropertyValidationPropertyNotFound, "Error de validación de propiedad",
-            "La propiedad {0} no fue encontrada en la definición de la propiedad.");
+        AddServiceError(errorCode: PropertyValidationRequiredError, message: "Error de validación de propiedad",
+            description: "La propiedad {0} es requerida.");
+        AddServiceError(errorCode: PropertyValidationLengthInvalid, message: "Error de validación de propiedad",
+            description: "La propiedad {0} con valor {1} debe tener entre {2} y {3} caracteres de longitud.");
+        AddServiceError(errorCode: PropertyValidationRegexInvalid, message: "Error de validación de propiedad",
+            description: "La propiedad {0} con valor {1} no es válida según el patrón proporcionado {2}.");
+        AddServiceError(errorCode: PropertyValidationNegativeInvalid, message: "Error de validación de propiedad",
+            description: "La propiedad {0} con valor {1} no permite valores negativos.");
+        AddServiceError(errorCode: PropertyValidationZeroInvalid, message: "Error de validación de propiedad",
+            description: "La propiedad {0} con valor {1} no permite valores cero.");
+        AddServiceError(errorCode: PropertyValidationPositiveInvalid, message: "Error de validación de propiedad",
+            description: "La propiedad {0} con valor {1} no permite valores positivos.");
+        AddServiceError(errorCode: PropertyValidationDecimalsInvalid, message: "Error de validación de propiedad",
+            description: "La propiedad {0} con valor {1} no permite más de {2} decimales.");
+        AddServiceError(errorCode: PropertyValidationCurrencyInvalid, message: "Error de validación de propiedad",
+            description: "La propiedad {0} con valor {1} no es una divisa/moneda válida.");
+        AddServiceError(errorCode: PropertyValidationPropertyNotFound, message: "Error de validación de propiedad",
+            description: "La propiedad {0} no fue encontrada en la definición de la propiedad.");
     }
 
     #endregion

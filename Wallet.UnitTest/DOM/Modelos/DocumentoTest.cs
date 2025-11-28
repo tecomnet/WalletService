@@ -15,26 +15,14 @@ public class DocumentoTest : UnitTestTemplate
     // PARÁMETROS: CaseName, Nombre (string), TipoPersona (TipoPersona), Success, ExpectedErrors
 
     // === 1. CASOS DE ÉXITO (Nombre y TipoPersona válidos) ===
-    [InlineData("1. OK: Nombre válido (Fisica)",
-        "Pasaporte", TipoPersona.Fisica,
-        true, new string[] { })]
-    [InlineData("2. OK: Nombre Min Length (Moral)",
-        "A", TipoPersona.Moral,
-        true, new string[] { })]
-    [InlineData("3. OK: Nombre Max Length (Extrajero)",
-        Max100Chars, TipoPersona.Extranjero,
-        true, new string[] { })]
+    [InlineData(data: ["1. OK: Nombre válido (Fisica)", "Pasaporte", TipoPersona.Fisica, true, new string[] { }])]
+    [InlineData(data: ["2. OK: Nombre Min Length (Moral)", "A", TipoPersona.Moral, true, new string[] { }])]
+    [InlineData(data: ["3. OK: Nombre Max Length (Extrajero)", Max100Chars, TipoPersona.Extranjero, true, new string[] { }])]
 
     // === 2. ERRORES DE NOMBRE (string, required, min 1, max 100) ===
-    [InlineData("4. ERROR: Nombre null",
-        null, TipoPersona.Fisica,
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("5. ERROR: Nombre empty",
-        "", TipoPersona.Moral,
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("6. ERROR: Nombre too long (101)",
-        Over100Chars, TipoPersona.Extranjero,
-        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
+    [InlineData(data: ["4. ERROR: Nombre null", null, TipoPersona.Fisica, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [InlineData(data: ["5. ERROR: Nombre empty", "", TipoPersona.Moral, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [InlineData(data: ["6. ERROR: Nombre too long (101)", Over100Chars, TipoPersona.Extranjero, false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }])]
 
     // === 3. ERRORES DE TIPO PERSONA (Requerido) ===
     // NOTA: Como 'TipoPersona' es un 'enum' no-nullable en el constructor, no puede ser null. 
@@ -61,11 +49,11 @@ public class DocumentoTest : UnitTestTemplate
                 testCase: caseName);
 
             // Assert Success
-            Assert.True(success, $"El caso '{caseName}' falló cuando se esperaba éxito.");
+            Assert.True(condition: success, userMessage: $"El caso '{caseName}' falló cuando se esperaba éxito.");
 
             // Comprobar la asignación de propiedades (solo si hay éxito)
-            Assert.Equal(nombre, documento.Nombre);
-            Assert.Equal(tipoPersona, documento.TipoPersona);
+            Assert.Equal(expected: nombre, actual: documento.Nombre);
+            Assert.Equal(expected: tipoPersona, actual: documento.TipoPersona);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures
         catch (EMGeneralAggregateException exception)
@@ -78,7 +66,7 @@ public class DocumentoTest : UnitTestTemplate
                                              exception is not Xunit.Sdk.TrueException && exception is not Xunit.Sdk.FalseException)
         {
             // Should not reach for unmanaged errors
-            Assert.Fail($"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
+            Assert.Fail(message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
         }
     }
 }

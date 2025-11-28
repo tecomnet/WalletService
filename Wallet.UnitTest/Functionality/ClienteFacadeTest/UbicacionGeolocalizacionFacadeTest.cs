@@ -8,17 +8,14 @@ using Xunit.Sdk;
 namespace Wallet.UnitTest.Functionality.ClienteFacadeTest;
 
 public class UbicacionGeolocalizacionFacadeTest(SetupDataConfig setupConfig)
-    : BaseFacadeTest<IUbicacionGeolocalizacionFacade>(setupConfig)
+    : BaseFacadeTest<IUbicacionGeolocalizacionFacade>(setupConfig: setupConfig)
 {
     [Theory]
     // Casos ok
-    [InlineData("1. OK: Nueva ubicacion", 1, 1, 1, Dispositivo.Web, "Inicio session", "Tablet", "Chrome", "127.0.0.1",
-        true, new string[] { })]
-    [InlineData("1. OK: Nueva ubicacion", 2, 1.2515, 2.18956, Dispositivo.App, "Nuevo usuario", "Smartphone",
-        "App movil", "127.0.0.1", true, new string[] { })]
+    [InlineData(data: ["1. OK: Nueva ubicacion", 1, 1, 1, Dispositivo.Web, "Inicio session", "Tablet", "Chrome", "127.0.0.1", true, new string[] { }])]
+    [InlineData(data: ["1. OK: Nueva ubicacion", 2, 1.2515, 2.18956, Dispositivo.App, "Nuevo usuario", "Smartphone", "App movil", "127.0.0.1", true, new string[] { }])]
     // Casos error
-    [InlineData("2. ERROR: Cliente no encontrado", 25, 1, 1, Dispositivo.App, "Nueva cuenta", "Celular", "App Wallet",
-        "127.0.0.1", false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
+    [InlineData(data: ["2. ERROR: Cliente no encontrado", 25, 1, 1, Dispositivo.App, "Nueva cuenta", "Celular", "App Wallet", "127.0.0.1", false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado }])]
     public async Task GuardarUbicacionGeolocalizacionTest(
         string caseName,
         int idCliente,
@@ -47,9 +44,8 @@ public class UbicacionGeolocalizacionFacadeTest(SetupDataConfig setupConfig)
                 creationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
             // No nullo
-            Assert.NotNull(ubicacion);
+            Assert.NotNull(@object: ubicacion);
             // Assert properties 
-            Assert.Equal(expected: idCliente, actual: ubicacion.Usuario!.Cliente!.Id);
             Assert.Equal(expected: latitud, actual: ubicacion.Latitud);
             Assert.Equal(expected: longitud, actual: ubicacion.Longitud);
             Assert.Equal(expected: dispositivo, actual: ubicacion.Dispositivo);
@@ -59,12 +55,17 @@ public class UbicacionGeolocalizacionFacadeTest(SetupDataConfig setupConfig)
             Assert.Equal(expected: direccionIp, actual: ubicacion.DireccionIp);
             // Obtener de la bd
             // Get the user from context
-            var ubicacionContext = await Context.UbicacionGeolocalizacion.Include(x => x.Usuario)
-                .ThenInclude(u => u.Cliente).AsNoTracking().FirstOrDefaultAsync(x => x.Id == ubicacion.Id);
+            // Get the user from context
+            var ubicacionContext = await Context.UbicacionGeolocalizacion.AsNoTracking()
+                .FirstOrDefaultAsync(predicate: x => x.Id == ubicacion.Id);
+            Assert.NotNull(@object: ubicacionContext);
+            var usuarioContext = await Context.Usuario.Include(navigationPropertyPath: u => u.Cliente).AsNoTracking()
+                .FirstOrDefaultAsync(predicate: u => u.Id == ubicacionContext.UsuarioId);
+
             // Confirm user created in context
-            Assert.NotNull(ubicacionContext);
+            Assert.NotNull(@object: usuarioContext);
             // Assert properties 
-            Assert.Equal(expected: idCliente, actual: ubicacionContext.Usuario!.Cliente!.Id);
+            Assert.Equal(expected: idCliente, actual: usuarioContext.Cliente!.Id);
             Assert.Equal(expected: latitud, actual: ubicacionContext.Latitud);
             Assert.Equal(expected: longitud, actual: ubicacionContext.Longitud);
             Assert.Equal(expected: dispositivo, actual: ubicacionContext.Dispositivo);
@@ -86,7 +87,7 @@ public class UbicacionGeolocalizacionFacadeTest(SetupDataConfig setupConfig)
                                           exception is not TrueException && exception is not FalseException)
         {
             // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 }
