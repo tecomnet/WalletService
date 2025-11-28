@@ -1,6 +1,5 @@
 namespace Wallet.DOM.Errors;
 
-
 using System.Collections.Generic;
 
 public class ServiceErrorsBuilder
@@ -10,6 +9,7 @@ public class ServiceErrorsBuilder
     private static readonly Lazy<ServiceErrorsBuilder> _instance = new(() => new ServiceErrorsBuilder());
 
     public static ServiceErrorsBuilder Instance() => _instance.Value;
+
     public ServiceErrorsBuilder()
     {
         // 1. Carga inicial de todos los catálogos de errores
@@ -60,6 +60,7 @@ public class ServiceErrorsBuilder
     #region Constantes y Carga de Errores
 
     public const string ApiErrorNoManejado = "API-ERROR-NO-MANEJADO";
+
     private void GeneralErrors()
     {
         // Error interno no manejado
@@ -68,9 +69,11 @@ public class ServiceErrorsBuilder
             message: "Error Interno del Servidor",
             description: "Ocurrió un error inesperado que ha sido registrado. Inténtelo de nuevo más tarde.");
     }
+
     #endregion
 
     #region Cliente
+
     public const string DispositivoMovilAutorizadoRequerido = "DISPOSITIVO-MOVIL-AUTORIZADO-REQUERIDO";
     public const string UbicacionGeolocalizacionRequerido = "UBICACION-GEOLOCALIZACION-REQUERIDO";
     public const string ContrasenasNoCoinciden = "CONTRASEÑAS-NO-COINCIDEN";
@@ -97,6 +100,7 @@ public class ServiceErrorsBuilder
     public const string ContrasenaYaExiste = "CONTRASEÑA-YA-EXISTE";
     public const string ClienteChecktonPldError = "CLIENTE-CHECKTON-PLD-ERROR";
     public const string ValidacionChecktonRequerida = "VALIDACION-CHECKTON-REQUERIDA";
+
     private void ClienteErrors()
     {
         // Error de dispositivo móvil autorizado requerido
@@ -229,15 +233,23 @@ public class ServiceErrorsBuilder
             errorCode: ValidacionChecktonRequerida,
             message: "La validación checkton es requerida.",
             description: "La validación checkton es requerida.");
+        // Error usuario no encontrado
+        AddServiceError(
+            errorCode: UsuarioNoEncontrado,
+            message: "El usuario no fue encontrado.",
+            description: "El usuario no existe.");
     }
 
+    public const string UsuarioNoEncontrado = "USUARIO-NO-ENCONTRADO";
 
     #endregion
 
     #region Empresa
+
     public const string EmpresaNoEncontrada = "EMPRESA-NO-ENCONTRADA";
     public const string EmpresaDuplicada = "EMPRESA-DUPLICADA";
     public const string EmpresaInactiva = "EMPRESA-INACTIVA";
+
     private void EmpresaErrors()
     {
         // Error de empresa no encontrada
@@ -256,12 +268,15 @@ public class ServiceErrorsBuilder
             message: "La empresa no esta activa.",
             description: "La empresa {0} no esta activa. Primero debe activarla.");
     }
+
     #endregion
 
     #region TipoDocumentos
-     // Errores específicos de TipoDocumentos
+
+    // Errores específicos de TipoDocumentos
     public const string DocumentoRequerido = "DOCUMENTO-REQUERIDO";
     public const string DocumentoYaExisteEnTipoDocumento = "DOCUMENTO-YA-EXISTE-EN-TIPO-DOCUMENTO";
+
     private void TipoDocumentosErrors()
     {
         // Aquí se pueden agregar errores específicos para TipoDocumentos
@@ -274,16 +289,19 @@ public class ServiceErrorsBuilder
         AddServiceError(
             errorCode: DocumentoYaExisteEnTipoDocumento,
             message: "El documento ya existe en el tipo de documento.",
-            description: "El documento proporcionado {0} de tipo persona {1} ya está asociado con otro tipo de documento.");
+            description:
+            "El documento proporcionado {0} de tipo persona {1} ya está asociado con otro tipo de documento.");
     }
 
     #endregion
 
 
-    #region  Estado
+    #region Estado
+
     public const string EstadoDuplicado = "ESTADO-DUPLICADO";
     public const string EstadoNoEncontrado = "ESTADO-NO-ENCONTRADO";
     public const string EstadoInactivo = "ESTADO-INACTIVO";
+
     private void EstadoErrors()
     {
         // Error de estado duplicado
@@ -302,11 +320,13 @@ public class ServiceErrorsBuilder
             message: "El estado no esta activo.",
             description: "El estado {0} no esta activo. Primero debe activarlo.");
     }
+
     #endregion
-    
+
     #region Autentication errors
 
     public const string EmClaimUserError = "EM-CLAIM-USER-ERROR";
+
     private void AuthenticationErrors()
     {
         // Error de autenticación
@@ -315,10 +335,11 @@ public class ServiceErrorsBuilder
             message: "Error de autenticación",
             description: "El user de autenticación no es válido o no fue encontrado");
     }
-		
+
     #endregion
 
     #region ProveedorServicio
+
     public const string ProveedorServicioNoEncontrado = "PROVEEDOR-SERVICIO-NOT-FOUND";
     public const string ProductoProveedorNoEncontrado = "PRODUCTO-PROVEEDOR-NOT-FOUND";
 
@@ -333,9 +354,11 @@ public class ServiceErrorsBuilder
             message: "El producto del proveedor de servicio no fue encontrado.",
             description: "El producto del proveedor de servicio con id {0} no existe.");
     }
+
     #endregion
 
     #region PropertyValidation
+
     public const string PropertyValidationRequiredError = "PROPERTY-VALIDATION-REQUIRED-ERROR";
     public const string PropertyValidationLengthInvalid = "PROPERTY-VALIDATION-LENGTH-INVALID";
     public const string PropertyValidationRegexInvalid = "PROPERTY-VALIDATION-REGEX-INVALID";
@@ -348,19 +371,30 @@ public class ServiceErrorsBuilder
 
     private void PropertyValidationErrors()
     {
-        AddServiceError(PropertyValidationRequiredError, "Error de validación de propiedad", "La propiedad {0} es requerida.");
-        AddServiceError(PropertyValidationLengthInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} debe tener entre {2} y {3} caracteres de longitud.");
-        AddServiceError(PropertyValidationRegexInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no es válida según el patrón proporcionado {2}.");
-        AddServiceError(PropertyValidationNegativeInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no permite valores negativos.");
-        AddServiceError(PropertyValidationZeroInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no permite valores cero.");
-        AddServiceError(PropertyValidationPositiveInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no permite valores positivos.");
-        AddServiceError(PropertyValidationDecimalsInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no permite más de {2} decimales.");
-        AddServiceError(PropertyValidationCurrencyInvalid, "Error de validación de propiedad", "La propiedad {0} con valor {1} no es una divisa/moneda válida.");
-        AddServiceError(PropertyValidationPropertyNotFound, "Error de validación de propiedad", "La propiedad {0} no fue encontrada en la definición de la propiedad.");
+        AddServiceError(PropertyValidationRequiredError, "Error de validación de propiedad",
+            "La propiedad {0} es requerida.");
+        AddServiceError(PropertyValidationLengthInvalid, "Error de validación de propiedad",
+            "La propiedad {0} con valor {1} debe tener entre {2} y {3} caracteres de longitud.");
+        AddServiceError(PropertyValidationRegexInvalid, "Error de validación de propiedad",
+            "La propiedad {0} con valor {1} no es válida según el patrón proporcionado {2}.");
+        AddServiceError(PropertyValidationNegativeInvalid, "Error de validación de propiedad",
+            "La propiedad {0} con valor {1} no permite valores negativos.");
+        AddServiceError(PropertyValidationZeroInvalid, "Error de validación de propiedad",
+            "La propiedad {0} con valor {1} no permite valores cero.");
+        AddServiceError(PropertyValidationPositiveInvalid, "Error de validación de propiedad",
+            "La propiedad {0} con valor {1} no permite valores positivos.");
+        AddServiceError(PropertyValidationDecimalsInvalid, "Error de validación de propiedad",
+            "La propiedad {0} con valor {1} no permite más de {2} decimales.");
+        AddServiceError(PropertyValidationCurrencyInvalid, "Error de validación de propiedad",
+            "La propiedad {0} con valor {1} no es una divisa/moneda válida.");
+        AddServiceError(PropertyValidationPropertyNotFound, "Error de validación de propiedad",
+            "La propiedad {0} no fue encontrada en la definición de la propiedad.");
     }
+
     #endregion
 
     #region ServicioFavorito
+
     public const string ServicioFavoritoNoEncontrado = "SERVICIO-FAVORITO-NOT-FOUND";
 
     private void ServicioFavoritoErrors()
@@ -370,5 +404,6 @@ public class ServiceErrorsBuilder
             message: "Servicio Favorito no encontrado",
             description: "El servicio favorito con id {0} no fue encontrado.");
     }
+
     #endregion
 }

@@ -5,6 +5,7 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ProveedorServicioFacade;
 using Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
+using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.ServiceClient;
 
@@ -42,13 +43,6 @@ namespace Wallet.Funcionalidad
 
 		public static string GetConnectionString(IConfiguration configuration)
 		{
-			// Try to get test connection string from environment variable
-			var envConnectionString = Environment.GetEnvironmentVariable("testDbConnectionString");
-			if (!string.IsNullOrWhiteSpace(envConnectionString))
-			{
-				return envConnectionString;
-			}
-
 			// Try to get connection string from configuration (User Secrets or appsettings)
 			var configConnectionString = configuration["dbConnectionString"];
 			if (!string.IsNullOrWhiteSpace(configConnectionString))
@@ -109,6 +103,7 @@ namespace Wallet.Funcionalidad
 			services.AddScoped<IEstadoFacade, EstadoFacade>();
 			services.AddScoped<IProveedorServicioFacade, ProveedorServicioFacade>();
 			services.AddScoped<IServicioFavoritoFacade, ServicioFavoritoFacade>();
+			services.AddScoped<IUsuarioFacade, UsuarioFacade>();
 		}
 	}
 }

@@ -196,151 +196,7 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
-  '/{version}/cliente/{idCliente}/confirmaVerificacion':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
-    put:
-      summary: Confirma codigo de verificacion
-      operationId: PutConfirmaVerificacion
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Confirma codigo de verificacion de 4 digitos
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Verificacion2FARequest'
-      tags:
-        - Cliente
-  '/{version}/cliente/{idCliente}/contrasena':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
-    put:
-      summary: Actualiza contraseña
-      operationId: PutContrasena
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: 'Actualiza la contraseña '
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContrasenaUpdateRequest'
-      tags:
-        - Cliente
-    post:
-      summary: Guarda contraseña
-      operationId: postContrasena
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: 'Agrega contraseña '
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContrasenaRequest'
-      tags:
-        - Cliente
-  '/{version}/cliente/{idCliente}/actualizaTelefono':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
-    put:
-      summary: Actualiza telefono
-      operationId: PutTelefono
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClienteResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Actualiza el telefono
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TelefonoUpdateRequest'
-        description: ''
-      tags:
-        - Cliente
-  '/{version}/cliente/{idCliente}/actualizaEmail':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
-    put:
-      summary: Actualiza email
-      operationId: PutEmail
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClienteResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Actualiza el email
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmailUpdateRequest'
-      tags:
-        - Cliente
+
   '/{version}/direccion/{idCliente}':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -998,6 +854,195 @@ paths:
       description: Elimina un servicio favorito
       tags:
         - ServicioFavorito
+  '/{version}/usuario/{idUsuario}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Obtiene un usuario por id
+      operationId: GetUsuario
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene un usuario por id
+      security:
+        - jwsToken: []
+      tags:
+        - Usuario
+  '/{version}/usuario/{idUsuario}/contrasena':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    post:
+      summary: Guarda contraseña
+      operationId: PostUsuarioContrasena
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Agrega contraseña
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContrasenaRequest'
+      tags:
+        - Usuario
+    put:
+      summary: Actualiza contraseña
+      operationId: PutUsuarioContrasena
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza la contraseña
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContrasenaUpdateRequest'
+      tags:
+        - Usuario
+  '/{version}/usuario/{idUsuario}/actualizaEmail':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Actualiza email
+      operationId: PutUsuarioEmail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza el email
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailUpdateRequest'
+      tags:
+        - Usuario
+  '/{version}/usuario/{idUsuario}/actualizaTelefono':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Actualiza telefono
+      operationId: PutUsuarioTelefono
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza el telefono
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelefonoUpdateRequest'
+      tags:
+        - Usuario
+  '/{version}/usuario/{idUsuario}/confirmaVerificacion':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Confirma codigo de verificacion
+      operationId: PutUsuarioConfirmaVerificacion
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Confirma codigo de verificacion de 4 digitos
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Verificacion2FARequest'
+      tags:
+        - Usuario
 components:
   schemas:
     ClienteResult:
@@ -1144,6 +1189,38 @@ components:
         - creationUser
         - modificationUser
         - isActive
+    UsuarioResult:
+      title: UsuarioResult
+      type: object
+      description: Estructura para consultar usuarios
+      properties:
+        id:
+          type: integer
+        codigoPais:
+          type: string
+        telefono:
+          type: string
+        correoElectronico:
+          type: string
+        estatus:
+          type: string
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+      required:
+        - id
+        - codigoPais
+        - telefono
+        - estatus
     ClienteRequest:
       title: ClienteRequest
       x-stoplight:

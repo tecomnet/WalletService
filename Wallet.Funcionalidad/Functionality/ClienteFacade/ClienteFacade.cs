@@ -116,67 +116,6 @@ public class ClienteFacade(
         }
     }
 
-    public async Task<bool> ConfirmarCodigoVerificacion2FAAsync(int idCliente, Tipo2FA tipo2FA,
-        string codigoVerificacion, Guid modificationUser)
-    {
-        try
-        {
-            // Confirmacion existosa
-            bool confirmado = false;
-            // Obtenemos al cliente
-            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Cargar los codigos de verificacion
-            await context.Entry(cliente.Usuario)
-                .Collection(c => c.Verificaciones2FA)
-                .Query()
-                .Where(v => v.Tipo == tipo2FA && v.IsActive)
-                .LoadAsync();
-            // Resultado de la verificacion
-            VerificacionResult verificacionResult;
-            // Es sms
-            if (tipo2FA == Tipo2FA.Sms)
-                // Llamamos a twilio service
-                verificacionResult = await twilioService.ConfirmarVerificacionSMS(
-                    codigoPais: cliente.Usuario.CodigoPais, telefono: cliente.Usuario.Telefono,
-                    codigo: codigoVerificacion);
-            else
-            {
-                if (string.IsNullOrWhiteSpace(cliente.Usuario.CorreoElectronico))
-                {
-                    throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                        errorCode: ServiceErrorsBuilder.ClienteCorreoElectronicoNoConfigurado,
-                        dynamicContent: [cliente.Id],
-                        module: this.GetType().Name));
-                }
-
-                verificacionResult =
-                    await twilioService.ConfirmarVerificacionEmail(correoElectronico: cliente.Usuario.CorreoElectronico,
-                        codigo: codigoVerificacion);
-            }
-
-            // Se confirmo ok en twilio
-            if (verificacionResult.IsVerified)
-            {
-                // Confirma la verificacion
-                confirmado = cliente.Usuario.ConfirmarVerificacion2FA(tipo: tipo2FA, codigo: codigoVerificacion,
-                    modificationUser: modificationUser);
-            }
-
-            // Guardar cambios
-            await context.SaveChangesAsync();
-            // Return confrimacion
-            return confirmado;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
 
     public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(
         int idCliente,
@@ -247,128 +186,6 @@ public class ClienteFacade(
         }
     }
 
-
-    public async Task<Cliente> GuardarContrasenaAsync(int idCliente, string contrasena, Guid modificationUser)
-    {
-        try
-        {
-            // Obtener cliente
-            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Agregar cliente
-            cliente.Usuario.CrearContrasena(contrasena: contrasena, modificationUser: modificationUser);
-            // Guardar cambios
-            await context.SaveChangesAsync();
-            // Retornar cliente
-            return cliente;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    public async Task<Cliente> ActualizarContrasenaAsync(int idCliente, string contrasenaActual, string contrasenaNueva,
-        string confirmacionContrasenaNueva, Guid modificationUser)
-    {
-        try
-        {
-            // Obtener el cliente 
-            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Actualizar contrasenas
-            cliente.Usuario.ActualizarContrasena(
-                contrasenaActual: contrasenaActual,
-                contrasenaNueva: contrasenaNueva,
-                confirmacionContrasenaNueva: confirmacionContrasenaNueva,
-                modificationUser: modificationUser);
-            // Guardar cambios
-            await context.SaveChangesAsync();
-            // Retornar cliente
-            return cliente;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    public async Task<Cliente> ActualizarCorreoElectronicoAsync(int idCliente, string correoElectronico,
-        Guid modificationUser, string? testCase = null)
-    {
-        try
-        {
-            // Obtener cliente
-            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Actualizar datos del correo electronico
-            cliente.Usuario.ActualizarCorreoElectronico(correoElectronico: correoElectronico,
-                modificationUser: modificationUser);
-            // Se valida la duplicidad, despues de la actualizacion
-            await ValidarDuplicidad(correoElectronico: correoElectronico, id: idCliente);
-            // Generar nuevo codigo de verificacion y envia a twilio service
-            var nuevaVerificacion = await GeneraCodigoVerificacionTwilio2FAEmailAsync(
-                correoElectronico: correoElectronico,
-                nombreCliente: cliente.NombreCompleto!,
-                nombreEmpresa: cliente.Usuario.Empresa!.Nombre,
-                creationUser: modificationUser,
-                testCase: testCase);
-            // Se agrega nuevo codigo para luego confirmar
-            cliente.Usuario.AgregarVerificacion2FA(verificacion: nuevaVerificacion, modificationUser: modificationUser);
-            // Guardar cambios
-            await context.SaveChangesAsync();
-            // Retornar cliente
-            return cliente;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    public async Task<Cliente> ActualizarTelefonoAsync(int idCliente, string codigoPais, string telefono,
-        Guid modificationUser, string? testCase = null)
-    {
-        try
-        {
-            // Obtener cliente
-            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Actualizar datos del telefono
-            cliente.Usuario.ActualizarTelefono(codigoPais: codigoPais, telefono: telefono,
-                modificationUser: modificationUser);
-            // Se valida la duplicidad, despues de la actualizacion
-            await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono, id: idCliente);
-            // Generar nuevo codigo de verificacion 
-            var nuevaVerificacion = await GeneraCodigoVerificacionTwilio2FASMSAsync(
-                codigoPais: codigoPais,
-                telefono: telefono,
-                creationUser: modificationUser,
-                testCase: testCase);
-            // Se agrega nuevo codigo para luego confrimar
-            cliente.Usuario.AgregarVerificacion2FA(verificacion: nuevaVerificacion, modificationUser: modificationUser);
-            // Guardar cambios
-            await context.SaveChangesAsync();
-            // Retornar cliente
-            return cliente;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
 
     public async Task<Cliente> EliminarClienteAsync(int idCliente, Guid modificationUser)
     {
@@ -448,22 +265,6 @@ public class ClienteFacade(
         }
     }
 
-    private async Task ValidarDuplicidad(string correoElectronico, int id = 0)
-    {
-        // Obtiene cliente existente
-        // Check Usuario instead of Cliente
-        var usuarioExistente =
-            await context.Usuario.FirstOrDefaultAsync(x =>
-                x.CorreoElectronico == correoElectronico && x.Cliente.Id != id);
-        // Duplicado por correo electronico
-        if (usuarioExistente != null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico,
-                dynamicContent: [correoElectronico!],
-                module: this.GetType().Name));
-        }
-    }
 
     private async Task<Verificacion2FA> GeneraCodigoVerificacionTwilio2FASMSAsync(string codigoPais, string telefono,
         Guid creationUser, string? testCase = null)
@@ -493,35 +294,6 @@ public class ClienteFacade(
         }
     }
 
-    private async Task<Verificacion2FA> GeneraCodigoVerificacionTwilio2FAEmailAsync(
-        string correoElectronico, string nombreCliente, string nombreEmpresa, Guid creationUser,
-        string? testCase = null)
-    {
-        try
-        {
-            // Llamamos a twilio service
-            var verificacion = await twilioService.VerificacionEmail(correoElectronico: correoElectronico,
-                nombreEmpresa: nombreEmpresa, nombreCliente: nombreCliente);
-            // Creamos la verificacion 2fa
-            Verificacion2FA verificacion2Fa = new Verificacion2FA(
-                twilioSid: verificacion.Sid,
-                fechaVencimiento: DateTime.Now.AddMinutes(10),
-                tipo: Tipo2FA.Email,
-                creationUser: creationUser,
-                testCase: testCase
-            );
-            // Retorna codigo de verificacion
-            return verificacion2Fa;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            // Throw an aggregate exception
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
 
     private async Task<(ValidacionCheckton, string)> ValidaDatosPersonalesChecktonPldAsync(
         string nombre, string primerApellido, string segundoApellido, DateTime fechaNacimiento, Genero genero,

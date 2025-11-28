@@ -6,11 +6,37 @@ Este proyecto implementa una API RESTful para un servicio de billetera. Proporci
 
 La API expone las siguientes funcionalidades:
 
-### Gestión de Usuarios
-- `POST /{version}/users`: Crea un nuevo usuario.
-- `GET /{version}/users`: Obtiene la información de un usuario.
-- `PUT /{version}/users`: Actualiza la información de un usuario existente.
-- `DELETE /{version}/users`: Elimina un usuario.
+### Proceso de Registro de Usuario
+
+El registro de un nuevo usuario sigue un flujo secuencial para garantizar la seguridad y la integridad de los datos:
+
+1.  **Pre-registro**:
+    - **Endpoint**: `POST /{version}/cliente`
+    - **Descripción**: El usuario proporciona su número de teléfono y código de país. El sistema crea un registro inicial de `Cliente` y `Usuario`, y envía un código de verificación (OTP) por SMS.
+    - **Body**: `{ "codigoPais": "52", "telefono": "5512345678" }`
+
+2.  **Verificación de Teléfono (2FA)**:
+    - **Endpoint**: `PUT /{version}/usuario/{idUsuario}/confirmaVerificacion`
+    - **Descripción**: El usuario ingresa el código recibido por SMS para verificar su número. Al confirmar, el usuario se activa en el sistema.
+    - **Body**: `{ "Tipo": "SMS", "Codigo": "1234" }`
+
+3.  **Creación de Contraseña**:
+    - **Endpoint**: `POST /{version}/usuario/{idUsuario}/contrasena`
+    - **Descripción**: Una vez verificado, el usuario establece su contraseña de acceso.
+    - **Body**: `{ "Contrasena": "TuPasswordSeguro123!" }`
+
+4.  **Completar Datos Personales**:
+    - **Endpoint**: `PUT /{version}/cliente/{idCliente}`
+    - **Descripción**: El usuario completa su perfil proporcionando nombre, apellidos, fecha de nacimiento, etc.
+    - **Body**: `{ "nombre": "Juan", "primerApellido": "Perez", ... }`
+
+### Gestión de Cuenta
+
+Una vez registrado, el usuario puede gestionar su cuenta:
+
+- **Actualizar Email**: `PUT /{version}/usuario/{idUsuario}/actualizaEmail` (Requiere verificación posterior por email).
+- **Actualizar Teléfono**: `PUT /{version}/usuario/{idUsuario}/actualizaTelefono` (Requiere verificación posterior por SMS).
+- **Actualizar Contraseña**: `PUT /{version}/usuario/{idUsuario}/contrasena`.
 
 ### Health Check
 - `GET /health`: Un endpoint para verificar que el servicio está en funcionamiento (liveness probe).
@@ -38,16 +64,19 @@ El proyecto utiliza **User Secrets** para gestionar la cadena de conexión a la 
 
 Ejecuta los siguientes comandos en la raíz del proyecto para establecer la cadena de conexión. Asegúrate de reemplazar `<TU_CADENA_DE_CONEXION>` con tu cadena de conexión real a SQL Server.
 
+**Ejemplo de cadena de conexión:**
+`"Server=localhost,1433;Database=WalletServiceDb;User Id=sa;Password=TuPasswordFuerte123!;TrustServerCertificate=True;"`
+
 **Para el proyecto RestAPI:**
 
 ```bash
-dotnet user-secrets set "dbConnectionString" "<TU_CADENA_DE_CONEXION>" --project Wallet.RestAPI
+dotnet user-secrets set "dbConnectionString" "Server=localhost,1433;Database=WalletServiceDb;User Id=sa;Password=TuPasswordFuerte123!;TrustServerCertificate=True;" --project Wallet.RestAPI
 ```
 
 **Para el proyecto UnitTest:**
 
 ```bash
-dotnet user-secrets set "dbConnectionString" "<TU_CADENA_DE_CONEXION>" --project Wallet.UnitTest
+dotnet user-secrets set "dbConnectionString" "Server=localhost,1433;Database=WalletServiceDb;User Id=sa;Password=TuPasswordFuerte123!;TrustServerCertificate=True;" --project Wallet.UnitTest
 ```
 
 #### 2. Migraciones de Base de Datos
