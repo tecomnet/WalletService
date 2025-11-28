@@ -6,6 +6,7 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.RestAPI;
 using Wallet.DOM.Modelos;
 using Wallet.DOM.Helper;
+using Respawn;
 
 namespace Wallet.UnitTest.FixtureBase
 {
@@ -15,6 +16,11 @@ namespace Wallet.UnitTest.FixtureBase
         protected readonly CustomWebApplicationFactory<Program> Factory;
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
+
+        // Static fields to ensure singleton behavior across test instances
+        private static bool _isInitialized;
+        private static Respawner? _respawner;
+        private static readonly object _lock = new();
 
         public DatabaseTestFixture()
         {
@@ -40,9 +46,35 @@ namespace Wallet.UnitTest.FixtureBase
             });
             Factory = factory;
 
-            using var context = CreateContext();
-            context.Database.EnsureDeleted();
-            context.Database.Migrate();
+            InitializeDatabase();
+        }
+
+        private void InitializeDatabase()
+        {
+            lock (_lock)
+            {
+                if (!_isInitialized)
+                {
+                    using var context = CreateContext();
+                    context.Database.EnsureDeleted();
+                    context.Database.Migrate();
+
+                    // Initialize Respawner
+                    _respawner = Respawner.CreateAsync(_connectionString, new RespawnerOptions
+                    {
+                        TablesToIgnore = new Respawn.Graph.Table[] { "__EFMigrationsHistory" },
+                        WithReseed = true
+                    }).GetAwaiter().GetResult();
+
+                    _isInitialized = true;
+                }
+            }
+
+            // Reset database for the current test
+            if (_respawner != null)
+            {
+                _respawner.ResetAsync(_connectionString).GetAwaiter().GetResult();
+            }
         }
 
         protected async Task SetupDataAsync(Func<ServiceDbContext, Task> setupDataAction)
