@@ -6,12 +6,12 @@ using Wallet.DOM.Errors;
 namespace Wallet.DOM.Modelos
 {
     /// <summary>
-    /// Representa a un proveedor de servicios en el sistema.
+    /// Representa un proveedor de servicios en el sistema.
     /// </summary>
     public class ProveedorServicio : ValidatablePersistentObjectLogicalDelete
     {
         /// <summary>
-        /// Define las restricciones de las propiedades para la validación del objeto ProveedorServicio.
+        /// Define las restricciones de las propiedades para la validación del objeto <see cref="ProveedorServicio"/>.
         /// </summary>
         protected override List<PropertyConstraint> PropertyConstraints =>
         [
@@ -26,37 +26,37 @@ namespace Wallet.DOM.Modelos
         ];
 
         /// <summary>
-        /// Nombre del proveedor de servicios.
+        /// Obtiene el nombre del proveedor de servicios.
         /// </summary>
         [Required]
         [MaxLength(length: 100)]
         public string Nombre { get; private set; }
 
         /// <summary>
-        /// Categoría a la que pertenece el proveedor de servicios.
+        /// Obtiene la categoría a la que pertenece el proveedor de servicios.
         /// </summary>
         [Required]
         public ProductoCategoria Categoria { get; private set; }
 
         /// <summary>
-        /// URL del ícono representativo del proveedor.
+        /// Obtiene la URL del ícono representativo del proveedor.
         /// </summary>
         [MaxLength(length: 255)]
         public string? UrlIcono { get; private set; }
 
         /// <summary>
-        /// Colección de productos ofrecidos por este proveedor.
+        /// Obtiene la colección de productos ofrecidos por este proveedor.
         /// </summary>
         public ICollection<ProductoProveedor> Productos { get; set; }
 
         /// <summary>
-        /// Colección de servicios favoritos asociados a este proveedor.
+        /// Obtiene la colección de servicios favoritos asociados a este proveedor.
         /// </summary>
         public ICollection<ServicioFavorito> ServiciosFavoritos { get; set; }
 
 
         /// <summary>
-        /// Constructor privado para uso de Entity Framework.
+        /// Constructor privado para uso exclusivo de Entity Framework.
         /// </summary>
         protected ProveedorServicio() : base()
         {
@@ -68,7 +68,7 @@ namespace Wallet.DOM.Modelos
         /// <param name="nombre">El nombre del proveedor.</param>
         /// <param name="categoria">La categoría del proveedor.</param>
         /// <param name="urlIcono">La URL del ícono del proveedor (opcional).</param>
-        /// <param name="creationUser">El usuario que crea el registro.</param>
+        /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
         public ProveedorServicio(string nombre, ProductoCategoria categoria, string? urlIcono, Guid creationUser) :
             base(creationUser: creationUser)
         {
@@ -90,10 +90,10 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Actualiza los datos del proveedor de servicio.
         /// </summary>
-        /// <param name="nombre">El nuevo nombre.</param>
-        /// <param name="categoria">La nueva categoría.</param>
-        /// <param name="urlIcono">La nueva URL del ícono.</param>
-        /// <param name="modificationUser">El usuario que modifica el registro.</param>
+        /// <param name="nombre">El nuevo nombre del proveedor.</param>
+        /// <param name="categoria">La nueva categoría del proveedor.</param>
+        /// <param name="urlIcono">La nueva URL del ícono del proveedor (opcional).</param>
+        /// <param name="modificationUser">El identificador del usuario que modifica el registro.</param>
         public void Update(string nombre, ProductoCategoria categoria, string? urlIcono, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
@@ -110,10 +110,19 @@ namespace Wallet.DOM.Modelos
             base.Update(modificationUser: modificationUser);
         }
 
+        /// <summary>
+        /// Agrega un nuevo producto a la colección de productos ofrecidos por el proveedor.
+        /// </summary>
+        /// <param name="sku">El SKU (Stock Keeping Unit) único del producto.</param>
+        /// <param name="nombre">El nombre del producto.</param>
+        /// <param name="monto">El monto o precio del producto.</param>
+        /// <param name="descripcion">La descripción del producto.</param>
+        /// <param name="creationUser">El identificador del usuario que crea el producto.</param>
+        /// <returns>El objeto <see cref="ProductoProveedor"/> recién creado y agregado a la colección.</returns>
         public ProductoProveedor AgregarProducto(string sku, string nombre, decimal monto, string descripcion, Guid creationUser)
         {
             var producto = new ProductoProveedor(proveedorServicio: this, sku: sku, nombre: nombre, monto: monto, descripcion: descripcion, creationUser: creationUser);
-            this.Productos.Add(item: producto);
+            this.Productos.Add(item: producto); // Agrega el producto a la colección local.
             return producto;
         }
     }

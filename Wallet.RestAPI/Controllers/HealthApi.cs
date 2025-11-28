@@ -15,7 +15,7 @@ using Wallet.RestAPI.Controllers.Base;
 namespace Wallet.RestAPI.Controllers
 {
     /// <summary>
-    ///
+    /// Base controller for Health checks.
     /// </summary>
     [ApiController]
     public abstract class HealthApiControllerBase : ServiceBaseController

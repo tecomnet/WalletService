@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Swashbuckle.AspNetCore.Annotations;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
-/// <inheritdoc/>
+/// <summary>
+/// Implementation of the Cliente API controller.
+/// </summary>
 public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade usuarioFacade, IMapper mapper)
     : ClienteApiControllerBase
 {

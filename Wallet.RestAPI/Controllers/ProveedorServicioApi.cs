@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -18,9 +18,9 @@ using Wallet.RestAPI.Controllers.Base;
 using System.Threading.Tasks;
 
 namespace Wallet.RestAPI.Controllers
-{ 
+{
     /// <summary>
-    /// 
+    /// Base controller for ProveedorServicio operations.
     /// </summary>
     [ApiController]
     public abstract class ProveedorServicioApiControllerBase : ServiceBaseController
@@ -40,10 +40,15 @@ namespace Wallet.RestAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation(summary: "DeleteProveedorServicio")]
         [SwaggerResponse(statusCode: 200, type: typeof(ProveedorServicioResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> DeleteProveedorServicioAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProveedorServicio);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> DeleteProveedorServicioAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] int idProveedorServicio);
 
         /// <summary>
         /// Obtiene un proveedor de servicio por id
@@ -60,10 +65,15 @@ namespace Wallet.RestAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation(summary: "GetProveedorServicio")]
         [SwaggerResponse(statusCode: 200, type: typeof(ProveedorServicioResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetProveedorServicioAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProveedorServicio);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetProveedorServicioAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] int idProveedorServicio);
 
         /// <summary>
         /// Obtiene todos los proveedores de servicio
@@ -79,10 +89,14 @@ namespace Wallet.RestAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation(summary: "GetProveedoresServicio")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<ProveedorServicioResult>), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetProveedoresServicioAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetProveedoresServicioAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
 
         /// <summary>
         /// Guarda un proveedor de servicio
@@ -99,10 +113,15 @@ namespace Wallet.RestAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation(summary: "PostProveedorServicio")]
         [SwaggerResponse(statusCode: 201, type: typeof(ProveedorServicioResult), description: "Created")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PostProveedorServicioAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromBody] ProveedorServicioRequest body);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PostProveedorServicioAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromBody] ProveedorServicioRequest body);
 
         /// <summary>
         /// Activa un proveedor de servicio
@@ -119,10 +138,15 @@ namespace Wallet.RestAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation(summary: "PutActivarProveedorServicio")]
         [SwaggerResponse(statusCode: 200, type: typeof(ProveedorServicioResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutActivarProveedorServicioAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProveedorServicio);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PutActivarProveedorServicioAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] int idProveedorServicio);
 
         /// <summary>
         /// Actualiza un proveedor de servicio
@@ -140,9 +164,14 @@ namespace Wallet.RestAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation(summary: "PutProveedorServicio")]
         [SwaggerResponse(statusCode: 200, type: typeof(ProveedorServicioResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutProveedorServicioAsync([FromRoute][Required][RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute][Required] int idProveedorServicio, [FromBody] ProveedorServicioRequest body);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PutProveedorServicioAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] int idProveedorServicio, [FromBody] ProveedorServicioRequest body);
     }
 }

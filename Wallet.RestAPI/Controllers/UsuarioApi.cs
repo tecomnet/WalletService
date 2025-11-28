@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Wallet.RestAPI.Controllers
 {
     /// <summary>
-    /// 
+    /// Base controller for Usuario operations.
     /// </summary>
     [ApiController]
     public abstract class UsuarioApiControllerBase : ServiceBaseController
@@ -57,7 +57,7 @@ namespace Wallet.RestAPI.Controllers
         [Route(template: "/{version:apiVersion}/usuario/{idUsuario}/contrasena")]
         [ValidateModelState]
         [SwaggerOperation(summary: "PostUsuarioContrasena")]
-        [SwaggerResponse(statusCode: 201, type: typeof(bool?), description: "Created")]
+        [SwaggerResponse(statusCode: 201, type: typeof(TokenResult), description: "Created")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
@@ -85,7 +85,7 @@ namespace Wallet.RestAPI.Controllers
         [Route(template: "/{version:apiVersion}/usuario/{idUsuario}/confirmaVerificacion")]
         [ValidateModelState]
         [SwaggerOperation(summary: "PutUsuarioConfirmaVerificacion")]
-        [SwaggerResponse(statusCode: 200, type: typeof(TokenResult), description: "OK")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool?), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),

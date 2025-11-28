@@ -8,13 +8,17 @@ using Wallet.Funcionalidad.ServiceClient;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
+/// <summary>
+/// Fachada que implementa la lógica de negocio relacionada con los clientes.
+/// Gestiona la creación, actualización, consulta y eliminación lógica de clientes.
+/// </summary>
 public class ClienteFacade(
     ServiceDbContext context,
-    ITwilioServiceFacade twilioService,
     IChecktonPldServiceFacade checktonPldService,
     IEmpresaFacade empresaFacade,
     IEstadoFacade estadoFacade) : IClienteFacade
 {
+    /// <inheritdoc />
     public async Task<Cliente> ObtenerClientePorIdAsync(int idCliente)
     {
         try
@@ -51,6 +55,7 @@ public class ClienteFacade(
     }
 
 
+    /// <inheritdoc />
     public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(
         int idCliente,
         string nombre,
@@ -122,6 +127,7 @@ public class ClienteFacade(
     }
 
 
+    /// <inheritdoc />
     public async Task<Cliente> EliminarClienteAsync(int idCliente, Guid modificationUser)
     {
         try
@@ -142,6 +148,7 @@ public class ClienteFacade(
         }
     }
 
+    /// <inheritdoc />
     public async Task<Cliente> ActivarClienteAsync(int idCliente, Guid modificationUser)
     {
         try
@@ -162,6 +169,7 @@ public class ClienteFacade(
         }
     }
 
+    /// <inheritdoc />
     public async Task<List<Cliente>> ObtenerClientesAsync()
     {
         try
@@ -184,6 +192,18 @@ public class ClienteFacade(
 
     #region Metodos privados
 
+    /// <summary>
+    /// Valida los datos personales del cliente utilizando el servicio Checkton PLD.
+    /// </summary>
+    /// <param name="nombre">Nombre del cliente.</param>
+    /// <param name="primerApellido">Primer apellido.</param>
+    /// <param name="segundoApellido">Segundo apellido.</param>
+    /// <param name="fechaNacimiento">Fecha de nacimiento.</param>
+    /// <param name="genero">Género.</param>
+    /// <param name="nombreEstado">Estado de residencia.</param>
+    /// <param name="creationUser">Usuario que crea la validación.</param>
+    /// <param name="testCase">Caso de prueba opcional.</param>
+    /// <returns>Una tupla con el objeto de validación y la CURP generada.</returns>
     private async Task<(ValidacionCheckton, string)> ValidaDatosPersonalesChecktonPldAsync(
         string nombre, string primerApellido, string segundoApellido, DateTime fechaNacimiento, Genero genero,
         string nombreEstado, Guid creationUser, string? testCase = null)
@@ -226,6 +246,14 @@ public class ClienteFacade(
         }
     }
 
+    /// <summary>
+    /// Crea una dirección de pre-registro para el cliente.
+    /// </summary>
+    /// <param name="pais">País de la dirección.</param>
+    /// <param name="estado">Estado de la dirección.</param>
+    /// <param name="creationUser">Usuario que crea el registro.</param>
+    /// <param name="testCase">Caso de prueba opcional.</param>
+    /// <returns>El objeto <see cref="Direccion"/> creado.</returns>
     private async Task<Direccion> CrearDireccionPreRegistro(string pais, string estado, Guid creationUser,
         string? testCase = null)
     {
@@ -252,6 +280,11 @@ public class ClienteFacade(
         }
     }
 
+    /// <summary>
+    /// Valida si el cliente se encuentra activo.
+    /// </summary>
+    /// <param name="cliente">El cliente a validar.</param>
+    /// <exception cref="EMGeneralAggregateException">Si el cliente está inactivo.</exception>
     private void ValidarClienteActivo(Cliente cliente)
     {
         if (!cliente.IsActive)
@@ -264,10 +297,10 @@ public class ClienteFacade(
     }
 
     /// <summary>
-    /// Valida que el cliente tenga confirmado el codigo de verificacion por SMS
+    /// Valida que el cliente tenga confirmado el código de verificación por SMS.
     /// </summary>
-    /// <param name="cliente"></param>
-    /// <exception cref="EMGeneralAggregateException"></exception>
+    /// <param name="cliente">El cliente a validar.</param>
+    /// <exception cref="EMGeneralAggregateException">Si no tiene confirmación SMS.</exception>
     private void ValidarConfirmacionCodigoVerificacionSMS2FA(Cliente cliente)
     {
         // Obtiene el código de verificación SMS
@@ -285,11 +318,11 @@ public class ClienteFacade(
     }
 
     /// <summary>
-    /// Valida que el cliente tenga confirmado el codigo de verificacion por SMS
+    /// Verifica si un cliente ya ha realizado la verificación por SMS.
     /// </summary>
-    /// <param name="codigoPais"></param>
-    /// <param name="telefono"></param>
-    /// <returns></returns>
+    /// <param name="codigoPais">Código de país del teléfono.</param>
+    /// <param name="telefono">Número de teléfono.</param>
+    /// <returns>True si ya está verificado, False en caso contrario.</returns>
     private async Task<bool> ClienteYaVerificoPorSmsAsync(string codigoPais, string telefono)
     {
         var estaVerificado = await context.Usuario

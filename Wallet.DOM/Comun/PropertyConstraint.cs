@@ -60,12 +60,12 @@ public class PropertyConstraint
 
   public static PropertyConstraint GuidPropertyConstraint(string propertyName, bool isRequired)
   {
-    return new PropertyConstraint(propertyName: propertyName, propertyType: "Guid", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: (string) null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
+    return new PropertyConstraint(propertyName: propertyName, propertyType: "Guid", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
   }
 
   public static PropertyConstraint ObjectPropertyConstraint(string propertyName, bool isRequired)
   {
-    return new PropertyConstraint(propertyName: propertyName, propertyType: "object", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: (string) null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
+    return new PropertyConstraint(propertyName: propertyName, propertyType: "object", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
   }
 
   public static PropertyConstraint CurrencyPropertyConstraint(string propertyName, bool isRequired)
@@ -80,12 +80,12 @@ public class PropertyConstraint
     bool allowZero,
     bool allowPositive)
   {
-    return new PropertyConstraint(propertyName: propertyName, propertyType: "int", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: (string) null, allowNegative: allowNegative, allowZero: allowZero, allowPositive: allowPositive, allowedDecimals: 0);
+    return new PropertyConstraint(propertyName: propertyName, propertyType: "int", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: null, allowNegative: allowNegative, allowZero: allowZero, allowPositive: allowPositive, allowedDecimals: 0);
   }
 
   public static PropertyConstraint DateTimePropertyConstraint(string propertyName, bool isRequired)
   {
-    return new PropertyConstraint(propertyName: propertyName, propertyType: "DateTime", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: (string) null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
+    return new PropertyConstraint(propertyName: propertyName, propertyType: "DateTime", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
   }
 
   public static PropertyConstraint DecimalPropertyConstraint(
@@ -96,23 +96,23 @@ public class PropertyConstraint
     bool allowPositive,
     int allowedDecimals)
   {
-    return new PropertyConstraint(propertyName: propertyName, propertyType: "decimal", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: (string) null, allowNegative: allowNegative, allowZero: allowZero, allowPositive: allowPositive, allowedDecimals: allowedDecimals);
+    return new PropertyConstraint(propertyName: propertyName, propertyType: "decimal", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: null, allowNegative: allowNegative, allowZero: allowZero, allowPositive: allowPositive, allowedDecimals: allowedDecimals);
   }
 
   [Obsolete(message: "Use DateTimePropertyConstraint instead")]
   public static PropertyConstraint DateOnlyPropertyContraint(string propertyName, bool isRequired)
   {
-    return new PropertyConstraint(propertyName: propertyName, propertyType: "DateOnly", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: (string) null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
+    return new PropertyConstraint(propertyName: propertyName, propertyType: "DateOnly", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
   }
 
   public static PropertyConstraint DateOnlyPropertyConstraint(string propertyName, bool isRequired)
   {
-    return new PropertyConstraint(propertyName: propertyName, propertyType: "DateOnly", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: (string) null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
+    return new PropertyConstraint(propertyName: propertyName, propertyType: "DateOnly", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
   }
 
   public static PropertyConstraint TimeOnlyPropertyConstraint(string propertyName, bool isRequired)
   {
-    return new PropertyConstraint(propertyName: propertyName, propertyType: "TimeOnly", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: (string) null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
+    return new PropertyConstraint(propertyName: propertyName, propertyType: "TimeOnly", isRequired: isRequired, minimumLength: 0, maximumLength: 0, regex: null, allowNegative: false, allowZero: false, allowPositive: false, allowedDecimals: 0);
   }
 
   private bool IsLengthValid(string? value)
@@ -283,84 +283,84 @@ public class PropertyConstraint
       IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(errorCode: ServiceErrorsBuilder.PropertyValidationRequiredError);
       List<object> descriptionDynamicContents = new List<object>()
       {
-        (object) this.PropertyName,
-        value ?? (object) ""
+        this.PropertyName,
+        value ?? ""
       };
-      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: (string) null, serviceLocation: (string) null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
+      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: null, serviceLocation: null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
     }
     if (!flag8)
     {
       IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(errorCode: ServiceErrorsBuilder.PropertyValidationCurrencyInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
-        (object) this.PropertyName,
-        value ?? (object) string.Empty
+        this.PropertyName,
+        value ?? string.Empty
       };
-      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: (string) null, serviceLocation: (string) null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
+      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: null, serviceLocation: null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
     }
     if (!flag2)
     {
       IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(errorCode: ServiceErrorsBuilder.PropertyValidationLengthInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
-        (object) this.PropertyName,
-        value ?? (object) string.Empty,
-        (object) this.MinimumLength,
-        (object) this.MaximumLength
+        this.PropertyName,
+        value ?? string.Empty,
+        this.MinimumLength,
+        this.MaximumLength
       };
-      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: (string) null, serviceLocation: (string) null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
+      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: null, serviceLocation: null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
     }
     if (!flag3)
     {
       IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(errorCode: ServiceErrorsBuilder.PropertyValidationRegexInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
-        (object) this.PropertyName,
-        value ?? (object) string.Empty,
-        (object) (this.Regex ?? string.Empty)
+        this.PropertyName,
+        value ?? string.Empty,
+        this.Regex ?? string.Empty
       };
-      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: (string) null, serviceLocation: (string) null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
+      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: null, serviceLocation: null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
     }
     if (!flag4)
     {
       IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(errorCode: ServiceErrorsBuilder.PropertyValidationNegativeInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
-        (object) this.PropertyName,
-        value ?? (object) string.Empty
+        this.PropertyName,
+        value ?? string.Empty
       };
-      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: (string) null, serviceLocation: (string) null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
+      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: null, serviceLocation: null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
     }
     if (!flag5)
     {
       IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(errorCode: ServiceErrorsBuilder.PropertyValidationZeroInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
-        (object) this.PropertyName,
-        value ?? (object) string.Empty
+        this.PropertyName,
+        value ?? string.Empty
       };
-      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: (string) null, serviceLocation: (string) null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
+      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: null, serviceLocation: null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
     }
     if (!flag6)
     {
       IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(errorCode: ServiceErrorsBuilder.PropertyValidationPositiveInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
-        (object) this.PropertyName,
-        value ?? (object) string.Empty
+        this.PropertyName,
+        value ?? string.Empty
       };
-      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: (string) null, serviceLocation: (string) null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
+      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: null, serviceLocation: null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
     }
     if (!flag7)
     {
       IServiceError serviceErrorForCode = new ServiceErrors().GetServiceErrorForCode(errorCode: ServiceErrorsBuilder.PropertyValidationDecimalsInvalid);
       List<object> descriptionDynamicContents = new List<object>()
       {
-        (object) this.PropertyName,
-        value ?? (object) string.Empty,
-        (object) this.AllowedDecimals
+        this.PropertyName,
+        value ?? string.Empty,
+        this.AllowedDecimals
       };
-      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: (string) null, serviceLocation: (string) null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
+      generalExceptionList.Add(item: new EMGeneralException(message: serviceErrorForCode.Message, code: serviceErrorForCode.ErrorCode, title: serviceErrorForCode.Title, description: serviceErrorForCode.Description(args: descriptionDynamicContents.ToArray()), serviceName: "PersistentObject", serviceInstance: null, serviceLocation: null, module: "DOM", descriptionDynamicContents: descriptionDynamicContents));
     }
     exceptions = generalExceptionList;
     return flag1 & flag2 & flag3 & flag4 & flag5 & flag6 & flag7 & flag8;

@@ -83,7 +83,7 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="ProductoProveedor"/>.
         /// </summary>
-        /// <param name="proveedorServicio">El ID del proveedor de servicios.</param>
+        /// <param name="proveedorServicio">El objeto del proveedor de servicios al que pertenece el producto.</param>
         /// <param name="sku">El SKU del producto.</param>
         /// <param name="nombre">El nombre del producto.</param>
         /// <param name="monto">El monto del producto.</param>
@@ -106,7 +106,7 @@ namespace Wallet.DOM.Modelos
             Sku = sku;
             Nombre = nombre;
             Monto = monto;
-            // La descripción es opcional, no se valida en el constructor.
+            // La descripción es opcional y no se valida en el constructor.
             Descripcion = descripcion;
         }
 

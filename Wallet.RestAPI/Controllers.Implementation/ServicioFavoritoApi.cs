@@ -9,13 +9,16 @@ using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
-/// <inheritdoc/>
+/// <summary>
+/// Implementation of the ServicioFavorito API controller.
+/// </summary>
 public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavoritoFacade, IMapper mapper)
     : ServicioFavoritoApiControllerBase
 {
     /// <inheritdoc/>
     public override async Task<IActionResult> DeleteServicioFavoritoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idServicioFavorito)
     {
         // Call facade method
@@ -30,7 +33,8 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
 
     /// <inheritdoc/>
     public override async Task<IActionResult> GetServiciosFavoritosAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idCliente)
     {
         // Call facade method
@@ -43,7 +47,8 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PostServicioFavoritoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromBody] ServicioFavoritoRequest body)
     {
         // Call facade method
@@ -61,7 +66,8 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutServicioFavoritoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idServicioFavorito, [FromBody] ServicioFavoritoRequest body)
     {
         // Call facade method

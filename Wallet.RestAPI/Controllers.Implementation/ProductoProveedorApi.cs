@@ -9,23 +9,28 @@ using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
-/// <inheritdoc/>
+/// <summary>
+/// Implementation of the ProductoProveedor API controller.
+/// </summary>
 public class ProductoProveedorApiController(IProveedorServicioFacade proveedorServicioFacade, IMapper mapper)
     : ProductoProveedorApiControllerBase
 {
     /// <inheritdoc/>
     public override async Task<IActionResult> DeleteProductoProveedorAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProducto)
     {
-        var producto = await proveedorServicioFacade.EliminarProductoAsync(idProducto: idProducto, modificationUser: Guid.Empty);
+        var producto =
+            await proveedorServicioFacade.EliminarProductoAsync(idProducto: idProducto, modificationUser: Guid.Empty);
         var response = mapper.Map<ProductoProveedorResult>(source: producto);
         return Ok(value: response);
     }
 
     /// <inheritdoc/>
     public override async Task<IActionResult> GetProductoProveedorAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProducto)
     {
         var producto = await proveedorServicioFacade.ObtenerProductoPorIdAsync(idProducto: idProducto);
@@ -35,17 +40,20 @@ public class ProductoProveedorApiController(IProveedorServicioFacade proveedorSe
 
     /// <inheritdoc/>
     public override async Task<IActionResult> GetProductosPorProveedorAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProveedorServicio)
     {
-        var productos = await proveedorServicioFacade.ObtenerProductosPorProveedorAsync(proveedorServicioId: idProveedorServicio);
+        var productos =
+            await proveedorServicioFacade.ObtenerProductosPorProveedorAsync(proveedorServicioId: idProveedorServicio);
         var response = mapper.Map<List<ProductoProveedorResult>>(source: productos);
         return Ok(value: response);
     }
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PostProductoProveedorAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProveedorServicio,
         [FromBody] ProductoProveedorRequest body)
     {
@@ -56,24 +64,27 @@ public class ProductoProveedorApiController(IProveedorServicioFacade proveedorSe
             monto: body.Monto,
             descripcion: body.Descripcion,
             creationUser: Guid.Empty);
-            
+
         var result = mapper.Map<ProductoProveedorResult>(source: producto);
         return Created(uri: $"/{version}/productoProveedor/{producto.Id}", value: result);
     }
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutActivarProductoProveedorAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProducto)
     {
-        var producto = await proveedorServicioFacade.ActivarProductoAsync(idProducto: idProducto, modificationUser: Guid.Empty);
+        var producto =
+            await proveedorServicioFacade.ActivarProductoAsync(idProducto: idProducto, modificationUser: Guid.Empty);
         var response = mapper.Map<ProductoProveedorResult>(source: producto);
         return Ok(value: response);
     }
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutProductoProveedorAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProducto,
         [FromBody] ProductoProveedorRequest body)
     {
@@ -84,7 +95,7 @@ public class ProductoProveedorApiController(IProveedorServicioFacade proveedorSe
             monto: body.Monto,
             descripcion: body.Descripcion,
             modificationUser: Guid.Empty);
-            
+
         var response = mapper.Map<ProductoProveedorResult>(source: producto);
         return Ok(value: response);
     }

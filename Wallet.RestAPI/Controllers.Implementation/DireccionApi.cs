@@ -7,12 +7,16 @@ using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
-/// <inheritdoc/>
+
+/// <summary>
+/// Implementation of the Direccion API controller.
+/// </summary>
 public class DireccionApiController(IDireccionFacade direccionFacade, IMapper mapper) : DireccionApiControllerBase
 {
-
     /// <inheritdoc/>
-    public override async Task<IActionResult> PutDireccionAsync([FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] DireccionUpdateRequest body)
+    public override async Task<IActionResult> PutDireccionAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, Required] int idCliente, [FromBody] DireccionUpdateRequest body)
     {
         // Call facade method
         var direccion = await direccionFacade.ActualizarDireccionCliente(
@@ -30,5 +34,4 @@ public class DireccionApiController(IDireccionFacade direccionFacade, IMapper ma
         // Return OK response
         return Ok(value: response);
     }
-
 }

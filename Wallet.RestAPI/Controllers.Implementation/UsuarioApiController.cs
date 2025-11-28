@@ -10,8 +10,12 @@ using System.Collections.Generic;
 
 namespace Wallet.RestAPI.Controllers.Implementation
 {
+    /// <summary>
+    /// Implementation of the Usuario API controller.
+    /// </summary>
     public class UsuarioApiController(IUsuarioFacade usuarioFacade, IMapper mapper) : UsuarioApiControllerBase
     {
+        /// <inheritdoc/>
         public override async Task<IActionResult> GetUsuarioAsync(
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
@@ -22,26 +26,27 @@ namespace Wallet.RestAPI.Controllers.Implementation
             return Ok(value: result);
         }
 
+        /// <inheritdoc/>
         public override async Task<IActionResult> PostUsuarioContrasenaAsync(
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int idUsuario, [FromBody] ContrasenaRequest body)
         {
-            var usuario = await usuarioFacade.GuardarContrasenaAsync(idUsuario: idUsuario, contrasena: body.Contrasena,
+            var token = await usuarioFacade.GuardarContrasenaAsync(idUsuario: idUsuario, contrasena: body.Contrasena,
                 modificationUser: Guid.Empty);
-            var result = mapper.Map<UsuarioResult>(source: usuario);
-            return Created(uri: "", value: result);
+            return Created(uri: "", value: new TokenResult { Token = token });
         }
 
+        /// <inheritdoc/>
         public override async Task<IActionResult> PutUsuarioConfirmaVerificacionAsync(
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int idUsuario, [FromBody] Verificacion2FARequest body)
         {
-            var token = await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario,
+            var isVerified = await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario,
                 tipo2FA: (Tipo2FA)body.Tipo, codigoVerificacion: body.Codigo, modificationUser: Guid.Empty);
 
-            if (token == null)
+            if (!isVerified)
             {
                 return BadRequest(error: new InlineResponse400
                 {
@@ -60,9 +65,10 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 });
             }
 
-            return Ok(value: new TokenResult { Token = token });
+            return Ok(value: isVerified);
         }
 
+        /// <inheritdoc/>
         public override async Task<IActionResult> PutUsuarioContrasenaAsync(
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
@@ -76,6 +82,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             return Ok(value: result);
         }
 
+        /// <inheritdoc/>
         public override async Task<IActionResult> PutUsuarioEmailAsync(
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
@@ -88,6 +95,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             return Ok(value: result);
         }
 
+        /// <inheritdoc/>
         public override async Task<IActionResult> PutUsuarioTelefonoAsync(
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
@@ -100,6 +108,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             return Ok(value: result);
         }
 
+        /// <inheritdoc/>
         public override async Task<IActionResult> PostUsuarioPreRegistroAsync(
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,

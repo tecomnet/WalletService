@@ -6,16 +6,22 @@ using Wallet.DOM.Modelos;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
+/// <summary>
+/// Fachada que implementa la lógica de negocio para la gestión de empresas.
+/// Permite crear, actualizar, consultar y eliminar empresas.
+/// </summary>
 public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
 {
+    /// <inheritdoc />
     public async Task<Empresa> ObtenerPorIdAsync(int idEmpresa)
     {
         try
         {
             var empresa = await context.Empresa.FirstOrDefaultAsync(predicate: x => x.Id == idEmpresa);
-            if (empresa is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
-                dynamicContent: [idEmpresa]));
+            if (empresa is null)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
+                    dynamicContent: [idEmpresa]));
             return empresa;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -28,14 +34,16 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         }
     }
 
+    /// <inheritdoc />
     public async Task<Empresa> ObtenerPorNombreAsync(string nombre)
     {
         try
         {
             var empresa = await context.Empresa.FirstOrDefaultAsync(predicate: x => x.Nombre == nombre);
-            if (empresa is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
-                dynamicContent: [nombre]));
+            if (empresa is null)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
+                    dynamicContent: [nombre]));
             return empresa;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -47,6 +55,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
                 exception: exception);
         }
     }
+
+    /// <inheritdoc />
     public async Task<List<Empresa>> ObtenerTodasAsync()
     {
         try
@@ -63,7 +73,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
                 exception: exception);
         }
     }
-    
+
+    /// <inheritdoc />
     public async Task<Empresa> GuardarEmpresaAsync(string nombre, Guid creationUser, string? testCase = null)
     {
         try
@@ -87,6 +98,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         }
     }
 
+    /// <inheritdoc />
     public async Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, Guid modificationUser)
     {
         try
@@ -110,9 +122,10 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
                 serviceName: DomCommon.ServiceName,
                 module: this.GetType().Name,
                 exception: exception);
-        }   
+        }
     }
 
+    /// <inheritdoc />
     public async Task<Empresa> EliminaEmpresaAsync(int idEmpresa, Guid modificationUser)
     {
         try
@@ -135,6 +148,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         }
     }
 
+    /// <inheritdoc />
     public async Task<Empresa> ActivaEmpresaAsync(int idEmpresa, Guid modificationUser)
     {
         try
@@ -159,6 +173,12 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
 
     #region Metodos privados
 
+    /// <summary>
+    /// Valida si ya existe una empresa con el mismo nombre.
+    /// </summary>
+    /// <param name="nombre">Nombre de la empresa a validar.</param>
+    /// <param name="id">ID de la empresa (opcional, para excluir en actualizaciones).</param>
+    /// <exception cref="EMGeneralAggregateException">Si ya existe una empresa con ese nombre.</exception>
     private void ValidarDuplicidad(string nombre, int id = 0)
     {
         // Obtiene estado existente
@@ -173,6 +193,11 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         }
     }
 
+    /// <summary>
+    /// Valida si la empresa se encuentra activa.
+    /// </summary>
+    /// <param name="empresa">La empresa a validar.</param>
+    /// <exception cref="EMGeneralAggregateException">Si la empresa está inactiva.</exception>
     private void ValidarEmpresaActiva(Empresa empresa)
     {
         if (!empresa.IsActive)

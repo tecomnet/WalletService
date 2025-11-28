@@ -7,13 +7,23 @@ using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
-/// <inheritdoc/>
-public class DispositivoMovilAutorizadoApiController(IDispositivoMovilAutorizadoFacade dispositivoMovilAutorizadoFacade, IMapper mapper) : DispositivoMovilAutorizadoApiControllerBase
+
+/// <summary>
+/// Implementation of the DispositivoMovilAutorizado API controller.
+/// </summary>
+public class DispositivoMovilAutorizadoApiController(
+    IDispositivoMovilAutorizadoFacade dispositivoMovilAutorizadoFacade,
+    IMapper mapper) : DispositivoMovilAutorizadoApiControllerBase
 {
-    public override async Task<IActionResult> GetDispositivoMovilAutorizadoAsync([FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int? idCliente, [FromQuery] string idDispositivo, [FromQuery] string token)
+    /// <inheritdoc/>
+    public override async Task<IActionResult> GetDispositivoMovilAutorizadoAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, Required] int? idCliente, [FromQuery] string idDispositivo, [FromQuery] string token)
     {
         // Call facade method
-        var esDispositivoAutorizado = await dispositivoMovilAutorizadoFacade.EsDispositivoAutorizadoAsync(idCliente: idCliente.Value, idDispositivo: idDispositivo, token: token);
+        var esDispositivoAutorizado =
+            await dispositivoMovilAutorizadoFacade.EsDispositivoAutorizadoAsync(idCliente: idCliente.Value,
+                idDispositivo: idDispositivo, token: token);
         // Map to response model
         //var response = mapper.Map<DispositivoMovilAutorizadoResult>(dispositivoMovilAutorizado);
         // Return OK response
@@ -22,7 +32,9 @@ public class DispositivoMovilAutorizadoApiController(IDispositivoMovilAutorizado
 
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> PostDispositivoMovilAutorizadoAsync([FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] DispositivoMovilAutorizadoRequest body)
+    public override async Task<IActionResult> PostDispositivoMovilAutorizadoAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, Required] int idCliente, [FromBody] DispositivoMovilAutorizadoRequest body)
     {
         // Call facade method
         var dispositivoMovilAutorizado = await dispositivoMovilAutorizadoFacade.GuardarDispositivoAutorizadoAsync(
@@ -37,5 +49,4 @@ public class DispositivoMovilAutorizadoApiController(IDispositivoMovilAutorizado
         // Return OK response
         return Ok(value: response);
     }
-
 }

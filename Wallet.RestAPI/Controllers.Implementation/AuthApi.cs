@@ -8,6 +8,9 @@ using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
+/// <summary>
+/// Implementation of the Authentication API controller.
+/// </summary>
 public class AuthApi(IAuthFacade authFacade, IMapper mapper) : AuthApiControllerBase
 {
     /// <inheritdoc />
@@ -40,6 +43,7 @@ public class AuthApi(IAuthFacade authFacade, IMapper mapper) : AuthApiController
         return Ok(value: mapper.Map<AuthResult>(source: result));
     }
 
+    /// <inheritdoc />
     [Authorize]
     public override async Task<IActionResult> RevokeAsync(
         [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]

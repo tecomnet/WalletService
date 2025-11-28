@@ -9,22 +9,27 @@ using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
-/// <inheritdoc/>
+/// <summary>
+/// Implementation of the Empresa API controller.
+/// </summary>
 public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) : EmpresaApiControllerBase
 {
     /// <inheritdoc/>
-    public override async Task<IActionResult> GetEmpresasAsync([FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version)
+    public override async Task<IActionResult> GetEmpresasAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version)
     {
         // Call facade method
         var empresas = await empresaFacade.ObtenerTodasAsync();
         // Map to response model
         var response = mapper.Map<List<EmpresaResult>>(source: empresas);
         // Return OK response
-        return Ok(value: response);    
+        return Ok(value: response);
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> PostEmpresaAsync([FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromBody] EmpresaRequest body)
+    public override async Task<IActionResult> PostEmpresaAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromBody] EmpresaRequest body)
     {
         // Call facade method
         var empresa = await empresaFacade.GuardarEmpresaAsync(nombre: body.Nombre, creationUser: Guid.Empty);
@@ -35,14 +40,16 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> PutEmpresaAsync([FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int? idEmpresa, [FromBody] EmpresaRequest body)
+    public override async Task<IActionResult> PutEmpresaAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, Required] int? idEmpresa, [FromBody] EmpresaRequest body)
     {
         // Call facade method
-        var empresa = await empresaFacade.ActualizaEmpresaAsync(idEmpresa: idEmpresa.Value, nombre: body.Nombre, modificationUser: Guid.Empty);
+        var empresa = await empresaFacade.ActualizaEmpresaAsync(idEmpresa: idEmpresa.Value, nombre: body.Nombre,
+            modificationUser: Guid.Empty);
         // Map to response model
         var response = mapper.Map<EmpresaResult>(source: empresa);
         // Return OK response
         return Ok(value: response);
     }
-
 }

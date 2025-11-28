@@ -5,55 +5,57 @@ namespace Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 public interface IServicioFavoritoFacade
 {
     /// <summary>
-    /// Guarda un nuevo servicio favorito
+    /// Guarda un nuevo servicio favorito para un cliente.
     /// </summary>
-    /// <param name="clienteId"></param>
-    /// <param name="proveedorServicioId"></param>
-    /// <param name="alias"></param>
-    /// <param name="numeroReferencia"></param>
-    /// <param name="creationUser"></param>
-    /// <param name="testCase"></param>
-    /// <returns></returns>
-    Task<ServicioFavorito> GuardarServicioFavoritoAsync(int clienteId, int proveedorServicioId, string alias, string numeroReferencia, Guid creationUser, string? testCase = null);
+    /// <param name="clienteId">El identificador único del cliente.</param>
+    /// <param name="proveedorServicioId">El identificador único del proveedor de servicio.</param>
+    /// <param name="alias">Un alias o nombre corto para identificar el servicio favorito.</param>
+    /// <param name="numeroReferencia">El número de referencia asociado al servicio (ej. número de cuenta, contrato).</param>
+    /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
+    /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="ServicioFavorito"/> guardado.</returns>
+    Task<ServicioFavorito> GuardarServicioFavoritoAsync(int clienteId, int proveedorServicioId, string alias,
+        string numeroReferencia, Guid creationUser, string? testCase = null);
 
     /// <summary>
-    /// Obtiene un servicio favorito por su Id
+    /// Obtiene un servicio favorito por su identificador único.
     /// </summary>
-    /// <param name="idServicioFavorito"></param>
-    /// <returns></returns>
+    /// <param name="idServicioFavorito">El identificador único del servicio favorito.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="ServicioFavorito"/> encontrado.</returns>
     Task<ServicioFavorito> ObtenerServicioFavoritoPorIdAsync(int idServicioFavorito);
 
     /// <summary>
-    /// Actualiza un servicio favorito existente
+    /// Actualiza los datos de un servicio favorito existente.
     /// </summary>
-    /// <param name="idServicioFavorito"></param>
-    /// <param name="alias"></param>
-    /// <param name="numeroReferencia"></param>
-    /// <param name="modificationUser"></param>
-    /// <param name="testCase"></param>
-    /// <returns></returns>
-    Task<ServicioFavorito> ActualizarServicioFavoritoAsync(int idServicioFavorito, string alias, string numeroReferencia, Guid modificationUser, string? testCase = null);
+    /// <param name="idServicioFavorito">El identificador único del servicio favorito a actualizar.</param>
+    /// <param name="alias">El nuevo alias para el servicio favorito.</param>
+    /// <param name="numeroReferencia">El nuevo número de referencia.</param>
+    /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
+    /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="ServicioFavorito"/> actualizado.</returns>
+    Task<ServicioFavorito> ActualizarServicioFavoritoAsync(int idServicioFavorito, string alias,
+        string numeroReferencia, Guid modificationUser, string? testCase = null);
 
     /// <summary>
-    /// Elimina (desactiva) un servicio favorito
+    /// Elimina (desactiva lógicamente) un servicio favorito.
     /// </summary>
-    /// <param name="idServicioFavorito"></param>
-    /// <param name="modificationUser"></param>
-    /// <returns></returns>
+    /// <param name="idServicioFavorito">El identificador único del servicio favorito a eliminar.</param>
+    /// <param name="modificationUser">El identificador del usuario que realiza la eliminación.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="ServicioFavorito"/> eliminado.</returns>
     Task<ServicioFavorito> EliminarServicioFavoritoAsync(int idServicioFavorito, Guid modificationUser);
 
     /// <summary>
-    /// Activa un servicio favorito
+    /// Activa un servicio favorito previamente desactivado.
     /// </summary>
-    /// <param name="idServicioFavorito"></param>
-    /// <param name="modificationUser"></param>
-    /// <returns></returns>
+    /// <param name="idServicioFavorito">El identificador único del servicio favorito a activar.</param>
+    /// <param name="modificationUser">El identificador del usuario que realiza la activación.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="ServicioFavorito"/> activado.</returns>
     Task<ServicioFavorito> ActivarServicioFavoritoAsync(int idServicioFavorito, Guid modificationUser);
 
     /// <summary>
-    /// Obtiene los servicios favoritos de un cliente
+    /// Obtiene una lista de todos los servicios favoritos asociados a un cliente.
     /// </summary>
-    /// <param name="clienteId"></param>
-    /// <returns></returns>
+    /// <param name="clienteId">El identificador único del cliente.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con una lista de objetos <see cref="ServicioFavorito"/>.</returns>
     Task<List<ServicioFavorito>> ObtenerServiciosFavoritosPorClienteAsync(int clienteId);
 }

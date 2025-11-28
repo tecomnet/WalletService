@@ -5,6 +5,7 @@ using Wallet.Funcionalidad;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.RestAPI;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Helper;
 
 namespace Wallet.UnitTest.FixtureBase
 {
@@ -29,11 +30,14 @@ namespace Wallet.UnitTest.FixtureBase
                 });
             _configuration = builder.Build();
 
-            _connectionString = EmServiceCollectionExtensions.GetConnectionString(configuration: _configuration);
+            _connectionString = DbConnectionHelper.GetConnectionString(configuration: _configuration);
 
             SetEnvironmentalVariables();
             var factory = new CustomWebApplicationFactory<Program>();
-            factory.ConfigureWebApplicationFactory(configureTestServices: services => { services.AddSingleton(implementationInstance: _configuration); });
+            factory.ConfigureWebApplicationFactory(configureTestServices: services =>
+            {
+                services.AddSingleton(implementationInstance: _configuration);
+            });
             Factory = factory;
 
             using var context = CreateContext();
@@ -51,7 +55,9 @@ namespace Wallet.UnitTest.FixtureBase
             => new(
                 options: new DbContextOptionsBuilder<ServiceDbContext>()
                     .UseSqlServer(connectionString: _connectionString,
-                        sqlServerOptionsAction: optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery))
+                        sqlServerOptionsAction: optionsBuilder =>
+                            optionsBuilder.UseQuerySplittingBehavior(
+                                querySplittingBehavior: QuerySplittingBehavior.SplitQuery))
                     .Options);
 
         public async Task<(Usuario User, string Token)> CreateAuthenticatedUserAsync()

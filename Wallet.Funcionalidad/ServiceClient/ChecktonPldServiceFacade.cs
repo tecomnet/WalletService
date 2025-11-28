@@ -18,10 +18,23 @@ internal static class ChecktonPldSettingsData
 
 public interface IChecktonPldServiceFacade
 {
+    /// <summary>
+    /// Valida la información de una persona (CURP) contra el servicio Checkton PLD.
+    /// </summary>
+    /// <param name="nombre">Nombre(s) de la persona.</param>
+    /// <param name="primerApellido">Primer apellido de la persona.</param>
+    /// <param name="segundoApellido">Segundo apellido de la persona.</param>
+    /// <param name="genero">Género de la persona.</param>
+    /// <param name="fechaNacimiento">Fecha de nacimiento de la persona.</param>
+    /// <param name="estado">Estado de nacimiento o residencia.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con el resultado de la validación <see cref="ValidacionCurpResult"/>.</returns>
     Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido, string segundoApellido,
         Genero genero, DateTime fechaNacimiento, string estado);
 }
 
+/// <summary>
+/// Fachada para interactuar con el servicio Checkton PLD.
+/// </summary>
 public class ChecktonPldServiceFacade(
     IServiceProvider serviceProvider,
     UrlBuilder urlBuilder)
@@ -35,9 +48,9 @@ public class ChecktonPldServiceFacade(
 
     private ChecktonPldService BuildLocalServiceClientApiKey()
     {
-        // Get api key
+        // Obtiene la clave API de las variables de entorno.
         var apiKey = Environment.GetEnvironmentVariable(variable: "API-Key");
-        // Build service client
+        // Construye el cliente de servicio utilizando autenticación por API Key.
         return BuildServiceClient(
             authorizationType: AuthorizationType.API_KEY,
             authorization: apiKey,
@@ -51,7 +64,7 @@ public class ChecktonPldServiceFacade(
 
     private ChecktonPldService BuildLocalServiceClientBearer(string token)
     {
-        // Build service client
+        // Construye el cliente de servicio utilizando autenticación Bearer.
         return BuildServiceClient(
             authorizationType: AuthorizationType.BEARER,
             authorization: token,
@@ -64,12 +77,12 @@ public class ChecktonPldServiceFacade(
 
     private ChecktonPldService BuildLocalServiceClient()
     {
-        // Get url 
+        // Obtiene la URL base de la configuración.
         var baseUri = Environment.GetEnvironmentVariable(variable: ChecktonPldSettingsData.RemoteServiceNameConfig);
-        // 2. Invoca BuildServiceClient
+        // Invoca BuildServiceClient para crear el cliente.
         var serviceClient = BuilServiceClient<ChecktonPldService>(
             url: baseUri,
-            // La función 'init' toma el cliente HTTP y la URL, y devuelve la instancia de ChecktonPldService
+            // La función 'init' toma el cliente HTTP y la URL, y devuelve la instancia de ChecktonPldService.
             init: (httpClient, baseUrl) => new ChecktonPldService(httpClient: httpClient)
             {
                 BaseUrl = baseUrl
@@ -79,15 +92,15 @@ public class ChecktonPldServiceFacade(
 
     protected override EMGeneralAggregateException? ExtractEMGeneralAggregateException(Exception exception)
     {
-        // If the exception has inner exceptions
+        // Si la excepción no es del tipo esperado (ApiException<Response>), retorna null.
         if (exception is not ApiException<Response> exception1) return null;
-        // Get the errors
+        // Obtiene los errores de la respuesta.
         var errors = exception1.Result.Errors;
-        // Initialize a list of exceptions
+        // Inicializa una lista de excepciones.
         List<EMGeneralException> exceptions = [];
-        // Iterate through the errors
+        // Itera a través de los errores.
         foreach (var error in errors)
-            // Add the exception
+            // Agrega la excepción a la lista.
             exceptions.Add(item: new EMGeneralException(
                 message: error.Detail,
                 code: error.ErrorCode,
@@ -97,19 +110,22 @@ public class ChecktonPldServiceFacade(
                 module: this.GetType().Name,
                 serviceInstance: "N/A",
                 serviceLocation: "N/A"));
-        // Throw the aggregate exception
+        // Retorna la excepción agregada.
         return new EMGeneralAggregateException(exceptions: exceptions);
     }
 
     #endregion
 
 
+    /// <inheritdoc />
     public async Task<ValidacionCurpResult> ValidarChecktonPld(string nombre, string primerApellido,
         string segundoApellido, Genero genero, DateTime fechaNacimiento, string estado)
     {
         try
         {
+            // Construye el cliente de servicio local con API Key.
             var serviceClient = BuildLocalServiceClientApiKey();
+            // Crea el cuerpo de la solicitud de validación.
             var requestBody = new ValidacionCurpRequest()
             {
                 Nombre = nombre,
@@ -120,12 +136,14 @@ public class ChecktonPldServiceFacade(
                 Estado = estado,
                 NombreServicioCliente = DomCommon.ServiceName
             };
+            // Realiza la petición POST para validar con RENAPO.
             var response = await serviceClient.PostValidaConRenapoAsync(
                 version: ChecktonPldSettingsData.Version, body: requestBody);
             return response;
         }
         catch (Exception e)
         {
+            // Maneja cualquier excepción que ocurra durante la llamada a la API.
             throw HandelAPIException(exception: e);
         }
     }

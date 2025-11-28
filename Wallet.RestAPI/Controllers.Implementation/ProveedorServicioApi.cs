@@ -10,13 +10,16 @@ using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
-/// <inheritdoc/>
+/// <summary>
+/// Implementation of the ProveedorServicio API controller.
+/// </summary>
 public class ProveedorServicioApiController(IProveedorServicioFacade proveedorServicioFacade, IMapper mapper)
     : ProveedorServicioApiControllerBase
 {
     /// <inheritdoc/>
     public override async Task<IActionResult> DeleteProveedorServicioAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProveedorServicio)
     {
         // Call facade method
@@ -31,7 +34,8 @@ public class ProveedorServicioApiController(IProveedorServicioFacade proveedorSe
 
     /// <inheritdoc/>
     public override async Task<IActionResult> GetProveedorServicioAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProveedorServicio)
     {
         // Call facade method
@@ -45,7 +49,8 @@ public class ProveedorServicioApiController(IProveedorServicioFacade proveedorSe
 
     /// <inheritdoc/>
     public override async Task<IActionResult> GetProveedoresServicioAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version)
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version)
     {
         // Call facade method
         var proveedores = await proveedorServicioFacade.ObtenerProveedoresServicioAsync();
@@ -57,7 +62,8 @@ public class ProveedorServicioApiController(IProveedorServicioFacade proveedorSe
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PostProveedorServicioAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromBody] ProveedorServicioRequest body)
     {
         // Convert string to enum
@@ -80,7 +86,8 @@ public class ProveedorServicioApiController(IProveedorServicioFacade proveedorSe
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutActivarProveedorServicioAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProveedorServicio)
     {
         // Call facade method
@@ -95,7 +102,8 @@ public class ProveedorServicioApiController(IProveedorServicioFacade proveedorSe
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutProveedorServicioAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int idProveedorServicio, [FromBody] ProveedorServicioRequest body)
     {
         // Convert string to enum

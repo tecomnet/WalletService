@@ -5,21 +5,24 @@ namespace Wallet.Funcionalidad.Helper;
 public static class RegionInfoHelper
 {
     /// <summary>
-    /// Return true if code of country is valid
+    /// Devuelve verdadero si el código de país proporcionado es válido.
     /// </summary>
-    /// <param name="countryCode">code of country to validate</param>
-    /// <returns>bool</returns>
+    /// <param name="countryCode">Código de país de dos letras (ISO 3166-1 alpha-2) a validar.</param>
+    /// <returns>Verdadero si el código de país es válido, falso en caso contrario.</returns>
     public static bool IsCountryCodeValid(string countryCode)
     {
-        // Get all iso region names
-        IEnumerable<string> source = from x in (from culture in CultureInfo.GetCultures(types: CultureTypes.SpecificCultures)
-                                                where culture.LCID != 127
-                                                select culture
-                into x
-                                                select new RegionInfo(name: x.Name).TwoLetterISORegionName).Distinct()
-                                     orderby x
-                                     select x;
-        // Exists any iso region name with the country code
+        // Obtener todos los nombres de región ISO de dos letras únicos.
+        // Se itera a través de todas las culturas específicas, se excluye la cultura invariante (LCID 127),
+        // se crea un RegionInfo para cada una y se extrae el código ISO de dos letras.
+        // Finalmente, se eliminan duplicados y se ordenan los resultados.
+        IEnumerable<string> source = (from culture in CultureInfo.GetCultures(types: CultureTypes.SpecificCultures)
+                                      where culture.LCID != 127
+                                      select new RegionInfo(name: culture.Name).TwoLetterISORegionName)
+                                     .Distinct()
+                                     .OrderBy(x => x);
+
+        // Comprobar si existe algún nombre de región ISO en la lista que coincida
+        // con el código de país proporcionado (convertido a mayúsculas para una comparación sin distinción de mayúsculas y minúsculas).
         return source.Any(predicate: (string x) => x == countryCode.ToUpper());
     }
 }

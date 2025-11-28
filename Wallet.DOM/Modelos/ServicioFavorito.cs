@@ -11,7 +11,7 @@ namespace Wallet.DOM.Modelos
     public class ServicioFavorito : ValidatablePersistentObjectLogicalDelete
     {
         /// <summary>
-        /// Define las restricciones de las propiedades para la validación del objeto ServicioFavorito.
+        /// Define las restricciones y validaciones para las propiedades de la entidad <see cref="ServicioFavorito"/>.
         /// </summary>
         protected override List<PropertyConstraint> PropertyConstraints =>
         [
@@ -28,13 +28,13 @@ namespace Wallet.DOM.Modelos
         ];
 
         /// <summary>
-        /// ID del cliente que guardó el servicio como favorito.
+        /// ID del cliente al que pertenece este servicio favorito.
         /// </summary>
         [Required]
         public int ClienteId { get; private set; }
 
         /// <summary>
-        /// Objeto de navegación para el cliente.
+        /// Objeto de navegación que representa el cliente asociado a este servicio favorito.
         /// </summary>
         [ForeignKey(name: "ClienteId")]
         public Cliente Cliente { get; set; }
@@ -46,40 +46,41 @@ namespace Wallet.DOM.Modelos
         public int ProveedorServicioId { get; private set; }
 
         /// <summary>
-        /// Objeto de navegación para el proveedor de servicios.
+        /// Objeto de navegación que representa el proveedor de servicios asociado.
         /// </summary>
         [ForeignKey(name: "ProveedorServicioId")]
         public ProveedorServicio ProveedorServicio { get; set; }
 
         /// <summary>
-        /// Alias o nombre personalizado para el servicio favorito.
+        /// Alias o nombre personalizado asignado por el cliente al servicio favorito.
         /// </summary>
         [Required]
         [MaxLength(length: 50)]
         public string Alias { get; private set; }
 
         /// <summary>
-        /// Número de referencia asociado al servicio (ej. número de cuenta, contrato).
+        /// Número de referencia único asociado al servicio (ej. número de cuenta, contrato, etc.).
         /// </summary>
         [Required]
         [MaxLength(length: 50)]
         public string NumeroReferencia { get; private set; }
 
         /// <summary>
-        /// Constructor privado para uso de Entity Framework.
+        /// Constructor privado requerido por Entity Framework para la creación de instancias.
         /// </summary>
         private ServicioFavorito() : base()
         {
         }
 
         /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="ServicioFavorito"/>.
+        /// Inicializa una nueva instancia de la clase <see cref="ServicioFavorito"/> con los IDs de cliente y proveedor.
         /// </summary>
-        /// <param name="clienteId">El ID del cliente.</param>
-        /// <param name="proveedorServicioId">El ID del proveedor de servicios.</param>
-        /// <param name="alias">El alias para el servicio.</param>
-        /// <param name="numeroReferencia">El número de referencia del servicio.</param>
-        /// <param name="creationUser">El usuario que crea el registro.</param>
+        /// <param name="clienteId">El ID único del cliente.</param>
+        /// <param name="proveedorServicioId">El ID único del proveedor de servicios.</param>
+        /// <param name="alias">El alias o nombre personalizado para el servicio.</param>
+        /// <param name="numeroReferencia">El número de referencia asociado al servicio.</param>
+        /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
+        /// <exception cref="EMGeneralAggregateException">Se lanza si las validaciones de las propiedades fallan.</exception>
         public ServicioFavorito(int clienteId, int proveedorServicioId, string alias, string numeroReferencia,
             Guid creationUser) : base(creationUser: creationUser)
         {
@@ -98,13 +99,14 @@ namespace Wallet.DOM.Modelos
         }
 
         /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="ServicioFavorito"/> con objetos de Cliente y ProveedorServicio.
+        /// Inicializa una nueva instancia de la clase <see cref="ServicioFavorito"/> utilizando objetos de Cliente y ProveedorServicio.
         /// </summary>
-        /// <param name="cliente">El objeto Cliente.</param>
-        /// <param name="proveedorServicio">El objeto ProveedorServicio.</param>
-        /// <param name="alias">El alias para el servicio.</param>
-        /// <param name="numeroReferencia">El número de referencia del servicio.</param>
-        /// <param name="creationUser">El usuario que crea el registro.</param>
+        /// <param name="cliente">El objeto <see cref="Cliente"/> asociado.</param>
+        /// <param name="proveedorServicio">El objeto <see cref="ProveedorServicio"/> asociado.</param>
+        /// <param name="alias">El alias o nombre personalizado para el servicio.</param>
+        /// <param name="numeroReferencia">El número de referencia asociado al servicio.</param>
+        /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
+        /// <exception cref="EMGeneralAggregateException">Se lanza si las validaciones de las propiedades fallan.</exception>
         public ServicioFavorito(Cliente cliente, ProveedorServicio proveedorServicio, string alias,
             string numeroReferencia, Guid creationUser) : base(creationUser: creationUser)
         {
@@ -126,11 +128,12 @@ namespace Wallet.DOM.Modelos
 
 
         /// <summary>
-        /// Actualiza los datos del servicio favorito.
+        /// Actualiza los datos editables del servicio favorito, como el alias y el número de referencia.
         /// </summary>
-        /// <param name="alias">El nuevo alias.</param>
-        /// <param name="numeroReferencia">El nuevo número de referencia.</param>
-        /// <param name="modificationUser">El usuario que modifica el registro.</param>
+        /// <param name="alias">El nuevo alias para el servicio.</param>
+        /// <param name="numeroReferencia">El nuevo número de referencia del servicio.</param>
+        /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
+        /// <exception cref="EMGeneralAggregateException">Se lanza si las validaciones de las propiedades fallan durante la actualización.</exception>
         public void Update(string alias, string numeroReferencia, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();

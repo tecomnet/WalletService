@@ -5,8 +5,15 @@ using Wallet.DOM.Errors;
 
 namespace Wallet.DOM.Modelos;
 
+/// <summary>
+/// Representa un usuario dentro del sistema Wallet.
+/// Gestiona la información de autenticación, contacto y relaciones con otros módulos como clientes y empresas.
+/// </summary>
 public class Usuario : ValidatablePersistentObjectLogicalDelete
 {
+    /// <summary>
+    /// Define las restricciones de validación para las propiedades de la entidad Usuario.
+    /// </summary>
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
         PropertyConstraint.StringPropertyConstraint(
@@ -41,28 +48,84 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
             maximumLength: 20),
     ];
 
-    [Required] [MaxLength(length: 3)] public string CodigoPais { get; private set; }
+    /// <summary>
+    /// Código del país del número de teléfono del usuario.
+    /// </summary>
+    [Required]
+    [MaxLength(length: 3)]
+    public string CodigoPais { get; private set; }
 
-    [Required] [MaxLength(length: 10)] public string Telefono { get; private set; }
+    /// <summary>
+    /// Número de teléfono del usuario.
+    /// </summary>
+    [Required]
+    [MaxLength(length: 10)]
+    public string Telefono { get; private set; }
 
-    [EmailAddress] [MaxLength(length: 150)] public string? CorreoElectronico { get; private set; }
+    /// <summary>
+    /// Correo electrónico del usuario.
+    /// </summary>
+    [EmailAddress]
+    [MaxLength(length: 150)]
+    public string? CorreoElectronico { get; private set; }
 
-    [MaxLength(length: 100)] public string? Contrasena { get; private set; }
+    /// <summary>
+    /// Contraseña del usuario (hash).
+    /// </summary>
+    [MaxLength(length: 100)]
+    public string? Contrasena { get; private set; }
 
-    [Required] [MaxLength(length: 20)] public string Estatus { get; private set; }
+    /// <summary>
+    /// Estatus actual del usuario.
+    /// </summary>
+    [Required]
+    [MaxLength(length: 20)]
+    public string Estatus { get; private set; }
 
-    [MaxLength(length: 200)] public string? RefreshToken { get; private set; }
+    /// <summary>
+    /// Token de refresco para la sesión del usuario.
+    /// </summary>
+    [MaxLength(length: 200)]
+    public string? RefreshToken { get; private set; }
+
+    /// <summary>
+    /// Fecha de expiración del token de refresco.
+    /// </summary>
     public DateTime? RefreshTokenExpiryTime { get; private set; }
 
+    /// <summary>
+    /// Identificador de la empresa asociada al usuario.
+    /// </summary>
     public int? EmpresaId { get; private set; }
+
+    /// <summary>
+    /// Entidad de la empresa asociada.
+    /// </summary>
     public Empresa? Empresa { get; private set; }
 
+    /// <summary>
+    /// Entidad del cliente asociado, si aplica.
+    /// </summary>
     public Cliente? Cliente { get; private set; }
 
+    /// <summary>
+    /// Lista de verificaciones de dos factores (2FA) asociadas al usuario.
+    /// </summary>
     public List<Verificacion2FA> Verificaciones2Fa { get; private set; } = new();
+
+    /// <summary>
+    /// Lista de ubicaciones de geolocalización registradas por el usuario.
+    /// </summary>
     public virtual List<UbicacionesGeolocalizacion> UbicacionesGeolocalizacion { get; private set; } = new();
+
+    /// <summary>
+    /// Lista de dispositivos móviles autorizados para el usuario.
+    /// </summary>
     public List<DispositivoMovilAutorizado> DispositivoMovilAutorizados { get; private set; } = new();
 
+    /// <summary>
+    /// Constructor por defecto requerido por Entity Framework.
+    /// </summary>
     public Usuario()
     {
         CodigoPais = string.Empty;
@@ -70,6 +133,16 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         Estatus = string.Empty;
     }
 
+    /// <summary>
+    /// Inicializa una nueva instancia de la clase <see cref="Usuario"/>.
+    /// </summary>
+    /// <param name="codigoPais">Código del país.</param>
+    /// <param name="telefono">Número de teléfono.</param>
+    /// <param name="correoElectronico">Correo electrónico (opcional).</param>
+    /// <param name="contrasena">Contraseña (opcional).</param>
+    /// <param name="estatus">Estatus inicial.</param>
+    /// <param name="creationUser">Usuario que crea el registro.</param>
+    /// <param name="testCase">Caso de prueba (opcional).</param>
     public Usuario(
         string codigoPais,
         string telefono,
@@ -80,6 +153,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
         List<EMGeneralException> exceptions = new();
+        // Validar propiedades iniciales
         IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(Telefono), value: telefono, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(CorreoElectronico), value: correoElectronico, exceptions: ref exceptions);
@@ -99,8 +173,15 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         this.DispositivoMovilAutorizados = new List<DispositivoMovilAutorizado>();
     }
 
+    /// <summary>
+    /// Crea una contraseña para el usuario si no tiene una asignada.
+    /// </summary>
+    /// <param name="contrasena">La nueva contraseña.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Si ya existe una contraseña o la nueva es inválida.</exception>
     public void CrearContrasena(string contrasena, Guid modificationUser)
     {
+        // Verificar si ya tiene contraseña
         if (!string.IsNullOrWhiteSpace(value: this.Contrasena))
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -111,13 +192,23 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         List<EMGeneralException> exceptions = new();
         IsPropertyValid(propertyName: nameof(Contrasena), value: contrasena, exceptions: ref exceptions);
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
         this.Contrasena = contrasena;
         Update(modificationUser: modificationUser);
     }
 
+    /// <summary>
+    /// Actualiza la contraseña del usuario validando la actual.
+    /// </summary>
+    /// <param name="contrasenaNueva">La nueva contraseña.</param>
+    /// <param name="confirmacionContrasenaNueva">Confirmación de la nueva contraseña.</param>
+    /// <param name="contrasenaActual">La contraseña actual para validación.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Si las contraseñas no coinciden o la actual es incorrecta.</exception>
     public void ActualizarContrasena(string contrasenaNueva, string confirmacionContrasenaNueva,
         string contrasenaActual, Guid modificationUser)
     {
+        // Validar coincidencia de contraseñas nuevas
         if (contrasenaNueva != confirmacionContrasenaNueva)
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -125,6 +216,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
                 dynamicContent: []));
         }
 
+        // Validar contraseña actual
         if (this.Contrasena != contrasenaActual)
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -135,30 +227,49 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         List<EMGeneralException> exceptions = new();
         IsPropertyValid(propertyName: nameof(Contrasena), value: contrasenaNueva, exceptions: ref exceptions);
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
         this.Contrasena = contrasenaNueva;
         Update(modificationUser: modificationUser);
     }
 
+    /// <summary>
+    /// Actualiza el número de teléfono del usuario.
+    /// </summary>
+    /// <param name="codigoPais">Nuevo código de país.</param>
+    /// <param name="telefono">Nuevo número de teléfono.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void ActualizarTelefono(string codigoPais, string telefono, Guid modificationUser)
     {
         List<EMGeneralException> exceptions = new();
         IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(Telefono), value: telefono, exceptions: ref exceptions);
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
         this.CodigoPais = codigoPais;
         this.Telefono = telefono;
         Update(modificationUser: modificationUser);
     }
 
+    /// <summary>
+    /// Actualiza el correo electrónico del usuario.
+    /// </summary>
+    /// <param name="correoElectronico">Nuevo correo electrónico.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void ActualizarCorreoElectronico(string correoElectronico, Guid modificationUser)
     {
         List<EMGeneralException> exceptions = new();
         IsPropertyValid(propertyName: nameof(CorreoElectronico), value: correoElectronico, exceptions: ref exceptions);
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
         this.CorreoElectronico = correoElectronico;
         Update(modificationUser: modificationUser);
     }
 
+    /// <summary>
+    /// Agrega una nueva verificación 2FA y desactiva las anteriores del mismo tipo.
+    /// </summary>
+    /// <param name="verificacion">La nueva verificación a agregar.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void AgregarVerificacion2Fa(Verificacion2FA verificacion, Guid modificationUser)
     {
         if (verificacion == null)
@@ -168,6 +279,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
                 dynamicContent: []));
         }
 
+        // Desactivar verificaciones anteriores del mismo tipo que no estén verificadas
         var verificacionesViejas = this.Verificaciones2Fa
             .Where(predicate: x =>
                 x.Tipo == verificacion.Tipo &&
@@ -182,12 +294,22 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         Update(modificationUser: modificationUser);
     }
 
+    /// <summary>
+    /// Confirma un código de verificación 2FA.
+    /// </summary>
+    /// <param name="tipo">Tipo de verificación (SMS, Email, etc.).</param>
+    /// <param name="codigo">Código a verificar.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
+    /// <returns>True si la verificación fue exitosa.</returns>
+    /// <exception cref="EMGeneralAggregateException">Si el código no existe, está inactivo, vencido o ya confirmado.</exception>
     public bool ConfirmarVerificacion2Fa(Tipo2FA tipo, string codigo, Guid modificationUser)
     {
         var verificacion = this.Verificaciones2Fa
             .Where(predicate: v => v.Tipo == tipo)
             .OrderByDescending(keySelector: v => v.CreationTimestamp)
             .FirstOrDefault();
+
+        // Validar existencia
         if (verificacion == null)
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -195,6 +317,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
                 dynamicContent: [tipo.ToString()]));
         }
 
+        // Validar estado activo
         if (!verificacion.IsActive)
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -202,6 +325,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
                 dynamicContent: []));
         }
 
+        // Validar si ya fue confirmado
         if (verificacion.Verificado)
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -209,6 +333,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
                 dynamicContent: []));
         }
 
+        // Validar vencimiento
         if (DateTime.Now >= verificacion.FechaVencimiento)
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -221,6 +346,11 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         return verificacion.Verificado;
     }
 
+    /// <summary>
+    /// Agrega una ubicación de geolocalización al usuario.
+    /// </summary>
+    /// <param name="ubicacion">La ubicación a agregar.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void AgregarUbicacionGeolocalizacion(UbicacionesGeolocalizacion ubicacion, Guid modificationUser)
     {
         if (ubicacion == null)
@@ -234,6 +364,12 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         Update(modificationUser: modificationUser);
     }
 
+    /// <summary>
+    /// Agrega un dispositivo móvil autorizado.
+    /// Si ya existe un dispositivo actual, lo marca como no actual.
+    /// </summary>
+    /// <param name="dispositivo">El dispositivo a autorizar.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void AgregarDispositivoMovilAutorizado(DispositivoMovilAutorizado dispositivo, Guid modificationUser)
     {
         if (dispositivo == null)
@@ -243,6 +379,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
                 dynamicContent: []));
         }
 
+        // Verificar duplicados
         if (this.DispositivoMovilAutorizados.Any(predicate: x =>
                 x.IdDispositivo == dispositivo.IdDispositivo && x.Token == dispositivo.Token))
         {
@@ -251,6 +388,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
                 dynamicContent: []));
         }
 
+        // Desmarcar dispositivo actual si existe
         var dispositivoActual = this.DispositivoMovilAutorizados.FirstOrDefault(predicate: x => x.Actual);
         if (dispositivoActual != null)
         {
@@ -261,13 +399,25 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         Update(modificationUser: modificationUser);
     }
 
+    /// <summary>
+    /// Verifica si un dispositivo está autorizado para este usuario.
+    /// </summary>
+    /// <param name="idDispositivo">ID del dispositivo.</param>
+    /// <param name="token">Token del dispositivo.</param>
+    /// <returns>True si el dispositivo está en la lista de autorizados.</returns>
     public bool EsDispositivoAutorizado(string idDispositivo, string token)
     {
         var dispositivo =
-            this.DispositivoMovilAutorizados.FirstOrDefault(predicate: x => x.IdDispositivo == idDispositivo && x.Token == token);
+            this.DispositivoMovilAutorizados.FirstOrDefault(predicate: x =>
+                x.IdDispositivo == idDispositivo && x.Token == token);
         return dispositivo != null;
     }
 
+    /// <summary>
+    /// Asocia una empresa al usuario.
+    /// </summary>
+    /// <param name="empresa">La empresa a asociar.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void AgregarEmpresa(Empresa empresa, Guid modificationUser)
     {
         if (empresa == null)
@@ -282,6 +432,12 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         Update(modificationUser: modificationUser);
     }
 
+    /// <summary>
+    /// Actualiza el token de refresco y su fecha de expiración.
+    /// </summary>
+    /// <param name="refreshToken">Nuevo token de refresco.</param>
+    /// <param name="expiryTime">Fecha de expiración.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void UpdateRefreshToken(string refreshToken, DateTime expiryTime, Guid modificationUser)
     {
         this.RefreshToken = refreshToken;

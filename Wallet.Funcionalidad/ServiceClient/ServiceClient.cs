@@ -5,120 +5,133 @@ namespace Wallet.Funcionalidad.ServiceClient
 	public class ServiceClient<T>
 	{
 		#region Internal backing variables
-		// Holder of the HTTP client
+
+		// Contenedor del cliente HTTP
 		private readonly HttpClient _httpClient;
-		// Generic holder for the service client
+
+		// Contenedor genérico para el cliente del servicio
 		private T _serviceClient;
-		// Base URL
+
+		// URL base
 		private readonly string _baseUrl;
-		// Version of the service to use
+
+		// Versión del servicio a utilizar
 		private readonly string _version;
+
 		#endregion
 
 		#region Constructors
+
 		/// <summary>
-		/// Constructor to set up the HTTP client for Postman
+		/// Constructor para configurar el cliente HTTP.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public ServiceClient(string baseUrl, string version)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
-			// Instantiate the HTTP client
+			// Instancia el cliente HTTP
 			_httpClient = new();
-			// Set the base URL
+			// Establece la URL base
 			_baseUrl = baseUrl;
-			// Set the version
+			// Establece la versión
 			_version = version;
 		}
+
 		/// <summary>
-		/// Constructor to set up the HTTP client for Postman
+		/// Constructor para configurar el cliente HTTP con una instancia existente.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
-		/// <param name="httpClient">Instance of the http client</param>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <param name="httpClient">Instancia del cliente HTTP.</param>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public ServiceClient(string baseUrl, string version, HttpClient httpClient)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
-			// Set the HTTP client
+			// Establece el cliente HTTP
 			_httpClient = httpClient;
-			// Set the base URL
+			// Establece la URL base
 			_baseUrl = baseUrl;
-			// Set the version
+			// Establece la versión
 			_version = version;
 		}
 
+		/// <summary>
+		/// Constructor para configurar el cliente HTTP solo con URL base.
+		/// </summary>
+		/// <param name="baseUrl">URL base para el servicio.</param>
 		public ServiceClient(string baseUrl)
 		{
-			// Instantiate the HTTP client
+			// Instancia el cliente HTTP
 			_httpClient = new();
-			// Set the base URL
+			// Establece la URL base
 			_baseUrl = baseUrl;
 		}
+
 		#endregion
 
 		#region Factories
+
 		/// <summary>
-		/// Factory for Postman API keys
+		/// Fábrica para clientes con clave API de Postman.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
-		/// <param name="postmanApiKey">Postman API key for private mock servers</param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <param name="postmanApiKey">Clave API de Postman para servidores mock privados.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreatePostmanServiceClientFacade(
 			string baseUrl,
 			string version,
 			string postmanApiKey)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version);
-			// Add the Postman API key
+			// Agrega la clave API de Postman
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "X-Api-Key",
 				value: postmanApiKey);
-			// Return the instance
+			// Retorna la instancia
 			return clientFacade;
-
 		}
+
 		/// <summary>
-		/// Factory for API Key
+		/// Fábrica para clientes con API Key y GUID de usuario.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
-		/// <param name="apiKey">API key for private mock servers</param>
-		/// <param name="userGuid">User GUID</param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <param name="apiKey">Clave API.</param>
+		/// <param name="userGuid">GUID del usuario.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateApiKeyServiceClientFacade(
 			string baseUrl,
 			string version,
 			string apiKey,
 			string userGuid)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version);
-			// Add the API key
+			// Agrega la clave API
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "X-API-Key",
 				value: apiKey);
-			// Add the user Guid
+			// Agrega el GUID del usuario
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "user",
 				value: userGuid);
-			// Return the instance
+			// Retorna la instancia
 			return clientFacade;
 		}
 
 		/// <summary>
-		/// Factory for API Key
+		/// Fábrica para clientes con API Key, GUID de usuario y satélite.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
-		/// <param name="apiKey">API key for private mock servers</param>
-		/// <param name="userGuid">User GUID</param>
-		/// <param name="satellite"></param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <param name="apiKey">Clave API.</param>
+		/// <param name="userGuid">GUID del usuario.</param>
+		/// <param name="satellite">Identificador del satélite.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateApiKeyServiceClientFacade(
 			string baseUrl,
 			string version,
@@ -126,55 +139,57 @@ namespace Wallet.Funcionalidad.ServiceClient
 			string userGuid,
 			string satellite)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version);
-			// Add the API key
+			// Agrega la clave API
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "X-API-Key",
 				value: apiKey);
-			// Add the user Guid
+			// Agrega el GUID del usuario
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "user",
 				value: userGuid);
+			// Agrega el satélite
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "satelite",
 				value: satellite);
-			// Return the instance
+			// Retorna la instancia
 			return clientFacade;
 		}
-		// <summary>
-		/// Factory for Postman API keys
+
+		/// <summary>
+		/// Fábrica para clientes con clave API de Postman e instancia de HttpClient.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
-		/// <param name="postmanApiKey">Postman API key for private mock servers</param>
-		/// <param name="httpClient">Instance of the http client</param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <param name="postmanApiKey">Clave API de Postman para servidores mock privados.</param>
+		/// <param name="httpClient">Instancia del cliente HTTP.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreatePostmanServiceClientFacade(
 			string baseUrl,
 			string version,
 			string postmanApiKey,
 			HttpClient httpClient)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version, httpClient: httpClient);
-			// Add the Postman API key
+			// Agrega la clave API de Postman
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "X-Api-Key",
 				value: postmanApiKey);
-			// Return the instance
+			// Retorna la instancia
 			return clientFacade;
-
 		}
-		// <summary>
-		/// Factory for API key
+
+		/// <summary>
+		/// Fábrica para clientes con API Key, GUID de usuario e instancia de HttpClient.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
-		/// <param name="postmanApiKey">API key</param>
-		/// <param name="userGuid">User GUID</param>
-		/// <param name="httpClient">Instance of the http client</param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <param name="apiKey">Clave API.</param>
+		/// <param name="userGuid">GUID del usuario.</param>
+		/// <param name="httpClient">Instancia del cliente HTTP.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateApiKeyServiceClientFacade(
 			string baseUrl,
 			string version,
@@ -182,161 +197,167 @@ namespace Wallet.Funcionalidad.ServiceClient
 			string userGuid,
 			HttpClient httpClient)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version, httpClient: httpClient);
-			// Add the Postman API key
+			// Agrega la clave API
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "X-Api-Key",
 				value: apiKey);
-			// Add the user Guid
+			// Agrega el GUID del usuario
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "user",
 				value: userGuid);
-			// Return the instance
+			// Retorna la instancia
 			return clientFacade;
-
 		}
+
 		/// <summary>
-		/// Factory using a bearer token
+		/// Fábrica para clientes usando token Bearer.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
-		/// <param name="bearerToken">Login token for the client</param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <param name="bearerToken">Token de inicio de sesión para el cliente.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateBearerServiceClientFacade(
 			string baseUrl,
 			string version,
 			string bearerToken)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version);
-			// Set the beare token
+			// Establece el token Bearer
 			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
-			// Return the client instance
+			// Retorna la instancia del cliente
 			return clientFacade;
 		}
 
 		/// <summary>
-		/// Factory using a bearer token
+		/// Fábrica para clientes usando token Bearer (sin versión explícita).
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="bearerToken">Login token for the client</param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="bearerToken">Token de inicio de sesión para el cliente.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateServiceClientFacade(
 			string baseUrl,
 			string bearerToken)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl);
-			// Set the beare token
+			// Establece el token Bearer
 			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
-			// Return the client instance
+			// Retorna la instancia del cliente
 			return clientFacade;
 		}
-		
+
 		/// <summary>
-		/// Factory using a bearer token
+		/// Fábrica para clientes de acceso libre (sin token).
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateServiceClientFacadeFreeAccess(string baseUrl, string version)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version);
-			// Return the client instance
+			// Retorna la instancia del cliente
 			return clientFacade;
 		}
-		
+
 		/// <summary>
-		/// Factory using a bearer token
+		/// Fábrica para clientes con cabecera X-Id-Distribuidor.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="bearerToken">Login token for the client</param>
-		/// <param name="xIdDistribuidor"></param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="bearerToken">Token de inicio de sesión para el cliente.</param>
+		/// <param name="xIdDistribuidor">ID del distribuidor.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateXDistribuidorClientFacade(
 			string baseUrl,
 			string bearerToken,
 			string xIdDistribuidor)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl);
-			// Set the beare token
+			// Establece el token Bearer
 			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
-			// Add the Postman API key
+			// Agrega la cabecera X-Id-Distribuidor
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "X-Id-Distribuidor",
 				value: xIdDistribuidor);
-			// Return the client instance
+			// Retorna la instancia del cliente
 			return clientFacade;
 		}
+
 		/// <summary>
-		/// Factory using a bearer token
+		/// Fábrica para clientes con cabecera X-Id-Acceso.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="bearerToken">Login token for the client</param>
-		/// <param name="xIdAcceso"></param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="bearerToken">Token de inicio de sesión para el cliente.</param>
+		/// <param name="xIdAcceso">ID de acceso.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateXAccesoClientFacade(
 			string baseUrl,
 			string bearerToken,
 			string xIdAcceso)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl);
-			// Set the beare token
+			// Establece el token Bearer
 			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
-			// Add the Postman API key
+			// Agrega la cabecera X-Id-Acceso
 			clientFacade.HttpClient.DefaultRequestHeaders.Add(
 				name: "X-Id-Acceso",
 				value: xIdAcceso);
-			// Return the client instance
+			// Retorna la instancia del cliente
 			return clientFacade;
 		}
+
 		/// <summary>
-		/// Factory using a bearer token
+		/// Fábrica para clientes usando token Bearer e instancia de HttpClient.
 		/// </summary>
-		/// <param name="baseUrl">Base URL for the service</param>
-		/// <param name="version">Version of the service to use</param>
-		/// <param name="bearerToken">Login token for the client</param>
-		/// <param name="httpClient">Instance of the http client</param>
-		/// <returns>Instance of the client service facade</returns>
+		/// <param name="baseUrl">URL base para el servicio.</param>
+		/// <param name="version">Versión del servicio a utilizar.</param>
+		/// <param name="bearerToken">Token de inicio de sesión para el cliente.</param>
+		/// <param name="httpClient">Instancia del cliente HTTP.</param>
+		/// <returns>Instancia de la fachada del cliente de servicio.</returns>
 		public static ServiceClient<T> CreateBearerServiceClientFacade(
 			string baseUrl,
 			string version,
 			string bearerToken,
 			HttpClient httpClient)
 		{
-			// Create an instance of the class
+			// Crea una instancia de la clase
 			ServiceClient<T> clientFacade = new(baseUrl: baseUrl, version: version, httpClient: httpClient);
-			// Set the beare token
+			// Establece el token Bearer
 			AuthenticationHeaderValue authenticationHeaderValue = new(scheme: "Bearer", parameter: bearerToken);
 			clientFacade.HttpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
-			// Return the client instance
+			// Retorna la instancia del cliente
 			return clientFacade;
 		}
+
 		#endregion
 
 		#region Properties
-		// Porperty for the base URL readonly
+
+		// Propiedad para la URL base (solo lectura)
 		public string BaseUrl => _baseUrl;
-		// Porperty for the HTTP client readonly
+
+		// Propiedad para el cliente HTTP (solo lectura)
 		public HttpClient HttpClient => _httpClient;
-		// Property for the service client
+
+		// Propiedad para el cliente del servicio
 		public T Client
 		{
 			get => _serviceClient;
-			set
-			{
-				_serviceClient = value;
-			}
+			set { _serviceClient = value; }
 		}
-		// Version
+
+		// Versión
 		public string Version => _version;
+
 		#endregion
 	}
 }

@@ -15,12 +15,11 @@ using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Attributes;
 using Wallet.RestAPI.Controllers.Base;
 using System.Threading.Tasks;
-using Wallet.Funcionalidad.Models;
 
 namespace Wallet.RestAPI.Controllers
 {
     /// <summary>
-    /// 
+    /// Base controller for Authentication operations.
     /// </summary>
     [ApiController]
     public abstract class AuthApiControllerBase : ServiceBaseController

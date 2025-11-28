@@ -5,12 +5,12 @@ namespace Wallet.Funcionalidad.Functionality
     public static class GenericExceptionManager
     {
         /// <summary>
-        /// Return list of generic exceptions, (Not EMGeneralAggregateException exceptions)
+        /// Retorna una lista de excepciones genéricas (excepciones que no son EMGeneralAggregateException).
         /// </summary>
-        /// <param name="serviceName">Name of the service generating the error</param>
-        /// <param name="module">Module that generated the error</param>
-        /// <param name="exception">original exception raised</param>
-        /// <returns></returns>
+        /// <param name="serviceName">Nombre del servicio que genera el error.</param>
+        /// <param name="module">Módulo que generó el error.</param>
+        /// <param name="exception">Excepción original lanzada.</param>
+        /// <returns>Una excepción agregada que contiene la lista de errores.</returns>
         public static EMGeneralAggregateException GetAggregateException(string serviceName
             , string module, Exception exception)
         {

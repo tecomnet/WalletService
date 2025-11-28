@@ -31,16 +31,20 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
     {
         try
         {
+            // Setup mocks
+            TokenServiceMock.Setup(expression: x =>
+                    x.GenerateAccessToken(It.IsAny<IEnumerable<System.Security.Claims.Claim>>()))
+                .Returns(value: "generated_token");
+
             // Call facade method
-            var usuario = await Facade.GuardarContrasenaAsync(
+            var token = await Facade.GuardarContrasenaAsync(
                 idUsuario: idUsuario,
                 contrasena: contrasena,
                 modificationUser: SetupConfig.UserId);
 
-            // Assert user updated
-            Assert.NotNull(usuario);
-            // Assert password set (we can't check the hash directly easily, but we can check it's not null)
-            Assert.NotNull(usuario.Contrasena);
+            // Assert token returned
+            Assert.NotNull(token);
+            Assert.Equal(expected: "generated_token", actual: token);
 
             // Get the user from context
             var usuarioContext = await Context.Usuario.AsNoTracking()
@@ -242,7 +246,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
             }
 
             // Call facade method
-            var token = await Facade.ConfirmarCodigoVerificacion2FAAsync(
+            var result = await Facade.ConfirmarCodigoVerificacion2FAAsync(
                 idUsuario: idUsuario,
                 tipo2FA: Tipo2FA.Sms,
                 codigoVerificacion: codigoVerificacion,
@@ -250,9 +254,8 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
 
             if (success)
             {
-                // Assert token returned
-                Assert.NotNull(token);
-                Assert.Equal(expected: "generated_token", actual: token);
+                // Assert result is true
+                Assert.True(result);
 
                 // Get the user from context
                 var usuarioContext = await Context.Usuario.Include(navigationPropertyPath: x => x.Verificaciones2Fa)

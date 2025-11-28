@@ -8,43 +8,44 @@ using Wallet.DOM.Errors;
 namespace Wallet.RestAPI.Helpers;
 
 /// <summary>
-/// Class for authenticated users guid
+/// Clase para los GUID de usuarios autenticados.
 /// </summary>
 public static class AuthenticatedUserClaims
 {
     /// <summary>
-    /// Generate a Guid from user data
+    /// Genera un GUID a partir de los datos del usuario.
     /// </summary>
-    /// <param name="cb"></param>Extension of ControllerBase
-    /// <returns>A generated Guid</returns>
+    /// <param name="cb">Extensión de ControllerBase.</param>
+    /// <returns>Un GUID generado.</returns>
     public static Guid GetAuthenticatedUserGuid(this ControllerBase cb)
     {
-        // Returns the generated guid
+        // Busca el claim de tipo "Guid" en las identidades del usuario.
         var guidClaim = cb.User.Identities.ElementAt(index: 0).Claims.SingleOrDefault(predicate: c => c.Type == "Guid");
-        // If guidClaim is null
+        // Si el claim del GUID es nulo, lanza una excepción.
         if (guidClaim is null)
         {
-            // Lanza exception
+            // Lanza una excepción indicando un error en el claim del usuario.
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.EmClaimUserError,
                 dynamicContent: [],
                 module: "REST-API"));
         }
+        // Devuelve el GUID generado a partir del valor del claim.
         return new Guid(g: guidClaim.Value);
     }
     
     /// <summary>
-    ///  Get the token from the request header
+    /// Obtiene el token del encabezado de la solicitud.
     /// </summary>
-    /// <param name="cb"></param>
-    /// <returns></returns>
+    /// <param name="cb">Extensión de ControllerBase.</param>
+    /// <returns>El token JWS.</returns>
     public static string GetToken(this ControllerBase cb)
     {
-        // Extract the authorization information from the header
+        // Extrae la información de autorización del encabezado de la solicitud.
         var authHeader = AuthenticationHeaderValue.Parse(input: cb.Request.Headers[key: "Authorization"]);
-        // Get the token from the parameters
+        // Obtiene el token de los parámetros de la cabecera de autorización.
         var jwsToken = authHeader.Parameter;
-        // Returns the generated guid
+        // Devuelve el token JWS.
         return jwsToken;
     }
 }
