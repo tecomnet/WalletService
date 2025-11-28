@@ -49,7 +49,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: request.Nombre, actual: result.Nombre);
         Assert.True(condition: result.Id > 0);
     }
@@ -67,7 +67,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<List<ProveedorServicioResult>>(value: responseContent, settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         var createResult =
             JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: createResult);
+        Assert.NotNull(createResult);
 
         // Act
         var response = await client.GetAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{createResult.Id}");
@@ -96,7 +96,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: createResult.Id, actual: result.Id);
     }
 
@@ -116,7 +116,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         var createResult =
             JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: createResult);
+        Assert.NotNull(createResult);
 
         // Act
         var updateRequest = new ProveedorServicioRequest
@@ -133,7 +133,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: updateRequest.Nombre, actual: result.Nombre);
         Assert.Equal(expected: updateRequest.Categoria, actual: result.Categoria);
     }
@@ -160,7 +160,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         var createResult =
             JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: createResult);
+        Assert.NotNull(createResult);
         Assert.True(condition: createResult.Id > 0, userMessage: "Created provider ID should be > 0");
 
         // Act
@@ -171,7 +171,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.False(condition: result.IsActive);
     }
 

@@ -23,7 +23,7 @@ public class EstadoFacadeTest(SetupDataConfig setupConfig)
         var result = await Facade.ObtenerEstadoPorIdAsync(idEstado: idValido);
 
         // Assert
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: idValido, actual: result.Id);
         Assert.Equal(expected: nombreEsperado, actual: result.Nombre);
     }
@@ -58,7 +58,7 @@ public class EstadoFacadeTest(SetupDataConfig setupConfig)
         var result = await Facade.ObtenerEstadoPorNombreAsync(nombre: nombre);
 
         // Assert
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: nombre, actual: result.Nombre);
     }
 
@@ -87,7 +87,7 @@ public class EstadoFacadeTest(SetupDataConfig setupConfig)
         var resultado = await Facade.ObtenerTodosAsync(activo: activo);
 
         // Assert
-        Assert.NotNull(@object: resultado);
+        Assert.NotNull(resultado);
 
         // Si se aplicó un filtro (activo no es null), se valida que todos los resultados coincidan.
         if (activo.HasValue)
@@ -111,12 +111,12 @@ public class EstadoFacadeTest(SetupDataConfig setupConfig)
             // Act
             var resultado = await Facade.ActivaEstadoAsync(idEstado: idEstado, modificationUser: SetupConfig.UserId);
             // Assert
-            Assert.NotNull(@object: resultado);
+            Assert.NotNull(resultado);
             Assert.Equal(expected: idEstado, actual: resultado.Id);
             Assert.True(condition: resultado.IsActive);
             // Validdar estado en base de datos
             var estadoContext = await Context.Estado.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == idEstado);
-            Assert.NotNull(@object: estadoContext);
+            Assert.NotNull(estadoContext);
             Assert.True(condition: estadoContext.IsActive);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures
@@ -148,12 +148,12 @@ public class EstadoFacadeTest(SetupDataConfig setupConfig)
             // Act
             var resultado = await Facade.EliminaEstadoAsync(idEstado: idEstado, modificationUser: SetupConfig.UserId);
             // Assert
-            Assert.NotNull(@object: resultado);
+            Assert.NotNull(resultado);
             Assert.Equal(expected: idEstado, actual: resultado.Id);
             Assert.False(condition: resultado.IsActive);
             // Validdar estado en base de datos
             var estadoContext = await Context.Estado.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == idEstado);
-            Assert.NotNull(@object: estadoContext);
+            Assert.NotNull(estadoContext);
             Assert.False(condition: estadoContext.IsActive);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures
@@ -184,11 +184,11 @@ public class EstadoFacadeTest(SetupDataConfig setupConfig)
             // Act
             var resultado = await Facade.GuardarEstadoAsync(nombre: nombre, creationUser: SetupConfig.UserId);
             // Assert
-            Assert.NotNull(@object: resultado);
+            Assert.NotNull(resultado);
             Assert.Equal(expected: nombre, actual: resultado.Nombre);
             // Validdar estado en base de datos
             var estadoContext = await Context.Estado.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Nombre == nombre);
-            Assert.NotNull(@object: estadoContext);
+            Assert.NotNull(estadoContext);
             Assert.True(condition: estadoContext.IsActive);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures
@@ -221,12 +221,12 @@ public class EstadoFacadeTest(SetupDataConfig setupConfig)
             // Act
             var resultado = await Facade.ActualizaEstadoAsync(idEstado: idEstado, nombre: nombre, modificationUser: SetupConfig.UserId);
             // Assert
-            Assert.NotNull(@object: resultado);
+            Assert.NotNull(resultado);
             Assert.Equal(expected: idEstado, actual: resultado.Id);
             Assert.Equal(expected: nombre, actual: resultado.Nombre);
             // Validdar estado en base de datos
             var estadoContext = await Context.Estado.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == idEstado);
-            Assert.NotNull(@object: estadoContext);
+            Assert.NotNull(estadoContext);
             Assert.Equal(expected: nombre, actual: estadoContext.Nombre);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures

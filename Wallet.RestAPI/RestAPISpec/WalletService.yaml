@@ -1249,6 +1249,15 @@ components:
         - codigoPais
         - telefono
         - estatus
+    TokenResult:
+      title: TokenResult
+      type: object
+      description: Estructura para el token de acceso
+      properties:
+        token:
+          type: string
+      required:
+        - token
     PreRegistroRequest:
       title: PreRegistroRequest
       type: object

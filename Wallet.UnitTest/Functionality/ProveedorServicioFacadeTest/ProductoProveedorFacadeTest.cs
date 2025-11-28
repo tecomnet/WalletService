@@ -37,7 +37,7 @@ public class ProductoProveedorFacadeTest(SetupDataConfig setupConfig)
                 creationUser: SetupConfig.UserId);
 
             // Assert producto created
-            Assert.NotNull(@object: producto);
+            Assert.NotNull(producto);
             // Assert properties
             Assert.True(condition: producto.Sku == sku &&
                                    producto.Nombre == nombre &&
@@ -48,7 +48,7 @@ public class ProductoProveedorFacadeTest(SetupDataConfig setupConfig)
             // Get from context
             var productoContext = await Context.ProductoProveedor.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
-            Assert.NotNull(@object: productoContext);
+            Assert.NotNull(productoContext);
             Assert.True(condition: productoContext.Sku == sku &&
                                    productoContext.Nombre == nombre &&
                                    productoContext.Monto == (decimal)monto &&
@@ -93,7 +93,7 @@ public class ProductoProveedorFacadeTest(SetupDataConfig setupConfig)
                 descripcion: descripcion,
                 modificationUser: SetupConfig.UserId);
 
-            Assert.NotNull(@object: producto);
+            Assert.NotNull(producto);
             Assert.True(condition: producto.Sku == sku &&
                                    producto.Nombre == nombre &&
                                    producto.Monto == (decimal)monto &&
@@ -102,7 +102,7 @@ public class ProductoProveedorFacadeTest(SetupDataConfig setupConfig)
 
             var productoContext = await Context.ProductoProveedor.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
-            Assert.NotNull(@object: productoContext);
+            Assert.NotNull(productoContext);
             Assert.True(condition: productoContext.Sku == sku &&
                                    productoContext.Nombre == nombre &&
                                    productoContext.Monto == (decimal)monto &&
@@ -134,12 +134,12 @@ public class ProductoProveedorFacadeTest(SetupDataConfig setupConfig)
         try
         {
             var producto = await Facade.EliminarProductoAsync(idProducto: idProducto, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(@object: producto);
+            Assert.NotNull(producto);
             Assert.False(condition: producto.IsActive);
 
             var productoContext = await Context.ProductoProveedor.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
-            Assert.NotNull(@object: productoContext);
+            Assert.NotNull(productoContext);
             Assert.False(condition: productoContext.IsActive);
 
             Assert.True(condition: success);
@@ -167,12 +167,12 @@ public class ProductoProveedorFacadeTest(SetupDataConfig setupConfig)
         try
         {
             var producto = await Facade.ActivarProductoAsync(idProducto: idProducto, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(@object: producto);
+            Assert.NotNull(producto);
             Assert.True(condition: producto.IsActive);
 
             var productoContext = await Context.ProductoProveedor.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
-            Assert.NotNull(@object: productoContext);
+            Assert.NotNull(productoContext);
             Assert.True(condition: productoContext.IsActive);
 
             Assert.True(condition: success);

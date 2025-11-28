@@ -42,7 +42,7 @@ public class DireccionFacadeTest(SetupDataConfig setupConfig)
                 referencia: referencia,
                 modificationUser: SetupConfig.UserId);
             // Assert user created
-            Assert.NotNull(@object: direccion);
+            Assert.NotNull(direccion);
             // Assert user properties
             Assert.True(condition: direccion.ClienteId == idCliente &&
                                    direccion.CodigoPostal == codigoPostal &&
@@ -56,7 +56,7 @@ public class DireccionFacadeTest(SetupDataConfig setupConfig)
             // Get the user from context
             var direccionContext = await Context.Direccion.Include(navigationPropertyPath: x => x.Cliente).AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == direccion.Id);
             // Confirm user created in context
-            Assert.NotNull(@object: direccionContext);
+            Assert.NotNull(direccionContext);
             // Assert user properties
             Assert.True(condition: direccionContext.ClienteId == idCliente &&
                                    direccionContext.CodigoPostal == codigoPostal &&

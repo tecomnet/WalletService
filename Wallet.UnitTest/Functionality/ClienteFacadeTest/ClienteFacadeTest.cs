@@ -83,7 +83,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 genero: genero,
                 modificationUser: SetupConfig.UserId);
             // Assert user created
-            Assert.NotNull(@object: cliente);
+            Assert.NotNull(cliente);
             // Assert user properties
             Assert.True(condition: cliente.Nombre == nombre &&
                                    cliente.PrimerApellido == primerApellido &&
@@ -96,7 +96,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             var clienteContext = await Context.Cliente.Include(navigationPropertyPath: x => x.Estado).AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm user created in context
-            Assert.NotNull(@object: clienteContext);
+            Assert.NotNull(clienteContext);
             // Assert user properties
             Assert.True(condition: clienteContext.Nombre == nombre &&
                                    clienteContext.PrimerApellido == primerApellido &&
@@ -145,7 +145,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             var cliente =
                 await Facade.EliminarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
             // Assert cliente returned
-            Assert.NotNull(@object: cliente);
+            Assert.NotNull(cliente);
             // Assert cliente properties
             Assert.False(condition: cliente.IsActive);
             Assert.True(condition: cliente.ModificationUser == SetupConfig.UserId);
@@ -153,7 +153,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             var clienteContext =
                 await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm cliente updated in context
-            Assert.NotNull(@object: clienteContext);
+            Assert.NotNull(clienteContext);
             // Assert cliente persisted as deactivated
             Assert.False(condition: clienteContext.IsActive);
             Assert.True(condition: clienteContext.ModificationUser == SetupConfig.UserId);
@@ -197,7 +197,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             var cliente =
                 await Facade.ActivarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
             // Assert cliente returned
-            Assert.NotNull(@object: cliente);
+            Assert.NotNull(cliente);
             // Assert cliente properties
             Assert.True(condition: cliente.IsActive);
             Assert.True(condition: cliente.ModificationUser == SetupConfig.UserId);
@@ -205,7 +205,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             var clienteContext =
                 await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm cliente updated in context
-            Assert.NotNull(@object: clienteContext);
+            Assert.NotNull(clienteContext);
             // Assert cliente persisted as activated
             Assert.True(condition: clienteContext.IsActive);
             Assert.True(condition: clienteContext.ModificationUser == SetupConfig.UserId);

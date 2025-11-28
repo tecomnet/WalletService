@@ -6,12 +6,15 @@ using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.Funcionalidad.ServiceClient;
+using Wallet.Funcionalidad.Services.TokenService;
+using System.Security.Claims;
 
 namespace Wallet.Funcionalidad.Functionality.UsuarioFacade;
 
 public class UsuarioFacade(
     ServiceDbContext context,
-    ITwilioServiceFacade twilioService) : IUsuarioFacade
+    ITwilioServiceFacade twilioService,
+    ITokenService tokenService) : IUsuarioFacade
 {
     public async Task<Usuario> ObtenerUsuarioPorIdAsync(int idUsuario)
     {
@@ -146,7 +149,7 @@ public class UsuarioFacade(
         }
     }
 
-    public async Task<bool> ConfirmarCodigoVerificacion2FAAsync(int idUsuario, Tipo2FA tipo2FA,
+    public async Task<string?> ConfirmarCodigoVerificacion2FAAsync(int idUsuario, Tipo2FA tipo2FA,
         string codigoVerificacion, Guid modificationUser)
     {
         try
@@ -188,7 +191,25 @@ public class UsuarioFacade(
             }
 
             await context.SaveChangesAsync();
-            return confirmado;
+
+            if (confirmado)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(type: ClaimTypes.NameIdentifier, value: usuario.Id.ToString()),
+                    new Claim(type: ClaimTypes.Name, value: usuario.Cliente?.NombreCompleto ?? "Usuario"),
+                    new Claim(type: "IdUsuario", value: usuario.Id.ToString())
+                };
+
+                if (usuario.Cliente != null)
+                {
+                    claims.Add(new Claim(type: "IdCliente", value: usuario.Cliente.Id.ToString()));
+                }
+
+                return tokenService.GenerateAccessToken(claims: claims);
+            }
+
+            return null;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

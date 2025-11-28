@@ -18,7 +18,7 @@ public interface IUsuarioFacade
     Task<Usuario> ActualizarTelefonoAsync(int idUsuario, string codigoPais, string telefono,
         Guid modificationUser, string? testCase = null);
 
-    Task<bool> ConfirmarCodigoVerificacion2FAAsync(int idUsuario, Tipo2FA tipo2FA,
+    Task<string?> ConfirmarCodigoVerificacion2FAAsync(int idUsuario, Tipo2FA tipo2FA,
         string codigoVerificacion, Guid modificationUser);
 
     Task<Usuario> GuardarUsuarioPreRegistroAsync(string codigoPais, string telefono, Guid creationUser,

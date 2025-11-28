@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Wallet.DOM.Enums;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.RestAPI.Models;
+using System.Collections.Generic;
 
 namespace Wallet.RestAPI.Controllers.Implementation
 {
@@ -37,9 +38,29 @@ namespace Wallet.RestAPI.Controllers.Implementation
             string version,
             [FromRoute] [Required] int idUsuario, [FromBody] Verificacion2FARequest body)
         {
-            var result = await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario,
+            var token = await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario,
                 tipo2FA: (Tipo2FA)body.Tipo, codigoVerificacion: body.Codigo, modificationUser: Guid.Empty);
-            return Ok(value: result);
+
+            if (token == null)
+            {
+                return BadRequest(error: new InlineResponse400
+                {
+                    Errors = new List<InlineResponse400Errors>
+                    {
+                        new InlineResponse400Errors
+                        {
+                            ErrorCode = "INVALID_CODE",
+                            Type = "https://example.com/errors/invalid-code",
+                            Title = "Invalid Verification Code",
+                            Status = 400,
+                            Detail = "Código de verificación inválido o expirado.",
+                            Instance = HttpContext.Request.Path
+                        }
+                    }
+                });
+            }
+
+            return Ok(value: new TokenResult { Token = token });
         }
 
         public override async Task<IActionResult> PutUsuarioContrasenaAsync(

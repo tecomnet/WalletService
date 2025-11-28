@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
@@ -16,6 +18,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade u
 {
     // TODO EMD: PENDIENTE IMPLEMENTAR JWT PARA EL USUSARIO QUE REALIZA LA OPERACION
     /// <inheritdoc/>
+    [Authorize]
     public override async Task<IActionResult> PostClienteAsync(
         [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
         string version,
@@ -42,6 +45,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade u
 
 
     /// <inheritdoc/>
+    [Authorize]
     public override async Task<IActionResult> GetClienteAsync(
         [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
         string version,
@@ -56,6 +60,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade u
     }
 
     /// <inheritdoc/>
+    [Authorize]
     public override async Task<IActionResult> GetClientesAsync(
         [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
         string version)
@@ -69,6 +74,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade u
     }
 
     /// <inheritdoc/>
+    [Authorize]
     public override async Task<IActionResult> DeleteClienteAsync(
         [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
         string version,
@@ -83,6 +89,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade u
     }
 
     /// <inheritdoc/>
+    [Authorize]
     public override async Task<IActionResult> PutActivarClienteAsync(
         [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
         string version,
@@ -97,6 +104,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade u
     }
 
     /// <inheritdoc/>
+    [Authorize]
     public override async Task<IActionResult> PutClienteAsync(
         [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
         string version,

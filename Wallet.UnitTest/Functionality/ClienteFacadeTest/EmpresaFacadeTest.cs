@@ -20,7 +20,7 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         // Act
         var result = await Facade.ObtenerPorIdAsync(idEmpresa: id);
         // Assert
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: id, actual: result.Id);
         Assert.Equal(expected: nombreEsperado, actual: result.Nombre);
     }
@@ -47,7 +47,7 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         var result = await Facade.ObtenerPorNombreAsync(nombre: nombre);
 
         // Assert
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: nombre, actual: result.Nombre);
     }
 
@@ -75,13 +75,13 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
             testCase: SetupConfig.TestCaseId);
 
         // Assert
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.True(condition: result.Id > 0); // EF Core asignó un ID
         Assert.Equal(expected: nombreNuevo, actual: result.Nombre);
 
         // Verifica que se guardó en la DB
         var savedEntity = await Context.Empresa.AsNoTracking().FirstAsync(predicate: x => x.Id == result.Id);
-        Assert.NotNull(@object: savedEntity);
+        Assert.NotNull(savedEntity);
     }
 
     [Theory(DisplayName = "GuardarEmpresaAsync: Lanza excepción por duplicidad de nombre")]

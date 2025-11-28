@@ -162,7 +162,7 @@ public class ServiceErrorsBuilder
         AddServiceError(
             errorCode: CodigoVerificacionNoEncontrado,
             message: "El código de verificación no fue encontrado.",
-            description: "El código de verificación proporcionado del tipo {1} no existe.");
+            description: "El código de verificación proporcionado del tipo {0} no existe.");
         // Error de documentación adjunta requerida
         AddServiceError(
             errorCode: DocumentacionAdjuntaRequerida,

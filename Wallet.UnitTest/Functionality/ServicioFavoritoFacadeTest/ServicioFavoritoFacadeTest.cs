@@ -35,7 +35,7 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
                 creationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 
-            Assert.NotNull(@object: servicio);
+            Assert.NotNull(servicio);
             Assert.True(condition: servicio.ClienteId == clienteId &&
                                    servicio.ProveedorServicioId == proveedorId &&
                                    servicio.Alias == alias &&
@@ -44,7 +44,7 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
 
             var servicioContext =
                 await Context.ServicioFavorito.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == servicio.Id);
-            Assert.NotNull(@object: servicioContext);
+            Assert.NotNull(servicioContext);
             Assert.True(condition: servicioContext.Alias == alias);
 
             Assert.True(condition: success);
@@ -80,14 +80,14 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
                 modificationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 
-            Assert.NotNull(@object: servicio);
+            Assert.NotNull(servicio);
             Assert.True(condition: servicio.Alias == alias &&
                                    servicio.NumeroReferencia == numeroReferencia &&
                                    servicio.ModificationUser == SetupConfig.UserId);
 
             var servicioContext =
                 await Context.ServicioFavorito.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == servicio.Id);
-            Assert.NotNull(@object: servicioContext);
+            Assert.NotNull(servicioContext);
             Assert.True(condition: servicioContext.Alias == alias);
 
             Assert.True(condition: success);
@@ -115,12 +115,12 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
         try
         {
             var servicio = await Facade.EliminarServicioFavoritoAsync(idServicioFavorito: idServicio, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(@object: servicio);
+            Assert.NotNull(servicio);
             Assert.False(condition: servicio.IsActive);
 
             var servicioContext =
                 await Context.ServicioFavorito.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == servicio.Id);
-            Assert.NotNull(@object: servicioContext);
+            Assert.NotNull(servicioContext);
             Assert.False(condition: servicioContext.IsActive);
 
             Assert.True(condition: success);

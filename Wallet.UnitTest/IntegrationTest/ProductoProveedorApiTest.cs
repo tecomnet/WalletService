@@ -48,7 +48,7 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: request.Sku, actual: result.Sku);
         Assert.Equal(expected: provider.Id, actual: result.ProveedorServicioId);
     }
@@ -69,7 +69,7 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: product.Id, actual: result.Id);
     }
 
@@ -97,7 +97,7 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: updateRequest.Sku, actual: result.Sku);
         Assert.Equal(expected: updateRequest.Monto, actual: result.Monto);
     }
@@ -118,7 +118,7 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.False(condition: result.IsActive);
     }
 
@@ -139,7 +139,7 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<List<ProductoProveedorResult>>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.True(condition: result.Count >= 2);
     }
 

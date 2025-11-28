@@ -107,7 +107,7 @@ public class AuthFacadeTest
 
         // Assert
         var dbUser = await context.Usuario.FindAsync(keyValues: usuario.Id);
-        Assert.NotNull(@object: dbUser);
+        Assert.NotNull(dbUser);
         Assert.True(condition: string.IsNullOrEmpty(value: dbUser.RefreshToken));
     }
 }

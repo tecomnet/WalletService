@@ -51,7 +51,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ServicioFavoritoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Equal(expected: request.Alias, actual: result.Alias);
         Assert.True(condition: result.Id > 0);
     }
@@ -78,7 +78,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<List<ServicioFavoritoResult>>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(@object: result);
+        Assert.NotNull(result);
         Assert.Contains(collection: result, filter: s => s.Id == servicioFavorito.Id);
     }
 

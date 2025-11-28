@@ -5,6 +5,8 @@ using Wallet.UnitTest.Functionality.Configuration;
 using Xunit.Sdk;
 using Moq;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
+using Wallet.DOM.Enums;
+using Wallet.DOM.Modelos;
 
 namespace Wallet.UnitTest.Functionality.UsuarioFacadeTest;
 
@@ -36,16 +38,16 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                 modificationUser: SetupConfig.UserId);
 
             // Assert user updated
-            Assert.NotNull(@object: usuario);
+            Assert.NotNull(usuario);
             // Assert password set (we can't check the hash directly easily, but we can check it's not null)
-            Assert.NotNull(@object: usuario.Contrasena);
+            Assert.NotNull(usuario.Contrasena);
 
             // Get the user from context
             var usuarioContext = await Context.Usuario.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
             // Confirm user updated in context
-            Assert.NotNull(@object: usuarioContext);
-            Assert.NotNull(@object: usuarioContext.Contrasena);
+            Assert.NotNull(usuarioContext);
+            Assert.NotNull(usuarioContext.Contrasena);
 
             // Assert successful test
             Assert.True(condition: success);
@@ -95,14 +97,14 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                 modificationUser: SetupConfig.UserId);
 
             // Assert user updated
-            Assert.NotNull(@object: usuario);
+            Assert.NotNull(usuario);
             Assert.Equal(expected: correoElectronico, actual: usuario.CorreoElectronico);
 
             // Get the user from context
             var usuarioContext = await Context.Usuario.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
             // Confirm user updated in context
-            Assert.NotNull(@object: usuarioContext);
+            Assert.NotNull(usuarioContext);
             Assert.Equal(expected: correoElectronico, actual: usuarioContext.CorreoElectronico);
 
             // Assert successful test
@@ -152,7 +154,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                 testCase: SetupConfig.TestCaseId);
 
             // Assert user created
-            Assert.NotNull(@object: usuario);
+            Assert.NotNull(usuario);
             // Assert user properties
             Assert.True(condition: usuario.CodigoPais == codigoPais &&
                                    usuario.Telefono == telefono &&
@@ -163,14 +165,14 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                 .FirstOrDefaultAsync(predicate: x => x.Id == usuario.Id);
 
             // Confirm user created in context
-            Assert.NotNull(@object: usuarioContext);
+            Assert.NotNull(usuarioContext);
             // Assert user properties
             Assert.True(condition: usuarioContext.CodigoPais == codigoPais &&
                                    usuarioContext.Telefono == telefono &&
                                    usuarioContext.CreationUser == SetupConfig.UserId);
 
             // Assert associated cliente created
-            Assert.NotNull(@object: usuarioContext.Cliente);
+            Assert.NotNull(usuarioContext.Cliente);
             Assert.True(condition: usuarioContext.Cliente.CreationUser == SetupConfig.UserId);
 
             // Assert successful test
@@ -187,6 +189,92 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                                           exception is not TrueException && exception is not FalseException)
         {
             // Should not reach for unmanaged errors
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
+        }
+    }
+
+    [Theory]
+    // Successfully case
+    [InlineData(data: ["1. Successfully case, confirm verification", 1, "1234", true, new string[] { }])]
+    // Wrong cases
+    [InlineData(data:
+    [
+        "2. Wrong case, user not found", 99, "1234", false,
+        new string[] { ServiceErrorsBuilder.UsuarioNoEncontrado }
+    ])]
+    public async Task ConfirmarCodigoVerificacion2FATest(
+        string caseName,
+        int idUsuario,
+        string codigoVerificacion,
+        bool success,
+        string[] expectedErrors)
+    {
+        try
+        {
+            // Setup mocks
+            TwilioServiceFacadeMock.Setup(expression: x =>
+                    x.ConfirmarVerificacionSMS(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(value: new VerificacionResult { Sid = "SID123", IsVerified = true });
+
+            TokenServiceMock.Setup(expression: x =>
+                    x.GenerateAccessToken(It.IsAny<IEnumerable<System.Security.Claims.Claim>>()))
+                .Returns(value: "generated_token");
+
+            // Setup data for success case
+            if (success)
+            {
+                var usuario = await Context.Usuario
+                    .Include(navigationPropertyPath: u => u.Verificaciones2Fa)
+                    .FirstOrDefaultAsync(predicate: u => u.Id == idUsuario);
+
+                if (usuario != null)
+                {
+                    var verificacion = new Verificacion2FA(
+                        twilioSid: "SID123",
+                        fechaVencimiento: DateTime.Now.AddMinutes(value: 10),
+                        tipo: Tipo2FA.Sms,
+                        creationUser: SetupConfig.UserId,
+                        testCase: caseName);
+
+                    usuario.AgregarVerificacion2Fa(verificacion: verificacion, modificationUser: SetupConfig.UserId);
+                    await Context.SaveChangesAsync();
+                }
+            }
+
+            // Call facade method
+            var token = await Facade.ConfirmarCodigoVerificacion2FAAsync(
+                idUsuario: idUsuario,
+                tipo2FA: Tipo2FA.Sms,
+                codigoVerificacion: codigoVerificacion,
+                modificationUser: SetupConfig.UserId);
+
+            if (success)
+            {
+                // Assert token returned
+                Assert.NotNull(token);
+                Assert.Equal(expected: "generated_token", actual: token);
+
+                // Get the user from context
+                var usuarioContext = await Context.Usuario.Include(navigationPropertyPath: x => x.Verificaciones2Fa)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
+
+                // Confirm user updated in context
+                Assert.NotNull(usuarioContext);
+                Assert.Contains(collection: usuarioContext.Verificaciones2Fa,
+                    filter: v => v.Verificado && v.Codigo == codigoVerificacion);
+            }
+
+            // Assert successful test
+            Assert.True(condition: success);
+        }
+        catch (EMGeneralAggregateException exception)
+        {
+            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not TrueException && exception is not FalseException)
+        {
             Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }

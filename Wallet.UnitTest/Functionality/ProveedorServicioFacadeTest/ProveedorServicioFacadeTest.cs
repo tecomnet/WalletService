@@ -35,7 +35,7 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
                 testCase: SetupConfig.TestCaseId);
 
             // Assert proveedor created
-            Assert.NotNull(@object: proveedor);
+            Assert.NotNull(proveedor);
             // Assert properties
             Assert.True(condition: proveedor.Nombre == nombre &&
                                    proveedor.Categoria == categoria &&
@@ -45,7 +45,7 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
             // Get from context
             var proveedorContext = await Context.ProveedorServicio.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
-            Assert.NotNull(@object: proveedorContext);
+            Assert.NotNull(proveedorContext);
             Assert.True(condition: proveedorContext.Nombre == nombre &&
                                    proveedorContext.Categoria == categoria &&
                                    proveedorContext.UrlIcono == urlIcono &&
@@ -88,7 +88,7 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
                 modificationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 
-            Assert.NotNull(@object: proveedor);
+            Assert.NotNull(proveedor);
             Assert.True(condition: proveedor.Nombre == nombre &&
                                    proveedor.Categoria == categoria &&
                                    proveedor.UrlIcono == urlIcono &&
@@ -96,7 +96,7 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
 
             var proveedorContext = await Context.ProveedorServicio.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
-            Assert.NotNull(@object: proveedorContext);
+            Assert.NotNull(proveedorContext);
             Assert.True(condition: proveedorContext.Nombre == nombre &&
                                    proveedorContext.Categoria == categoria &&
                                    proveedorContext.UrlIcono == urlIcono &&
@@ -127,12 +127,12 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
         try
         {
             var proveedor = await Facade.EliminarProveedorServicioAsync(idProveedorServicio: idProveedor, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(@object: proveedor);
+            Assert.NotNull(proveedor);
             Assert.False(condition: proveedor.IsActive);
 
             var proveedorContext = await Context.ProveedorServicio.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
-            Assert.NotNull(@object: proveedorContext);
+            Assert.NotNull(proveedorContext);
             Assert.False(condition: proveedorContext.IsActive);
 
             Assert.True(condition: success);
@@ -163,12 +163,12 @@ public class ProveedorServicioFacadeTest(SetupDataConfig setupConfig)
             // But we can just call Activate, it sets IsActive = true.
 
             var proveedor = await Facade.ActivarProveedorServicioAsync(idProveedorServicio: idProveedor, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(@object: proveedor);
+            Assert.NotNull(proveedor);
             Assert.True(condition: proveedor.IsActive);
 
             var proveedorContext = await Context.ProveedorServicio.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
-            Assert.NotNull(@object: proveedorContext);
+            Assert.NotNull(proveedorContext);
             Assert.True(condition: proveedorContext.IsActive);
 
             Assert.True(condition: success);
