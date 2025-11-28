@@ -1,0 +1,431 @@
+openapi: 3.0.0
+x-stoplight:
+  id: 018fa124ecfc8
+info:
+  title: Twilio Service API
+  version: 0.1.0
+  description: |
+    Api para exponer la funcionalidad de twilio.
+  contact:
+    name: Edilberto Martinez
+    url: 'https://edilbertomd.github.io/portafoliolaboral/'
+    email: edilberto_diaz14@hotmail.com
+servers:
+  - url: 'http://localhost:3000'
+    description: Development/Test Server
+  - url: 'http://localhost:4000'
+    description: Production Server
+paths:
+  /health:
+    get:
+      summary: Ping echo for testing the services is up
+      tags:
+        - Health
+      responses:
+        '200':
+          description: OK
+      operationId: get-health
+      description: Health check for the service
+      security: []
+  /ready:
+    get:
+      summary: Readiness check by executing base functionality
+      tags:
+        - Health
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      operationId: GetReady
+      description: Readiness check for the service
+      security: []
+  '/{version}/twilio/verificacionSMS':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Crea verificacion por SMS
+      operationId: PostVerificacionSMS
+      description: Crea la verificacion sms
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificacionResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      tags:
+        - Twilio
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificacionSMSRequest'
+        description: ''
+  '/{version}/twilio/verificacionSMS/Check':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Valida la verificacion por SMS
+      operationId: PostVerificacionSMSCheck
+      description: Valida la verificacion sms
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificacionResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      tags:
+        - Twilio
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificacionSMSCheckRequest'
+  '/{version}/twilio/verificacionEmail':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Crea verificacion por email
+      operationId: PostVerificacionEmail
+      description: Crea la verificacion por correo electronico
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificacionResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      tags:
+        - Twilio
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificacionEmailRequest'
+        description: ''
+  '/{version}/twilio/verificacionEmail/Check':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Valida la verificacion por SMS
+      operationId: PostVerificacionEmailCheck
+      description: Valida la verificacion por correo electronico
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificacionResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      tags:
+        - Twilio
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificacionEmailCheckRequest'
+components:
+  schemas:
+    VerificacionResult:
+      title: VerificacionResult
+      x-stoplight:
+        id: gu55vk4o2l8gt
+      type: object
+      description: Estructura para el resultado de la generacion de codigo de verificacion
+      properties:
+        Sid:
+          type: string
+          x-stoplight:
+            id: apqievlc3pgyb
+        Status:
+          type: string
+          x-stoplight:
+            id: apqievlc3pgyb
+        IsVerified:
+          type: boolean
+          x-stoplight:
+            id: apqievlc3pgyb
+        Message:
+          type: string
+          x-stoplight:
+            id: apqievlc3pgyb
+    VerificacionSMSRequest:
+      title: VerificacionSMSRequest
+      x-stoplight:
+        id: byaxobos3mmkv
+      type: object
+      description: Modelo para generar el codigo de verificacion
+      properties:
+        codigoPais:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 3
+          maxLength: 3
+        telefono:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 9
+          maxLength: 10
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 1
+          maxLength: 100
+      required:
+        - codigoPais
+        - telefono
+        - nombreServicioCliente
+    VerificacionEmailRequest:
+      title: VerificacionEmailRequest
+      x-stoplight:
+        id: koznh9bnz7fjn
+      type: object
+      description: Modelo para generar el codigo de verificacion para email
+      properties:
+        correoElectronico:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          maxLength: 150
+          pattern: '^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$'
+          minLength: 1
+        nombreCompleto:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          maxLength: 150
+          minLength: 1
+        tiempoExpiracion:
+          type: integer
+          x-stoplight:
+            id: rwchuhnhlpxaj
+        nombreEmpresa:
+          type: string
+          x-stoplight:
+            id: z42vvuay2wrfg
+          minLength: 1
+          maxLength: 100
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: z42vvuay2wrfg
+          minLength: 1
+          maxLength: 100
+      required:
+        - correoElectronico
+        - nombreCompleto
+        - tiempoExpiracion
+        - nombreEmpresa
+        - nombreServicioCliente
+    VerificacionEmailCheckRequest:
+      title: VerificacionEmailRequest
+      x-stoplight:
+        id: xcyp7adm145tr
+      type: object
+      description: Modelo para generar el codigo de verificacion para email
+      properties:
+        correoElectronico:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          maxLength: 150
+          pattern: '^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$'
+          minLength: 1
+        codigoVerificacion:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          maxLength: 4
+          minLength: 4
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 1
+          maxLength: 100
+      required:
+        - correoElectronico
+        - codigoVerificacion
+        - nombreServicioCliente
+    VerificacionSMSCheckRequest:
+      title: VerificacionSMSCheckRequest
+      x-stoplight:
+        id: xxs2r5wkp755o
+      type: object
+      description: Modelo para validar el codigo de verificacion
+      properties:
+        codigoPais:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 3
+          maxLength: 3
+        telefono:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 9
+          maxLength: 10
+        codigoVerificacion:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          maxLength: 4
+          minLength: 4
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: rwchuhnhlpxaj
+          minLength: 1
+          maxLength: 100
+      required:
+        - codigoPais
+        - telefono
+        - codigoVerificacion
+        - nombreServicioCliente
+  securitySchemes:
+    jwsToken:
+      type: http
+      scheme: bearer
+    X-API-Key:
+      name: X-API-Key
+      type: apiKey
+      in: header
+  parameters:
+    version:
+      name: version
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+      description: Version of the API to use
+  responses:
+    HTTP_Error_400:
+      description: Response to client error satus code
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                description: List of errors
+                items:
+                  type: object
+                  description: Standard error
+                  properties:
+                    errorCode:
+                      type: string
+                      description: Error key for internationalization purposes
+                    type:
+                      type: string
+                      format: uri
+                      description: Original URI
+                      readOnly: true
+                    title:
+                      type: string
+                      description: 'Error title, clear and concise'
+                      readOnly: true
+                    status:
+                      type: integer
+                      description: HTTP status for the specific error
+                      format: int32
+                      minimum: 0
+                      exclusiveMinimum: true
+                      readOnly: true
+                    detail:
+                      type: string
+                      description: Full detail of the error
+                      minLength: 15
+                      readOnly: true
+                    instance:
+                      type: string
+                      description: Specific instance where the error occurs without the base URI
+                      minLength: 1
+                      readOnly: true
+                    extraAttributes:
+                      type: object
+                      description: Extra attributes
+                      nullable: true
+                      properties:
+                        desciptionDynamicContents:
+                          type: array
+                          description: List of dynamic fields used in the detail of the error
+                          nullable: true
+                          items:
+                            type: string
+                        module:
+                          type: string
+                          description: Module that generated the error
+                          nullable: true
+                        serviceName:
+                          type: string
+                          description: Name of the service generating the error
+                          nullable: true
+                        serviceLocation:
+                          type: string
+                          description: Location of the service's instance
+                          nullable: true
+                  required:
+                    - errorCode
+                    - type
+                    - title
+                    - status
+                    - detail
+                    - instance
+            required:
+              - errors
+          examples:
+            Basic example:
+              value:
+                errors:
+                  - errorCode: string
+                    type: 'http://example.com'
+                    title: string
+                    status: 1
+                    detail: stringstringstr
+                    instance: string
+                    extraAttributes:
+                      desciptionDynamicContents:
+                        - string
+                      module: string
+                      serviceName: string
+                      serviceLocation: string
+tags:
+  - name: Health
+  - name: Twilio
+security:
+  - jwsToken: []
+  - X-API-Key: []
