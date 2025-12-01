@@ -57,8 +57,7 @@ public class ClienteFacade(
             var clienteExiste = await context.Cliente.Include(x=>x.Verificaciones2FA.Where(x=>x.IsActive)).
                 FirstOrDefaultAsync(x => x.CodigoPais == codigoPais && x.Telefono == telefono);
             // Existe, pero no finalizo la confirmacion, ya sea por sms o email, iniciar el proceso de verificacion con sms
-            if (clienteExiste != null && (clienteExiste.Verificaciones2FA.Any(v => v is { Verificado: false, Tipo: Tipo2FA.Sms }) || 
-                clienteExiste.Verificaciones2FA.Any(v => v is { Verificado: false, Tipo: Tipo2FA.Email }))) 
+            if (clienteExiste != null && string.IsNullOrWhiteSpace(clienteExiste.Contrasena))
             {
                 // Genera codigo de verificacion y envia por twilio service
                 var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(codigoPais: codigoPais, telefono: telefono, creationUser: creationUser, testCase: testCase);
