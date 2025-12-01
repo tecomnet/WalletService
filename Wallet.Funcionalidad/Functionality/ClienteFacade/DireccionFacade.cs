@@ -25,24 +25,26 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
     /// <param name="modificationUser">Identificador del usuario que realiza la modificación.</param>
     /// <returns>La entidad <see cref="Direccion"/> actualizada.</returns>
     /// <exception cref="EMGeneralAggregateException">Se lanza si el cliente no existe, la dirección no está configurada o si ocurre un error durante la actualización.</exception>
-    public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio, string colonia, string calle, string numeroExterior, string numeroInterior, string referencia, Guid modificationUser)
+    public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio,
+        string colonia, string calle, string numeroExterior, string numeroInterior, string referencia,
+        Guid modificationUser)
     {
         try
         {
             // Obtiene al cliente por su ID.
             var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
-            
+
             // Obtiene la dirección asociada al cliente.
             var direccion = cliente.Direccion;
-            
+
             // Validamos que la dirección no sea nula. Si es nula, significa que el cliente no tiene una dirección configurada.
-            if (direccion is null) 
+            if (direccion is null)
             {
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                     errorCode: ServiceErrorsBuilder.DireccionNoConfigurada,
                     dynamicContent: []));
             }
-            
+
             // Actualiza los datos de la dirección con los valores proporcionados.
             direccion.ActualizarDireccion(
                 codigoPostal: codigoPostal,
@@ -53,10 +55,10 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
                 numeroInterior: numeroInterior,
                 referencia: referencia,
                 modificationUser: modificationUser);
-            
+
             // Guarda los cambios realizados en la base de datos.
             await context.SaveChangesAsync();
-            
+
             // Retorna la entidad de dirección actualizada.
             return direccion;
         }
@@ -64,6 +66,37 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
         {
             // Captura cualquier excepción no controlada y la envuelve en una EMGeneralAggregateException.
             // Esto asegura que todas las excepciones de servicio sean del tipo esperado.
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+
+    /// <inheritdoc />
+    public async Task<Direccion> ObtenerDireccionPorClienteIdAsync(int idCliente)
+    {
+        try
+        {
+            // Obtiene al cliente por su ID.
+            var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
+
+            // Obtiene la dirección asociada al cliente.
+            var direccion = cliente.Direccion;
+
+            // Validamos que la dirección no sea nula. Si es nula, significa que el cliente no tiene una dirección configurada.
+            if (direccion is null)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.DireccionNoConfigurada,
+                    dynamicContent: []));
+            }
+
+            return direccion;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
                 module: this.GetType().Name,

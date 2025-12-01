@@ -47,7 +47,34 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutDireccionAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] int idCliente, [FromBody] DireccionUpdateRequest body);
+
+        /// <summary>
+        /// Obtiene la direccion de un cliente
+        /// </summary>
+        /// <remarks>Obtiene la direccion del cliente</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idCliente">Id del cliente</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpGet]
+        [Route(template: "/{version:apiVersion}/direccion/{idCliente}")]
+        [ValidateModelState]
+        [SwaggerOperation(summary: "GetDireccion")]
+        [SwaggerResponse(statusCode: 200, type: typeof(DireccionResult), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetDireccionAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
+            [FromRoute] [Required] int idCliente);
     }
 }

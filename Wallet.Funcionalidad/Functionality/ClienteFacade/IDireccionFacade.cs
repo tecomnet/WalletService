@@ -30,4 +30,11 @@ public interface IDireccionFacade
         string numeroInterior,
         string referencia,
         Guid modificationUser);
+
+    /// <summary>
+    /// Obtiene la dirección de un cliente específico.
+    /// </summary>
+    /// <param name="idCliente">Identificador único del cliente.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, cuyo resultado es la entidad <see cref="Direccion"/> encontrada.</returns>
+    public Task<Direccion> ObtenerDireccionPorClienteIdAsync(int idCliente);
 }
