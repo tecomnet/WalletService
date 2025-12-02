@@ -21,9 +21,10 @@ namespace Wallet.DOM.ApplicationDbContext
         /// <returns>Una nueva instancia de <see cref="ServiceDbContext"/> configurada.</returns>
         public ServiceDbContext CreateDbContext(string[] args)
         {
-            // Construye la configuración para obtener variables de entorno.
-            // Esto permite que la cadena de conexión se defina fuera del código, por ejemplo, en variables de entorno.
+            // Construye la configuración para obtener variables de entorno y appsettings.
+            // Esto permite que la cadena de conexión se defina fuera del código, por ejemplo, en variables de entorno o archivos de configuración.
             var configuration = new ConfigurationBuilder()
+                .AddUserSecrets<EmServiceContextFactory>()
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -35,7 +36,8 @@ namespace Wallet.DOM.ApplicationDbContext
             // Se configura el comportamiento de división de consultas para optimizar el rendimiento.
             optionsBuilder.UseSqlServer(
                 connectionString: DbConnectionHelper.GetConnectionString(configuration),
-                sqlServerOptionsAction: builder => builder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                sqlServerOptionsAction: builder =>
+                    builder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 
             // Retorna una nueva instancia de ServiceDbContext con las opciones configuradas.
             return new ServiceDbContext(optionsBuilder.Options);

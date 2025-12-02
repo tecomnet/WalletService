@@ -15,7 +15,8 @@ namespace Wallet.DOM.Helper
         public static string GetConnectionString(IConfiguration configuration)
         {
             // Intenta obtener la cadena de conexión de la configuración (Secrets de usuario o appsettings).
-            var configConnectionString = configuration["dbConnectionString"];
+            var configConnectionString = configuration["dbConnectionString"] ??
+                                         configuration.GetConnectionString("DefaultConnectionString");
             if (!string.IsNullOrWhiteSpace(configConnectionString))
             {
                 return configConnectionString;
