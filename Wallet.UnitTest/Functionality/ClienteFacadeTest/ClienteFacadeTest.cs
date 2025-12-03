@@ -5,7 +5,6 @@ using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.UnitTest.Functionality.Configuration;
 using Xunit.Sdk;
 using Moq;
-using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
 using Wallet.DOM.Modelos;
 

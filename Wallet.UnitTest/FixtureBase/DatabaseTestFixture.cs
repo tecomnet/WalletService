@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Wallet.Funcionalidad;
 using Wallet.DOM.ApplicationDbContext;
-using Wallet.RestAPI;
 using Wallet.DOM.Modelos;
 using Wallet.DOM.Helper;
 using Respawn;

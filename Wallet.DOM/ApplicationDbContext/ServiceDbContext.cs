@@ -20,6 +20,7 @@ public class ServiceDbContext : DbContext
     public DbSet<ProveedorServicio> ProveedorServicio { get; set; }
     public DbSet<ProductoProveedor> ProductoProveedor { get; set; }
     public DbSet<ServicioFavorito> ServicioFavorito { get; set; }
+    public DbSet<ConsentimientosUsuario> ConsentimientosUsuario { get; set; }
 
 
     // Sobrescribimos este método para configurar el modelo y agregar los datos iniciales

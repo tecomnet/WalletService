@@ -1,5 +1,4 @@
 ﻿using Wallet.DOM.Errors;
-using System.Collections.Generic;
 
 namespace Wallet.DOM
 {

@@ -37,10 +37,12 @@ public class AutoMapperProfile : Profile
         CreateMap<Empresa, EmpresaResult>();
         CreateMap<Estado, EstadoResult>();
         CreateMap<ProveedorServicio, ProveedorServicioResult>()
-            .ForMember(destinationMember: dest => dest.Categoria, memberOptions: opt => opt.MapFrom(mapExpression: src => src.Categoria.ToString()));
+            .ForMember(destinationMember: dest => dest.Categoria,
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Categoria.ToString()));
         CreateMap<ServicioFavorito, ServicioFavoritoResult>();
         CreateMap<ProductoProveedor, ProductoProveedorResult>();
         CreateMap<Usuario, UsuarioResult>();
         CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();
+        CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>();
     }
 }

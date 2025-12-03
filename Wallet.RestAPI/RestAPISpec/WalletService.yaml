@@ -1090,6 +1090,58 @@ paths:
               $ref: "#/components/schemas/Verificacion2FARequest"
       tags:
         - Usuario
+  "/{version}/usuario/{idUsuario}/consentimiento":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idUsuario
+        in: path
+        schema:
+          type: integer
+        required: true
+        description: Id del usuario
+    post:
+      summary: Guarda un consentimiento de usuario
+      operationId: postConsentimientoUsuario
+      tags:
+        - ConsentimientoUsuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConsentimientoUsuarioRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsentimientoUsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+    get:
+      summary: Obtiene los últimos consentimientos del usuario
+      operationId: getConsentimientosUsuario
+      tags:
+        - ConsentimientoUsuario
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ConsentimientoUsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
   "/{version}/auth/login":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -1159,6 +1211,50 @@ paths:
         - Auth
 components:
   schemas:
+    TipoDocumentoConsentimiento:
+      type: string
+      enum:
+        - Terminos
+        - Privacidad
+        - PLD
+      description: Tipo de documento de consentimiento
+    ConsentimientoUsuarioRequest:
+      title: ConsentimientoUsuarioRequest
+      type: object
+      properties:
+        tipoDocumento:
+          $ref: "#/components/schemas/TipoDocumentoConsentimiento"
+        version:
+          type: string
+          minLength: 1
+          maxLength: 20
+      required:
+        - tipoDocumento
+        - version
+    ConsentimientoUsuarioResult:
+      title: ConsentimientoUsuarioResult
+      type: object
+      properties:
+        id:
+          type: integer
+        idUsuario:
+          type: integer
+        tipoDocumento:
+          $ref: "#/components/schemas/TipoDocumentoConsentimiento"
+        version:
+          type: string
+        fechaAceptacion:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+      required:
+        - id
+        - idUsuario
+        - tipoDocumento
+        - version
+        - fechaAceptacion
+        - isActive
     LoginRequest:
       type: object
       properties:
