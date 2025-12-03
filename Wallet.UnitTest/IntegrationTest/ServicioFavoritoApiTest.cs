@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
+using Wallet.DOM.Modelos;
+using Wallet.DOM.ApplicationDbContext;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
@@ -19,9 +21,13 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         ContractResolver = new CamelCasePropertyNamesContractResolver()
     };
 
+    protected ServiceDbContext Context;
+
     public ServicioFavoritoApiTest()
     {
-        SetupDataAsync(setupDataAction: async context => { await context.SaveChangesAsync(); }).GetAwaiter().GetResult();
+        Context = CreateContext();
+        SetupDataAsync(setupDataAction: async context => { await context.SaveChangesAsync(); }).GetAwaiter()
+            .GetResult();
     }
 
     [Fact]
@@ -76,7 +82,8 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
 
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<List<ServicioFavoritoResult>>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<List<ServicioFavoritoResult>>(
+                value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Contains(collection: result, filter: s => s.Id == servicioFavorito.Id);
@@ -90,7 +97,8 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
             Categoria = "Servicios",
             UrlIcono = "https://test.com/icon.png"
         };
-        var response = await client.PostAsync(requestUri: "0.1/proveedorServicio", content: CreateContent(body: request));
+        var response =
+            await client.PostAsync(requestUri: "0.1/proveedorServicio", content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode);
         return JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
             settings: _jsonSettings)!;
@@ -98,19 +106,32 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
 
     private async Task<ClienteResult> CreateCliente(HttpClient client)
     {
-        var request = new ClienteRequest
-        {
-            CodigoPais = "052",
-            Telefono = "5512345678"
-        };
-        var response = await client.PostAsync(requestUri: "0.1/cliente", content: CreateContent(body: request));
-        if (!response.IsSuccessStatusCode)
-        {
-            var error = await response.Content.ReadAsStringAsync();
-            Assert.Fail(message: $"CreateCliente failed with {response.StatusCode}: {error}");
-        }
+        var usuario = new Usuario("+52", "5512345678", "juan@example.com", null,
+            Wallet.DOM.Enums.EstatusRegistroEnum.RegistroCompletado,
+            Guid.NewGuid());
+        Context.Usuario.Add(usuario);
+        await Context.SaveChangesAsync();
 
-        return JsonConvert.DeserializeObject<ClienteResult>(value: await response.Content.ReadAsStringAsync(), settings: _jsonSettings)!;
+        var cliente = new Cliente(usuario, Guid.NewGuid());
+        cliente.AgregarDatosPersonales("Juan", "Perez", "Lopez", new DateOnly(1990, 1, 1),
+            Wallet.DOM.Enums.Genero.Masculino, Guid.NewGuid());
+        cliente.AgregarTipoPersona(Wallet.DOM.Enums.TipoPersona.Fisica, Guid.NewGuid());
+        cliente.AgregarRfc("ABC1234567890", Guid.NewGuid());
+        cliente.AgregarCurp("ABCD123456EFGHIJ01", Guid.NewGuid());
+        cliente.AgregarFotoAWS("foto.jpg", Guid.NewGuid());
+
+        Context.Cliente.Add(cliente);
+        await Context.SaveChangesAsync();
+
+        return new ClienteResult
+        {
+            Id = cliente.Id,
+            Nombre = cliente.Nombre,
+            PrimerApellido = cliente.PrimerApellido,
+            SegundoApellido = cliente.SegundoApellido,
+            CorreoElectronico = usuario.CorreoElectronico,
+            Telefono = usuario.Telefono
+        };
     }
 
     private async Task<ServicioFavoritoResult> CreateServicioFavorito(HttpClient client, int clienteId)
@@ -123,7 +144,8 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
             Alias = "Test Favorite",
             NumeroReferencia = "REFTEST"
         };
-        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{API_URI}", content: CreateContent(body: request));
+        var response =
+            await client.PostAsync(requestUri: $"{API_VERSION}/{API_URI}", content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode);
         return JsonConvert.DeserializeObject<ServicioFavoritoResult>(value: await response.Content.ReadAsStringAsync(),
             settings: _jsonSettings)!;

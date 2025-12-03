@@ -28,18 +28,22 @@ public class ConsentimientosUsuario : ValidatablePersistentObjectLogicalDelete
     /// Obtiene o establece el identificador único del usuario al que pertenece el consentimiento.
     /// Es una clave foránea a la entidad <see cref="Usuario"/>.
     /// </summary>
-    [ForeignKey("Usuario")] public int IdUsuario { get; private set; }
+    [ForeignKey("Usuario")]
+    public int IdUsuario { get; private set; }
 
     /// <summary>
     /// Obtiene o establece el tipo de documento de consentimiento.
     /// </summary>
-    [Required] public TipoDocumentoConsentimiento TipoDocumento { get; private set; }
+    [Required]
+    public TipoDocumentoConsentimiento TipoDocumento { get; private set; }
 
     /// <summary>
     /// Obtiene o establece la versión del documento de consentimiento.
     /// Este campo es requerido y tiene una longitud máxima de 20 caracteres.
     /// </summary>
-    [Required] [MaxLength(length: 20)] public string Version { get; private set; }
+    [Required]
+    [MaxLength(length: 20)]
+    public string Version { get; private set; } = null!;
 
     /// <summary>
     /// Obtiene o establece la fecha en que el usuario aceptó el consentimiento.
@@ -49,12 +53,12 @@ public class ConsentimientosUsuario : ValidatablePersistentObjectLogicalDelete
     /// <summary>
     /// Propiedad de navegación para acceder a la entidad <see cref="Usuario"/> asociada.
     /// </summary>
-    public virtual Usuario Usuario { get; private set; }
+    public virtual Usuario? Usuario { get; private set; }
 
     /// <summary>
     /// Constructor por defecto de la clase <see cref="ConsentimientosUsuario"/>.
     /// </summary>
-    public ConsentimientosUsuario() : base()
+    public ConsentimientosUsuario()
     {
     }
 

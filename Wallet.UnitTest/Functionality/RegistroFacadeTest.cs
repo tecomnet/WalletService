@@ -9,7 +9,7 @@ using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.UnitTest.FixtureBase;
 using Wallet.DOM.ApplicationDbContext;
 
-namespace Wallet.UnitTest.Functionality.RegistroFacadeTest;
+namespace Wallet.UnitTest.Functionality;
 
 public class RegistroFacadeTest : DatabaseTestFixture, IDisposable
 {
@@ -17,7 +17,7 @@ public class RegistroFacadeTest : DatabaseTestFixture, IDisposable
     private readonly Mock<IClienteFacade> _clienteFacadeMock = new();
     private readonly Mock<IConsentimientosUsuarioFacade> _consentimientosFacadeMock = new();
     private readonly RegistroFacade _registroFacade;
-    private readonly Guid UserId = Guid.NewGuid();
+    private readonly Guid _userId = Guid.NewGuid();
     protected ServiceDbContext Context;
 
     public RegistroFacadeTest()
@@ -40,10 +40,10 @@ public class RegistroFacadeTest : DatabaseTestFixture, IDisposable
     public async Task ConfirmarNumeroAsync_ShouldSucceed_WhenStateIsPreRegistro()
     {
         // Arrange
-        var usuario = new Usuario("+52", "5512345678", null, null, EstatusRegistroEnum.PreRegistro, UserId);
+        var usuario = new Usuario("+52", "5512345678", null, null, EstatusRegistroEnum.PreRegistro, _userId);
         // Mock 2FA verification
-        var verificacion = new Verificacion2FA("sid123", DateTime.Now.AddMinutes(10), Tipo2FA.Sms, UserId);
-        usuario.AgregarVerificacion2Fa(verificacion, UserId);
+        var verificacion = new Verificacion2FA("sid123", DateTime.Now.AddMinutes(10), Tipo2FA.Sms, _userId);
+        usuario.AgregarVerificacion2Fa(verificacion, _userId);
 
         Context.Usuario.Add(usuario);
         await Context.SaveChangesAsync();
@@ -57,11 +57,12 @@ public class RegistroFacadeTest : DatabaseTestFixture, IDisposable
             .ReturnsAsync(true);
 
         // Act
-        var result = await _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", UserId);
+        var result = await _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", _userId);
 
         // Assert
         Assert.True(result);
         var updatedUser = await Context.Usuario.FindAsync(usuario.Id);
+        Assert.NotNull(updatedUser);
         Assert.Equal(EstatusRegistroEnum.NumeroConfirmado, updatedUser.Estatus);
     }
 
@@ -69,7 +70,7 @@ public class RegistroFacadeTest : DatabaseTestFixture, IDisposable
     public async Task ConfirmarNumeroAsync_ShouldFail_WhenStateIsInvalid()
     {
         // Arrange
-        var usuario = new Usuario("+52", "5512345678", null, null, EstatusRegistroEnum.CorreoRegistrado, UserId);
+        var usuario = new Usuario("+52", "5512345678", null, null, EstatusRegistroEnum.CorreoRegistrado, _userId);
         Context.Usuario.Add(usuario);
         await Context.SaveChangesAsync();
 
@@ -78,6 +79,6 @@ public class RegistroFacadeTest : DatabaseTestFixture, IDisposable
             .ReturnsAsync(usuario);
 
         await Assert.ThrowsAsync<EMGeneralAggregateException>(() =>
-            _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", UserId));
+            _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", _userId));
     }
 }

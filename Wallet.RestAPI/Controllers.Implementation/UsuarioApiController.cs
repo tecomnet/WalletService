@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Wallet.DOM.Enums;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.RestAPI.Models;
-using System.Collections.Generic;
 
 namespace Wallet.RestAPI.Controllers.Implementation
 {
@@ -26,47 +24,6 @@ namespace Wallet.RestAPI.Controllers.Implementation
             return Ok(value: result);
         }
 
-        /// <inheritdoc/>
-        public override async Task<IActionResult> PostUsuarioContrasenaAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int idUsuario, [FromBody] ContrasenaRequest body)
-        {
-            var token = await usuarioFacade.GuardarContrasenaAsync(idUsuario: idUsuario, contrasena: body.Contrasena,
-                modificationUser: Guid.Empty);
-            return Created(uri: "", value: new TokenResult { Token = token });
-        }
-
-        /// <inheritdoc/>
-        public override async Task<IActionResult> PutUsuarioConfirmaVerificacionAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int idUsuario, [FromBody] Verificacion2FARequest body)
-        {
-            var isVerified = await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario,
-                tipo2FA: (Tipo2FA)body.Tipo, codigoVerificacion: body.Codigo, modificationUser: Guid.Empty);
-
-            if (!isVerified)
-            {
-                return BadRequest(error: new InlineResponse400
-                {
-                    Errors = new List<InlineResponse400Errors>
-                    {
-                        new InlineResponse400Errors
-                        {
-                            ErrorCode = "INVALID_CODE",
-                            Type = "https://example.com/errors/invalid-code",
-                            Title = "Invalid Verification Code",
-                            Status = 400,
-                            Detail = "Código de verificación inválido o expirado.",
-                            Instance = HttpContext.Request.Path
-                        }
-                    }
-                });
-            }
-
-            return Ok(value: isVerified);
-        }
 
         /// <inheritdoc/>
         public override async Task<IActionResult> PutUsuarioContrasenaAsync(
@@ -106,19 +63,6 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 modificationUser: Guid.Empty);
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
-        }
-
-        /// <inheritdoc/>
-        public override async Task<IActionResult> PostUsuarioPreRegistroAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromBody] PreRegistroRequest body)
-        {
-            var usuario = await usuarioFacade.GuardarUsuarioPreRegistroAsync(codigoPais: body.CodigoPais,
-                telefono: body.Telefono,
-                creationUser: Guid.Empty);
-            var result = mapper.Map<UsuarioResult>(source: usuario);
-            return Created(uri: "", value: result);
         }
     }
 }

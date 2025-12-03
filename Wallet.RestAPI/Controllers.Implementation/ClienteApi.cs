@@ -7,34 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
-using Wallet.Funcionalidad.Functionality.UsuarioFacade;
+
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
 /// <summary>
 /// Implementation of the Cliente API controller.
 /// </summary>
-public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade usuarioFacade, IMapper mapper)
+public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     : ClienteApiControllerBase
 {
     // TODO EMD: PENDIENTE IMPLEMENTAR JWT PARA EL USUSARIO QUE REALIZA LA OPERACION
-    /// <inheritdoc/>
-    [Authorize]
-    public override async Task<IActionResult> PostClienteAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromBody] ClienteRequest body)
-    {
-        // Llama a la fachada de usuario para el pre-registro
-        var usuario = await usuarioFacade.GuardarUsuarioPreRegistroAsync(
-            codigoPais: body.CodigoPais,
-            telefono: body.Telefono,
-            creationUser: Guid.Empty);
-    
-        var result = mapper.Map<ClienteResult>(source: usuario.Cliente);
-        // Retorna created
-        return Created(uri: $"/{version}/cliente/{usuario.Cliente?.Id}", value: result);
-    }
 
 
     /// <inheritdoc/>
@@ -95,36 +78,6 @@ public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade u
         // Return OK response
         return Ok(value: response);
     }
-
-    /// <inheritdoc/>
-    [Authorize]
-    public override async Task<IActionResult> PutClienteAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idCliente, [FromBody] ClienteUpdateRequest body)
-    {
-        // Obtienes el valor como entero de forma segura.
-        int genero = (int)body.Genero;
-        // Intentar convertir el entero al tipo Enum
-        if (!Enum.IsDefined(enumType: typeof(Wallet.DOM.Enums.Genero), value: genero))
-        {
-            //Si es un valor inválido, lanza una excepción de validación o un BadRequest.
-            throw new ArgumentException(message: $"El valor {genero} no es un Genero válido.");
-        }
-
-        // Call facade method
-        var cliente = await clienteFacade.ActualizarClienteDatosPersonalesAsync(
-            idCliente: idCliente,
-            nombre: body.Nombre,
-            primerApellido: body.PrimerApellido,
-            segundoApellido: body.SegundoApellido,
-            nombreEstado: body.Estado,
-            fechaNacimiento: DateOnly.FromDateTime(dateTime: body.FechaNacimiento.Value),
-            genero: (DOM.Enums.Genero)body.Genero,
-            modificationUser: Guid.Empty);
-        // Map to response model
-        var response = mapper.Map<ClienteResult>(source: cliente);
-        // Return OK response
-        return Ok(value: response);
-    }
 }
+
+

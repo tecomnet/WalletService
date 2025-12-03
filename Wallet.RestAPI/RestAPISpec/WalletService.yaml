@@ -68,7 +68,7 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
-    post:
+
       summary: Crea un cliente
       operationId: PostCliente
       responses:
@@ -124,7 +124,7 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
-    put:
+
       summary: Actualiza un cliente por id
       operationId: PutCliente
       responses:
@@ -1061,7 +1061,7 @@ paths:
               $ref: "#/components/schemas/CompletarRegistroRequest"
       tags:
         - Registro
-  "/{version}/usuario/preregistro":
+
     parameters:
       - $ref: "#/components/parameters/version"
     post:
@@ -1126,7 +1126,7 @@ paths:
         required: true
         schema:
           type: integer
-    post:
+
       summary: Guarda contraseña
       operationId: PostUsuarioContrasena
       responses:
@@ -1244,7 +1244,7 @@ paths:
               $ref: "#/components/schemas/TelefonoUpdateRequest"
       tags:
         - Usuario
-  "/{version}/usuario/{idUsuario}/confirmaVerificacion":
+
     parameters:
       - $ref: "#/components/parameters/version"
       - name: idUsuario

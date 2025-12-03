@@ -6,6 +6,7 @@ using Wallet.DOM.Modelos;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 using Wallet.DOM.ApplicationDbContext;
+using Xunit.Abstractions;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
@@ -13,8 +14,11 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 {
     protected ServiceDbContext Context;
 
-    public RegistroApiTest() : base()
+    private readonly ITestOutputHelper _output;
+
+    public RegistroApiTest(ITestOutputHelper output)
     {
+        _output = output;
         Context = CreateContext();
     }
 
@@ -81,11 +85,12 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         if (responseDatos.StatusCode != HttpStatusCode.OK)
         {
             var errorContent = await responseDatos.Content.ReadAsStringAsync();
-            Console.WriteLine($"Error in CompletarDatosCliente: {errorContent}");
+            _output.WriteLine($"Error in CompletarDatosCliente: {errorContent}");
         }
 
         Assert.Equal(HttpStatusCode.OK, responseDatos.StatusCode);
         var resultDatos = JsonConvert.DeserializeObject<UsuarioResult>(await responseDatos.Content.ReadAsStringAsync());
+        Assert.NotNull(resultDatos);
         Assert.Equal(nameof(EstatusRegistroEnum.DatosClienteCompletado), resultDatos.Estatus);
 
         // 4. RegistrarCorreo
@@ -100,6 +105,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.Equal(HttpStatusCode.OK, responseCorreo.StatusCode);
         var resultCorreo =
             JsonConvert.DeserializeObject<UsuarioResult>(await responseCorreo.Content.ReadAsStringAsync());
+        Assert.NotNull(resultCorreo);
         Assert.Equal(nameof(EstatusRegistroEnum.CorreoRegistrado), resultCorreo.Estatus);
 
         // 5. VerificarCorreo (API Call)
@@ -129,6 +135,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.Equal(HttpStatusCode.OK, responseBiometricos.StatusCode);
         var resultBiometricos =
             JsonConvert.DeserializeObject<UsuarioResult>(await responseBiometricos.Content.ReadAsStringAsync());
+        Assert.NotNull(resultBiometricos);
         Assert.Equal(nameof(EstatusRegistroEnum.DatosBiometricosRegistrado), resultBiometricos.Estatus);
 
         // 7. AceptarTerminos
@@ -146,6 +153,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.Equal(HttpStatusCode.OK, responseTerminos.StatusCode);
         var resultTerminos =
             JsonConvert.DeserializeObject<UsuarioResult>(await responseTerminos.Content.ReadAsStringAsync());
+        Assert.NotNull(resultTerminos);
         Assert.Equal(nameof(EstatusRegistroEnum.TerminosCondicionesAceptado), resultTerminos.Estatus);
 
         // 8. CompletarRegistro
@@ -161,6 +169,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.Equal(HttpStatusCode.OK, responseCompletar.StatusCode);
         var resultCompletar =
             JsonConvert.DeserializeObject<UsuarioResult>(await responseCompletar.Content.ReadAsStringAsync());
+        Assert.NotNull(resultCompletar);
         Assert.Equal(nameof(EstatusRegistroEnum.RegistroCompletado), resultCompletar.Estatus);
     }
 }
