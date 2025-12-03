@@ -11,7 +11,7 @@ La API expone las siguientes funcionalidades:
 El registro de un nuevo usuario sigue un flujo secuencial para garantizar la seguridad y la integridad de los datos:
 
 1.  **Pre-registro**:
-    - **Endpoint**: `POST /{version}/usuario/preregistro`
+    - **Endpoint**: `POST /{version}/registro/preRegistro`
     - **Descripción**: El usuario proporciona su número de teléfono y código de país. El sistema crea un registro inicial de `Usuario` (con estatus `PreRegistrado`) y un `Cliente` asociado, y envía un código de verificación (OTP) por SMS.
     - **Body**: `{ "codigoPais": "52", "telefono": "5512345678" }`
 

@@ -97,5 +97,30 @@ namespace Wallet.RestAPI.Controllers
         public abstract Task<IActionResult> CompletarRegistroAsync(
             [FromRoute] [Required] string version,
             [FromBody] CompletarRegistroRequest body);
+
+        /// <summary>
+        /// Pre-registro de usuario
+        /// </summary>
+        /// <remarks>Crea un usuario y cliente en estado de pre-registro</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="body"></param>
+        /// <response code="201">Created</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpPost]
+        [Route(template: "/{version:apiVersion}/registro/preRegistro")]
+        [ValidateModelState]
+        [SwaggerOperation(summary: "PostUsuarioPreRegistro")]
+        [SwaggerResponse(statusCode: 201, type: typeof(UsuarioResult), description: "Created")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PreRegistroAsync(
+            [FromRoute] [Required] string version,
+            [FromBody] PreRegistroRequest body);
     }
 }

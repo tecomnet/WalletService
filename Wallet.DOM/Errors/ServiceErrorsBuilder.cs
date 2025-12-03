@@ -44,6 +44,8 @@ public class ServiceErrorsBuilder
         PropertyValidationErrors();
         // 9. Errores de ServicioFavorito
         ServicioFavoritoErrors();
+        // 10. Errores de Registro
+        RegistroErrors();
     }
 
     /// <summary>
@@ -551,6 +553,34 @@ public class ServiceErrorsBuilder
             errorCode: ServicioFavoritoNoEncontrado,
             message: "Servicio Favorito no encontrado",
             description: "El servicio favorito con id {0} no fue encontrado.");
+    }
+
+    #endregion
+
+    #region Registro
+
+    /// <summary>Error: El estado del registro es inválido para la operación solicitada.</summary>
+    public const string InvalidRegistrationState = "INVALID-REGISTRATION-STATE";
+
+    /// <summary>Error: Los términos y condiciones no fueron aceptados.</summary>
+    public const string TerminosNoAceptados = "TERMINOS-NO-ACEPTADOS";
+
+    /// <summary>
+    /// Carga los errores relacionados con el proceso de Registro.
+    /// </summary>
+    private void RegistroErrors()
+    {
+        // Error de estado de registro inválido
+        AddServiceError(
+            errorCode: InvalidRegistrationState,
+            message: "Estado de registro inválido.",
+            description: "El usuario no se encuentra en el estado requerido para realizar esta operación.");
+
+        // Error de términos no aceptados
+        AddServiceError(
+            errorCode: TerminosNoAceptados,
+            message: "Términos y condiciones no aceptados.",
+            description: "Debe aceptar los términos y condiciones, política de privacidad y PLD para continuar.");
     }
 
     #endregion

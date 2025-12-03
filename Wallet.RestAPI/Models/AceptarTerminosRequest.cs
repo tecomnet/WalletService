@@ -34,6 +34,24 @@ namespace Wallet.RestAPI.Models
         public string Version { get; set; }
 
         /// <summary>
+        /// Gets or Sets AceptoTerminos
+        /// </summary>
+        [DataMember(Name = "aceptoTerminos")]
+        public bool AceptoTerminos { get; set; }
+
+        /// <summary>
+        /// Gets or Sets AceptoPrivacidad
+        /// </summary>
+        [DataMember(Name = "aceptoPrivacidad")]
+        public bool AceptoPrivacidad { get; set; }
+
+        /// <summary>
+        /// Gets or Sets AceptoPld
+        /// </summary>
+        [DataMember(Name = "aceptoPld")]
+        public bool AceptoPld { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>

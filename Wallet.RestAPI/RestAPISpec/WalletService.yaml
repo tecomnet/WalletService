@@ -330,6 +330,33 @@ paths:
           description: token autorizacion del dispositivo
       tags:
         - DispositivoMovilAutorizado
+  "/{version}/registro/preRegistro":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Pre-registro de usuario
+      operationId: PostUsuarioPreRegistro
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Crea un usuario y cliente en estado de pre-registro
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreRegistroRequest"
+      tags:
+        - Registro
   "/{version}/estado":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -2683,9 +2710,18 @@ components:
           format: int32
         version:
           type: string
+        aceptoTerminos:
+          type: boolean
+        aceptoPrivacidad:
+          type: boolean
+        aceptoPld:
+          type: boolean
       required:
         - idUsuario
         - version
+        - aceptoTerminos
+        - aceptoPrivacidad
+        - aceptoPld
     CompletarRegistroRequest:
       title: CompletarRegistroRequest
       type: object

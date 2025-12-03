@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Wallet.Funcionalidad.Functionality.RegistroFacade;
 using Wallet.RestAPI.Models;
@@ -66,7 +67,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
         {
             var modificationUser = Guid.Empty;
             var usuario =
-                await registroFacade.AceptarTerminosCondicionesAsync(body.IdUsuario, body.Version, modificationUser);
+                await registroFacade.AceptarTerminosCondicionesAsync(body.IdUsuario, body.Version, body.AceptoTerminos,
+                    body.AceptoPrivacidad, body.AceptoPld, modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
 
@@ -77,6 +79,17 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var usuario = await registroFacade.CompletarRegistroAsync(body.IdUsuario, body.Contrasena,
                 body.ConfirmacionContrasena, modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
+        }
+
+        /// <inheritdoc/>
+        public override async Task<IActionResult> PreRegistroAsync(
+            [FromRoute] [Required] string version,
+            [FromBody] PreRegistroRequest body)
+        {
+            var modificationUser = Guid.Empty;
+            var usuario =
+                await registroFacade.PreRegistroAsync(body.CodigoPais, body.Telefono, modificationUser);
+            return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
         }
     }
 }

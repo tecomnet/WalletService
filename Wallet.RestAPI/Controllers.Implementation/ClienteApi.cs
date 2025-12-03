@@ -30,15 +30,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IUsuarioFacade u
             codigoPais: body.CodigoPais,
             telefono: body.Telefono,
             creationUser: Guid.Empty);
-
-        // Obtiene el cliente del usuario (asumiendo que se cargó o se asoció correctamente)
-        // Si usuario.Cliente es nulo, podría ser necesario cargarlo, pero en el flujo de creación debería estar disponible en memoria si se seteo correctamente o si EF lo arregló.
-        // Dado que UsuarioFacade crea el cliente, debería estar accesible si la instancia de usuario es la misma.
-        // Sin embargo, para estar seguros, podríamos necesitar obtener el cliente por ID de usuario si fuera necesario, pero confiemos en la navegación por ahora o usemos el ID.
-
-        // Mapea el result (ClienteResult espera un Cliente)
-        // Si usuario.Cliente es nulo, esto fallará.
-        // Vamos a asumir que usuario.Cliente está poblado.
+    
         var result = mapper.Map<ClienteResult>(source: usuario.Cliente);
         // Retorna created
         return Created(uri: $"/{version}/cliente/{usuario.Cliente?.Id}", value: result);

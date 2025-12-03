@@ -42,7 +42,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             CodigoPais = "+52",
             Telefono = "5512345678"
         };
-        var responsePreRegistro = await client.PostAsync($"/{version}/usuario/preregistro",
+        var responsePreRegistro = await client.PostAsync($"/{version}/registro/preRegistro",
             new StringContent(JsonConvert.SerializeObject(preRegistroRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.Created, responsePreRegistro.StatusCode);
@@ -135,7 +135,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         var terminosRequest = new AceptarTerminosRequest
         {
             IdUsuario = usuarioId,
-            Version = "1.0"
+            Version = "1.0",
+            AceptoTerminos = true,
+            AceptoPrivacidad = true,
+            AceptoPld = true
         };
         var responseTerminos = await client.PostAsync($"/{version}/registro/terminos",
             new StringContent(JsonConvert.SerializeObject(terminosRequest), Encoding.UTF8, "application/json"));

@@ -425,6 +425,17 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
     }
 
     /// <summary>
+    /// Actualiza el estatus del usuario.
+    /// </summary>
+    /// <param name="nuevoEstatus">El nuevo estatus.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
+    public void ActualizarEstatus(EstatusRegistroEnum nuevoEstatus, Guid modificationUser)
+    {
+        this.Estatus = nuevoEstatus;
+        Update(modificationUser: modificationUser);
+    }
+
+    /// <summary>
     /// Actualiza el token de refresco y su fecha de expiración.
     /// </summary>
     /// <param name="refreshToken">Nuevo token de refresco.</param>
