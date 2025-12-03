@@ -40,12 +40,6 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
             isRequired: false,
             minimumLength: 1,
             maximumLength: 100),
-
-        PropertyConstraint.StringPropertyConstraint(
-            propertyName: nameof(Estatus),
-            isRequired: true,
-            minimumLength: 1,
-            maximumLength: 20),
     ];
 
     /// <summary>
@@ -79,8 +73,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
     /// Estatus actual del usuario.
     /// </summary>
     [Required]
-    [MaxLength(length: 20)]
-    public string Estatus { get; private set; }
+    public EstatusRegistroEnum Estatus { get; private set; }
 
     /// <summary>
     /// Token de refresco para la sesión del usuario.
@@ -130,7 +123,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
     {
         CodigoPais = string.Empty;
         Telefono = string.Empty;
-        Estatus = string.Empty;
+        Estatus = EstatusRegistroEnum.PreRegistro;
     }
 
     /// <summary>
@@ -148,7 +141,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         string telefono,
         string? correoElectronico,
         string? contrasena,
-        string estatus,
+        EstatusRegistroEnum estatus,
         Guid creationUser,
         string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
@@ -158,7 +151,6 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(Telefono), value: telefono, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(CorreoElectronico), value: correoElectronico, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(Contrasena), value: contrasena, exceptions: ref exceptions);
-        IsPropertyValid(propertyName: nameof(Estatus), value: estatus, exceptions: ref exceptions);
 
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 

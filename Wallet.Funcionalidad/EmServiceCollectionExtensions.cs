@@ -12,6 +12,7 @@ using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.ServiceClient;
 using Wallet.Funcionalidad.Functionality.AuthFacade;
 using Wallet.Funcionalidad.Services.TokenService;
+using Wallet.Funcionalidad.Functionality.RegistroFacade;
 
 namespace Wallet.Funcionalidad
 {
@@ -114,6 +115,7 @@ namespace Wallet.Funcionalidad
 			services.AddScoped<IServicioFavoritoFacade, ServicioFavoritoFacade>();
 			services.AddScoped<IUsuarioFacade, UsuarioFacade>();
 			services.AddScoped<IConsentimientosUsuarioFacade, ConsentimientosUsuarioFacade>();
+			services.AddScoped<IRegistroFacade, RegistroFacade>();
 			// Fachada de autenticación.
 			services.AddScoped<IAuthFacade, AuthFacade>();
 		}

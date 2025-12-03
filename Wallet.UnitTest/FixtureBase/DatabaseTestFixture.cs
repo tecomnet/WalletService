@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Modelos;
 using Wallet.DOM.Helper;
+using Wallet.DOM.Enums;
 using Respawn;
 
 namespace Wallet.UnitTest.FixtureBase
@@ -98,7 +99,7 @@ namespace Wallet.UnitTest.FixtureBase
                 telefono: $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
                 correoElectronico: $"user{Guid.NewGuid()}@test.com",
                 contrasena: "Password123!",
-                estatus: "Activo",
+                estatus: EstatusRegistroEnum.RegistroCompletado,
                 creationUser: Guid.NewGuid(),
                 testCase: "IntegrationTest");
 
@@ -131,7 +132,7 @@ namespace Wallet.UnitTest.FixtureBase
                     telefono: $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
                     correoElectronico: $"user{Guid.NewGuid()}@test.com",
                     contrasena: "Password123!",
-                    estatus: "Activo",
+                    estatus: EstatusRegistroEnum.RegistroCompletado,
                     creationUser: Guid.NewGuid(),
                     testCase: "IntegrationTest"));
             }

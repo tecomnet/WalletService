@@ -4,7 +4,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
-using Xunit;
 
 namespace Wallet.UnitTest.IntegrationTest;
 

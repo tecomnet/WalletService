@@ -113,7 +113,7 @@ public class UserApiTest : DatabaseTestFixture
         var result = JsonConvert.DeserializeObject<UsuarioResult>(value: responseContentString);
         Assert.NotNull(result);
         Assert.Equal(expected: request.Telefono, actual: result.Telefono);
-        Assert.Equal(expected: "PreRegistrado", actual: result.Estatus);
+        Assert.Equal(expected: "PreRegistro", actual: result.Estatus);
     }
 
     [Fact]

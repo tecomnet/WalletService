@@ -5,6 +5,7 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Modelos;
 using Wallet.Funcionalidad.Functionality.AuthFacade;
 using Wallet.Funcionalidad.Services.TokenService;
+using Wallet.DOM.Enums;
 
 namespace Wallet.UnitTest.Functionality.AuthFacadeTest;
 
@@ -27,11 +28,13 @@ public class AuthFacadeTest
         using var context = CreateContext();
         var authFacade = new AuthFacade(context: context, tokenService: _tokenServiceMock.Object);
 
-        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com", contrasena: "password", estatus: "Active", creationUser: Guid.NewGuid());
+        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com",
+            contrasena: "password", estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: Guid.NewGuid());
         context.Usuario.Add(entity: usuario);
         await context.SaveChangesAsync();
 
-        _tokenServiceMock.Setup(expression: x => x.GenerateAccessToken(It.IsAny<IEnumerable<Claim>>())).Returns(value: "access_token");
+        _tokenServiceMock.Setup(expression: x => x.GenerateAccessToken(It.IsAny<IEnumerable<Claim>>()))
+            .Returns(value: "access_token");
         _tokenServiceMock.Setup(expression: x => x.GenerateRefreshToken()).Returns(value: "refresh_token");
 
         // Act
@@ -50,7 +53,8 @@ public class AuthFacadeTest
         using var context = CreateContext();
         var authFacade = new AuthFacade(context: context, tokenService: _tokenServiceMock.Object);
 
-        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com", contrasena: "password", estatus: "Active", creationUser: Guid.NewGuid());
+        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com",
+            contrasena: "password", estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: Guid.NewGuid());
         context.Usuario.Add(entity: usuario);
         await context.SaveChangesAsync();
 
@@ -69,20 +73,26 @@ public class AuthFacadeTest
         using var context = CreateContext();
         var authFacade = new AuthFacade(context: context, tokenService: _tokenServiceMock.Object);
 
-        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com", contrasena: "password", estatus: "Active", creationUser: Guid.NewGuid());
-        usuario.UpdateRefreshToken(refreshToken: "valid_refresh_token", expiryTime: DateTime.UtcNow.AddDays(value: 1), modificationUser: Guid.NewGuid());
+        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com",
+            contrasena: "password", estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: Guid.NewGuid());
+        usuario.UpdateRefreshToken(refreshToken: "valid_refresh_token", expiryTime: DateTime.UtcNow.AddDays(value: 1),
+            modificationUser: Guid.NewGuid());
         context.Usuario.Add(entity: usuario);
         await context.SaveChangesAsync();
 
         var claims = new List<Claim> { new Claim(type: ClaimTypes.Name, value: usuario.Id.ToString()) };
         var principal = new ClaimsPrincipal(identity: new ClaimsIdentity(claims: claims));
 
-        _tokenServiceMock.Setup(expression: x => x.GetPrincipalFromExpiredToken("expired_access_token")).Returns(value: principal);
-        _tokenServiceMock.Setup(expression: x => x.GenerateAccessToken(It.IsAny<IEnumerable<Claim>>())).Returns(value: "new_access_token");
+        _tokenServiceMock.Setup(expression: x => x.GetPrincipalFromExpiredToken("expired_access_token"))
+            .Returns(value: principal);
+        _tokenServiceMock.Setup(expression: x => x.GenerateAccessToken(It.IsAny<IEnumerable<Claim>>()))
+            .Returns(value: "new_access_token");
         _tokenServiceMock.Setup(expression: x => x.GenerateRefreshToken()).Returns(value: "new_refresh_token");
 
         // Act
-        var result = await authFacade.RefreshTokenAsync(accessToken: "expired_access_token", refreshToken: "valid_refresh_token");
+        var result =
+            await authFacade.RefreshTokenAsync(accessToken: "expired_access_token",
+                refreshToken: "valid_refresh_token");
 
         // Assert
         Assert.True(condition: result.Success);
@@ -97,8 +107,10 @@ public class AuthFacadeTest
         using var context = CreateContext();
         var authFacade = new AuthFacade(context: context, tokenService: _tokenServiceMock.Object);
 
-        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com", contrasena: "password", estatus: "Active", creationUser: Guid.NewGuid());
-        usuario.UpdateRefreshToken(refreshToken: "valid_refresh_token", expiryTime: DateTime.UtcNow.AddDays(value: 1), modificationUser: Guid.NewGuid());
+        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com",
+            contrasena: "password", estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: Guid.NewGuid());
+        usuario.UpdateRefreshToken(refreshToken: "valid_refresh_token", expiryTime: DateTime.UtcNow.AddDays(value: 1),
+            modificationUser: Guid.NewGuid());
         context.Usuario.Add(entity: usuario);
         await context.SaveChangesAsync();
 

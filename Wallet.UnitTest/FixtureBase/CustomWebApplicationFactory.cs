@@ -10,6 +10,8 @@ using Wallet.Funcionalidad;
 using Moq;
 using Wallet.Funcionalidad.ServiceClient;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
+using Wallet.DOM.Enums;
+using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
 
 namespace Wallet.UnitTest.FixtureBase
 {
@@ -63,15 +65,17 @@ namespace Wallet.UnitTest.FixtureBase
 
                     services.AddAuthorization(configure: options =>
                     {
-                        var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(authenticationSchemes: "TestScheme");
+                        var defaultAuthorizationPolicyBuilder =
+                            new AuthorizationPolicyBuilder(authenticationSchemes: "TestScheme");
                         defaultAuthorizationPolicyBuilder =
                             defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
                         options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
                     });
                 }
 
-                services.AddEmTestServices(configuration: services.BuildServiceProvider().GetService<IConfiguration>() ??
-                                                          new ConfigurationBuilder().Build());
+                services.AddEmTestServices(
+                    configuration: services.BuildServiceProvider().GetService<IConfiguration>() ??
+                                   new ConfigurationBuilder().Build());
 
                 // Mock TwilioServiceFacade
                 services.AddScoped<ITwilioServiceFacade>(implementationFactory: sp =>
@@ -79,8 +83,26 @@ namespace Wallet.UnitTest.FixtureBase
                     var mock = new Mock<ITwilioServiceFacade>();
                     mock.Setup(expression: x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
                         .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
-                    mock.Setup(expression: x => x.VerificacionEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    mock.Setup(expression: x =>
+                            x.VerificacionEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                         .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                    mock.Setup(expression: x =>
+                            x.ConfirmarVerificacionSMS(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                        .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                    mock.Setup(expression: x => x.ConfirmarVerificacionEmail(It.IsAny<string>(), It.IsAny<string>()))
+                        .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                    return mock.Object;
+                });
+
+                // Mock ChecktonPldServiceFacade
+                services.AddScoped<IChecktonPldServiceFacade>(implementationFactory: sp =>
+                {
+                    var mock = new Mock<IChecktonPldServiceFacade>();
+                    mock.Setup(expression: x => x.ValidarChecktonPld(
+                            It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                            It.IsAny<Genero>(), It.IsAny<DateTime>(), It.IsAny<string>()))
+                        .ReturnsAsync(value: new ValidacionCurpResult
+                            { Success = true, CurpGenerada = "AAAA000101HDFXXX00" });
                     return mock.Object;
                 });
             });

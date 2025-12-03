@@ -873,6 +873,167 @@ paths:
       description: Elimina un servicio favorito
       tags:
         - ServicioFavorito
+  "/{version}/registro/confirmarNumero":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Confirma el numero de telefono
+      operationId: PostConfirmarNumero
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Confirma el numero de telefono del usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmarNumeroRequest"
+      tags:
+        - Registro
+  "/{version}/registro/datosCliente":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    put:
+      summary: Completa los datos del cliente
+      operationId: PutDatosCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Completa los datos personales del cliente
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DatosClienteRequest"
+      tags:
+        - Registro
+  "/{version}/registro/correo":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Registra el correo electronico
+      operationId: PostRegistrarCorreo
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Registra el correo electronico del usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegistrarCorreoRequest"
+      tags:
+        - Registro
+  "/{version}/registro/verificarCorreo":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Verifica el correo electronico
+      operationId: PostVerificarCorreo
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Verifica el codigo enviado al correo electronico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerificarCorreoRequest"
+      tags:
+        - Registro
+  "/{version}/registro/biometricos":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Registra datos biometricos
+      operationId: PostRegistrarBiometricos
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Registra los datos biometricos del usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegistrarBiometricosRequest"
+      tags:
+        - Registro
+  "/{version}/registro/terminos":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Acepta terminos y condiciones
+      operationId: PostAceptarTerminos
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Registra la aceptacion de terminos y condiciones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AceptarTerminosRequest"
+      tags:
+        - Registro
+  "/{version}/registro/completar":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Completa el registro
+      operationId: PostCompletarRegistro
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsuarioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Finaliza el proceso de registro estableciendo la contraseña
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompletarRegistroRequest"
+      tags:
+        - Registro
   "/{version}/usuario/preregistro":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -2434,6 +2595,113 @@ components:
         - sku
         - nombre
         - monto
+    ConfirmarNumeroRequest:
+      title: ConfirmarNumeroRequest
+      type: object
+      description: Estructura para confirmar numero
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+        codigo:
+          type: string
+      required:
+        - idUsuario
+        - codigo
+    DatosClienteRequest:
+      title: DatosClienteRequest
+      type: object
+      description: Estructura para datos del cliente
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+        nombre:
+          type: string
+        apellidoPaterno:
+          type: string
+        apellidoMaterno:
+          type: string
+        fechaNacimiento:
+          type: string
+          format: date-time
+      required:
+        - idUsuario
+        - nombre
+        - apellidoPaterno
+        - apellidoMaterno
+        - fechaNacimiento
+    RegistrarCorreoRequest:
+      title: RegistrarCorreoRequest
+      type: object
+      description: Estructura para registrar correo
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+        correo:
+          type: string
+      required:
+        - idUsuario
+        - correo
+    VerificarCorreoRequest:
+      title: VerificarCorreoRequest
+      type: object
+      description: Estructura para verificar correo
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+        codigo:
+          type: string
+      required:
+        - idUsuario
+        - codigo
+    RegistrarBiometricosRequest:
+      title: RegistrarBiometricosRequest
+      type: object
+      description: Estructura para registrar biometricos
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+        idDispositivo:
+          type: string
+        token:
+          type: string
+      required:
+        - idUsuario
+        - idDispositivo
+        - token
+    AceptarTerminosRequest:
+      title: AceptarTerminosRequest
+      type: object
+      description: Estructura para aceptar terminos
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+        version:
+          type: string
+      required:
+        - idUsuario
+        - version
+    CompletarRegistroRequest:
+      title: CompletarRegistroRequest
+      type: object
+      description: Estructura para completar registro
+      properties:
+        idUsuario:
+          type: integer
+          format: int32
+        contrasena:
+          type: string
+        confirmacionContrasena:
+          type: string
+      required:
+        - idUsuario
+        - contrasena
+        - confirmacionContrasena
   securitySchemes:
     jwsToken:
       type: http
@@ -2588,6 +2856,7 @@ tags:
   - name: Health
   - name: UbicacionGeolocalizacion
   - name: ProductoProveedor
+  - name: Registro
 security:
   - jwsToken: []
   - X-API-Key: []

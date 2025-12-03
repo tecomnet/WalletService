@@ -297,7 +297,8 @@ public class UsuarioFacade(
 
                 // Crea un nuevo usuario en estado "PreRegistrado".
                 usuario = new Usuario(codigoPais: codigoPais, telefono: telefono, correoElectronico: null,
-                    contrasena: null, estatus: "PreRegistrado", creationUser: creationUser, testCase: testCase);
+                    contrasena: null, estatus: EstatusRegistroEnum.PreRegistro, creationUser: creationUser,
+                    testCase: testCase);
                 await context.Usuario.AddAsync(entity: usuario);
 
                 // Crea un nuevo cliente vinculado al usuario.

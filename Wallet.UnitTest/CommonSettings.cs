@@ -32,7 +32,7 @@ public class CommonSettings
 			telefono: "9812078573",
 			correoElectronico: null,
 			contrasena: null,
-			estatus: "Activo",
+			estatus: EstatusRegistroEnum.RegistroCompletado,
 			creationUser: UserId,
 			testCase: TestCaseId);
 		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
@@ -50,7 +50,7 @@ public class CommonSettings
 			telefono: "1234567890",
 			correoElectronico: null,
 			contrasena: null,
-			estatus: "Activo",
+			estatus: EstatusRegistroEnum.RegistroCompletado,
 			creationUser: UserId,
 			testCase: TestCaseId);
 		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
@@ -77,7 +77,7 @@ public class CommonSettings
 			telefono: "9876543210",
 			correoElectronico: null,
 			contrasena: null,
-			estatus: "Activo",
+			estatus: EstatusRegistroEnum.RegistroCompletado,
 			creationUser: UserId,
 			testCase: TestCaseId);
 		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
