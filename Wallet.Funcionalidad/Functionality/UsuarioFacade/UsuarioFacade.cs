@@ -266,7 +266,6 @@ public class UsuarioFacade(
             // Verifica si existe un pre-registro incompleto.
             var usuario = await context.Usuario
                 .Include(navigationPropertyPath: x => x.Verificaciones2Fa.Where(x => x.IsActive))
-                .Include(u => u.Cliente)
                 .FirstOrDefaultAsync(predicate: x => x.CodigoPais == codigoPais && x.Telefono == telefono);
 
             if (usuario != null)
@@ -300,18 +299,12 @@ public class UsuarioFacade(
                     contrasena: null, estatus: EstatusRegistroEnum.PreRegistro, creationUser: creationUser,
                     testCase: testCase);
                 await context.Usuario.AddAsync(entity: usuario);
-
-                // Crea un nuevo cliente vinculado al usuario.
-                var cliente = new Cliente(usuario: usuario, creationUser: creationUser, testCase: testCase);
-                await context.Cliente.AddAsync(entity: cliente);
-
                 // Genera código de verificación y envía por Twilio service.
                 var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(codigoPais: codigoPais,
                     telefono: telefono, creationUser: creationUser, testCase: testCase);
                 // Agrega el código de verificación.
                 usuario.AgregarVerificacion2Fa(verificacion: verificacion2Fa, modificationUser: creationUser);
             }
-
             // Guardar cambios.
             await context.SaveChangesAsync();
             // Retornar usuario.

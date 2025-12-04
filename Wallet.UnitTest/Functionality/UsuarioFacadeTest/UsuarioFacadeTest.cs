@@ -165,7 +165,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                                    usuario.CreationUser == SetupConfig.UserId);
 
             // Get the user from context
-            var usuarioContext = await Context.Usuario.Include(navigationPropertyPath: x => x.Cliente).AsNoTracking()
+            var usuarioContext = await Context.Usuario
                 .FirstOrDefaultAsync(predicate: x => x.Id == usuario.Id);
 
             // Confirm user created in context
@@ -174,11 +174,6 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
             Assert.True(condition: usuarioContext.CodigoPais == codigoPais &&
                                    usuarioContext.Telefono == telefono &&
                                    usuarioContext.CreationUser == SetupConfig.UserId);
-
-            // Assert associated cliente created
-            Assert.NotNull(usuarioContext.Cliente);
-            Assert.True(condition: usuarioContext.Cliente.CreationUser == SetupConfig.UserId);
-
             // Assert successful test
             Assert.True(condition: success);
         }
