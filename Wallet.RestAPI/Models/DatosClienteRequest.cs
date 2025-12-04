@@ -52,6 +52,18 @@ namespace Wallet.RestAPI.Models
         public DateTime FechaNacimiento { get; set; }
 
         /// <summary>
+        /// Gets or Sets NombreEstado
+        /// </summary>
+        [DataMember(Name = "nombreEstado")]
+        public string NombreEstado { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Genero
+        /// </summary>
+        [DataMember(Name = "genero")]
+        public GeneroEnum Genero { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -64,6 +76,8 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "  ApellidoPaterno: ").Append(value: ApellidoPaterno).Append(value: "\n");
             sb.Append(value: "  ApellidoMaterno: ").Append(value: ApellidoMaterno).Append(value: "\n");
             sb.Append(value: "  FechaNacimiento: ").Append(value: FechaNacimiento).Append(value: "\n");
+            sb.Append(value: "  NombreEstado: ").Append(value: NombreEstado).Append(value: "\n");
+            sb.Append(value: "  Genero: ").Append(value: Genero).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
         }
@@ -122,6 +136,15 @@ namespace Wallet.RestAPI.Models
                 (
                     FechaNacimiento == other.FechaNacimiento ||
                     FechaNacimiento.Equals(other.FechaNacimiento)
+                ) &&
+                (
+                    NombreEstado == other.NombreEstado ||
+                    NombreEstado != null &&
+                    NombreEstado.Equals(other.NombreEstado)
+                ) &&
+                (
+                    Genero == other.Genero ||
+                    Genero.Equals(other.Genero)
                 );
         }
 
@@ -143,6 +166,9 @@ namespace Wallet.RestAPI.Models
                 if (ApellidoMaterno != null)
                     hashCode = hashCode * 59 + ApellidoMaterno.GetHashCode();
                 hashCode = hashCode * 59 + FechaNacimiento.GetHashCode();
+                if (NombreEstado != null)
+                    hashCode = hashCode * 59 + NombreEstado.GetHashCode();
+                hashCode = hashCode * 59 + Genero.GetHashCode();
                 return hashCode;
             }
         }

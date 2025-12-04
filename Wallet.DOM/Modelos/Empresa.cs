@@ -31,7 +31,7 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
     public string Nombre { get; internal set; }
     
     /// <summary>
-    /// Obtiene la lista de clientes asociados a esta empresa.
+    /// Obtiene la lista de clientes asociados a esta empresa. TODO: Cambiar relación a usuarios
     /// </summary>
     public List<Cliente> Clientes { get; private set; }
 

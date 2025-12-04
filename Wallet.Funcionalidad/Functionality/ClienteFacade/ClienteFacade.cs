@@ -69,7 +69,9 @@ public class ClienteFacade(
     {
         try
         {
-            // Obtener cliente
+            // TODO: Crear cliente si no existe
+
+            // Obtener cliente 
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Actualizar datos personales
             cliente.AgregarDatosPersonales(

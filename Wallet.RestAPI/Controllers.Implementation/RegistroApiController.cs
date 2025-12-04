@@ -31,7 +31,9 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 body.Nombre,
                 body.ApellidoPaterno,
                 body.ApellidoMaterno,
+                body.NombreEstado,
                 DateOnly.FromDateTime(body.FechaNacimiento),
+                (DOM.Enums.Genero)body.Genero,
                 modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }

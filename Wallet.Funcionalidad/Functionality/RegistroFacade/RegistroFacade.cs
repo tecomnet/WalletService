@@ -64,11 +64,13 @@ public class RegistroFacade(
     /// <param name="nombre">Nombre del cliente.</param>
     /// <param name="apellidoPaterno">Apellido paterno del cliente.</param>
     /// <param name="apellidoMaterno">Apellido materno del cliente.</param>
+    /// <param name="nombreEstado">Nombre del estado del cliente.</param>
     /// <param name="fechaNacimiento">Fecha de nacimiento del cliente.</param>
+    /// <param name="genero">Genero del cliente.</param>
     /// <param name="modificationUser">ID del usuario que realiza la modificación.</param>
     /// <returns>El objeto <see cref="Usuario"/> con los datos del cliente actualizados.</returns>
     public async Task<Usuario> CompletarDatosClienteAsync(int idUsuario, string nombre, string apellidoPaterno,
-        string apellidoMaterno, DateOnly fechaNacimiento, Guid modificationUser)
+        string apellidoMaterno, string nombreEstado, DateOnly fechaNacimiento, Genero genero, Guid modificationUser)
     {
         // Valida que el usuario esté en el estado esperado (NumeroConfirmado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.NumeroConfirmado);
@@ -85,14 +87,14 @@ public class RegistroFacade(
 
         // Actualizamos datos usando el facade de cliente
         await clienteFacade.ActualizarClienteDatosPersonalesAsync(
-            cliente.Id,
-            nombre,
-            apellidoPaterno,
-            apellidoMaterno,
-            "N/A", // Estado por defecto, debería venir en el request si fuera necesario
-            fechaNacimiento,
-            Genero.Masculino, // Genero por defecto, debería venir en el request
-            modificationUser);
+            idCliente: cliente.Id,
+            nombre: nombre,
+            primerApellido: apellidoPaterno,
+            segundoApellido: apellidoMaterno,
+            nombreEstado: nombreEstado,
+            fechaNacimiento: fechaNacimiento,
+            genero: genero,
+            modificationUser: modificationUser);
 
         // Actualiza el estado del registro a DatosClienteCompletado
         await ActualizarEstatusAsync(usuario, EstatusRegistroEnum.DatosClienteCompletado, modificationUser);

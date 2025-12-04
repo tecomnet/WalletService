@@ -31,10 +31,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
     public async Task FullRegistrationFlow_ShouldSucceed()
     {
         // 0. Seed Company and State
-        var empresa = new Empresa("Tecomnet", Guid.NewGuid());
-        Context.Empresa.Add(empresa);
-        var estado = new Estado("N/A", Guid.NewGuid());
-        Context.Estado.Add(estado);
+        // 0. Seed Company and State
+        var commonSettings = new CommonSettings();
+        Context.Empresa.AddRange(commonSettings.Empresas);
+        Context.Estado.AddRange(commonSettings.Estados);
         await Context.SaveChangesAsync();
 
         var client = Factory.CreateClient();
@@ -77,6 +77,8 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Nombre = "Juan",
             ApellidoPaterno = "Perez",
             ApellidoMaterno = "Lopez",
+            Genero = GeneroEnum.MasculinoEnum,
+            NombreEstado = "Campeche",
             FechaNacimiento = new DateTime(1990, 1, 1)
         };
         var responseDatos = await client.PostAsync($"/{version}/registro/datosCliente",

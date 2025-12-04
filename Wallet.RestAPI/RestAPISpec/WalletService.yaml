@@ -69,6 +69,7 @@ paths:
       tags:
         - Cliente
 
+    post:
       summary: Crea un cliente
       operationId: PostCliente
       responses:
@@ -125,6 +126,7 @@ paths:
       tags:
         - Cliente
 
+    put:
       summary: Actualiza un cliente por id
       operationId: PutCliente
       responses:
@@ -1062,33 +1064,6 @@ paths:
       tags:
         - Registro
 
-    parameters:
-      - $ref: "#/components/parameters/version"
-    post:
-      summary: Pre-registro de usuario
-      operationId: PostUsuarioPreRegistro
-      responses:
-        "201":
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UsuarioResult"
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-        "401":
-          $ref: "#/components/responses/HTTP_Error_400"
-        "500":
-          description: Internal Server Error
-      description: Realiza el pre-registro de un usuario, creando el usuario y el cliente asociado.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PreRegistroRequest"
-        description: ""
-      tags:
-        - Usuario
   "/{version}/usuario/{idUsuario}":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -1127,6 +1102,7 @@ paths:
         schema:
           type: integer
 
+    post:
       summary: Guarda contraseña
       operationId: PostUsuarioContrasena
       responses:
@@ -1245,6 +1221,7 @@ paths:
       tags:
         - Usuario
 
+  "/{version}/usuario/{idUsuario}/confirmaVerificacion":
     parameters:
       - $ref: "#/components/parameters/version"
       - name: idUsuario
@@ -2652,12 +2629,18 @@ components:
         fechaNacimiento:
           type: string
           format: date-time
+        nombreEstado:
+          type: string
+        genero:
+          $ref: "#/components/schemas/GeneroEnum"
       required:
         - idUsuario
         - nombre
         - apellidoPaterno
         - apellidoMaterno
         - fechaNacimiento
+        - nombreEstado
+        - genero
     RegistrarCorreoRequest:
       title: RegistrarCorreoRequest
       type: object

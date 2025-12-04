@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
@@ -6,23 +7,20 @@ using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
 using Wallet.Funcionalidad.Functionality.RegistroFacade;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
-using Wallet.UnitTest.FixtureBase;
-using Wallet.DOM.ApplicationDbContext;
+using Wallet.UnitTest.Functionality.Configuration;
 
 namespace Wallet.UnitTest.Functionality;
 
-public class RegistroFacadeTest : DatabaseTestFixture, IDisposable
+public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
 {
     private readonly Mock<IUsuarioFacade> _usuarioFacadeMock = new();
     private readonly Mock<IClienteFacade> _clienteFacadeMock = new();
     private readonly Mock<IConsentimientosUsuarioFacade> _consentimientosFacadeMock = new();
     private readonly RegistroFacade _registroFacade;
     private readonly Guid _userId = Guid.NewGuid();
-    protected ServiceDbContext Context;
 
-    public RegistroFacadeTest()
+    public RegistroFacadeTest() : base(new SetupDataConfig())
     {
-        Context = CreateContext();
         _registroFacade = new RegistroFacade(
             Context,
             _usuarioFacadeMock.Object,
@@ -80,5 +78,48 @@ public class RegistroFacadeTest : DatabaseTestFixture, IDisposable
 
         await Assert.ThrowsAsync<EMGeneralAggregateException>(() =>
             _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", _userId));
+    }
+
+    [Fact]
+    public async Task CompletarDatosClienteAsync_ShouldSucceed_WhenStateIsNumeroConfirmado()
+    {
+        // Arrange
+        var usuario = new Usuario("+52", "5512345678", null, null, EstatusRegistroEnum.NumeroConfirmado, _userId);
+        Context.Usuario.Add(usuario);
+        await Context.SaveChangesAsync();
+
+        _usuarioFacadeMock.Setup(x => x.ObtenerUsuarioPorIdAsync(usuario.Id))
+            .ReturnsAsync(usuario);
+
+        // Act
+        var result = await _registroFacade.CompletarDatosClienteAsync(
+            usuario.Id,
+            "Juan",
+            "Perez",
+            "Lopez",
+            "Campeche",
+            new DateOnly(1990, 1, 1),
+            Genero.Masculino,
+            _userId);
+
+        // Assert
+        Assert.NotNull(result);
+        var updatedUser = await Context.Usuario.FindAsync(usuario.Id);
+        Assert.NotNull(updatedUser);
+        Assert.Equal(EstatusRegistroEnum.DatosClienteCompletado, updatedUser.Estatus);
+
+        var cliente = await Context.Cliente.FirstOrDefaultAsync(c => c.UsuarioId == usuario.Id);
+        Assert.NotNull(cliente);
+
+        _clienteFacadeMock.Verify(x => x.ActualizarClienteDatosPersonalesAsync(
+            cliente.Id,
+            "Juan",
+            "Perez",
+            "Lopez",
+            "Campeche",
+            new DateOnly(1990, 1, 1),
+            Genero.Masculino,
+            _userId,
+            null), Times.Once);
     }
 }
