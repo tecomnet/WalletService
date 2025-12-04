@@ -270,40 +270,46 @@ public class UsuarioFacade(
 
             if (usuario != null)
             {
-                // Existe, pero no finalizó la confirmación (SMS o Email). Reinicia el proceso de verificación con SMS.
-                if (usuario.Verificaciones2Fa.Any(predicate: v => v is { Verificado: false, Tipo: Tipo2FA.Sms }) ||
-                    usuario.Verificaciones2Fa.Any(predicate: v => v is { Verificado: false, Tipo: Tipo2FA.Email }))
+                // Si ya completó el registro, se regresa un error para que el usuario inicie sesión
+                if (usuario.Estatus == EstatusRegistroEnum.RegistroCompletado)
                 {
-                    // Genera código de verificación y envía por Twilio service.
-                    var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(codigoPais: codigoPais,
-                        telefono: telefono, creationUser: creationUser, testCase: testCase);
-                    // Agrega el código de verificación.
-                    usuario.AgregarVerificacion2Fa(verificacion: verificacion2Fa, modificationUser: creationUser);
-                }
-                else
-                {
-                    // Si ya está verificado o no cumple condiciones de reintento, se considera duplicado.
                     throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                        errorCode: ServiceErrorsBuilder.ClienteDuplicado,
-                        dynamicContent: [codigoPais, telefono],
+                        errorCode: ServiceErrorsBuilder.ClienteYaRegistrado,
+                        dynamicContent: [usuario.Id],
                         module: this.GetType().Name));
                 }
+                // Genera código de verificación y envía por Twilio service.
+                var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(
+                    codigoPais: codigoPais,
+                    telefono: telefono,
+                    creationUser: creationUser,
+                    testCase: testCase);
+                // Agrega el código de verificación.
+                usuario.AgregarVerificacion2Fa(verificacion: verificacion2Fa,
+                    modificationUser: creationUser);
             }
             else
             {
-                // Valida duplicidad (asegura que no exista otro usuario con estos datos).
-                await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono);
-
                 // Crea un nuevo usuario en estado "PreRegistrado".
-                usuario = new Usuario(codigoPais: codigoPais, telefono: telefono, correoElectronico: null,
-                    contrasena: null, estatus: EstatusRegistroEnum.PreRegistro, creationUser: creationUser,
+                usuario = new Usuario(
+                    codigoPais: codigoPais,
+                    telefono: telefono,
+                    correoElectronico: null,
+                    contrasena: null,
+                    estatus: EstatusRegistroEnum.PreRegistro,
+                    creationUser: creationUser,
                     testCase: testCase);
                 await context.Usuario.AddAsync(entity: usuario);
                 // Genera código de verificación y envía por Twilio service.
-                var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(codigoPais: codigoPais,
-                    telefono: telefono, creationUser: creationUser, testCase: testCase);
+                var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(
+                    codigoPais: codigoPais,
+                    telefono: telefono,
+                    creationUser: creationUser,
+                    testCase: testCase);
                 // Agrega el código de verificación.
-                usuario.AgregarVerificacion2Fa(verificacion: verificacion2Fa, modificationUser: creationUser);
+                usuario.AgregarVerificacion2Fa(
+                    verificacion: verificacion2Fa,
+                    modificationUser: creationUser);
             }
             // Guardar cambios.
             await context.SaveChangesAsync();

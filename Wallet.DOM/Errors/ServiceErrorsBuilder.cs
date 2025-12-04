@@ -319,10 +319,18 @@ public class ServiceErrorsBuilder
             errorCode: UsuarioNoEncontrado,
             message: "El usuario no fue encontrado.",
             description: "El usuario no existe.");
+        // Error de cliente ya registrado
+        AddServiceError(
+            errorCode: ClienteYaRegistrado,
+            message: "El usuario ya se encuentra registrado.",
+            description: "Inicia sesión para continuar.");
     }
 
     /// <summary>Error: El usuario no fue encontrado.</summary>
     public const string UsuarioNoEncontrado = "USUARIO-NO-ENCONTRADO";
+
+    /// <summary>Error: El cliente ya está registrado.</summary>
+    public const string ClienteYaRegistrado = "CLIENTE-YA-REGISTRADO";
 
     #endregion
 

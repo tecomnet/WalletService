@@ -135,7 +135,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
     [InlineData(data:
     [
         "2. Wrong case, usuario already exists", "+52", "9812078573", false,
-        new string[] { ServiceErrorsBuilder.ClienteDuplicado }
+        new string[] { ServiceErrorsBuilder.ClienteYaRegistrado }
     ])]
     public async Task GuardarUsuarioPreRegistroTest(
         string caseName,
