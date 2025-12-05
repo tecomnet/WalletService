@@ -63,11 +63,10 @@ public class UsuarioFacade(
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
             // Crea (establece) la nueva contraseña.
             usuario.CrearContrasena(contrasena: contrasena, modificationUser: modificationUser);
-            // Guarda los cambios.
-            await context.SaveChangesAsync();
+        
 
             // Genera el token de acceso.
-            var claims = new List<Claim>
+            /*var claims = new List<Claim>
             {
                 new Claim(type: ClaimTypes.NameIdentifier, value: usuario.Id.ToString()),
                 new Claim(type: ClaimTypes.Name, value: usuario.Cliente?.NombreCompleto ?? "Usuario"),
@@ -79,7 +78,10 @@ public class UsuarioFacade(
                 claims.Add(new Claim(type: "IdCliente", value: usuario.Cliente.Id.ToString()));
             }
 
-            return tokenService.GenerateAccessToken(claims: claims);
+            var accesToken = tokenService.GenerateAccessToken(claims: claims);*/
+            // Guarda los cambios.
+            await context.SaveChangesAsync();
+            return "";
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

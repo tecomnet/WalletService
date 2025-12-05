@@ -11,7 +11,7 @@
     "dev": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "em-api/0.1",
+      "launchUrl": "scalar/0.1",
       "applicationUrl": "https://localhost:4000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
