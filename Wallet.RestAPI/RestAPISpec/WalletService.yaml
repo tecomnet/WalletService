@@ -2675,9 +2675,15 @@ components:
           type: string
         token:
           type: string
+        nombre:
+          type: string
+        caracteristicas:
+          type: string
       required:
         - idDispositivo
         - token
+        - nombre
+        - caracteristicas
     AceptarTerminosRequest:
       title: AceptarTerminosRequest
       type: object

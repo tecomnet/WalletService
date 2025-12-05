@@ -67,7 +67,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
         {
             var modificationUser = Guid.Empty;
             var usuario = await registroFacade.RegistrarDatosBiometricosAsync(idUsuario, body.IdDispositivo,
-                body.Token, modificationUser);
+                body.Token, body.Nombre, body.Caracteristicas, modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
 

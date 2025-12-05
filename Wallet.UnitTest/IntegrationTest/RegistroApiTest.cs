@@ -127,7 +127,9 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         var biometricosRequest = new RegistrarBiometricosRequest
         {
             IdDispositivo = "device123",
-            Token = "token123"
+            Token = "token123",
+            Nombre = "Dispositivo Test",
+            Caracteristicas = "Unit Test Specs"
         };
         var responseBiometricos = await client.PutAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(biometricosRequest), Encoding.UTF8, "application/json"));
@@ -262,9 +264,15 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         await client.PutAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(verifCorreoRequest), Encoding.UTF8, "application/json"));
 
-        // 9. Biometricos
-        var bioRequest = new RegistrarBiometricosRequest { IdDispositivo = "d2", Token = "t2" };
-        await client.PutAsync($"/{version}/registro/{usuarioId}/biometricos",
+        // 9. RegistrarBiometricos
+        var bioRequest = new RegistrarBiometricosRequest
+        {
+            IdDispositivo = "deviceResume",
+            Token = "tokenResume",
+            Nombre = "Dispositivo Resume",
+            Caracteristicas = "Unit Test Resume"
+        };
+        var responseBio = await client.PutAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(bioRequest), Encoding.UTF8, "application/json"));
 
         // 10. Terminos

@@ -28,6 +28,18 @@ namespace Wallet.RestAPI.Models
         public string IdDispositivo { get; set; }
 
         /// <summary>
+        /// Gets or Sets Nombre
+        /// </summary>
+        [DataMember(Name = "nombre")]
+        public string Nombre { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Caracteristicas
+        /// </summary>
+        [DataMember(Name = "caracteristicas")]
+        public string Caracteristicas { get; set; }
+
+        /// <summary>
         /// Gets or Sets Token
         /// </summary>
         [DataMember(Name = "token")]
@@ -43,6 +55,8 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "class RegistrarBiometricosRequest {\n");
             sb.Append(value: "class RegistrarBiometricosRequest {\n");
             sb.Append(value: "  IdDispositivo: ").Append(value: IdDispositivo).Append(value: "\n");
+            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
+            sb.Append(value: "  Caracteristicas: ").Append(value: Caracteristicas).Append(value: "\n");
             sb.Append(value: "  Token: ").Append(value: Token).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
@@ -86,6 +100,16 @@ namespace Wallet.RestAPI.Models
                     IdDispositivo.Equals(other.IdDispositivo)
                 ) &&
                 (
+                    Nombre == other.Nombre ||
+                    Nombre != null &&
+                    Nombre.Equals(other.Nombre)
+                ) &&
+                (
+                    Caracteristicas == other.Caracteristicas ||
+                    Caracteristicas != null &&
+                    Caracteristicas.Equals(other.Caracteristicas)
+                ) &&
+                (
                     Token == other.Token ||
                     Token != null &&
                     Token.Equals(other.Token)
@@ -104,6 +128,10 @@ namespace Wallet.RestAPI.Models
                 // Suitable nullity checks etc, of course :)
                 if (IdDispositivo != null)
                     hashCode = hashCode * 59 + IdDispositivo.GetHashCode();
+                if (Nombre != null)
+                    hashCode = hashCode * 59 + Nombre.GetHashCode();
+                if (Caracteristicas != null)
+                    hashCode = hashCode * 59 + Caracteristicas.GetHashCode();
                 if (Token != null)
                     hashCode = hashCode * 59 + Token.GetHashCode();
                 return hashCode;

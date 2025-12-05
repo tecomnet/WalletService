@@ -154,7 +154,7 @@ public class RegistroFacade(
     /// <param name="modificationUser">ID del usuario que realiza la modificación.</param>
     /// <returns>El objeto <see cref="Usuario"/> con el dispositivo móvil autorizado registrado.</returns>
     public async Task<Usuario> RegistrarDatosBiometricosAsync(int idUsuario, string idDispositivo, string token,
-        Guid modificationUser)
+        string nombre, string caracteristicas, Guid modificationUser)
     {
         // Valida que el usuario esté en el estado esperado (CorreoVerificado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.CorreoVerificado);
@@ -163,8 +163,8 @@ public class RegistroFacade(
         var dispositivo = new DispositivoMovilAutorizado(
             token: token,
             idDispositivo: idDispositivo,
-            nombre: "Dispositivo Móvil", // Nombre por defecto, podría ser configurable
-            caracteristicas: "N/A", // Características por defecto
+            nombre: nombre,
+            caracteristicas: caracteristicas,
             creationUser: modificationUser
         );
 

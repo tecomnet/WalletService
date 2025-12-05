@@ -38,7 +38,7 @@ El registro de un nuevo usuario sigue un flujo secuencial para garantizar la seg
 6.  **Registrar Biométricos**:
     - **Endpoint**: `PUT /{version}/registro/{idUsuario}/biometricos`
     - **Descripción**: El usuario registra sus datos biométricos (simulado con token de dispositivo).
-    - **Body**: `{ "idDispositivo": "device_123", "token": "bio_token_abc" }`
+    - **Body**: `{ "idDispositivo": "12345", "token": "token", "nombre": "Xiaomi", "caracteristicas": "Azul, 2GB ram" }`
 
 7.  **Aceptar Términos**:
     - **Endpoint**: `POST /{version}/registro/{idUsuario}/terminos`

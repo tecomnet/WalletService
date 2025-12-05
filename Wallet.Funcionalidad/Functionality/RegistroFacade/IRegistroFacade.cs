@@ -66,10 +66,12 @@ public interface IRegistroFacade
     /// <param name="idUsuario">El identificador único del usuario.</param>
     /// <param name="idDispositivo">El identificador del dispositivo.</param>
     /// <param name="token">El token biométrico o de autenticación del dispositivo.</param>
-    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
-    /// <returns>Un objeto <see cref="Usuario"/> con los datos biométricos registrados.</returns>
-    Task<Usuario> RegistrarDatosBiometricosAsync(int idUsuario, string idDispositivo, string token,
-        Guid modificationUser);
+    /// <param name="nombre">Nombre del dispositivo.</param>
+    /// <param name="caracteristicas">Caracteristicas del dispositivo.</param>
+    /// <param name="modificationUser">ID del usuario que realiza la modificación.</param>
+    /// <returns>El objeto <see cref="Usuario"/> con el dispositivo móvil autorizado registrado.</returns>
+    Task<Usuario> RegistrarDatosBiometricosAsync(int idUsuario, string idDispositivo, string token, string nombre,
+        string caracteristicas, Guid modificationUser);
 
     /// <summary>
     /// Registra la aceptación de los términos y condiciones, política de privacidad y política de PLD por parte del usuario.
