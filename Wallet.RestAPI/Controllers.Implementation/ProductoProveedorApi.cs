@@ -61,7 +61,7 @@ public class ProductoProveedorApiController(IProveedorServicioFacade proveedorSe
             proveedorServicioId: idProveedorServicio,
             sku: body.Sku,
             nombre: body.Nombre,
-            monto: body.Monto,
+            monto: body.Monto.Value,
             descripcion: body.Descripcion,
             creationUser: Guid.Empty);
 
@@ -92,7 +92,7 @@ public class ProductoProveedorApiController(IProveedorServicioFacade proveedorSe
             idProducto: idProducto,
             sku: body.Sku,
             nombre: body.Nombre,
-            monto: body.Monto,
+            monto: body.Monto.Value,
             descripcion: body.Descripcion,
             modificationUser: Guid.Empty);
 
