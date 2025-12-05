@@ -59,12 +59,13 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.Equal(nameof(EstatusRegistroEnum.PreRegistro), resultPreRegistro.Estatus);
 
         // 2. ConfirmarNumero (API Call)
-        var confirmarNumeroRequest = new ConfirmarNumeroRequest
+        var confirmarNumeroRequest = new ConfirmacionRequest
         {
-            IdUsuario = usuarioId,
+            IdCliente = usuarioId,
+            Tipo = Tipo2FAEnum.SMSEnum,
             Codigo = "1234" // Mock accepts any code
         };
-        var responseConfirmar = await client.PostAsync($"/{version}/registro/confirmarNumero",
+        var responseConfirmar = await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(confirmarNumeroRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseConfirmar.StatusCode);
@@ -112,12 +113,13 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.Equal(nameof(EstatusRegistroEnum.CorreoRegistrado), resultCorreo.Estatus);
 
         // 5. VerificarCorreo (API Call)
-        var verificarCorreoRequest = new VerificarCorreoRequest
+        var verificarCorreoRequest = new ConfirmacionRequest
         {
-            IdUsuario = usuarioId,
+            IdCliente = usuarioId,
+            Tipo = Tipo2FAEnum.EMAILEnum,
             Codigo = "1234" // Mock accepts any code
         };
-        var responseVerificarCorreo = await client.PostAsync($"/{version}/registro/verificarCorreo",
+        var responseVerificarCorreo = await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(verificarCorreoRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseVerificarCorreo.StatusCode);
@@ -206,8 +208,9 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         var usuarioId = resultPre1.Id.Value;
 
         // 2. ConfirmarNumero
-        var confirmarRequest1 = new ConfirmarNumeroRequest { IdUsuario = usuarioId, Codigo = "1234" };
-        await client.PostAsync($"/{version}/registro/confirmarNumero",
+        var confirmarRequest1 = new ConfirmacionRequest
+            { IdCliente = usuarioId, Tipo = Tipo2FAEnum.SMSEnum, Codigo = "1234" };
+        await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(confirmarRequest1), Encoding.UTF8, "application/json"));
 
         // 3. DatosCliente
@@ -245,8 +248,9 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // --- COMPLETE FLOW ---
 
         // 5. ConfirmarNumero (Again)
-        var confirmarRequest2 = new ConfirmarNumeroRequest { IdUsuario = usuarioId, Codigo = "1234" };
-        var responseConf2 = await client.PostAsync($"/{version}/registro/confirmarNumero",
+        var confirmarRequest2 = new ConfirmacionRequest
+            { IdCliente = usuarioId, Tipo = Tipo2FAEnum.SMSEnum, Codigo = "1234" };
+        var responseConf2 = await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(confirmarRequest2), Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.OK, responseConf2.StatusCode);
 
@@ -261,8 +265,9 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             new StringContent(JsonConvert.SerializeObject(correoRequest), Encoding.UTF8, "application/json"));
 
         // 8. VerificarCorreo
-        var verifCorreoRequest = new VerificarCorreoRequest { IdUsuario = usuarioId, Codigo = "1234" };
-        await client.PostAsync($"/{version}/registro/verificarCorreo",
+        var verifCorreoRequest = new ConfirmacionRequest
+            { IdCliente = usuarioId, Tipo = Tipo2FAEnum.EMAILEnum, Codigo = "1234" };
+        await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(verifCorreoRequest), Encoding.UTF8, "application/json"));
 
         // 9. Biometricos

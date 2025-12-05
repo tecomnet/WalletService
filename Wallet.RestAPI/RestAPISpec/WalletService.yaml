@@ -902,27 +902,33 @@ paths:
       description: Elimina un servicio favorito
       tags:
         - ServicioFavorito
-  "/{version}/registro/confirmarNumero":
+  "/{version}/registro/{idUsuario}/confirmar":
     parameters:
       - $ref: "#/components/parameters/version"
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
     post:
-      summary: Confirma el numero de telefono
-      operationId: PostConfirmarNumero
+      summary: Confirmar
+      description: Confirma el número de teléfono o correo electrónico
+      operationId: Confirmar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmacionRequest"
+        required: true
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UsuarioResult"
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-      description: Confirma el numero de telefono del usuario
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ConfirmarNumeroRequest"
+                type: boolean
       tags:
         - Registro
   "/{version}/registro/datosCliente":
@@ -971,29 +977,7 @@ paths:
               $ref: "#/components/schemas/RegistrarCorreoRequest"
       tags:
         - Registro
-  "/{version}/registro/verificarCorreo":
-    parameters:
-      - $ref: "#/components/parameters/version"
-    post:
-      summary: Verifica el correo electronico
-      operationId: PostVerificarCorreo
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UsuarioResult"
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-      description: Verifica el codigo enviado al correo electronico
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/VerificarCorreoRequest"
-      tags:
-        - Registro
+
   "/{version}/registro/biometricos":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -1255,6 +1239,7 @@ paths:
               $ref: "#/components/schemas/Verificacion2FARequest"
       tags:
         - Usuario
+
   "/{version}/usuario/{idUsuario}/consentimiento":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -2599,19 +2584,22 @@ components:
         - sku
         - nombre
         - monto
-    ConfirmarNumeroRequest:
-      title: ConfirmarNumeroRequest
+    ConfirmacionRequest:
+      title: ConfirmacionRequest
       type: object
-      description: Estructura para confirmar numero
+      description: Estructura para confirmar 2FA (SMS o Email)
       properties:
-        idUsuario:
+        idCliente:
           type: integer
           format: int32
-        codigo:
+        Tipo:
+          $ref: "#/components/schemas/Tipo2FAEnum"
+        Codigo:
           type: string
       required:
-        - idUsuario
-        - codigo
+        - idCliente
+        - Tipo
+        - Codigo
     DatosClienteRequest:
       title: DatosClienteRequest
       type: object
@@ -2654,19 +2642,7 @@ components:
       required:
         - idUsuario
         - correo
-    VerificarCorreoRequest:
-      title: VerificarCorreoRequest
-      type: object
-      description: Estructura para verificar correo
-      properties:
-        idUsuario:
-          type: integer
-          format: int32
-        codigo:
-          type: string
-      required:
-        - idUsuario
-        - codigo
+
     RegistrarBiometricosRequest:
       title: RegistrarBiometricosRequest
       type: object

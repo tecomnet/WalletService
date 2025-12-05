@@ -14,11 +14,24 @@ namespace Wallet.RestAPI.Controllers.Implementation
         IMapper mapper) : RegistroApi
     {
         /// <inheritdoc />
-        public override async Task<IActionResult> ConfirmarNumeroAsync(string version, ConfirmarNumeroRequest body)
+        public override async Task<IActionResult> ConfirmarAsync(string version, int idUsuario,
+            ConfirmacionRequest body)
         {
-            // TODO: Obtener usuario real del contexto si aplicara, pero aquí es un proceso público/semi-público
             var modificationUser = Guid.Empty;
-            var result = await registroFacade.ConfirmarNumeroAsync(body.IdUsuario, body.Codigo, modificationUser);
+            bool result = false;
+
+            switch (body.Tipo)
+            {
+                case Tipo2FAEnum.SMSEnum:
+                    result = await registroFacade.ConfirmarNumeroAsync(idUsuario, body.Codigo, modificationUser);
+                    break;
+                case Tipo2FAEnum.EMAILEnum:
+                    result = await registroFacade.VerificarCorreoAsync(idUsuario, body.Codigo, modificationUser);
+                    break;
+                default:
+                    return BadRequest("Tipo de verificación no soportado.");
+            }
+
             return Ok(result);
         }
 
@@ -44,14 +57,6 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var modificationUser = Guid.Empty;
             var usuario = await registroFacade.RegistrarCorreoAsync(body.IdUsuario, body.Correo, modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
-        }
-
-        /// <inheritdoc />
-        public override async Task<IActionResult> VerificarCorreoAsync(string version, VerificarCorreoRequest body)
-        {
-            var modificationUser = Guid.Empty;
-            var result = await registroFacade.VerificarCorreoAsync(body.IdUsuario, body.Codigo, modificationUser);
-            return Ok(result);
         }
 
         /// <inheritdoc />

@@ -15,16 +15,17 @@ namespace Wallet.RestAPI.Controllers
     public abstract class RegistroApi : ServiceBaseController
     {
         /// <summary>
-        /// Confirma el número de teléfono
+        /// Confirma el número de teléfono o correo electrónico
         /// </summary>
         [HttpPost]
-        [Route(template: "/{version:apiVersion}/registro/confirmarNumero")]
+        [Route(template: "/{version:apiVersion}/registro/{idUsuario}/confirmar")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "ConfirmarNumero")]
+        [SwaggerOperation(summary: "Confirmar")]
         [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "OK")]
-        public abstract Task<IActionResult> ConfirmarNumeroAsync(
+        public abstract Task<IActionResult> ConfirmarAsync(
             [FromRoute] [Required] string version,
-            [FromBody] ConfirmarNumeroRequest body);
+            [FromRoute] [Required] int idUsuario,
+            [FromBody] ConfirmacionRequest body);
 
         /// <summary>
         /// Completa los datos del cliente
@@ -49,18 +50,6 @@ namespace Wallet.RestAPI.Controllers
         public abstract Task<IActionResult> RegistrarCorreoAsync(
             [FromRoute] [Required] string version,
             [FromBody] RegistrarCorreoRequest body);
-
-        /// <summary>
-        /// Verifica el correo electrónico
-        /// </summary>
-        [HttpPost]
-        [Route(template: "/{version:apiVersion}/registro/verificarCorreo")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "VerificarCorreo")]
-        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "OK")]
-        public abstract Task<IActionResult> VerificarCorreoAsync(
-            [FromRoute] [Required] string version,
-            [FromBody] VerificarCorreoRequest body);
 
         /// <summary>
         /// Registra datos biométricos (dispositivo)

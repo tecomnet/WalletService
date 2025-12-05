@@ -16,21 +16,27 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Estructura para confirmar numero
+    /// Estructura para confirmar 2FA (SMS o Email)
     /// </summary>
     [DataContract]
-    public partial class ConfirmarNumeroRequest : IEquatable<ConfirmarNumeroRequest>
+    public partial class ConfirmacionRequest : IEquatable<ConfirmacionRequest>
     {
         /// <summary>
-        /// Gets or Sets IdUsuario
+        /// Gets or Sets IdCliente
         /// </summary>
-        [DataMember(Name = "idUsuario")]
-        public int IdUsuario { get; set; }
+        [DataMember(Name = "idCliente")]
+        public int IdCliente { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Tipo
+        /// </summary>
+        [DataMember(Name = "Tipo")]
+        public Tipo2FAEnum Tipo { get; set; }
 
         /// <summary>
         /// Gets or Sets Codigo
         /// </summary>
-        [DataMember(Name = "codigo")]
+        [DataMember(Name = "Codigo")]
         public string Codigo { get; set; }
 
         /// <summary>
@@ -40,8 +46,9 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ConfirmarNumeroRequest {\n");
-            sb.Append(value: "  IdUsuario: ").Append(value: IdUsuario).Append(value: "\n");
+            sb.Append(value: "class ConfirmacionRequest {\n");
+            sb.Append(value: "  IdCliente: ").Append(value: IdCliente).Append(value: "\n");
+            sb.Append(value: "  Tipo: ").Append(value: Tipo).Append(value: "\n");
             sb.Append(value: "  Codigo: ").Append(value: Codigo).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
@@ -65,23 +72,27 @@ namespace Wallet.RestAPI.Models
         {
             if (ReferenceEquals(objA: null, objB: obj)) return false;
             if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ConfirmarNumeroRequest)obj);
+            return obj.GetType() == GetType() && Equals(other: (ConfirmacionRequest)obj);
         }
 
         /// <summary>
-        /// Returns true if ConfirmarNumeroRequest instances are equal
+        /// Returns true if ConfirmacionRequest instances are equal
         /// </summary>
-        /// <param name="other">Instance of ConfirmarNumeroRequest to be compared</param>
+        /// <param name="other">Instance of ConfirmacionRequest to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ConfirmarNumeroRequest other)
+        public bool Equals(ConfirmacionRequest other)
         {
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return
                 (
-                    IdUsuario == other.IdUsuario ||
-                    IdUsuario.Equals(other.IdUsuario)
+                    IdCliente == other.IdCliente ||
+                    IdCliente.Equals(other.IdCliente)
+                ) &&
+                (
+                    Tipo == other.Tipo ||
+                    Tipo.Equals(other.Tipo)
                 ) &&
                 (
                     Codigo == other.Codigo ||
@@ -100,7 +111,8 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                hashCode = hashCode * 59 + IdUsuario.GetHashCode();
+                hashCode = hashCode * 59 + IdCliente.GetHashCode();
+                hashCode = hashCode * 59 + Tipo.GetHashCode();
                 if (Codigo != null)
                     hashCode = hashCode * 59 + Codigo.GetHashCode();
                 return hashCode;
@@ -111,12 +123,12 @@ namespace Wallet.RestAPI.Models
 
 #pragma warning disable 1591
 
-        public static bool operator ==(ConfirmarNumeroRequest left, ConfirmarNumeroRequest right)
+        public static bool operator ==(ConfirmacionRequest left, ConfirmacionRequest right)
         {
             return Equals(objA: left, objB: right);
         }
 
-        public static bool operator !=(ConfirmarNumeroRequest left, ConfirmarNumeroRequest right)
+        public static bool operator !=(ConfirmacionRequest left, ConfirmacionRequest right)
         {
             return !Equals(objA: left, objB: right);
         }
