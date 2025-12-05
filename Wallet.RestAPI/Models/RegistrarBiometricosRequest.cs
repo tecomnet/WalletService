@@ -22,12 +22,6 @@ namespace Wallet.RestAPI.Models
     public partial class RegistrarBiometricosRequest : IEquatable<RegistrarBiometricosRequest>
     {
         /// <summary>
-        /// Gets or Sets IdUsuario
-        /// </summary>
-        [DataMember(Name = "idUsuario")]
-        public int IdUsuario { get; set; }
-
-        /// <summary>
         /// Gets or Sets IdDispositivo
         /// </summary>
         [DataMember(Name = "idDispositivo")]
@@ -47,7 +41,7 @@ namespace Wallet.RestAPI.Models
         {
             var sb = new StringBuilder();
             sb.Append(value: "class RegistrarBiometricosRequest {\n");
-            sb.Append(value: "  IdUsuario: ").Append(value: IdUsuario).Append(value: "\n");
+            sb.Append(value: "class RegistrarBiometricosRequest {\n");
             sb.Append(value: "  IdDispositivo: ").Append(value: IdDispositivo).Append(value: "\n");
             sb.Append(value: "  Token: ").Append(value: Token).Append(value: "\n");
             sb.Append(value: "}\n");
@@ -87,10 +81,6 @@ namespace Wallet.RestAPI.Models
 
             return
                 (
-                    IdUsuario == other.IdUsuario ||
-                    IdUsuario.Equals(other.IdUsuario)
-                ) &&
-                (
                     IdDispositivo == other.IdDispositivo ||
                     IdDispositivo != null &&
                     IdDispositivo.Equals(other.IdDispositivo)
@@ -112,7 +102,6 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                hashCode = hashCode * 59 + IdUsuario.GetHashCode();
                 if (IdDispositivo != null)
                     hashCode = hashCode * 59 + IdDispositivo.GetHashCode();
                 if (Token != null)

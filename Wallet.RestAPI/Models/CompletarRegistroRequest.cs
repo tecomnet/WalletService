@@ -22,12 +22,6 @@ namespace Wallet.RestAPI.Models
     public partial class CompletarRegistroRequest : IEquatable<CompletarRegistroRequest>
     {
         /// <summary>
-        /// Gets or Sets IdUsuario
-        /// </summary>
-        [DataMember(Name = "idUsuario")]
-        public int IdUsuario { get; set; }
-
-        /// <summary>
         /// Gets or Sets Contrasena
         /// </summary>
         [DataMember(Name = "contrasena")]
@@ -47,7 +41,7 @@ namespace Wallet.RestAPI.Models
         {
             var sb = new StringBuilder();
             sb.Append(value: "class CompletarRegistroRequest {\n");
-            sb.Append(value: "  IdUsuario: ").Append(value: IdUsuario).Append(value: "\n");
+            sb.Append(value: "class CompletarRegistroRequest {\n");
             sb.Append(value: "  Contrasena: ").Append(value: Contrasena).Append(value: "\n");
             sb.Append(value: "  ConfirmacionContrasena: ").Append(value: ConfirmacionContrasena).Append(value: "\n");
             sb.Append(value: "}\n");
@@ -87,10 +81,6 @@ namespace Wallet.RestAPI.Models
 
             return
                 (
-                    IdUsuario == other.IdUsuario ||
-                    IdUsuario.Equals(other.IdUsuario)
-                ) &&
-                (
                     Contrasena == other.Contrasena ||
                     Contrasena != null &&
                     Contrasena.Equals(other.Contrasena)
@@ -112,7 +102,6 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                hashCode = hashCode * 59 + IdUsuario.GetHashCode();
                 if (Contrasena != null)
                     hashCode = hashCode * 59 + Contrasena.GetHashCode();
                 if (ConfirmacionContrasena != null)

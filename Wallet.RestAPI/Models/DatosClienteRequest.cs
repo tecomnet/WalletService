@@ -22,12 +22,6 @@ namespace Wallet.RestAPI.Models
     public partial class DatosClienteRequest : IEquatable<DatosClienteRequest>
     {
         /// <summary>
-        /// Gets or Sets IdUsuario
-        /// </summary>
-        [DataMember(Name = "idUsuario")]
-        public int IdUsuario { get; set; }
-
-        /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [DataMember(Name = "nombre")]
@@ -71,7 +65,7 @@ namespace Wallet.RestAPI.Models
         {
             var sb = new StringBuilder();
             sb.Append(value: "class DatosClienteRequest {\n");
-            sb.Append(value: "  IdUsuario: ").Append(value: IdUsuario).Append(value: "\n");
+            sb.Append(value: "class DatosClienteRequest {\n");
             sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
             sb.Append(value: "  ApellidoPaterno: ").Append(value: ApellidoPaterno).Append(value: "\n");
             sb.Append(value: "  ApellidoMaterno: ").Append(value: ApellidoMaterno).Append(value: "\n");
@@ -115,10 +109,6 @@ namespace Wallet.RestAPI.Models
 
             return
                 (
-                    IdUsuario == other.IdUsuario ||
-                    IdUsuario.Equals(other.IdUsuario)
-                ) &&
-                (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(other.Nombre)
@@ -158,7 +148,6 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                hashCode = hashCode * 59 + IdUsuario.GetHashCode();
                 if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
                 if (ApellidoPaterno != null)

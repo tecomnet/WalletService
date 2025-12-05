@@ -61,11 +61,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 2. ConfirmarNumero (API Call)
         var confirmarNumeroRequest = new ConfirmacionRequest
         {
-            IdCliente = usuarioId,
             Tipo = Tipo2FAEnum.SMSEnum,
             Codigo = "1234" // Mock accepts any code
         };
-        var responseConfirmar = await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
+        var responseConfirmar = await client.PutAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(confirmarNumeroRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseConfirmar.StatusCode);
@@ -75,7 +74,6 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 3. CompletarDatosCliente
         var datosClienteRequest = new DatosClienteRequest
         {
-            IdUsuario = usuarioId,
             Nombre = "Juan",
             ApellidoPaterno = "Perez",
             ApellidoMaterno = "Lopez",
@@ -83,7 +81,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             NombreEstado = "Campeche",
             FechaNacimiento = new DateTime(1990, 1, 1)
         };
-        var responseDatos = await client.PostAsync($"/{version}/registro/datosCliente",
+        var responseDatos = await client.PostAsync($"/{version}/registro/{usuarioId}/datosCliente",
             new StringContent(JsonConvert.SerializeObject(datosClienteRequest), Encoding.UTF8, "application/json"));
 
         if (responseDatos.StatusCode != HttpStatusCode.OK)
@@ -100,10 +98,9 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 4. RegistrarCorreo
         var registrarCorreoRequest = new RegistrarCorreoRequest
         {
-            IdUsuario = usuarioId,
             Correo = "juan.perez@example.com"
         };
-        var responseCorreo = await client.PostAsync($"/{version}/registro/correo",
+        var responseCorreo = await client.PutAsync($"/{version}/registro/{usuarioId}/correo",
             new StringContent(JsonConvert.SerializeObject(registrarCorreoRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseCorreo.StatusCode);
@@ -115,11 +112,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 5. VerificarCorreo (API Call)
         var verificarCorreoRequest = new ConfirmacionRequest
         {
-            IdCliente = usuarioId,
             Tipo = Tipo2FAEnum.EMAILEnum,
             Codigo = "1234" // Mock accepts any code
         };
-        var responseVerificarCorreo = await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
+        var responseVerificarCorreo = await client.PutAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(verificarCorreoRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseVerificarCorreo.StatusCode);
@@ -130,11 +126,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 6. RegistrarBiometricos
         var biometricosRequest = new RegistrarBiometricosRequest
         {
-            IdUsuario = usuarioId,
             IdDispositivo = "device123",
             Token = "token123"
         };
-        var responseBiometricos = await client.PostAsync($"/{version}/registro/biometricos",
+        var responseBiometricos = await client.PutAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(biometricosRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseBiometricos.StatusCode);
@@ -146,13 +141,12 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 7. AceptarTerminos
         var terminosRequest = new AceptarTerminosRequest
         {
-            IdUsuario = usuarioId,
             Version = "1.0",
             AceptoTerminos = true,
             AceptoPrivacidad = true,
             AceptoPld = true
         };
-        var responseTerminos = await client.PostAsync($"/{version}/registro/terminos",
+        var responseTerminos = await client.PostAsync($"/{version}/registro/{usuarioId}/terminos",
             new StringContent(JsonConvert.SerializeObject(terminosRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseTerminos.StatusCode);
@@ -164,11 +158,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 8. CompletarRegistro
         var completarRequest = new CompletarRegistroRequest
         {
-            IdUsuario = usuarioId,
             Contrasena = "Password123!",
             ConfirmacionContrasena = "Password123!"
         };
-        var responseCompletar = await client.PostAsync($"/{version}/registro/completar",
+        var responseCompletar = await client.PutAsync($"/{version}/registro/{usuarioId}/completar",
             new StringContent(JsonConvert.SerializeObject(completarRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseCompletar.StatusCode);
@@ -209,14 +202,13 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // 2. ConfirmarNumero
         var confirmarRequest1 = new ConfirmacionRequest
-            { IdCliente = usuarioId, Tipo = Tipo2FAEnum.SMSEnum, Codigo = "1234" };
-        await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
+            { Tipo = Tipo2FAEnum.SMSEnum, Codigo = "1234" };
+        await client.PutAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(confirmarRequest1), Encoding.UTF8, "application/json"));
 
         // 3. DatosCliente
         var datosClienteRequest = new DatosClienteRequest
         {
-            IdUsuario = usuarioId,
             Nombre = "Test",
             ApellidoPaterno = "User",
             ApellidoMaterno = "Resume",
@@ -224,7 +216,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             NombreEstado = "Campeche",
             FechaNacimiento = new DateTime(1990, 1, 1)
         };
-        await client.PostAsync($"/{version}/registro/datosCliente",
+        await client.PostAsync($"/{version}/registro/{usuarioId}/datosCliente",
             new StringContent(JsonConvert.SerializeObject(datosClienteRequest), Encoding.UTF8, "application/json"));
 
         // --- ROUND 2 (RESUME) ---
@@ -249,42 +241,42 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // 5. ConfirmarNumero (Again)
         var confirmarRequest2 = new ConfirmacionRequest
-            { IdCliente = usuarioId, Tipo = Tipo2FAEnum.SMSEnum, Codigo = "1234" };
-        var responseConf2 = await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
+            { Tipo = Tipo2FAEnum.SMSEnum, Codigo = "1234" };
+        var responseConf2 = await client.PutAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(confirmarRequest2), Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.OK, responseConf2.StatusCode);
 
         // 6. DatosCliente (Again)
-        var responseDatos2 = await client.PostAsync($"/{version}/registro/datosCliente",
+        var responseDatos2 = await client.PostAsync($"/{version}/registro/{usuarioId}/datosCliente",
             new StringContent(JsonConvert.SerializeObject(datosClienteRequest), Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.OK, responseDatos2.StatusCode);
 
         // 7. RegistrarCorreo
-        var correoRequest = new RegistrarCorreoRequest { IdUsuario = usuarioId, Correo = "resume@test.com" };
-        await client.PostAsync($"/{version}/registro/correo",
+        var correoRequest = new RegistrarCorreoRequest { Correo = "resume@test.com" };
+        await client.PutAsync($"/{version}/registro/{usuarioId}/correo",
             new StringContent(JsonConvert.SerializeObject(correoRequest), Encoding.UTF8, "application/json"));
 
         // 8. VerificarCorreo
         var verifCorreoRequest = new ConfirmacionRequest
-            { IdCliente = usuarioId, Tipo = Tipo2FAEnum.EMAILEnum, Codigo = "1234" };
-        await client.PostAsync($"/{version}/registro/{usuarioId}/confirmar",
+            { Tipo = Tipo2FAEnum.EMAILEnum, Codigo = "1234" };
+        await client.PutAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(verifCorreoRequest), Encoding.UTF8, "application/json"));
 
         // 9. Biometricos
-        var bioRequest = new RegistrarBiometricosRequest { IdUsuario = usuarioId, IdDispositivo = "d2", Token = "t2" };
-        await client.PostAsync($"/{version}/registro/biometricos",
+        var bioRequest = new RegistrarBiometricosRequest { IdDispositivo = "d2", Token = "t2" };
+        await client.PutAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(bioRequest), Encoding.UTF8, "application/json"));
 
         // 10. Terminos
         var terminosRequest = new AceptarTerminosRequest
-            { IdUsuario = usuarioId, Version = "1", AceptoTerminos = true, AceptoPrivacidad = true, AceptoPld = true };
-        await client.PostAsync($"/{version}/registro/terminos",
+            { Version = "1", AceptoTerminos = true, AceptoPrivacidad = true, AceptoPld = true };
+        await client.PostAsync($"/{version}/registro/{usuarioId}/terminos",
             new StringContent(JsonConvert.SerializeObject(terminosRequest), Encoding.UTF8, "application/json"));
 
         // 11. Completar
         var completarRequest = new CompletarRegistroRequest
-            { IdUsuario = usuarioId, Contrasena = "Pass123!", ConfirmacionContrasena = "Pass123!" };
-        var responseFinal = await client.PostAsync($"/{version}/registro/completar",
+            { Contrasena = "Pass123!", ConfirmacionContrasena = "Pass123!" };
+        var responseFinal = await client.PutAsync($"/{version}/registro/{usuarioId}/completar",
             new StringContent(JsonConvert.SerializeObject(completarRequest), Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.OK, responseFinal.StatusCode);

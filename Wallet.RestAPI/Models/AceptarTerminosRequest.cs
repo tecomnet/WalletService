@@ -22,12 +22,6 @@ namespace Wallet.RestAPI.Models
     public partial class AceptarTerminosRequest : IEquatable<AceptarTerminosRequest>
     {
         /// <summary>
-        /// Gets or Sets IdUsuario
-        /// </summary>
-        [DataMember(Name = "idUsuario")]
-        public int IdUsuario { get; set; }
-
-        /// <summary>
         /// Gets or Sets Version
         /// </summary>
         [DataMember(Name = "version")]
@@ -59,7 +53,7 @@ namespace Wallet.RestAPI.Models
         {
             var sb = new StringBuilder();
             sb.Append(value: "class AceptarTerminosRequest {\n");
-            sb.Append(value: "  IdUsuario: ").Append(value: IdUsuario).Append(value: "\n");
+            sb.Append(value: "class AceptarTerminosRequest {\n");
             sb.Append(value: "  Version: ").Append(value: Version).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
@@ -97,15 +91,11 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return
-                (
-                    IdUsuario == other.IdUsuario ||
-                    IdUsuario.Equals(other.IdUsuario)
-                ) &&
-                (
-                    Version == other.Version ||
-                    Version != null &&
-                    Version.Equals(other.Version)
-                );
+            (
+                Version == other.Version ||
+                Version != null &&
+                Version.Equals(other.Version)
+            );
         }
 
         /// <summary>
@@ -118,7 +108,6 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                hashCode = hashCode * 59 + IdUsuario.GetHashCode();
                 if (Version != null)
                     hashCode = hashCode * 59 + Version.GetHashCode();
                 return hashCode;

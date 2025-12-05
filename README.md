@@ -13,42 +13,42 @@ El registro de un nuevo usuario sigue un flujo secuencial para garantizar la seg
 1.  **Pre-registro**:
     - **Endpoint**: `POST /{version}/registro/preRegistro`
     - **Descripción**: El usuario proporciona su número de teléfono y código de país. El sistema crea un registro inicial de `Usuario` (con estatus `PreRegistrado`) y un `Cliente` asociado, y envía un código de verificación (OTP) por SMS.
-    - **Body**: `{ "codigoPais": "52", "telefono": "5512345678" }`
+    - **Body**: `{ "codigoPais": "+52", "telefono": "5512345678" }`
 
 2.  **Confirmar Número**:
-    - **Endpoint**: `POST /{version}/registro/confirmarNumero`
+    - **Endpoint**: `PUT /{version}/registro/{idUsuario}/confirmar`
     - **Descripción**: El usuario ingresa el código recibido por SMS para verificar su número.
-    - **Body**: `{ "idUsuario": 1, "codigo": "123456" }`
+    - **Body**: `{ "Tipo": "SMS", "Codigo": "123456" }`
 
 3.  **Datos Cliente**:
-    - **Endpoint**: `PUT /{version}/registro/datosCliente`
+    - **Endpoint**: `POST /{version}/registro/{idUsuario}/datosCliente`
     - **Descripción**: El usuario completa sus datos personales básicos.
-    - **Body**: `{ "idUsuario": 1, "nombre": "Juan", "apellidoPaterno": "Perez", ... }`
+    - **Body**: `{ "nombre": "Juan", "apellidoPaterno": "Perez", ... }`
 
 4.  **Registrar Correo**:
-    - **Endpoint**: `POST /{version}/registro/correo`
+    - **Endpoint**: `PUT /{version}/registro/{idUsuario}/correo`
     - **Descripción**: El usuario registra su correo electrónico y se le envía un código de verificación.
-    - **Body**: `{ "idUsuario": 1, "correo": "juan@example.com" }`
+    - **Body**: `{ "correo": "juan@example.com" }`
 
 5.  **Verificar Correo**:
-    - **Endpoint**: `POST /{version}/registro/verificarCorreo`
+    - **Endpoint**: `PUT /{version}/registro/{idUsuario}/confirmar`
     - **Descripción**: El usuario verifica su correo electrónico con el código recibido.
-    - **Body**: `{ "idUsuario": 1, "codigo": "654321" }`
+    - **Body**: `{ "Tipo": "EMAIL", "Codigo": "654321" }`
 
 6.  **Registrar Biométricos**:
-    - **Endpoint**: `POST /{version}/registro/biometricos`
+    - **Endpoint**: `PUT /{version}/registro/{idUsuario}/biometricos`
     - **Descripción**: El usuario registra sus datos biométricos (simulado con token de dispositivo).
-    - **Body**: `{ "idUsuario": 1, "idDispositivo": "device_123", "token": "bio_token_abc" }`
+    - **Body**: `{ "idDispositivo": "device_123", "token": "bio_token_abc" }`
 
 7.  **Aceptar Términos**:
-    - **Endpoint**: `POST /{version}/registro/terminos`
+    - **Endpoint**: `POST /{version}/registro/{idUsuario}/terminos`
     - **Descripción**: El usuario acepta los términos y condiciones.
-    - **Body**: `{ "idUsuario": 1, "version": "v1.0" }`
+    - **Body**: `{ "version": "v1.0" }`
 
 8.  **Completar Registro**:
-    - **Endpoint**: `POST /{version}/registro/completar`
+    - **Endpoint**: `PUT /{version}/registro/{idUsuario}/completar`
     - **Descripción**: El usuario establece su contraseña y finaliza el registro. El usuario queda en estatus `Activo`.
-    - **Body**: `{ "idUsuario": 1, "contrasena": "Password123!", "confirmacionContrasena": "Password123!" }`
+    - **Body**: `{ "contrasena": "Password123!", "confirmacionContrasena": "Password123!" }`
 
 ### Gestión de Cuenta
 

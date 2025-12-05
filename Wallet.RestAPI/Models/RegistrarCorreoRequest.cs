@@ -22,12 +22,6 @@ namespace Wallet.RestAPI.Models
     public partial class RegistrarCorreoRequest : IEquatable<RegistrarCorreoRequest>
     {
         /// <summary>
-        /// Gets or Sets IdUsuario
-        /// </summary>
-        [DataMember(Name = "idUsuario")]
-        public int IdUsuario { get; set; }
-
-        /// <summary>
         /// Gets or Sets Correo
         /// </summary>
         [DataMember(Name = "correo")]
@@ -41,7 +35,7 @@ namespace Wallet.RestAPI.Models
         {
             var sb = new StringBuilder();
             sb.Append(value: "class RegistrarCorreoRequest {\n");
-            sb.Append(value: "  IdUsuario: ").Append(value: IdUsuario).Append(value: "\n");
+            sb.Append(value: "class RegistrarCorreoRequest {\n");
             sb.Append(value: "  Correo: ").Append(value: Correo).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
@@ -79,15 +73,11 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return
-                (
-                    IdUsuario == other.IdUsuario ||
-                    IdUsuario.Equals(other.IdUsuario)
-                ) &&
-                (
-                    Correo == other.Correo ||
-                    Correo != null &&
-                    Correo.Equals(other.Correo)
-                );
+            (
+                Correo == other.Correo ||
+                Correo != null &&
+                Correo.Equals(other.Correo)
+            );
         }
 
         /// <summary>
@@ -100,7 +90,6 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                hashCode = hashCode * 59 + IdUsuario.GetHashCode();
                 if (Correo != null)
                     hashCode = hashCode * 59 + Correo.GetHashCode();
                 return hashCode;

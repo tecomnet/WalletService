@@ -912,7 +912,7 @@ paths:
         schema:
           type: integer
           format: int32
-    post:
+    put:
       summary: Confirmar
       description: Confirma el número de teléfono o correo electrónico
       operationId: Confirmar
@@ -931,10 +931,17 @@ paths:
                 type: boolean
       tags:
         - Registro
-  "/{version}/registro/datosCliente":
+  "/{version}/registro/{idUsuario}/datosCliente":
     parameters:
       - $ref: "#/components/parameters/version"
-    put:
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    post:
       summary: Completa los datos del cliente
       operationId: PutDatosCliente
       responses:
@@ -954,10 +961,17 @@ paths:
               $ref: "#/components/schemas/DatosClienteRequest"
       tags:
         - Registro
-  "/{version}/registro/correo":
+  "/{version}/registro/{idUsuario}/correo":
     parameters:
       - $ref: "#/components/parameters/version"
-    post:
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
       summary: Registra el correo electronico
       operationId: PostRegistrarCorreo
       responses:
@@ -978,10 +992,17 @@ paths:
       tags:
         - Registro
 
-  "/{version}/registro/biometricos":
+  "/{version}/registro/{idUsuario}/biometricos":
     parameters:
       - $ref: "#/components/parameters/version"
-    post:
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
       summary: Registra datos biometricos
       operationId: PostRegistrarBiometricos
       responses:
@@ -1001,9 +1022,16 @@ paths:
               $ref: "#/components/schemas/RegistrarBiometricosRequest"
       tags:
         - Registro
-  "/{version}/registro/terminos":
+  "/{version}/registro/{idUsuario}/terminos":
     parameters:
       - $ref: "#/components/parameters/version"
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
     post:
       summary: Acepta terminos y condiciones
       operationId: PostAceptarTerminos
@@ -1024,10 +1052,17 @@ paths:
               $ref: "#/components/schemas/AceptarTerminosRequest"
       tags:
         - Registro
-  "/{version}/registro/completar":
+  "/{version}/registro/{idUsuario}/completar":
     parameters:
       - $ref: "#/components/parameters/version"
-    post:
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
       summary: Completa el registro
       operationId: PostCompletarRegistro
       responses:
@@ -2589,15 +2624,11 @@ components:
       type: object
       description: Estructura para confirmar 2FA (SMS o Email)
       properties:
-        idCliente:
-          type: integer
-          format: int32
         Tipo:
           $ref: "#/components/schemas/Tipo2FAEnum"
         Codigo:
           type: string
       required:
-        - idCliente
         - Tipo
         - Codigo
     DatosClienteRequest:
@@ -2605,9 +2636,6 @@ components:
       type: object
       description: Estructura para datos del cliente
       properties:
-        idUsuario:
-          type: integer
-          format: int32
         nombre:
           type: string
         apellidoPaterno:
@@ -2622,7 +2650,6 @@ components:
         genero:
           $ref: "#/components/schemas/GeneroEnum"
       required:
-        - idUsuario
         - nombre
         - apellidoPaterno
         - apellidoMaterno
@@ -2634,13 +2661,9 @@ components:
       type: object
       description: Estructura para registrar correo
       properties:
-        idUsuario:
-          type: integer
-          format: int32
         correo:
           type: string
       required:
-        - idUsuario
         - correo
 
     RegistrarBiometricosRequest:
@@ -2648,15 +2671,11 @@ components:
       type: object
       description: Estructura para registrar biometricos
       properties:
-        idUsuario:
-          type: integer
-          format: int32
         idDispositivo:
           type: string
         token:
           type: string
       required:
-        - idUsuario
         - idDispositivo
         - token
     AceptarTerminosRequest:
@@ -2664,9 +2683,6 @@ components:
       type: object
       description: Estructura para aceptar terminos
       properties:
-        idUsuario:
-          type: integer
-          format: int32
         version:
           type: string
         aceptoTerminos:
@@ -2676,7 +2692,6 @@ components:
         aceptoPld:
           type: boolean
       required:
-        - idUsuario
         - version
         - aceptoTerminos
         - aceptoPrivacidad
@@ -2686,15 +2701,11 @@ components:
       type: object
       description: Estructura para completar registro
       properties:
-        idUsuario:
-          type: integer
-          format: int32
         contrasena:
           type: string
         confirmacionContrasena:
           type: string
       required:
-        - idUsuario
         - contrasena
         - confirmacionContrasena
   securitySchemes:

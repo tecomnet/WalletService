@@ -17,7 +17,7 @@ namespace Wallet.RestAPI.Controllers
         /// <summary>
         /// Confirma el número de teléfono o correo electrónico
         /// </summary>
-        [HttpPost]
+        [HttpPut]
         [Route(template: "/{version:apiVersion}/registro/{idUsuario}/confirmar")]
         [ValidateModelState]
         [SwaggerOperation(summary: "Confirmar")]
@@ -31,60 +31,65 @@ namespace Wallet.RestAPI.Controllers
         /// Completa los datos del cliente
         /// </summary>
         [HttpPost]
-        [Route(template: "/{version:apiVersion}/registro/datosCliente")]
+        [Route(template: "/{version:apiVersion}/registro/{idUsuario}/datosCliente")]
         [ValidateModelState]
         [SwaggerOperation(summary: "CompletarDatosCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
         public abstract Task<IActionResult> CompletarDatosClienteAsync(
             [FromRoute] [Required] string version,
+            [FromRoute] [Required] int idUsuario,
             [FromBody] DatosClienteRequest body);
 
         /// <summary>
         /// Registra el correo electrónico
         /// </summary>
-        [HttpPost]
-        [Route(template: "/{version:apiVersion}/registro/correo")]
+        [HttpPut]
+        [Route(template: "/{version:apiVersion}/registro/{idUsuario}/correo")]
         [ValidateModelState]
         [SwaggerOperation(summary: "RegistrarCorreo")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
         public abstract Task<IActionResult> RegistrarCorreoAsync(
             [FromRoute] [Required] string version,
+            [FromRoute] [Required] int idUsuario,
             [FromBody] RegistrarCorreoRequest body);
 
         /// <summary>
         /// Registra datos biométricos (dispositivo)
         /// </summary>
-        [HttpPost]
-        [Route(template: "/{version:apiVersion}/registro/biometricos")]
+        [HttpPut]
+        [Route(template: "/{version:apiVersion}/registro/{idUsuario}/biometricos")]
         [ValidateModelState]
         [SwaggerOperation(summary: "RegistrarBiometricos")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
         public abstract Task<IActionResult> RegistrarBiometricosAsync(
             [FromRoute] [Required] string version,
+            [FromRoute] [Required] int idUsuario,
             [FromBody] RegistrarBiometricosRequest body);
 
         /// <summary>
         /// Acepta términos y condiciones
         /// </summary>
         [HttpPost]
-        [Route(template: "/{version:apiVersion}/registro/terminos")]
+        [Route(template: "/{version:apiVersion}/registro/{idUsuario}/terminos")]
         [ValidateModelState]
         [SwaggerOperation(summary: "AceptarTerminos")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
         public abstract Task<IActionResult> AceptarTerminosAsync(
             [FromRoute] [Required] string version,
+            [FromRoute] [Required] int idUsuario,
             [FromBody] AceptarTerminosRequest body);
 
         /// <summary>
         /// Completa el registro (contraseña)
         /// </summary>
-        [HttpPost]
-        [Route(template: "/{version:apiVersion}/registro/completar")]
+        [HttpPut]
+        [Route(template: "/{version:apiVersion}/registro/{idUsuario}/completar")]
         [ValidateModelState]
         [SwaggerOperation(summary: "CompletarRegistro")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
         public abstract Task<IActionResult> CompletarRegistroAsync(
             [FromRoute] [Required] string version,
+            [FromRoute] [Required] int idUsuario,
             [FromBody] CompletarRegistroRequest body);
 
         /// <summary>

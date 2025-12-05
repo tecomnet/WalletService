@@ -36,11 +36,12 @@ namespace Wallet.RestAPI.Controllers.Implementation
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> CompletarDatosClienteAsync(string version, DatosClienteRequest body)
+        public override async Task<IActionResult> CompletarDatosClienteAsync(string version, int idUsuario,
+            DatosClienteRequest body)
         {
             var modificationUser = Guid.Empty;
             var usuario = await registroFacade.CompletarDatosClienteAsync(
-                body.IdUsuario,
+                idUsuario,
                 body.Nombre,
                 body.ApellidoPaterno,
                 body.ApellidoMaterno,
@@ -52,38 +53,41 @@ namespace Wallet.RestAPI.Controllers.Implementation
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> RegistrarCorreoAsync(string version, RegistrarCorreoRequest body)
+        public override async Task<IActionResult> RegistrarCorreoAsync(string version, int idUsuario,
+            RegistrarCorreoRequest body)
         {
             var modificationUser = Guid.Empty;
-            var usuario = await registroFacade.RegistrarCorreoAsync(body.IdUsuario, body.Correo, modificationUser);
+            var usuario = await registroFacade.RegistrarCorreoAsync(idUsuario, body.Correo, modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> RegistrarBiometricosAsync(string version,
+        public override async Task<IActionResult> RegistrarBiometricosAsync(string version, int idUsuario,
             RegistrarBiometricosRequest body)
         {
             var modificationUser = Guid.Empty;
-            var usuario = await registroFacade.RegistrarDatosBiometricosAsync(body.IdUsuario, body.IdDispositivo,
+            var usuario = await registroFacade.RegistrarDatosBiometricosAsync(idUsuario, body.IdDispositivo,
                 body.Token, modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> AceptarTerminosAsync(string version, AceptarTerminosRequest body)
+        public override async Task<IActionResult> AceptarTerminosAsync(string version, int idUsuario,
+            AceptarTerminosRequest body)
         {
             var modificationUser = Guid.Empty;
             var usuario =
-                await registroFacade.AceptarTerminosCondicionesAsync(body.IdUsuario, body.Version, body.AceptoTerminos,
+                await registroFacade.AceptarTerminosCondicionesAsync(idUsuario, body.Version, body.AceptoTerminos,
                     body.AceptoPrivacidad, body.AceptoPld, modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> CompletarRegistroAsync(string version, CompletarRegistroRequest body)
+        public override async Task<IActionResult> CompletarRegistroAsync(string version, int idUsuario,
+            CompletarRegistroRequest body)
         {
             var modificationUser = Guid.Empty;
-            var usuario = await registroFacade.CompletarRegistroAsync(body.IdUsuario, body.Contrasena,
+            var usuario = await registroFacade.CompletarRegistroAsync(idUsuario, body.Contrasena,
                 body.ConfirmacionContrasena, modificationUser);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
