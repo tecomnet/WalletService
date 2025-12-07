@@ -8,17 +8,26 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Helpers
 {
     /// <summary>
-    /// 
+    /// Middleware to handle 404 Not Found responses and check for API versioning issues.
     /// </summary>
     public class NotFoundMiddleware
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NotFoundMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The next middleware in the pipeline.</param>
         public NotFoundMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
+        /// <summary>
+        /// Invokes the middleware.
+        /// </summary>
+        /// <param name="context">The HTTP context.</param>
+        /// <returns>A task that represents the completion of request processing.</returns>
         public async Task InvokeAsync(HttpContext context)
         {
             await _next(context: context);

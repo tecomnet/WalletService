@@ -9,13 +9,13 @@
  */
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.ComponentModel.DataAnnotations;
-using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Attributes;
 using Wallet.RestAPI.Controllers.Base;
-using System.Threading.Tasks;
+using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
 {

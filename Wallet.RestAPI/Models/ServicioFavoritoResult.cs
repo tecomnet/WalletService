@@ -16,79 +16,79 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Id
         /// </summary>
         [Required]
-        [DataMember(Name="id")]
+        [DataMember(Name = "id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets ClienteId
         /// </summary>
         [Required]
-        [DataMember(Name="clienteId")]
+        [DataMember(Name = "clienteId")]
         public int? ClienteId { get; set; }
 
         /// <summary>
-        /// Gets or Sets ProveedorServicioId
+        /// Gets or Sets ProveedorId
         /// </summary>
         [Required]
-        [DataMember(Name="proveedorServicioId")]
-        public int? ProveedorServicioId { get; set; }
+        [DataMember(Name = "proveedorId")]
+        public int? ProveedorId { get; set; }
 
         /// <summary>
         /// Gets or Sets Alias
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 100, MinimumLength=1)]
-        [DataMember(Name="alias")]
+        [StringLength(maximumLength: 100, MinimumLength = 1)]
+        [DataMember(Name = "alias")]
         public string Alias { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroReferencia
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 50, MinimumLength=1)]
-        [DataMember(Name="numeroReferencia")]
+        [StringLength(maximumLength: 50, MinimumLength = 1)]
+        [DataMember(Name = "numeroReferencia")]
         public string NumeroReferencia { get; set; }
 
         /// <summary>
         /// Gets or Sets Guid
         /// </summary>
         [Required]
-        [DataMember(Name="guid")]
+        [DataMember(Name = "guid")]
         public Guid? Guid { get; set; }
 
         /// <summary>
         /// Gets or Sets CreationTimestamp
         /// </summary>
         [Required]
-        [DataMember(Name="creationTimestamp")]
+        [DataMember(Name = "creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
         /// Gets or Sets ModificationTimestamp
         /// </summary>
         [Required]
-        [DataMember(Name="modificationTimestamp")]
+        [DataMember(Name = "modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
 
         /// <summary>
         /// Gets or Sets CreationUser
         /// </summary>
         [Required]
-        [DataMember(Name="creationUser")]
+        [DataMember(Name = "creationUser")]
         public Guid? CreationUser { get; set; }
 
         /// <summary>
         /// Gets or Sets ModificationUser
         /// </summary>
         [Required]
-        [DataMember(Name="modificationUser")]
+        [DataMember(Name = "modificationUser")]
         public Guid? ModificationUser { get; set; }
 
         /// <summary>
         /// Gets or Sets IsActive
         /// </summary>
         [Required]
-        [DataMember(Name="isActive")]
+        [DataMember(Name = "isActive")]
         public bool? IsActive { get; set; }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "class ServicioFavoritoResult {\n");
             sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
             sb.Append(value: "  ClienteId: ").Append(value: ClienteId).Append(value: "\n");
-            sb.Append(value: "  ProveedorServicioId: ").Append(value: ProveedorServicioId).Append(value: "\n");
+            sb.Append(value: "  ProveedorId: ").Append(value: ProveedorId).Append(value: "\n");
             sb.Append(value: "  Alias: ").Append(value: Alias).Append(value: "\n");
             sb.Append(value: "  NumeroReferencia: ").Append(value: NumeroReferencia).Append(value: "\n");
             sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
@@ -145,57 +145,57 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other: other.Id)
-                ) && 
+                ) &&
                 (
                     ClienteId == other.ClienteId ||
                     ClienteId != null &&
                     ClienteId.Equals(other: other.ClienteId)
-                ) && 
+                ) &&
                 (
-                    ProveedorServicioId == other.ProveedorServicioId ||
-                    ProveedorServicioId != null &&
-                    ProveedorServicioId.Equals(other: other.ProveedorServicioId)
-                ) && 
+                    ProveedorId == other.ProveedorId ||
+                    ProveedorId != null &&
+                    ProveedorId.Equals(other: other.ProveedorId)
+                ) &&
                 (
                     Alias == other.Alias ||
                     Alias != null &&
                     Alias.Equals(value: other.Alias)
-                ) && 
+                ) &&
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
                     NumeroReferencia.Equals(value: other.NumeroReferencia)
-                ) && 
+                ) &&
                 (
                     Guid == other.Guid ||
                     Guid != null &&
                     Guid.Equals(other: other.Guid)
-                ) && 
+                ) &&
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
                     CreationTimestamp.Equals(other: other.CreationTimestamp)
-                ) && 
+                ) &&
                 (
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
                     ModificationTimestamp.Equals(other: other.ModificationTimestamp)
-                ) && 
+                ) &&
                 (
                     CreationUser == other.CreationUser ||
                     CreationUser != null &&
                     CreationUser.Equals(other: other.CreationUser)
-                ) && 
+                ) &&
                 (
                     ModificationUser == other.ModificationUser ||
                     ModificationUser != null &&
                     ModificationUser.Equals(other: other.ModificationUser)
-                ) && 
+                ) &&
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
@@ -213,34 +213,35 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
+                if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (ClienteId != null)
+                if (ClienteId != null)
                     hashCode = hashCode * 59 + ClienteId.GetHashCode();
-                    if (ProveedorServicioId != null)
-                    hashCode = hashCode * 59 + ProveedorServicioId.GetHashCode();
-                    if (Alias != null)
+                if (ProveedorId != null)
+                    hashCode = hashCode * 59 + ProveedorId.GetHashCode();
+                if (Alias != null)
                     hashCode = hashCode * 59 + Alias.GetHashCode();
-                    if (NumeroReferencia != null)
+                if (NumeroReferencia != null)
                     hashCode = hashCode * 59 + NumeroReferencia.GetHashCode();
-                    if (Guid != null)
+                if (Guid != null)
                     hashCode = hashCode * 59 + Guid.GetHashCode();
-                    if (CreationTimestamp != null)
+                if (CreationTimestamp != null)
                     hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                    if (ModificationTimestamp != null)
+                if (ModificationTimestamp != null)
                     hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
-                    if (CreationUser != null)
+                if (CreationUser != null)
                     hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                    if (ModificationUser != null)
+                if (ModificationUser != null)
                     hashCode = hashCode * 59 + ModificationUser.GetHashCode();
-                    if (IsActive != null)
+                if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(ServicioFavoritoResult left, ServicioFavoritoResult right)
         {
@@ -252,7 +253,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(objA: left, objB: right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
+#nullable enable
+
 namespace Wallet.RestAPI.Helpers;
 
 /// <summary>
@@ -23,6 +25,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
     {
         this._provider = provider;
     }
+
     /// <summary>
     /// Configure swagger options
     /// </summary>
@@ -35,6 +38,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
             options.SwaggerDoc(name: description.GroupName, info: CreateInfoForApiVersion(description: description));
         }
     }
+
     /// <summary>
     /// Configure swagger options
     /// </summary>
@@ -44,6 +48,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
     {
         Configure(options: options);
     }
+
     /// <summary>
     /// Create info for API version
     /// </summary>

@@ -1,5 +1,4 @@
 ﻿using Wallet.DOM;
-using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;

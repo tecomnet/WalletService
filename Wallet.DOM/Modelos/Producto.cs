@@ -6,12 +6,12 @@ using Wallet.DOM.Errors;
 namespace Wallet.DOM.Modelos
 {
     /// <summary>
-    /// Representa un producto ofrecido por un proveedor de servicios.
+    /// Representa un producto ofrecido por un proveedor.
     /// </summary>
-    public class ProductoProveedor : ValidatablePersistentObjectLogicalDelete
+    public class Producto : ValidatablePersistentObjectLogicalDelete
     {
         /// <summary>
-        /// Define las restricciones de las propiedades para la validación del objeto ProductoProveedor.
+        /// Define las restricciones de las propiedades para la validación del objeto Producto.
         /// </summary>
         protected override List<PropertyConstraint> PropertyConstraints =>
         [
@@ -26,25 +26,40 @@ namespace Wallet.DOM.Modelos
                 maximumLength: 100,
                 minimumLength: 1),
             PropertyConstraint.DecimalPropertyConstraint(
-                propertyName: nameof(Monto),
+                propertyName: nameof(Precio),
                 isRequired: true,
                 allowNegative: false,
                 allowZero: false,
                 allowPositive: true,
-                allowedDecimals: 2)
+                allowedDecimals: 2),
+            PropertyConstraint.StringPropertyConstraint(
+                propertyName: nameof(Icono),
+                isRequired: false,
+                maximumLength: 255,
+                minimumLength: 0),
+            PropertyConstraint.StringPropertyConstraint(
+                propertyName: nameof(Categoria),
+                isRequired: false,
+                maximumLength: 100,
+                minimumLength: 0)
         ];
 
         /// <summary>
-        /// ID del proveedor de servicios al que pertenece este producto.
+        /// ID del proveedor al que pertenece este producto.
         /// </summary>
         [Required]
-        public int ProveedorServicioId { get; internal set; }
+        public int ProveedorId { get; internal set; }
 
         /// <summary>
-        /// Objeto de navegación para el proveedor de servicios.
+        /// Objeto de navegación para el proveedor.
         /// </summary>
-        [ForeignKey(name: "ProveedorServicioId")]
-        public ProveedorServicio ProveedorServicio { get; set; }
+        [ForeignKey(name: "ProveedorId")]
+        public Proveedor Proveedor { get; set; }
+
+        /// <summary>
+        /// Colección de empresas que ofrecen este producto.
+        /// </summary>
+        public ICollection<Empresa> Empresas { get; set; } = new List<Empresa>();
 
         /// <summary>
         /// SKU (Stock Keeping Unit) del producto.
@@ -61,53 +76,63 @@ namespace Wallet.DOM.Modelos
         public string Nombre { get; private set; }
 
         /// <summary>
-        /// Monto o precio del producto.
+        /// Precio del producto.
         /// </summary>
         [Required]
         [Column(TypeName = "decimal(19, 2)")]
-        public decimal Monto { get; private set; }
+        public decimal Precio { get; private set; }
 
         /// <summary>
-        /// Descripción opcional del producto.
+        /// Ícono del producto.
         /// </summary>
         [MaxLength(length: 255)]
-        public string Descripcion { get; private set; }
+        public string? Icono { get; private set; }
+
+        /// <summary>
+        /// Categoría del producto.
+        /// </summary>
+        [MaxLength(length: 100)]
+        public string? Categoria { get; private set; }
 
         /// <summary>
         /// Constructor privado para uso de Entity Framework.
         /// </summary>
-        private ProductoProveedor() : base()
+        private Producto() : base()
         {
         }
 
         /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="ProductoProveedor"/>.
+        /// Inicializa una nueva instancia de la clase <see cref="Producto"/>.
         /// </summary>
-        /// <param name="proveedorServicio">El objeto del proveedor de servicios al que pertenece el producto.</param>
+        /// <param name="proveedor">El objeto del proveedor al que pertenece el producto.</param>
         /// <param name="sku">El SKU del producto.</param>
         /// <param name="nombre">El nombre del producto.</param>
-        /// <param name="monto">El monto del producto.</param>
-        /// <param name="descripcion">La descripción del producto.</param>
+        /// <param name="precio">El precio del producto.</param>
+        /// <param name="icono">El ícono del producto.</param>
+        /// <param name="categoria">La categoría del producto.</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
-        internal ProductoProveedor(ProveedorServicio proveedorServicio, string sku, string nombre, decimal monto, string descripcion,
+        internal Producto(Proveedor proveedor, string sku, string nombre, decimal precio, string? icono,
+            string? categoria,
             Guid creationUser) : base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(propertyName: nameof(Sku), value: sku, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
-            IsPropertyValid(propertyName: nameof(Monto), value: monto, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Precio), value: precio, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Icono), value: icono, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Categoria), value: categoria, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
-            ProveedorServicio = proveedorServicio;
-            ProveedorServicioId = proveedorServicio.Id;
+            Proveedor = proveedor;
+            ProveedorId = proveedor.Id;
             Sku = sku;
             Nombre = nombre;
-            Monto = monto;
-            // La descripción es opcional y no se valida en el constructor.
-            Descripcion = descripcion;
+            Precio = precio;
+            Icono = icono;
+            Categoria = categoria;
         }
 
         /// <summary>
@@ -115,15 +140,19 @@ namespace Wallet.DOM.Modelos
         /// </summary>
         /// <param name="sku">El nuevo SKU.</param>
         /// <param name="nombre">El nuevo nombre.</param>
-        /// <param name="monto">El nuevo monto.</param>
-        /// <param name="descripcion">La nueva descripción.</param>
+        /// <param name="precio">El nuevo precio.</param>
+        /// <param name="icono">El nuevo ícono.</param>
+        /// <param name="categoria">La nueva categoría.</param>
         /// <param name="modificationUser">El usuario que modifica el registro.</param>
-        public void Update(string sku, string nombre, decimal monto, string descripcion, Guid modificationUser)
+        public void Update(string sku, string nombre, decimal precio, string? icono, string? categoria,
+            Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(propertyName: nameof(Sku), value: sku, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
-            IsPropertyValid(propertyName: nameof(Monto), value: monto, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Precio), value: precio, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Icono), value: icono, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(Categoria), value: categoria, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
@@ -131,9 +160,11 @@ namespace Wallet.DOM.Modelos
 
             Sku = sku;
             Nombre = nombre;
-            Monto = monto;
-            Descripcion = descripcion;
+            Precio = precio;
+            Icono = icono;
+            Categoria = categoria;
             base.Update(modificationUser: modificationUser);
         }
     }
 }
+

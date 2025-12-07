@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
@@ -7,7 +8,6 @@ using Wallet.DOM.Modelos;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.Funcionalidad.ServiceClient;
 using Wallet.Funcionalidad.Services.TokenService;
-using System.Security.Claims;
 
 namespace Wallet.Funcionalidad.Functionality.UsuarioFacade;
 
@@ -27,8 +27,8 @@ public class UsuarioFacade(
         {
             // Busca el usuario por su ID, incluyendo todas las relaciones necesarias.
             var usuario = await context.Usuario
-                .Include(navigationPropertyPath: u => u.Empresa)
                 .Include(navigationPropertyPath: u => u.Cliente)
+                .ThenInclude(c => c.Empresa)
                 .Include(navigationPropertyPath: u => u.Verificaciones2Fa)
                 .Include(navigationPropertyPath: u => u.DispositivoMovilAutorizados)
                 .Include(navigationPropertyPath: u => u.UbicacionesGeolocalizacion)
@@ -63,10 +63,11 @@ public class UsuarioFacade(
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
             // Crea (establece) la nueva contraseña.
             usuario.CrearContrasena(contrasena: contrasena, modificationUser: modificationUser);
-        
+
 
             // Genera el token de acceso.
-            /*var claims = new List<Claim>
+            // Genera el token de acceso.
+            var claims = new List<Claim>
             {
                 new Claim(type: ClaimTypes.NameIdentifier, value: usuario.Id.ToString()),
                 new Claim(type: ClaimTypes.Name, value: usuario.Cliente?.NombreCompleto ?? "Usuario"),
@@ -78,10 +79,10 @@ public class UsuarioFacade(
                 claims.Add(new Claim(type: "IdCliente", value: usuario.Cliente.Id.ToString()));
             }
 
-            var accesToken = tokenService.GenerateAccessToken(claims: claims);*/
+            var accesToken = tokenService.GenerateAccessToken(claims: claims);
             // Guarda los cambios.
             await context.SaveChangesAsync();
-            return "";
+            return accesToken;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
@@ -138,7 +139,7 @@ public class UsuarioFacade(
             var nuevaVerificacion = await GeneraCodigoVerificacionTwilio2FAEmailAsync(
                 correoElectronico: correoElectronico,
                 nombreCliente: usuario.Cliente?.NombreCompleto ?? "Usuario", // Fallback si Cliente es nulo
-                nombreEmpresa: usuario.Empresa?.Nombre ?? "Tecomnet", // Fallback si Empresa es nulo
+                nombreEmpresa: usuario.Cliente?.Empresa?.Nombre ?? "Tecomnet", // Fallback si Empresa es nulo
                 creationUser: modificationUser,
                 testCase: testCase);
 
@@ -280,6 +281,7 @@ public class UsuarioFacade(
                         dynamicContent: [usuario.Id],
                         module: this.GetType().Name));
                 }
+
                 // Genera código de verificación y envía por Twilio service.
                 var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(
                     codigoPais: codigoPais,
@@ -313,6 +315,7 @@ public class UsuarioFacade(
                     verificacion: verificacion2Fa,
                     modificationUser: creationUser);
             }
+
             // Guardar cambios.
             await context.SaveChangesAsync();
             // Retornar usuario.

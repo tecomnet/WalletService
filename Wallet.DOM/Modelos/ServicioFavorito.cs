@@ -43,13 +43,13 @@ namespace Wallet.DOM.Modelos
         /// ID del proveedor del servicio favorito.
         /// </summary>
         [Required]
-        public int ProveedorServicioId { get; private set; }
+        public int ProveedorId { get; private set; }
 
         /// <summary>
-        /// Objeto de navegación que representa el proveedor de servicios asociado.
+        /// Objeto de navegación que representa el proveedor asociado.
         /// </summary>
-        [ForeignKey(name: "ProveedorServicioId")]
-        public ProveedorServicio ProveedorServicio { get; set; }
+        [ForeignKey(name: "ProveedorId")]
+        public Proveedor Proveedor { get; set; }
 
         /// <summary>
         /// Alias o nombre personalizado asignado por el cliente al servicio favorito.
@@ -76,43 +76,45 @@ namespace Wallet.DOM.Modelos
         /// Inicializa una nueva instancia de la clase <see cref="ServicioFavorito"/> con los IDs de cliente y proveedor.
         /// </summary>
         /// <param name="clienteId">El ID único del cliente.</param>
-        /// <param name="proveedorServicioId">El ID único del proveedor de servicios.</param>
+        /// <param name="proveedorId">El ID único del proveedor.</param>
         /// <param name="alias">El alias o nombre personalizado para el servicio.</param>
         /// <param name="numeroReferencia">El número de referencia asociado al servicio.</param>
         /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
         /// <exception cref="EMGeneralAggregateException">Se lanza si las validaciones de las propiedades fallan.</exception>
-        public ServicioFavorito(int clienteId, int proveedorServicioId, string alias, string numeroReferencia,
+        public ServicioFavorito(int clienteId, int proveedorId, string alias, string numeroReferencia,
             Guid creationUser) : base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
-            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia,
+                exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
             ClienteId = clienteId;
-            ProveedorServicioId = proveedorServicioId;
+            ProveedorId = proveedorId;
             Alias = alias;
             NumeroReferencia = numeroReferencia;
         }
 
         /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="ServicioFavorito"/> utilizando objetos de Cliente y ProveedorServicio.
+        /// Inicializa una nueva instancia de la clase <see cref="ServicioFavorito"/> utilizando objetos de Cliente y Proveedor.
         /// </summary>
         /// <param name="cliente">El objeto <see cref="Cliente"/> asociado.</param>
-        /// <param name="proveedorServicio">El objeto <see cref="ProveedorServicio"/> asociado.</param>
+        /// <param name="proveedor">El objeto <see cref="Proveedor"/> asociado.</param>
         /// <param name="alias">El alias o nombre personalizado para el servicio.</param>
         /// <param name="numeroReferencia">El número de referencia asociado al servicio.</param>
         /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
         /// <exception cref="EMGeneralAggregateException">Se lanza si las validaciones de las propiedades fallan.</exception>
-        public ServicioFavorito(Cliente cliente, ProveedorServicio proveedorServicio, string alias,
+        public ServicioFavorito(Cliente cliente, Proveedor proveedor, string alias,
             string numeroReferencia, Guid creationUser) : base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
-            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia,
+                exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
@@ -120,8 +122,8 @@ namespace Wallet.DOM.Modelos
 
             Cliente = cliente;
             ClienteId = cliente.Id;
-            ProveedorServicio = proveedorServicio;
-            ProveedorServicioId = proveedorServicio.Id;
+            Proveedor = proveedor;
+            ProveedorId = proveedor.Id;
             Alias = alias;
             NumeroReferencia = numeroReferencia;
         }
@@ -138,7 +140,8 @@ namespace Wallet.DOM.Modelos
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
-            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia,
+                exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
@@ -150,3 +153,4 @@ namespace Wallet.DOM.Modelos
         }
     }
 }
+

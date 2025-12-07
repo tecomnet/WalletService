@@ -57,4 +57,18 @@ public interface IEmpresaFacade
     /// <param name="modificationUser">El identificador del usuario que realiza la activación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Empresa"/> activado.</returns>
     public Task<Empresa> ActivaEmpresaAsync(int idEmpresa, Guid modificationUser);
+
+    /// <summary>
+    /// Obtiene la lista de productos asociados a una empresa.
+    /// </summary>
+    /// <param name="idEmpresa">El identificador único de la empresa.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con una lista de objetos <see cref="Producto"/>.</returns>
+    public Task<List<Producto>> ObtenerProductosPorEmpresaAsync(int idEmpresa);
+
+    /// <summary>
+    /// Obtiene la lista de clientes asociados a una empresa.
+    /// </summary>
+    /// <param name="idEmpresa">El identificador único de la empresa.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con una lista de objetos <see cref="Cliente"/>.</returns>
+    public Task<List<Cliente>> ObtenerClientesPorEmpresaAsync(int idEmpresa);
 }

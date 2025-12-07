@@ -16,6 +16,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
     private readonly Mock<IUsuarioFacade> _usuarioFacadeMock = new();
     private readonly Mock<IClienteFacade> _clienteFacadeMock = new();
     private readonly Mock<IConsentimientosUsuarioFacade> _consentimientosFacadeMock = new();
+    private readonly Mock<IEmpresaFacade> _empresaFacadeMock = new();
     private readonly RegistroFacade _registroFacade;
     private readonly Guid _userId = Guid.NewGuid();
 
@@ -25,7 +26,8 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             Context,
             _usuarioFacadeMock.Object,
             _clienteFacadeMock.Object,
-            _consentimientosFacadeMock.Object
+            _consentimientosFacadeMock.Object,
+            _empresaFacadeMock.Object
         );
     }
 
@@ -90,6 +92,10 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
 
         _usuarioFacadeMock.Setup(x => x.ObtenerUsuarioPorIdAsync(usuario.Id))
             .ReturnsAsync(usuario);
+
+        var empresaMock = new Empresa("Tecomnet", Guid.NewGuid());
+        _empresaFacadeMock.Setup(x => x.ObtenerPorNombreAsync(It.IsAny<string>()))
+            .ReturnsAsync(empresaMock);
 
         // Act
         var result = await _registroFacade.CompletarDatosClienteAsync(

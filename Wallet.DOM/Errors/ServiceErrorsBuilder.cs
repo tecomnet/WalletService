@@ -38,8 +38,10 @@ public class ServiceErrorsBuilder
         EstadoErrors();
         // 6. Errores específicos de autenticación
         AuthenticationErrors();
-        // 7. Errores específicos de ProveedorServicio
-        ProveedorServicioErrors();
+        // 7. Errores específicos de Proveedor
+        ProveedorErrors();
+        // 8. Errores específicos de Broker
+        BrokerErrors();
         // 8. Errores de validación de propiedades
         PropertyValidationErrors();
         // 9. Errores de ServicioFavorito
@@ -454,27 +456,46 @@ public class ServiceErrorsBuilder
 
     #endregion
 
-    #region ProveedorServicio
+    #region Broker
 
-    /// <summary>Error: El proveedor de servicio no fue encontrado.</summary>
-    public const string ProveedorServicioNoEncontrado = "PROVEEDOR-SERVICIO-NOT-FOUND";
-
-    /// <summary>Error: El producto del proveedor no fue encontrado.</summary>
-    public const string ProductoProveedorNoEncontrado = "PRODUCTO-PROVEEDOR-NOT-FOUND";
+    /// <summary>Error: El broker no fue encontrado.</summary>
+    public const string BrokerNoEncontrado = "BROKER-NOT-FOUND";
 
     /// <summary>
-    /// Carga los errores relacionados con la entidad ProveedorServicio.
+    /// Carga los errores relacionados con la entidad Broker.
     /// </summary>
-    private void ProveedorServicioErrors()
+    private void BrokerErrors()
+    {
+        // Error de broker no encontrado
+        AddServiceError(
+            errorCode: BrokerNoEncontrado,
+            message: "El broker no fue encontrado.",
+            description: "El broker con id {0} no existe.");
+    }
+
+    #endregion
+
+    #region Proveedor
+
+    /// <summary>Error: El proveedor de servicio no fue encontrado.</summary>
+    public const string ProveedorNoEncontrado = "PROVEEDOR-NOT-FOUND";
+
+    /// <summary>Error: El producto del proveedor no fue encontrado.</summary>
+    public const string ProductoNoEncontrado = "PRODUCTO-NOT-FOUND";
+
+    /// <summary>
+    /// Carga los errores relacionados con la entidad Proveedor.
+    /// </summary>
+    private void ProveedorErrors()
     {
         // Error de proveedor de servicio no encontrado
         AddServiceError(
-            errorCode: ProveedorServicioNoEncontrado,
+            errorCode: ProveedorNoEncontrado,
             message: "El proveedor de servicio no fue encontrado.",
             description: "El proveedor de servicio con id {0} no existe.");
         // Error de producto del proveedor no encontrado
         AddServiceError(
-            errorCode: ProductoProveedorNoEncontrado,
+            errorCode: ProductoNoEncontrado,
             message: "El producto del proveedor de servicio no fue encontrado.",
             description: "El producto del proveedor de servicio con id {0} no existe.");
     }

@@ -16,7 +16,8 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
 {
     /// <inheritdoc/>
     public override async Task<IActionResult> GetEmpresasAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version)
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version)
     {
         // Call facade method
         var empresas = await empresaFacade.ObtenerTodasAsync();
@@ -28,7 +29,8 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PostEmpresaAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromBody] EmpresaRequest body)
     {
         // Call facade method
@@ -41,7 +43,8 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutEmpresaAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
         [FromRoute, Required] int? idEmpresa, [FromBody] EmpresaRequest body)
     {
         // Call facade method
@@ -49,6 +52,34 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
             modificationUser: Guid.Empty);
         // Map to response model
         var response = mapper.Map<EmpresaResult>(source: empresa);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> GetProductosPorEmpresaAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
+        [FromRoute, Required] int? idEmpresa)
+    {
+        // Call facade method
+        var productos = await empresaFacade.ObtenerProductosPorEmpresaAsync(idEmpresa: idEmpresa.Value);
+        // Map to response model
+        var response = mapper.Map<List<ProductoResult>>(source: productos);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> GetClientesPorEmpresaAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
+        [FromRoute, Required] int? idEmpresa)
+    {
+        // Call facade method
+        var clientes = await empresaFacade.ObtenerClientesPorEmpresaAsync(idEmpresa: idEmpresa.Value);
+        // Map to response model
+        var response = mapper.Map<List<ClienteResult>>(source: clientes);
         // Return OK response
         return Ok(value: response);
     }

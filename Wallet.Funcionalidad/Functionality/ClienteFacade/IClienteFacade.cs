@@ -52,5 +52,12 @@ public interface IClienteFacade
     /// </summary>
     /// <returns>Una tarea que representa la operación asíncrona, con una lista de objetos <see cref="Cliente"/>.</returns>
     public Task<List<Cliente>> ObtenerClientesAsync();
+
+    /// <summary>
+    /// Obtiene la lista de servicios favoritos asociados a un cliente.
+    /// </summary>
+    /// <param name="idCliente">El identificador único del cliente.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con una lista de objetos <see cref="ServicioFavorito"/>.</returns>
+    public Task<List<ServicioFavorito>> ObtenerServiciosFavoritosAsync(int idCliente);
 }
     

@@ -8,13 +8,13 @@ public interface IServicioFavoritoFacade
     /// Guarda un nuevo servicio favorito para un cliente.
     /// </summary>
     /// <param name="clienteId">El identificador único del cliente.</param>
-    /// <param name="proveedorServicioId">El identificador único del proveedor de servicio.</param>
-    /// <param name="alias">Un alias o nombre corto para identificar el servicio favorito.</param>
-    /// <param name="numeroReferencia">El número de referencia asociado al servicio (ej. número de cuenta, contrato).</param>
-    /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
-    /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
-    /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="ServicioFavorito"/> guardado.</returns>
-    Task<ServicioFavorito> GuardarServicioFavoritoAsync(int clienteId, int proveedorServicioId, string alias,
+    /// <param name="proveedorId">El identificador único del proveedor de servicio.</param>
+    /// <param name="alias">El alias o nombre personalizado asignado al servicio.</param>
+    /// <param name="numeroReferencia">El número de referencia del servicio.</param>
+    /// <param name="creationUser">El identificador del usuario que crea el favorito.</param>
+    /// <param name="testCase">Caso de prueba (opcional).</param>
+    /// <returns>El servicio favorito guardado.</returns>
+    Task<ServicioFavorito> GuardarServicioFavoritoAsync(int clienteId, int proveedorId, string alias,
         string numeroReferencia, Guid creationUser, string? testCase = null);
 
     /// <summary>

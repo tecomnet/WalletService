@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+#nullable enable
+
 namespace Wallet.RestAPI.Attributes
 {
     /// <summary>

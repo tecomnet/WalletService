@@ -54,7 +54,7 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
         // Call facade method
         var servicio = await servicioFavoritoFacade.GuardarServicioFavoritoAsync(
             clienteId: body.ClienteId.Value,
-            proveedorServicioId: body.ProveedorServicioId.Value,
+            proveedorId: body.ProveedorId.Value,
             alias: body.Alias,
             numeroReferencia: body.NumeroReferencia,
             creationUser: Guid.Empty);

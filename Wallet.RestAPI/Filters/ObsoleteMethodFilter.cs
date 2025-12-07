@@ -18,6 +18,7 @@ public class ObsoleteMethodFilter : IActionFilter
 	{
 		// not implemented
 	}
+
 	/// <summary>
 	/// Method to apply the filter
 	/// </summary>
@@ -30,7 +31,7 @@ public class ObsoleteMethodFilter : IActionFilter
 				type.AttributeType.Name == "ObsoleteAttribute");
 		if (obsoleteOperation.HasValue && obsoleteOperation.Value)
 		{
-			context.HttpContext.Response.Headers.Add(
+			context.HttpContext.Response.Headers.Append(
 				key: "deprecated-method-version",
 				value: $"Requested version '{requestedApiVersion}' is deprecated for this method.");
 		}

@@ -21,7 +21,7 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
             minimumLength: 1,
             maximumLength: 100),
     ];
-    
+
     /// <summary>
     /// Obtiene o establece el nombre de la empresa.
     /// Es un campo requerido con una longitud máxima de 100 caracteres.
@@ -29,16 +29,26 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
     [Required]
     [MaxLength(length: 100)]
     public string Nombre { get; internal set; }
-    
+
+    /// <summary>
+    /// Obtiene la lista de clientes asociados a esta empresa. TODO: Cambiar relación a usuarios
+    /// </summary>
     /// <summary>
     /// Obtiene la lista de clientes asociados a esta empresa. TODO: Cambiar relación a usuarios
     /// </summary>
     public List<Cliente> Clientes { get; private set; }
 
     /// <summary>
+    /// Obtiene la lista de productos asociados a esta empresa (relación muchos a muchos).
+    /// </summary>
+    public ICollection<Producto> Productos { get; set; } = new List<Producto>();
+
+    /// <summary>
     /// Constructor por defecto para la clase <see cref="Empresa"/>.
     /// </summary>
-    public Empresa() : base() { }
+    public Empresa() : base()
+    {
+    }
 
     /// <summary>
     /// Inicializa una nueva instancia de la clase <see cref="Empresa"/> con el nombre y usuario de creación especificados.

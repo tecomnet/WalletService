@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Wallet.DOM.ApplicationDbContext;
-using Wallet.DOM.Modelos;
-using Wallet.DOM.Helper;
-using Wallet.DOM.Enums;
 using Respawn;
+using Wallet.DOM.ApplicationDbContext;
+using Wallet.DOM.Enums;
+using Wallet.DOM.Helper;
+using Wallet.DOM.Modelos;
 
 namespace Wallet.UnitTest.FixtureBase
 {

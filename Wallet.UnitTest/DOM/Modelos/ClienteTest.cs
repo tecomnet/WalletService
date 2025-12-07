@@ -1,3 +1,4 @@
+using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
@@ -40,8 +41,10 @@ public class ClienteTest : UnitTestTemplate
                 estatus: EstatusRegistroEnum.RegistroCompletado,
                 creationUser: Guid.NewGuid(),
                 testCase: caseName);
+            var mockEmpresa = new Mock<Empresa>();
             var user = new Cliente(
                 usuario: usuario,
+                empresa: mockEmpresa.Object,
                 creationUser: Guid.NewGuid(),
                 testCase: caseName);
             // Check the properties
@@ -176,7 +179,8 @@ public class ClienteTest : UnitTestTemplate
             var usuario = new Usuario(codigoPais: "+52", telefono: "9825897845", correoElectronico: null,
                 contrasena: null, estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: Guid.NewGuid(),
                 testCase: caseName);
-            var cliente = new Cliente(usuario: usuario, creationUser: Guid.NewGuid(),
+            var mockEmpresa = new Mock<Empresa>();
+            var cliente = new Cliente(usuario: usuario, empresa: mockEmpresa.Object, creationUser: Guid.NewGuid(),
                 testCase: caseName);
             // Ejecutar el método a probar
             cliente.AgregarDatosPersonales(
@@ -339,7 +343,8 @@ public class ClienteTest : UnitTestTemplate
         var usuario = new Usuario(codigoPais: "+52", telefono: "5512345678", correoElectronico: null, contrasena: null,
             estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: Guid.NewGuid(),
             testCase: caseName);
-        var cliente = new Cliente(usuario: usuario, creationUser: Guid.NewGuid(),
+        var mockEmpresa = new Mock<Empresa>();
+        var cliente = new Cliente(usuario: usuario, empresa: mockEmpresa.Object, creationUser: Guid.NewGuid(),
             testCase: caseName);
 
         // Si la acción es ActualizarContrasena, debemos inicializar la Contrasena del cliente.

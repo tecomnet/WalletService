@@ -17,8 +17,9 @@ public class ServiceDbContext : DbContext
     public DbSet<Empresa> Empresa { get; set; }
     public DbSet<UbicacionesGeolocalizacion> UbicacionGeolocalizacion { get; set; }
     public DbSet<DispositivoMovilAutorizado> DispositivoMovilAutorizado { get; set; }
-    public DbSet<ProveedorServicio> ProveedorServicio { get; set; }
-    public DbSet<ProductoProveedor> ProductoProveedor { get; set; }
+    public DbSet<Broker> Broker { get; set; }
+    public DbSet<Proveedor> Proveedor { get; set; }
+    public DbSet<Producto> Producto { get; set; }
     public DbSet<ServicioFavorito> ServicioFavorito { get; set; }
     public DbSet<ConsentimientosUsuario> ConsentimientosUsuario { get; set; } = null!;
 
@@ -45,6 +46,10 @@ public class ServiceDbContext : DbContext
             .WithMany(navigationExpression: u => u.UbicacionesGeolocalizacion)
             .HasForeignKey(foreignKeyExpression: u => u.UsuarioId);
 
+        // Configuración de la relación muchos a muchos entre Empresa y Producto
+        modelBuilder.Entity<Empresa>()
+            .HasMany(e => e.Productos)
+            .WithMany(p => p.Empresas);
 
         // -----------------------------------------------------
         // 2. SEEDING DE DATOS (Llenado de datos iniciales)

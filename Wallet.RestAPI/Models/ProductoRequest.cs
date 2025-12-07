@@ -10,7 +10,7 @@ namespace Wallet.RestAPI.Models
     /// Request para crear o actualizar un producto de proveedor.
     /// </summary>
     [DataContract]
-    public class ProductoProveedorRequest : IEquatable<ProductoProveedorRequest>
+    public class ProductoRequest : IEquatable<ProductoRequest>
     {
         /// <summary>
         /// SKU del producto.
@@ -27,17 +27,26 @@ namespace Wallet.RestAPI.Models
         public string Nombre { get; set; }
 
         /// <summary>
-        /// Monto del producto.
+        /// Precio del producto.
         /// </summary>
         [Required]
-        [DataMember(Name = "monto")]
-        public decimal? Monto { get; set; }
+        [DataMember(Name = "precio")]
+        public decimal? Precio { get; set; }
 
         /// <summary>
-        /// Descripción del producto.
+        /// Icono del producto.
         /// </summary>
-        [DataMember(Name = "descripcion")]
-        public string Descripcion { get; set; }
+        [Required]
+        [DataMember(Name = "icono")]
+        public string Icono { get; set; }
+
+        /// <summary>
+        /// Categoría del producto.
+        /// </summary>
+        [Required]
+        [DataMember(Name = "categoria")]
+        public string Categoria { get; set; }
+
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -46,11 +55,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ProductoProveedorRequest {\n");
+            sb.Append(value: "class ProductoRequest {\n");
             sb.Append(value: "  Sku: ").Append(value: Sku).Append(value: "\n");
             sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  Monto: ").Append(value: Monto).Append(value: "\n");
-            sb.Append(value: "  Descripcion: ").Append(value: Descripcion).Append(value: "\n");
+            sb.Append(value: "  Precio: ").Append(value: Precio).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
         }
@@ -73,15 +81,15 @@ namespace Wallet.RestAPI.Models
         {
             if (ReferenceEquals(objA: null, objB: obj)) return false;
             if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ProductoProveedorRequest)obj);
+            return obj.GetType() == GetType() && Equals(other: (ProductoRequest)obj);
         }
 
         /// <summary>
-        /// Returns true if ProductoProveedorRequest instances are equal
+        /// Returns true if ProductoRequest instances are equal
         /// </summary>
-        /// <param name="other">Instance of ProductoProveedorRequest to be compared</param>
+        /// <param name="other">Instance of ProductoRequest to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ProductoProveedorRequest other)
+        public bool Equals(ProductoRequest other)
         {
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
@@ -90,22 +98,27 @@ namespace Wallet.RestAPI.Models
                 (
                     Sku == other.Sku ||
                     Sku != null &&
-                    Sku.Equals(other.Sku)
+                    Sku.Equals(value: other.Sku)
                 ) &&
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(other.Nombre)
+                    Nombre.Equals(value: other.Nombre)
                 ) &&
                 (
-                    Monto == other.Monto ||
-                    Monto != null &&
-                    Monto.Equals(other.Monto)
+                    Precio == other.Precio ||
+                    Precio != null &&
+                    Precio.Equals(other: other.Precio)
                 ) &&
                 (
-                    Descripcion == other.Descripcion ||
-                    Descripcion != null &&
-                    Descripcion.Equals(other.Descripcion)
+                    Icono == other.Icono ||
+                    Icono != null &&
+                    Icono.Equals(value: other.Icono)
+                ) &&
+                (
+                    Categoria == other.Categoria ||
+                    Categoria != null &&
+                    Categoria.Equals(value: other.Categoria)
                 );
         }
 
@@ -123,10 +136,12 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Sku.GetHashCode();
                 if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                if (Monto != null)
-                    hashCode = hashCode * 59 + Monto.GetHashCode();
-                if (Descripcion != null)
-                    hashCode = hashCode * 59 + Descripcion.GetHashCode();
+                if (Precio != null)
+                    hashCode = hashCode * 59 + Precio.GetHashCode();
+                if (Icono != null)
+                    hashCode = hashCode * 59 + Icono.GetHashCode();
+                if (Categoria != null)
+                    hashCode = hashCode * 59 + Categoria.GetHashCode();
                 return hashCode;
             }
         }
@@ -135,14 +150,14 @@ namespace Wallet.RestAPI.Models
 
 #pragma warning disable 1591
 
-        public static bool operator ==(ProductoProveedorRequest left, ProductoProveedorRequest right)
+        public static bool operator ==(ProductoRequest left, ProductoRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
-        public static bool operator !=(ProductoProveedorRequest left, ProductoProveedorRequest right)
+        public static bool operator !=(ProductoRequest left, ProductoRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
 #pragma warning restore 1591

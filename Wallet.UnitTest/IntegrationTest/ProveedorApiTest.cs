@@ -7,14 +7,20 @@ using Wallet.UnitTest.FixtureBase;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
-public class ProveedorServicioApiTest : DatabaseTestFixture
+public class ProveedorApiTest : DatabaseTestFixture
 {
-    private const string PROVEEDOR_API_URI = "proveedorServicio";
+    private const string API_URI = "proveedor";
     private const string API_VERSION = "0.1";
 
-    public ProveedorServicioApiTest()
+    public ProveedorApiTest()
     {
-        SetupDataAsync(setupDataAction: async context => { await context.SaveChangesAsync(); }).GetAwaiter().GetResult();
+        SetupDataAsync(setupDataAction: async context =>
+        {
+            var broker1 = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test 1", creationUser: Guid.NewGuid());
+            var broker2 = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test 2", creationUser: Guid.NewGuid());
+            await context.Broker.AddRangeAsync(broker1, broker2);
+            await context.SaveChangesAsync();
+        }).GetAwaiter().GetResult();
     }
 
     private readonly JsonSerializerSettings _jsonSettings = new()
@@ -23,20 +29,19 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
     };
 
     [Fact]
-    public async Task Post_ProveedorServicio_Ok()
+    public async Task Post_Proveedor_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
-        var request = new ProveedorServicioRequest
+        var request = new ProveedorRequest
         {
             Nombre = "Netflix",
-            Categoria = "Servicios",
-            UrlIcono = "https://test.com/icon.png"
+            BrokerId = 1
         };
         var content = CreateContent(body: request);
 
         // Act
-        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}", content: content);
+        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{API_URI}", content: content);
 
         // Assert
         if (!response.IsSuccessStatusCode)
@@ -47,7 +52,7 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
 
         Assert.Equal(expected: HttpStatusCode.Created, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Equal(expected: request.Nombre, actual: result.Nombre);
@@ -55,102 +60,103 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
     }
 
     [Fact]
-    public async Task Get_ProveedoresServicio_Ok()
+    public async Task Get_Proveedores_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
 
         // Act
-        var response = await client.GetAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}");
+        var response = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}");
 
         // Assert
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<List<ProveedorServicioResult>>(value: responseContent, settings: _jsonSettings);
+        var result =
+            JsonConvert.DeserializeObject<List<ProveedorResult>>(value: responseContent, settings: _jsonSettings);
         Assert.NotNull(result);
     }
 
     [Fact]
-    public async Task Get_ProveedorServicio_ById_Ok()
+    public async Task Get_Proveedor_ById_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
         // Create a provider first
-        var request = new ProveedorServicioRequest
+        var request = new ProveedorRequest
         {
             Nombre = "Spotify",
-            Categoria = "Servicios",
-            UrlIcono = "https://spotify.com/icon.png"
+            BrokerId = 1
         };
-        var createResponse = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}", content: CreateContent(body: request));
+        var createResponse =
+            await client.PostAsync(requestUri: $"{API_VERSION}/{API_URI}", content: CreateContent(body: request));
         var createResult =
-            JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await createResponse.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(createResult);
 
         // Act
-        var response = await client.GetAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{createResult.Id}");
+        var response = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}/{createResult.Id}");
 
         // Assert
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Equal(expected: createResult.Id, actual: result.Id);
     }
 
     [Fact]
-    public async Task Put_ProveedorServicio_Ok()
+    public async Task Put_Proveedor_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
         // Create a provider first
-        var createRequest = new ProveedorServicioRequest
+        var createRequest = new ProveedorRequest
         {
             Nombre = "Amazon",
-            Categoria = "Recargas",
-            UrlIcono = "https://amazon.com/icon.png"
+            BrokerId = 1
         };
-        var createResponse = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}", content: CreateContent(body: createRequest));
+        var createResponse = await client.PostAsync(requestUri: $"{API_VERSION}/{API_URI}",
+            content: CreateContent(body: createRequest));
         var createResult =
-            JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await createResponse.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(createResult);
 
         // Act
-        var updateRequest = new ProveedorServicioRequest
+        var updateRequest = new ProveedorRequest
         {
             Nombre = "Amazon Prime",
-            Categoria = "Movilidad",
-            UrlIcono = "https://amazon.com/prime.png"
+            BrokerId = 2
         };
         var response =
-            await client.PutAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{createResult.Id}", content: CreateContent(body: updateRequest));
+            await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{createResult.Id}",
+                content: CreateContent(body: updateRequest));
 
         // Assert
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Equal(expected: updateRequest.Nombre, actual: result.Nombre);
-        Assert.Equal(expected: updateRequest.Categoria, actual: result.Categoria);
+        // Assert.Equal(expected: updateRequest.Categoria, actual: result.Categoria); // Categoria removed
     }
 
     [Fact]
-    public async Task Delete_ProveedorServicio_Ok()
+    public async Task Delete_Proveedor_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
         // Create a provider first
-        var createRequest = new ProveedorServicioRequest
+        var createRequest = new ProveedorRequest
         {
             Nombre = "Hulu",
-            Categoria = "Servicios",
-            UrlIcono = "https://hulu.com/icon.png"
+            BrokerId = 1
         };
-        var createResponse = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}", content: CreateContent(body: createRequest));
+        var createResponse = await client.PostAsync(requestUri: $"{API_VERSION}/{API_URI}",
+            content: CreateContent(body: createRequest));
         if (!createResponse.IsSuccessStatusCode)
         {
             var error = await createResponse.Content.ReadAsStringAsync();
@@ -158,18 +164,18 @@ public class ProveedorServicioApiTest : DatabaseTestFixture
         }
 
         var createResult =
-            JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await createResponse.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(createResult);
         Assert.True(condition: createResult.Id > 0, userMessage: "Created provider ID should be > 0");
 
         // Act
-        var response = await client.DeleteAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{createResult.Id}");
+        var response = await client.DeleteAsync(requestUri: $"{API_VERSION}/{API_URI}/{createResult.Id}");
 
         // Assert
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.False(condition: result.IsActive);

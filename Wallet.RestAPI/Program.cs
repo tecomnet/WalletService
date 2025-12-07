@@ -9,6 +9,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Scalar.AspNetCore;
 using Wallet.Funcionalidad;
+using Wallet.Funcionalidad.Functionality.BrokerFacade;
 using Wallet.RestAPI.Filters;
 using Wallet.RestAPI.Helpers;
 using Wallet.RestAPI.Mappers;
@@ -59,6 +60,7 @@ builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<AutoMapperProfile>(); });
 
 // Registro de servicios personalizados del dominio de la aplicación.
 builder.Services.AddEmServices(builder.Configuration);
+builder.Services.AddScoped<IBrokerFacade, BrokerFacade>();
 
 // Configuración de la autenticación y autorización.
 builder.Services.AddAuthentication(options =>

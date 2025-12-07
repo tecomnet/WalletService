@@ -9,7 +9,7 @@ namespace Wallet.RestAPI.Models
     /// Resultado de una operación con ProductoProveedor.
     /// </summary>
     [DataContract]
-    public class ProductoProveedorResult : IEquatable<ProductoProveedorResult>
+    public class ProductoResult : IEquatable<ProductoResult>
     {
         /// <summary>
         /// Identificador del producto.
@@ -18,10 +18,10 @@ namespace Wallet.RestAPI.Models
         public int? Id { get; set; }
 
         /// <summary>
-        /// Identificador del proveedor de servicio.
+        /// Identificador del proveedor.
         /// </summary>
-        [DataMember(Name = "proveedorServicioId")]
-        public int? ProveedorServicioId { get; set; }
+        [DataMember(Name = "proveedorId")]
+        public int? ProveedorId { get; set; }
 
         /// <summary>
         /// SKU del producto.
@@ -36,16 +36,22 @@ namespace Wallet.RestAPI.Models
         public string Nombre { get; set; }
 
         /// <summary>
-        /// Monto del producto.
+        /// Precio del producto.
         /// </summary>
-        [DataMember(Name = "monto")]
-        public decimal? Monto { get; set; }
+        [DataMember(Name = "precio")]
+        public decimal? Precio { get; set; }
 
         /// <summary>
-        /// Descripción del producto.
+        /// Icono del producto.
         /// </summary>
-        [DataMember(Name = "descripcion")]
-        public string Descripcion { get; set; }
+        [DataMember(Name = "icono")]
+        public string Icono { get; set; }
+
+        /// <summary>
+        /// Categoría del producto.
+        /// </summary>
+        [DataMember(Name = "categoria")]
+        public string Categoria { get; set; }
 
         /// <summary>
         /// Indica si el producto está activo.
@@ -60,13 +66,14 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ProductoProveedorResult {\n");
+            sb.Append(value: "class ProductoResult {\n");
             sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
-            sb.Append(value: "  ProveedorServicioId: ").Append(value: ProveedorServicioId).Append(value: "\n");
+            sb.Append(value: "  ProveedorId: ").Append(value: ProveedorId).Append(value: "\n");
             sb.Append(value: "  Sku: ").Append(value: Sku).Append(value: "\n");
             sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  Monto: ").Append(value: Monto).Append(value: "\n");
-            sb.Append(value: "  Descripcion: ").Append(value: Descripcion).Append(value: "\n");
+            sb.Append(value: "  Precio: ").Append(value: Precio).Append(value: "\n");
+            sb.Append(value: "  Icono: ").Append(value: Icono).Append(value: "\n");
+            sb.Append(value: "  Categoria: ").Append(value: Categoria).Append(value: "\n");
             sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
@@ -90,15 +97,15 @@ namespace Wallet.RestAPI.Models
         {
             if (ReferenceEquals(objA: null, objB: obj)) return false;
             if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ProductoProveedorResult)obj);
+            return obj.GetType() == GetType() && Equals(other: (ProductoResult)obj);
         }
 
         /// <summary>
-        /// Returns true if ProductoProveedorResult instances are equal
+        /// Returns true if ProductoResult instances are equal
         /// </summary>
-        /// <param name="other">Instance of ProductoProveedorResult to be compared</param>
+        /// <param name="other">Instance of ProductoResult to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ProductoProveedorResult other)
+        public bool Equals(ProductoResult other)
         {
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
@@ -110,9 +117,9 @@ namespace Wallet.RestAPI.Models
                     Id.Equals(other.Id)
                 ) &&
                 (
-                    ProveedorServicioId == other.ProveedorServicioId ||
-                    ProveedorServicioId != null &&
-                    ProveedorServicioId.Equals(other.ProveedorServicioId)
+                    ProveedorId == other.ProveedorId ||
+                    ProveedorId != null &&
+                    ProveedorId.Equals(other.ProveedorId)
                 ) &&
                 (
                     Sku == other.Sku ||
@@ -125,14 +132,19 @@ namespace Wallet.RestAPI.Models
                     Nombre.Equals(other.Nombre)
                 ) &&
                 (
-                    Monto == other.Monto ||
-                    Monto != null &&
-                    Monto.Equals(other.Monto)
+                    Precio == other.Precio ||
+                    Precio != null &&
+                    Precio.Equals(other.Precio)
                 ) &&
                 (
-                    Descripcion == other.Descripcion ||
-                    Descripcion != null &&
-                    Descripcion.Equals(other.Descripcion)
+                    Icono == other.Icono ||
+                    Icono != null &&
+                    Icono.Equals(other.Icono)
+                ) &&
+                (
+                    Categoria == other.Categoria ||
+                    Categoria != null &&
+                    Categoria.Equals(other.Categoria)
                 ) &&
                 (
                     IsActive == other.IsActive ||
@@ -153,16 +165,18 @@ namespace Wallet.RestAPI.Models
                 // Suitable nullity checks etc, of course :)
                 if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                if (ProveedorServicioId != null)
-                    hashCode = hashCode * 59 + ProveedorServicioId.GetHashCode();
+                if (ProveedorId != null)
+                    hashCode = hashCode * 59 + ProveedorId.GetHashCode();
                 if (Sku != null)
                     hashCode = hashCode * 59 + Sku.GetHashCode();
                 if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                if (Monto != null)
-                    hashCode = hashCode * 59 + Monto.GetHashCode();
-                if (Descripcion != null)
-                    hashCode = hashCode * 59 + Descripcion.GetHashCode();
+                if (Precio != null)
+                    hashCode = hashCode * 59 + Precio.GetHashCode();
+                if (Icono != null)
+                    hashCode = hashCode * 59 + Icono.GetHashCode();
+                if (Categoria != null)
+                    hashCode = hashCode * 59 + Categoria.GetHashCode();
                 if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;
@@ -173,12 +187,12 @@ namespace Wallet.RestAPI.Models
 
 #pragma warning disable 1591
 
-        public static bool operator ==(ProductoProveedorResult left, ProductoProveedorResult right)
+        public static bool operator ==(ProductoResult left, ProductoResult right)
         {
             return Equals(objA: left, objB: right);
         }
 
-        public static bool operator !=(ProductoProveedorResult left, ProductoProveedorResult right)
+        public static bool operator !=(ProductoResult left, ProductoResult right)
         {
             return !Equals(objA: left, objB: right);
         }

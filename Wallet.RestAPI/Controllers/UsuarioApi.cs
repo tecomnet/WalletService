@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
-using Wallet.RestAPI.Models;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using Wallet.RestAPI.Attributes;
 using Wallet.RestAPI.Controllers.Base;
-using System.Threading.Tasks;
+using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
 {
@@ -126,16 +126,5 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int idUsuario, [FromBody] TelefonoUpdateRequest body);
-
-        /// <summary>
-        /// Pre-registro de usuario
-        /// </summary>
-        /// <remarks>Crea un usuario y cliente en estado de pre-registro</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="body"></param>
-        /// <response code="201">Created</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
     }
 }

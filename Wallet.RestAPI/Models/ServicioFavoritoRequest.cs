@@ -16,30 +16,30 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets ClienteId
         /// </summary>
         [Required]
-        [DataMember(Name="clienteId")]
+        [DataMember(Name = "clienteId")]
         public int? ClienteId { get; set; }
 
         /// <summary>
-        /// Gets or Sets ProveedorServicioId
+        /// Gets or Sets ProveedorId
         /// </summary>
         [Required]
-        [DataMember(Name="proveedorServicioId")]
-        public int? ProveedorServicioId { get; set; }
+        [DataMember(Name = "proveedorId")]
+        public int? ProveedorId { get; set; }
 
         /// <summary>
         /// Gets or Sets Alias
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 100, MinimumLength=1)]
-        [DataMember(Name="alias")]
+        [StringLength(maximumLength: 100, MinimumLength = 1)]
+        [DataMember(Name = "alias")]
         public string Alias { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroReferencia
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 50, MinimumLength=1)]
-        [DataMember(Name="numeroReferencia")]
+        [StringLength(maximumLength: 50, MinimumLength = 1)]
+        [DataMember(Name = "numeroReferencia")]
         public string NumeroReferencia { get; set; }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Wallet.RestAPI.Models
             var sb = new StringBuilder();
             sb.Append(value: "class ServicioFavoritoRequest {\n");
             sb.Append(value: "  ClienteId: ").Append(value: ClienteId).Append(value: "\n");
-            sb.Append(value: "  ProveedorServicioId: ").Append(value: ProveedorServicioId).Append(value: "\n");
+            sb.Append(value: "  ProveedorId: ").Append(value: ProveedorId).Append(value: "\n");
             sb.Append(value: "  Alias: ").Append(value: Alias).Append(value: "\n");
             sb.Append(value: "  NumeroReferencia: ").Append(value: NumeroReferencia).Append(value: "\n");
             sb.Append(value: "  }\n");
@@ -89,22 +89,22 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
-            return 
+            return
                 (
                     ClienteId == other.ClienteId ||
                     ClienteId != null &&
                     ClienteId.Equals(other: other.ClienteId)
-                ) && 
+                ) &&
                 (
-                    ProveedorServicioId == other.ProveedorServicioId ||
-                    ProveedorServicioId != null &&
-                    ProveedorServicioId.Equals(other: other.ProveedorServicioId)
-                ) && 
+                    ProveedorId == other.ProveedorId ||
+                    ProveedorId != null &&
+                    ProveedorId.Equals(other: other.ProveedorId)
+                ) &&
                 (
                     Alias == other.Alias ||
                     Alias != null &&
                     Alias.Equals(value: other.Alias)
-                ) && 
+                ) &&
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
@@ -122,20 +122,21 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (ClienteId != null)
+                if (ClienteId != null)
                     hashCode = hashCode * 59 + ClienteId.GetHashCode();
-                    if (ProveedorServicioId != null)
-                    hashCode = hashCode * 59 + ProveedorServicioId.GetHashCode();
-                    if (Alias != null)
+                if (ProveedorId != null)
+                    hashCode = hashCode * 59 + ProveedorId.GetHashCode();
+                if (Alias != null)
                     hashCode = hashCode * 59 + Alias.GetHashCode();
-                    if (NumeroReferencia != null)
+                if (NumeroReferencia != null)
                     hashCode = hashCode * 59 + NumeroReferencia.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(ServicioFavoritoRequest left, ServicioFavoritoRequest right)
         {
@@ -147,7 +148,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(objA: left, objB: right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

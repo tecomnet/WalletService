@@ -2,10 +2,10 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Wallet.DOM.ApplicationDbContext;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
 using Wallet.Funcionalidad.Functionality.AuthFacade;
 using Wallet.Funcionalidad.Services.TokenService;
-using Wallet.DOM.Enums;
 
 namespace Wallet.UnitTest.Functionality.AuthFacadeTest;
 

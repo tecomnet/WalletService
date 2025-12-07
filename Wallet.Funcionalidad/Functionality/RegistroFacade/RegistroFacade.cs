@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
-using Wallet.DOM;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
@@ -17,7 +17,8 @@ public class RegistroFacade(
     ServiceDbContext context,
     IUsuarioFacade usuarioFacade,
     IClienteFacade clienteFacade,
-    IConsentimientosUsuarioFacade consentimientosUsuarioFacade)
+    IConsentimientosUsuarioFacade consentimientosUsuarioFacade,
+    IEmpresaFacade empresaFacade)
     : IRegistroFacade
 {
     /// <summary>
@@ -79,8 +80,10 @@ public class RegistroFacade(
         var cliente = await context.Cliente.FirstOrDefaultAsync(c => c.UsuarioId == idUsuario);
         if (cliente == null)
         {
+            // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
+            var empresa = await empresaFacade.ObtenerPorNombreAsync(nombre: "Tecomnet");
             // Si no existe, lo creamos manualmente ya que IClienteFacade no tiene método de crear expuesto
-            cliente = new Cliente(usuario, creationUser: modificationUser);
+            cliente = new Cliente(usuario, creationUser: modificationUser, empresa: empresa);
             await context.Cliente.AddAsync(cliente);
             await context.SaveChangesAsync();
         }

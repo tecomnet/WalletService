@@ -1,18 +1,19 @@
 using System.Net;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Wallet.DOM.ApplicationDbContext;
+using Wallet.DOM.Modelos;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
-using Wallet.DOM.Modelos;
-using Wallet.DOM.ApplicationDbContext;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
 public class ServicioFavoritoApiTest : DatabaseTestFixture
 {
     private const string API_URI = "servicioFavorito";
-    private const string PROVEEDOR_API_URI = "proveedorServicio";
+    private const string PROVEEDOR_API_URI = "proveedor";
     private const string CLIENTE_API_URI = "cliente";
     private const string API_VERSION = "0.1";
 
@@ -26,8 +27,22 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
     public ServicioFavoritoApiTest()
     {
         Context = CreateContext();
-        SetupDataAsync(setupDataAction: async context => { await context.SaveChangesAsync(); }).GetAwaiter()
-            .GetResult();
+        SetupDataAsync(setupDataAction: async context =>
+        {
+            if (!await context.Empresa.AnyAsync(e => e.Nombre == "Tecomnet"))
+            {
+                var empresa = new Empresa(nombre: "Tecomnet", creationUser: Guid.NewGuid());
+                await context.Empresa.AddAsync(entity: empresa);
+            }
+
+            if (!await context.Broker.AnyAsync(b => b.Nombre == "Broker Test"))
+            {
+                var broker = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
+                await context.Broker.AddAsync(entity: broker);
+            }
+
+            await context.SaveChangesAsync();
+        }).GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -37,13 +52,11 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         var client = Factory.CreateAuthenticatedClient();
         var cliente = await CreateCliente(client: client);
         var proveedor = await CreateProveedor(client: client);
-        // Product is not strictly needed for favorite service, but we create it for completeness if needed elsewhere
-        // var producto = await CreateProducto(client, proveedor.Id!.Value);
 
         var request = new ServicioFavoritoRequest
         {
             ClienteId = cliente.Id,
-            ProveedorServicioId = proveedor.Id!.Value,
+            ProveedorId = proveedor.Id!.Value,
             Alias = "My Netflix",
             NumeroReferencia = "REF123"
         };
@@ -71,7 +84,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         var servicioFavorito = await CreateServicioFavorito(client: client, clienteId: cliente.Id.GetValueOrDefault());
 
         // Act
-        var response = await client.GetAsync(requestUri: $"0.1/servicioFavorito/cliente/{cliente.Id}");
+        var response = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}/{CLIENTE_API_URI}/{cliente.Id}");
 
         // Assert
         if (!response.IsSuccessStatusCode)
@@ -89,18 +102,18 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         Assert.Contains(collection: result, filter: s => s.Id == servicioFavorito.Id);
     }
 
-    private async Task<ProveedorServicioResult> CreateProveedor(HttpClient client)
+    private async Task<ProveedorResult> CreateProveedor(HttpClient client)
     {
-        var request = new ProveedorServicioRequest
+        var request = new ProveedorRequest
         {
             Nombre = "Test Provider",
-            Categoria = "Servicios",
-            UrlIcono = "https://test.com/icon.png"
+            BrokerId = 1 // Assuming Broker 1 exists from seed
         };
         var response =
-            await client.PostAsync(requestUri: "0.1/proveedorServicio", content: CreateContent(body: request));
+            await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}",
+                content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode);
-        return JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
+        return JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
             settings: _jsonSettings)!;
     }
 
@@ -112,13 +125,23 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         Context.Usuario.Add(usuario);
         await Context.SaveChangesAsync();
 
-        var cliente = new Cliente(usuario, Guid.NewGuid());
+        var empresa = await Context.Empresa.FirstAsync(e => e.Nombre == "Tecomnet");
+
+        var cliente = new Cliente(usuario, empresa, Guid.NewGuid());
         cliente.AgregarDatosPersonales("Juan", "Perez", "Lopez", new DateOnly(1990, 1, 1),
             Wallet.DOM.Enums.Genero.Masculino, Guid.NewGuid());
+        // cliente.AgregarTipoPersona(Wallet.DOM.Enums.TipoPersona.Fisica, Guid.NewGuid()); // Removed? Cliente constructor doesn't set TipoPersona but method exists.
+        // Wait, Cliente model requires TipoPersona for DocumentacionAdjunta but here we are just creating client.
+        // Let's keep existing logic if possible but updating constructor as needed.
+        // Step 919 shows Cliente constructor takes (Usuario, Empresa, CreationUser). I updated that.
+
         cliente.AgregarTipoPersona(Wallet.DOM.Enums.TipoPersona.Fisica, Guid.NewGuid());
         cliente.AgregarRfc("ABC1234567890", Guid.NewGuid());
         cliente.AgregarCurp("ABCD123456EFGHIJ01", Guid.NewGuid());
         cliente.AgregarFotoAWS("foto.jpg", Guid.NewGuid());
+        // Direccion required? Model says Direccion? property.
+        // Let's add address to be safe if tests depend on it.
+        cliente.AgregarDireccion(new Direccion("MX", "Yucatan", Guid.NewGuid()), Guid.NewGuid());
 
         Context.Cliente.Add(cliente);
         await Context.SaveChangesAsync();
@@ -140,7 +163,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         var request = new ServicioFavoritoRequest
         {
             ClienteId = clienteId,
-            ProveedorServicioId = proveedor.Id!.Value,
+            ProveedorId = proveedor.Id!.Value,
             Alias = "Test Favorite",
             NumeroReferencia = "REFTEST"
         };

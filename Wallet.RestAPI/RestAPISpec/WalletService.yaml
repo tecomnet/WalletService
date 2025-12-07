@@ -198,6 +198,31 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
+  "/{version}/cliente/{idCliente}/servicios-favoritos":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene los servicios favoritos de un cliente
+      operationId: getServiciosFavoritosPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServicioFavoritoResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Obtiene los servicios favoritos asignados a un cliente
+      tags:
+        - Cliente
 
   "/{version}/direccion/{idCliente}":
     parameters:
@@ -513,20 +538,192 @@ paths:
               $ref: "#/components/schemas/EmpresaRequest"
       tags:
         - Empresa
-  "/{version}/proveedorServicio/{idProveedorServicio}/producto":
+  "/{version}/empresa/{idEmpresa}/productos":
     parameters:
       - $ref: "#/components/parameters/version"
-      - $ref: "#/components/parameters/idProveedorServicio"
+      - $ref: "#/components/parameters/idEmpresa"
+    get:
+      summary: Obtiene los productos de una empresa
+      operationId: getProductosPorEmpresa
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductoResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Obtiene los productos asignados a una empresa
+      tags:
+        - Empresa
+  "/{version}/empresa/{idEmpresa}/clientes":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idEmpresa"
+    get:
+      summary: Obtiene los clientes de una empresa
+      operationId: getClientesPorEmpresa
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClienteResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Obtiene los clientes asignados a una empresa
+      tags:
+        - Empresa
+  "/{version}/broker":
+    parameters:
+      - $ref: "#/components/parameters/version"
     post:
-      summary: Guarda un producto
-      operationId: postProductoProveedor
+      summary: Guarda un broker
+      operationId: postBroker
       responses:
         "201":
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductoProveedorResult"
+                $ref: "#/components/schemas/BrokerResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Guarda un broker
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrokerRequest"
+      tags:
+        - Broker
+    get:
+      summary: Obtiene todos los brokers
+      operationId: getBrokers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BrokerResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Obtiene todos los brokers
+      parameters: []
+      tags:
+        - Broker
+  "/{version}/broker/{idBroker}":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idBroker"
+    put:
+      summary: Actualiza un broker
+      operationId: putBroker
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrokerResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Actualiza un broker
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrokerRequest"
+      tags:
+        - Broker
+    delete:
+      summary: Elimina un broker
+      operationId: deleteBroker
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrokerResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Elimina un broker
+      tags:
+        - Broker
+  "/{version}/broker/{idBroker}/proveedores":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idBroker"
+    get:
+      summary: Obtiene los proveedores de un broker
+      operationId: getProveedoresPorBroker
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProveedorResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Obtiene los proveedores asociados a un broker
+      tags:
+        - Broker
+
+  "/{version}/proveedor/{idProveedor}/producto":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idProveedor"
+    post:
+      summary: Guarda un producto
+      operationId: postProducto
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductoResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -538,10 +735,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProductoProveedorRequest"
+              $ref: "#/components/schemas/ProductoRequest"
       tags:
-        - ProductoProveedor
-  "/{version}/productoProveedor/{idProducto}":
+        - Producto
+  "/{version}/producto/{idProducto}":
     parameters:
       - $ref: "#/components/parameters/version"
       - name: idProducto
@@ -552,14 +749,14 @@ paths:
         required: true
     get:
       summary: Obtiene un producto por id
-      operationId: getProductoProveedor
+      operationId: getProducto
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductoProveedorResult"
+                $ref: "#/components/schemas/ProductoResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -568,17 +765,17 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
       description: Obtiene un producto por id
       tags:
-        - ProductoProveedor
+        - Producto
     put:
       summary: Actualiza un producto
-      operationId: putProductoProveedor
+      operationId: putProducto
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductoProveedorResult"
+                $ref: "#/components/schemas/ProductoResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -590,19 +787,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProductoProveedorRequest"
+              $ref: "#/components/schemas/ProductoRequest"
       tags:
-        - ProductoProveedor
+        - Producto
     delete:
       summary: Elimina un producto
-      operationId: deleteProductoProveedor
+      operationId: deleteProducto
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductoProveedorResult"
+                $ref: "#/components/schemas/ProductoResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -611,8 +808,8 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
       description: Elimina un producto
       tags:
-        - ProductoProveedor
-  "/{version}/productoProveedor/{idProducto}/activar":
+        - Producto
+  "/{version}/producto/{idProducto}/activar":
     parameters:
       - $ref: "#/components/parameters/version"
       - name: idProducto
@@ -623,14 +820,14 @@ paths:
         required: true
     put:
       summary: Activa un producto
-      operationId: putActivarProductoProveedor
+      operationId: putActivarProducto
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductoProveedorResult"
+                $ref: "#/components/schemas/ProductoResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -639,11 +836,11 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
       description: Activa un producto
       tags:
-        - ProductoProveedor
-  "/{version}/proveedorServicio/{idProveedorServicio}/productos":
+        - Producto
+  "/{version}/proveedor/{idProveedor}/productos":
     parameters:
       - $ref: "#/components/parameters/version"
-      - $ref: "#/components/parameters/idProveedorServicio"
+      - $ref: "#/components/parameters/idProveedor"
     get:
       summary: Obtiene los productos de un proveedor
       operationId: getProductosPorProveedor
@@ -655,7 +852,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ProductoProveedorResult"
+                  $ref: "#/components/schemas/ProductoResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -664,20 +861,20 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
       description: Obtiene los productos de un proveedor
       tags:
-        - ProductoProveedor
-  "/{version}/proveedorServicio":
+        - Producto
+  "/{version}/proveedor":
     parameters:
       - $ref: "#/components/parameters/version"
     post:
       summary: Guarda un proveedor de servicio
-      operationId: postProveedorServicio
+      operationId: postProveedor
       responses:
         "201":
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProveedorServicioResult"
+                $ref: "#/components/schemas/ProveedorResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -689,9 +886,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProveedorServicioRequest"
+              $ref: "#/components/schemas/ProveedorRequest"
       tags:
-        - ProveedorServicio
+        - Proveedor
     get:
       summary: Obtiene todos los proveedores de servicio
       operationId: getProveedoresServicio
@@ -703,7 +900,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ProveedorServicioResult"
+                  $ref: "#/components/schemas/ProveedorResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -713,21 +910,21 @@ paths:
       description: Obtiene todos los proveedores de servicio
       parameters: []
       tags:
-        - ProveedorServicio
-  "/{version}/proveedorServicio/{idProveedorServicio}":
+        - Proveedor
+  "/{version}/proveedor/{idProveedor}":
     parameters:
       - $ref: "#/components/parameters/version"
-      - $ref: "#/components/parameters/idProveedorServicio"
+      - $ref: "#/components/parameters/idProveedor"
     get:
       summary: Obtiene un proveedor de servicio por id
-      operationId: getProveedorServicio
+      operationId: getProveedor
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProveedorServicioResult"
+                $ref: "#/components/schemas/ProveedorResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -736,17 +933,17 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
       description: Obtiene un proveedor de servicio por id
       tags:
-        - ProveedorServicio
+        - Proveedor
     put:
       summary: Actualiza un proveedor de servicio
-      operationId: putProveedorServicio
+      operationId: putProveedor
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProveedorServicioResult"
+                $ref: "#/components/schemas/ProveedorResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -758,19 +955,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProveedorServicioRequest"
+              $ref: "#/components/schemas/ProveedorRequest"
       tags:
-        - ProveedorServicio
+        - Proveedor
     delete:
       summary: Elimina un proveedor de servicio
-      operationId: deleteProveedorServicio
+      operationId: deleteProveedor
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProveedorServicioResult"
+                $ref: "#/components/schemas/ProveedorResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -779,21 +976,21 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
       description: Elimina un proveedor de servicio
       tags:
-        - ProveedorServicio
-  "/{version}/proveedorServicio/{idProveedorServicio}/activar":
+        - Proveedor
+  "/{version}/proveedor/{idProveedor}/activar":
     parameters:
       - $ref: "#/components/parameters/version"
-      - $ref: "#/components/parameters/idProveedorServicio"
+      - $ref: "#/components/parameters/idProveedor"
     put:
       summary: Activa un proveedor de servicio
-      operationId: putActivarProveedorServicio
+      operationId: putActivarProveedor
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProveedorServicioResult"
+                $ref: "#/components/schemas/ProveedorResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
@@ -802,7 +999,7 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
       description: Activa un proveedor de servicio
       tags:
-        - ProveedorServicio
+        - Proveedor
   "/{version}/servicioFavorito":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -2440,12 +2637,62 @@ components:
         - creationUser
         - modificationUser
         - isActive
-    ProveedorServicioResult:
-      title: ProveedorServicioResult
+    BrokerRequest:
+      title: BrokerRequest
+      type: object
+      description: Estructura para crear/actualizar broker
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+      required:
+        - nombre
+    BrokerResult:
+      title: BrokerResult
+      type: object
+      description: Estructura para consultar broker
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+      required:
+        - id
+        - nombre
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    ProveedorResult:
+      title: ProveedorResult
       type: object
       description: Estructura para consultar proveedores de servicio
       properties:
         id:
+          type: integer
+        brokerId:
           type: integer
         nombre:
           type: string
@@ -2484,11 +2731,13 @@ components:
         - creationUser
         - modificationUser
         - isActive
-    ProveedorServicioRequest:
-      title: ProveedorServicioRequest
+    ProveedorRequest:
+      title: ProveedorRequest
       type: object
       description: Estructura para crear/actualizar proveedor de servicio
       properties:
+        brokerId:
+          type: integer
         nombre:
           type: string
           minLength: 1
@@ -2500,6 +2749,7 @@ components:
           type: string
           maxLength: 500
       required:
+        - brokerId
         - nombre
         - categoria
     ServicioFavoritoResult:
@@ -2511,7 +2761,7 @@ components:
           type: integer
         clienteId:
           type: integer
-        proveedorServicioId:
+        proveedorId:
           type: integer
         alias:
           type: string
@@ -2539,7 +2789,7 @@ components:
       required:
         - id
         - clienteId
-        - proveedorServicioId
+        - proveedorId
         - alias
         - numeroReferencia
         - guid
@@ -2555,7 +2805,7 @@ components:
       properties:
         clienteId:
           type: integer
-        proveedorServicioId:
+        proveedorId:
           type: integer
         alias:
           type: string
@@ -2565,17 +2815,17 @@ components:
           maxLength: 50
       required:
         - clienteId
-        - proveedorServicioId
+        - proveedorId
         - alias
         - numeroReferencia
-    ProductoProveedorResult:
-      title: ProductoProveedorResult
+    ProductoResult:
+      title: ProductoResult
       type: object
       description: Estructura para consultar productos de proveedor
       properties:
         id:
           type: integer
-        proveedorServicioId:
+        proveedorId:
           type: integer
         sku:
           type: string
@@ -2593,13 +2843,13 @@ components:
           type: boolean
       required:
         - id
-        - proveedorServicioId
+        - proveedorId
         - sku
         - nombre
         - monto
         - isActive
-    ProductoProveedorRequest:
-      title: ProductoProveedorRequest
+    ProductoRequest:
+      title: ProductoRequest
       type: object
       description: Estructura para crear/actualizar producto de proveedor
       properties:
@@ -2752,8 +3002,8 @@ components:
         type: integer
       description: Id del estado
       required: true
-    idProveedorServicio:
-      name: idProveedorServicio
+    idProveedor:
+      name: idProveedor
       in: path
       schema:
         type: integer
@@ -2765,6 +3015,13 @@ components:
       schema:
         type: integer
       description: Id del servicio favorito
+      required: true
+    idBroker:
+      name: idBroker
+      in: path
+      schema:
+        type: integer
+      description: Id del broker
       required: true
 
   responses:
@@ -2867,7 +3124,7 @@ tags:
   - name: Estado
   - name: Health
   - name: UbicacionGeolocalizacion
-  - name: ProductoProveedor
+  - name: Producto
   - name: Registro
 security:
   - jwsToken: []

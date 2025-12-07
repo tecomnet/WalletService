@@ -10,21 +10,21 @@ namespace Wallet.RestAPI.Models
     /// Estructura para consultar proveedores de servicio
     /// </summary>
     [DataContract]
-    public class ProveedorServicioResult : IEquatable<ProveedorServicioResult>
+    public class ProveedorResult : IEquatable<ProveedorResult>
     {
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [Required]
-        [DataMember(Name="id")]
+        [DataMember(Name = "id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 100, MinimumLength=1)]
-        [DataMember(Name="nombre")]
+        [StringLength(maximumLength: 100, MinimumLength = 1)]
+        [DataMember(Name = "nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
@@ -32,56 +32,56 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Categoria del producto (Servicios, Recargas, Movilidad)</value>
         [Required]
-        [DataMember(Name="categoria")]
+        [DataMember(Name = "categoria")]
         public string Categoria { get; set; }
 
         /// <summary>
         /// Gets or Sets UrlIcono
         /// </summary>
         [MaxLength(length: 500)]
-        [DataMember(Name="urlIcono")]
+        [DataMember(Name = "urlIcono")]
         public string UrlIcono { get; set; }
 
         /// <summary>
         /// Gets or Sets Guid
         /// </summary>
         [Required]
-        [DataMember(Name="guid")]
+        [DataMember(Name = "guid")]
         public Guid? Guid { get; set; }
 
         /// <summary>
         /// Gets or Sets CreationTimestamp
         /// </summary>
         [Required]
-        [DataMember(Name="creationTimestamp")]
+        [DataMember(Name = "creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
         /// Gets or Sets ModificationTimestamp
         /// </summary>
         [Required]
-        [DataMember(Name="modificationTimestamp")]
+        [DataMember(Name = "modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
 
         /// <summary>
         /// Gets or Sets CreationUser
         /// </summary>
         [Required]
-        [DataMember(Name="creationUser")]
+        [DataMember(Name = "creationUser")]
         public Guid? CreationUser { get; set; }
 
         /// <summary>
         /// Gets or Sets ModificationUser
         /// </summary>
         [Required]
-        [DataMember(Name="modificationUser")]
+        [DataMember(Name = "modificationUser")]
         public Guid? ModificationUser { get; set; }
 
         /// <summary>
         /// Gets or Sets IsActive
         /// </summary>
         [Required]
-        [DataMember(Name="isActive")]
+        [DataMember(Name = "isActive")]
         public bool? IsActive { get; set; }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ProveedorServicioResult {\n");
+            sb.Append("class ProveedorResult {\n");
             sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
             sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
             sb.Append(value: "  Categoria: ").Append(value: Categoria).Append(value: "\n");
@@ -124,65 +124,65 @@ namespace Wallet.RestAPI.Models
         {
             if (ReferenceEquals(objA: null, objB: obj)) return false;
             if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ProveedorServicioResult)obj);
+            return obj.GetType() == GetType() && Equals(other: (ProveedorResult)obj);
         }
 
         /// <summary>
-        /// Returns true if ProveedorServicioResult instances are equal
+        /// Returns true if ProveedorResult instances are equal
         /// </summary>
-        /// <param name="other">Instance of ProveedorServicioResult to be compared</param>
+        /// <param name="other">Instance of ProveedorResult to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ProveedorServicioResult other)
+        public bool Equals(ProveedorResult other)
         {
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other: other.Id)
-                ) && 
+                ) &&
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(value: other.Nombre)
-                ) && 
+                ) &&
                 (
                     Categoria == other.Categoria ||
                     Categoria != null &&
                     Categoria.Equals(value: other.Categoria)
-                ) && 
+                ) &&
                 (
                     UrlIcono == other.UrlIcono ||
                     UrlIcono != null &&
                     UrlIcono.Equals(value: other.UrlIcono)
-                ) && 
+                ) &&
                 (
                     Guid == other.Guid ||
                     Guid != null &&
                     Guid.Equals(other: other.Guid)
-                ) && 
+                ) &&
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
                     CreationTimestamp.Equals(other: other.CreationTimestamp)
-                ) && 
+                ) &&
                 (
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
                     ModificationTimestamp.Equals(other: other.ModificationTimestamp)
-                ) && 
+                ) &&
                 (
                     CreationUser == other.CreationUser ||
                     CreationUser != null &&
                     CreationUser.Equals(other: other.CreationUser)
-                ) && 
+                ) &&
                 (
                     ModificationUser == other.ModificationUser ||
                     ModificationUser != null &&
                     ModificationUser.Equals(other: other.ModificationUser)
-                ) && 
+                ) &&
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
@@ -200,44 +200,46 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
+                if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (Nombre != null)
+                if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                    if (Categoria != null)
+                if (Categoria != null)
                     hashCode = hashCode * 59 + Categoria.GetHashCode();
-                    if (UrlIcono != null)
+                if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
-                    if (Guid != null)
+                if (Guid != null)
                     hashCode = hashCode * 59 + Guid.GetHashCode();
-                    if (CreationTimestamp != null)
+                if (CreationTimestamp != null)
                     hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                    if (ModificationTimestamp != null)
+                if (ModificationTimestamp != null)
                     hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
-                    if (CreationUser != null)
+                if (CreationUser != null)
                     hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                    if (ModificationUser != null)
+                if (ModificationUser != null)
                     hashCode = hashCode * 59 + ModificationUser.GetHashCode();
-                    if (IsActive != null)
+                if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
 
-        public static bool operator ==(ProveedorServicioResult left, ProveedorServicioResult right)
+#pragma warning disable 1591
+
+        public static bool operator ==(ProveedorResult left, ProveedorResult right)
         {
             return Equals(objA: left, objB: right);
         }
 
-        public static bool operator !=(ProveedorServicioResult left, ProveedorServicioResult right)
+        public static bool operator !=(ProveedorResult left, ProveedorResult right)
         {
             return !Equals(objA: left, objB: right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

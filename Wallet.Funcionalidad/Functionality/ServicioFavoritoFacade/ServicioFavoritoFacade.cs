@@ -4,7 +4,7 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
-using Wallet.Funcionalidad.Functionality.ProveedorServicioFacade;
+using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 
 namespace Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 
@@ -14,10 +14,10 @@ namespace Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 public class ServicioFavoritoFacade(
     ServiceDbContext context,
     IClienteFacade clienteFacade,
-    IProveedorServicioFacade proveedorServicioFacade) : IServicioFavoritoFacade
+    IProveedorFacade proveedorFacade) : IServicioFavoritoFacade
 {
     /// <inheritdoc />
-    public async Task<ServicioFavorito> GuardarServicioFavoritoAsync(int clienteId, int proveedorServicioId,
+    public async Task<ServicioFavorito> GuardarServicioFavoritoAsync(int clienteId, int proveedorId,
         string alias, string numeroReferencia, Guid creationUser, string? testCase = null)
     {
         try
@@ -25,11 +25,11 @@ public class ServicioFavoritoFacade(
             // 1. Obtiene el cliente por su ID.
             var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: clienteId);
             // 2. Obtiene el proveedor de servicio por su ID.
-            var proveedorServicio =
-                await proveedorServicioFacade.ObtenerProveedorServicioPorIdAsync(
-                    idProveedorServicio: proveedorServicioId);
+            var proveedor =
+                await proveedorFacade.ObtenerProveedorPorIdAsync(
+                    idProveedor: proveedorId);
             // 3. Crea una nueva instancia de ServicioFavorito.
-            var servicioFavorito = new ServicioFavorito(cliente: cliente, proveedorServicio: proveedorServicio,
+            var servicioFavorito = new ServicioFavorito(cliente: cliente, proveedor: proveedor,
                 alias: alias, numeroReferencia: numeroReferencia, creationUser: creationUser);
 
             // Agrega el servicio favorito al contexto.
@@ -55,7 +55,7 @@ public class ServicioFavoritoFacade(
         {
             // Busca el servicio favorito por su ID, incluyendo la información del proveedor de servicio.
             var servicioFavorito = await context.ServicioFavorito
-                .Include(navigationPropertyPath: s => s.ProveedorServicio)
+                .Include(navigationPropertyPath: s => s.Proveedor)
                 .FirstOrDefaultAsync(predicate: x => x.Id == idServicioFavorito);
 
             // Si no se encuentra, lanza una excepción.
@@ -156,7 +156,7 @@ public class ServicioFavoritoFacade(
             // Retorna la lista de servicios favoritos del cliente, incluyendo la información del proveedor.
             return await context.ServicioFavorito
                 .Where(predicate: x => x.ClienteId == clienteId)
-                .Include(navigationPropertyPath: s => s.ProveedorServicio)
+                .Include(navigationPropertyPath: s => s.Proveedor)
                 .ToListAsync();
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)

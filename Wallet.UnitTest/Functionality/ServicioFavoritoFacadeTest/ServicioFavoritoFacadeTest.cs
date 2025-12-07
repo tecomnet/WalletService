@@ -11,11 +11,24 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
 {
     [Theory]
     // Successfully case
-    [InlineData(data: ["1. Successfully case, create servicio favorito", 1, 1, "Mi Internet", "987654321", true, new string[] { }])]
+    [InlineData(data:
+        ["1. Successfully case, create servicio favorito", 1, 1, "Mi Internet", "987654321", true, new string[] { }])]
     // Wrong cases
-    [InlineData(data: ["2. Wrong case, empty alias", 1, 1, "", "987654321", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
-    [InlineData(data: ["3. Wrong case, Cliente not found", 99, 1, "Mi Internet", "987654321", false, new string[] { "CLIENTE-NO-ENCONTRADO" }])]
-    [InlineData(data: ["4. Wrong case, ProveedorServicio not found", 1, 99, "Mi Internet", "987654321", false, new string[] { "PROVEEDOR-SERVICIO-NOT-FOUND" }])]
+    [InlineData(data:
+    [
+        "2. Wrong case, empty alias", 1, 1, "", "987654321", false,
+        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+    ])]
+    [InlineData(data:
+    [
+        "3. Wrong case, Cliente not found", 99, 1, "Mi Internet", "987654321", false,
+        new string[] { "CLIENTE-NO-ENCONTRADO" }
+    ])]
+    [InlineData(data:
+    [
+        "4. Wrong case, Proveedor not found", 1, 99, "Mi Internet", "987654321", false,
+        new string[] { "PROVEEDOR-NOT-FOUND" }
+    ])]
     public async Task GuardarServicioFavoritoTest(
         string caseName,
         int clienteId,
@@ -29,7 +42,7 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
         {
             var servicio = await Facade.GuardarServicioFavoritoAsync(
                 clienteId: clienteId,
-                proveedorServicioId: proveedorId,
+                proveedorId: proveedorId,
                 alias: alias,
                 numeroReferencia: numeroReferencia,
                 creationUser: SetupConfig.UserId,
@@ -37,7 +50,7 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
 
             Assert.NotNull(servicio);
             Assert.True(condition: servicio.ClienteId == clienteId &&
-                                   servicio.ProveedorServicioId == proveedorId &&
+                                   servicio.ProveedorId == proveedorId &&
                                    servicio.Alias == alias &&
                                    servicio.NumeroReferencia == numeroReferencia &&
                                    servicio.CreationUser == SetupConfig.UserId);
@@ -61,8 +74,10 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
     }
 
     [Theory]
-    [InlineData(data: ["1. Successfully case, update servicio favorito", 1, "Mi Luz Updated", "111111", true, new string[] { }])]
-    [InlineData(data: ["2. Wrong case, not found", 99, "Alias", "Ref", false, new string[] { "SERVICIO-FAVORITO-NOT-FOUND" }])]
+    [InlineData(data:
+        ["1. Successfully case, update servicio favorito", 1, "Mi Luz Updated", "111111", true, new string[] { }])]
+    [InlineData(data:
+        ["2. Wrong case, not found", 99, "Alias", "Ref", false, new string[] { "SERVICIO-FAVORITO-NOT-FOUND" }])]
     public async Task ActualizarServicioFavoritoTest(
         string caseName,
         int idServicio,
@@ -114,7 +129,8 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
     {
         try
         {
-            var servicio = await Facade.EliminarServicioFavoritoAsync(idServicioFavorito: idServicio, modificationUser: SetupConfig.UserId);
+            var servicio = await Facade.EliminarServicioFavoritoAsync(idServicioFavorito: idServicio,
+                modificationUser: SetupConfig.UserId);
             Assert.NotNull(servicio);
             Assert.False(condition: servicio.IsActive);
 

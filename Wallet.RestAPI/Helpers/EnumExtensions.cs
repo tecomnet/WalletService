@@ -6,22 +6,32 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace Wallet.RestAPI.Helpers;
+
 /// <summary>
-/// 
+/// Converter to deserialize string to enum, supporting EnumMemberAttribute.
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">The enum type.</typeparam>
 public class CustomStringToEnumConverter<T> : StringEnumConverter where T : struct, Enum
 {
+    /// <summary>
+    /// Reads the JSON representation of the object.
+    /// </summary>
+    /// <param name="reader">The <see cref="JsonReader"/> to read from.</param>
+    /// <param name="objectType">Type of the object.</param>
+    /// <param name="existingValue">The existing value of object being read.</param>
+    /// <param name="serializer">The calling serializer.</param>
+    /// <returns>The object value.</returns>
     public override object ReadJson(
-        JsonReader reader, 
-        Type objectType, 
-        object existingValue, 
+        JsonReader reader,
+        Type objectType,
+        object existingValue,
         JsonSerializer serializer)
     {
         if (reader.Value == null)
         {
             return null;
         }
+
         string value = reader.Value.ToString();
         if (string.IsNullOrWhiteSpace(value: value)) return null;
         try
@@ -31,13 +41,14 @@ public class CustomStringToEnumConverter<T> : StringEnumConverter where T : stru
         catch (ArgumentException)
         {
             string validValues = string.Join(separator: ", ", value: EnumExtensions.GetEnumMemberValues<T>());
-            throw new JsonSerializationException(message: $"Valor '{value}' no es válido. Valores permitidos: {validValues}.");
+            throw new JsonSerializationException(
+                message: $"Valor '{value}' no es válido. Valores permitidos: {validValues}.");
         }
     }
 }
 
 /// <summary>
-/// 
+/// Extension methods for Enum types.
 /// </summary>
 public static class EnumExtensions
 {
@@ -56,8 +67,9 @@ public static class EnumExtensions
     public static string[] GetEnumMemberValues<T>() where T : struct, Enum
     {
         return typeof(T).GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Static)
-                        .Select(selector: f => $"{f.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? f.Name} ({(int)f.GetValue(obj: null)})")
-                        .ToArray();
+            .Select(selector: f =>
+                $"{f.GetCustomAttribute<EnumMemberAttribute>()?.Value ?? f.Name} ({(int)f.GetValue(obj: null)})")
+            .ToArray();
     }
 
     /// <summary>
@@ -78,7 +90,8 @@ public static class EnumExtensions
         foreach (var field in type.GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Static))
         {
             var attribute = field.GetCustomAttribute<EnumMemberAttribute>();
-            if ((attribute != null && attribute.Value.Equals(value: value, comparisonType: StringComparison.OrdinalIgnoreCase)) ||
+            if ((attribute != null &&
+                 attribute.Value.Equals(value: value, comparisonType: StringComparison.OrdinalIgnoreCase)) ||
                 field.Name.Equals(value: value, comparisonType: StringComparison.OrdinalIgnoreCase))
             {
                 return (T)field.GetValue(obj: null);
@@ -91,6 +104,8 @@ public static class EnumExtensions
             .Select(selector: e => $"{Convert.ToInt32(value: e)} ({e})")
             .ToList();
 
-        throw new ArgumentException(message: $"Valor '{value}' no es válido. Valores permitidos: {string.Join(separator: ", ", values: validValues)}.");
+        throw new ArgumentException(
+            message:
+            $"Valor '{value}' no es válido. Valores permitidos: {string.Join(separator: ", ", values: validValues)}.");
     }
 }

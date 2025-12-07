@@ -24,7 +24,7 @@ public class AutoMapperProfile : Profile
             .ForMember(destinationMember: dest => dest.Estado,
                 memberOptions: opt => opt.MapFrom(mapExpression: src => src.Estado.Nombre))
             .ForMember(destinationMember: dest => dest.Empresa,
-                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.Empresa.Nombre))
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Empresa.Nombre))
             .ForMember(destinationMember: dest => dest.CodigoPais,
                 memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.CodigoPais))
             .ForMember(destinationMember: dest => dest.Telefono,
@@ -36,13 +36,16 @@ public class AutoMapperProfile : Profile
         CreateMap<Direccion, DireccionResult>();
         CreateMap<Empresa, EmpresaResult>();
         CreateMap<Estado, EstadoResult>();
-        CreateMap<ProveedorServicio, ProveedorServicioResult>()
-            .ForMember(destinationMember: dest => dest.Categoria,
-                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Categoria.ToString()));
         CreateMap<ServicioFavorito, ServicioFavoritoResult>();
-        CreateMap<ProductoProveedor, ProductoProveedorResult>();
+        CreateMap<Proveedor, ProveedorResult>()
+            .ForMember(dest => dest.Categoria,
+                opt => opt.MapFrom(src => "General")) // Default value as property removed
+            .ForMember(dest => dest.UrlIcono, opt => opt.Ignore()); // Property removed from Domain
+
+        CreateMap<Producto, ProductoResult>();
         CreateMap<Usuario, UsuarioResult>();
         CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();
+        CreateMap<Wallet.DOM.Modelos.Broker, BrokerResult>();
         CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>();
     }
 }

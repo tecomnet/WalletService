@@ -12,6 +12,10 @@ public class CommonSettings
 	public readonly List<Estado> Estados = [];
 	public readonly List<Empresa> Empresas = [];
 	public readonly List<Usuario> Usuarios = [];
+	public readonly List<Broker> Brokers = [];
+	public readonly List<Proveedor> Proveedores = [];
+	public readonly List<ServicioFavorito> ServiciosFavoritos = [];
+	public readonly List<Producto> Productos = [];
 
 	public CommonSettings()
 	{
@@ -19,7 +23,8 @@ public class CommonSettings
 		CrearEmpresas();
 		CrearEstados();
 		CrearClientes();
-		CrearProveedoresServicios();
+		CrearBrokers();
+		CrearProveedores();
 	}
 
 
@@ -35,11 +40,11 @@ public class CommonSettings
 			estatus: EstatusRegistroEnum.RegistroCompletado,
 			creationUser: UserId,
 			testCase: TestCaseId);
-		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
 		Usuarios.Add(item: usuario);
 
 		var cliente = new Cliente(
 			usuario: usuario,
+			empresa: tecomnet,
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega cliente
@@ -53,11 +58,11 @@ public class CommonSettings
 			estatus: EstatusRegistroEnum.RegistroCompletado,
 			creationUser: UserId,
 			testCase: TestCaseId);
-		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
 		Usuarios.Add(item: usuario);
 
 		cliente = new Cliente(
 			usuario: usuario,
+			empresa: tecomnet,
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega datos personales
@@ -80,11 +85,12 @@ public class CommonSettings
 			estatus: EstatusRegistroEnum.RegistroCompletado,
 			creationUser: UserId,
 			testCase: TestCaseId);
-		usuario.AgregarEmpresa(empresa: tecomnet, modificationUser: UserId);
+		// Removed invalid AddBusiness call
 		Usuarios.Add(item: usuario);
 
 		cliente = new Cliente(
 			usuario: usuario,
+			empresa: tecomnet,
 			creationUser: UserId,
 			testCase: TestCaseId);
 		// Agrega datos personales
@@ -162,47 +168,52 @@ public class CommonSettings
 		Empresas.Add(item: empresa);
 	}
 
-	private void CrearProveedoresServicios()
+	private void CrearBrokers()
 	{
-		// Nuevo proveedor
-		var proveedor = new ProveedorServicio(
-			nombre: "CFE",
-			categoria: ProductoCategoria.Servicios,
-			urlIcono: "https://cfe.mx/logo.png",
+		var broker = new Broker(
+			nombre: "Broker Principal",
 			creationUser: UserId);
-		// Agrega proveedor
-		ProveedoresServicios.Add(item: proveedor);
-
-		proveedor.AgregarProducto(
-			sku: "SKU123",
-			nombre: "Netflix Premium",
-			monto: 15.99m,
-			descripcion: "Premium subscription",
-			creationUser: UserId);
-
-		// Nuevo proveedor
-		proveedor = new ProveedorServicio(
-			nombre: "Telmex",
-			categoria: ProductoCategoria.Recargas,
-			urlIcono: "https://telmex.com/logo.png",
-			creationUser: UserId);
-		// Agrega proveedor
-		ProveedoresServicios.Add(item: proveedor);
+		Brokers.Add(broker);
 	}
 
-	public void CrearServiciosFavoritos(Cliente primerCliente, ProveedorServicio primerProveedor)
+	private void CrearProveedores()
+	{
+		var broker = Brokers.First();
+
+		// Nuevo proveedor
+		var proveedor = new Proveedor(
+			nombre: "CFE",
+			broker: broker,
+			creationUser: UserId);
+		// Agrega proveedor
+		Proveedores.Add(item: proveedor);
+
+		var producto = proveedor.AgregarProducto(
+			sku: "SKU123",
+			nombre: "Netflix Premium",
+			precio: 15.99m,
+			icono: "https://cfe.mx/logo.png",
+			categoria: "Servicios",
+			creationUser: UserId);
+		Productos.Add(producto);
+
+		// Nuevo proveedor
+		proveedor = new Proveedor(
+			nombre: "Telmex",
+			broker: broker,
+			creationUser: UserId);
+		// Agrega proveedor
+		Proveedores.Add(item: proveedor);
+	}
+
+	public void CrearServiciosFavoritos(Cliente primerCliente, Proveedor primerProveedor)
 	{
 		var servicioFavorito = new ServicioFavorito(
 			cliente: primerCliente,
-			proveedorServicio: primerProveedor,
+			proveedor: primerProveedor,
 			alias: "Mi Luz",
 			numeroReferencia: "123456789012",
 			creationUser: UserId);
 		ServiciosFavoritos.Add(item: servicioFavorito);
 	}
-
-
-	public readonly List<ProveedorServicio> ProveedoresServicios = [];
-	public readonly List<ServicioFavorito> ServiciosFavoritos = [];
-	public readonly List<ProductoProveedor> ProductosProveedores = [];
 }

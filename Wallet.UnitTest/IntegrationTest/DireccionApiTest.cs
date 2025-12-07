@@ -26,7 +26,11 @@ public class DireccionApiTest : DatabaseTestFixture
         // Attach user to context to avoid tracking issues if needed, or just use ID
         var userFromDb = await context.Usuario.FindAsync(user.Id);
 
-        var cliente = new Cliente(usuario: userFromDb!, creationUser: Guid.NewGuid());
+        var empresa = new Empresa(nombre: "Empresa Test", creationUser: Guid.NewGuid());
+        await context.Empresa.AddAsync(entity: empresa);
+        await context.SaveChangesAsync();
+
+        var cliente = new Cliente(usuario: userFromDb!, empresa: empresa, creationUser: Guid.NewGuid());
         cliente.AgregarDatosPersonales(
             nombre: "Juan",
             primerApellido: "Perez",

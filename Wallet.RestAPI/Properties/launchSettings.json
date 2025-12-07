@@ -8,6 +8,24 @@
     }
   },
   "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "scalar/0.1",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Database": "WalletService",
+        "DbUser": "sa",
+        "DbPassword": "YourStrongPassword123!",
+        "DbServer": "localhost",
+        "API-Key": "00000000-0000-0000-0000-000000000000",
+        "twilio-service": "https://api.twilio.example.com",
+        "checkton-pld-service": "https://api.checkton.example.com",
+        "Jwt:Key": "YourSuperSecretKeyForDevelopmentOnly123!",
+        "Jwt:Issuer": "WalletService",
+        "Jwt:Audience": "WalletServiceUsers"
+      }
+    },
     "dev": {
       "commandName": "Project",
       "launchBrowser": true,
@@ -21,7 +39,10 @@
         "DbServer": ".",
         "API-Key": "14bb0ffb-7503-4fa6-9969-b721635929db",
         "twilio-service": "https://localhost:4001",
-        "checkton-pld-service": "https://localhost:4002"
+        "checkton-pld-service": "https://localhost:4002",
+        "Jwt:Key": "YourSuperSecretKeyForDevelopmentOnly123!",
+        "Jwt:Issuer": "WalletService",
+        "Jwt:Audience": "WalletServiceUsers"
       }
     }
   }

@@ -87,16 +87,6 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
     public DateTime? RefreshTokenExpiryTime { get; private set; }
 
     /// <summary>
-    /// Identificador de la empresa asociada al usuario.
-    /// </summary>
-    public int? EmpresaId { get; private set; }
-
-    /// <summary>
-    /// Entidad de la empresa asociada.
-    /// </summary>
-    public Empresa? Empresa { get; private set; }
-
-    /// <summary>
     /// Entidad del cliente asociado, si aplica.
     /// </summary>
     public Cliente? Cliente { get; private set; }
@@ -404,25 +394,6 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
             this.DispositivoMovilAutorizados.FirstOrDefault(predicate: x =>
                 x.IdDispositivo == idDispositivo && x.Token == token);
         return dispositivo != null;
-    }
-
-    /// <summary>
-    /// Asocia una empresa al usuario.
-    /// </summary>
-    /// <param name="empresa">La empresa a asociar.</param>
-    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
-    public void AgregarEmpresa(Empresa empresa, Guid modificationUser)
-    {
-        if (empresa == null)
-        {
-            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.EmpresaRequerida,
-                dynamicContent: []));
-        }
-
-        this.Empresa = empresa;
-        this.EmpresaId = empresa.Id;
-        Update(modificationUser: modificationUser);
     }
 
     /// <summary>

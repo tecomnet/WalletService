@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Serilog.Context;
-using System;
 using Newtonsoft.Json;
 using Serilog;
+using Serilog.Context;
 using Wallet.DOM.Errors;
 using Wallet.RestAPI.Models;
 

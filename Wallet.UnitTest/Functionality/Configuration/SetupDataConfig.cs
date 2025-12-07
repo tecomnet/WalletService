@@ -23,13 +23,15 @@ public class SetupDataConfig : DatabaseTestFixture
 			await context.AddRangeAsync(entities: _commonSettings.Estados);
 			await context.AddRangeAsync(entities: _commonSettings.Usuarios);
 			await context.AddRangeAsync(entities: _commonSettings.Clientes);
-			await context.AddRangeAsync(entities: _commonSettings.ProveedoresServicios);
+			await context.AddRangeAsync(entities: _commonSettings.Brokers);
+			await context.AddRangeAsync(entities: _commonSettings.Proveedores);
+			await context.AddRangeAsync(entities: _commonSettings.Productos);
 			await context.SaveChangesAsync();
 
-			// After SaveChangesAsync, IDs are assigned to Clientes and ProveedoresServicios
+			// After SaveChangesAsync, IDs are assigned to Clientes and Proveedores
 			var primerCliente = _commonSettings.Clientes.First();
-			var primerProveedor = _commonSettings.ProveedoresServicios.First();
-			_commonSettings.CrearServiciosFavoritos(primerCliente: primerCliente, primerProveedor: primerProveedor); // Call new method
+			var primerProveedor = _commonSettings.Proveedores.First();
+			_commonSettings.CrearServiciosFavoritos(primerCliente: primerCliente, primerProveedor: primerProveedor);
 
 			await context.AddRangeAsync(entities: _commonSettings.ServiciosFavoritos);
 			await context.SaveChangesAsync();

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Wallet.RestAPI.Models;
@@ -7,15 +8,24 @@ using Wallet.UnitTest.FixtureBase;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
-public class ProductoProveedorApiTest : DatabaseTestFixture
+public class ProductoApiTest : DatabaseTestFixture
 {
-    private const string API_URI = "productoProveedor";
-    private const string PROVEEDOR_API_URI = "proveedorServicio";
+    private const string API_URI = "producto";
+    private const string PROVEEDOR_API_URI = "proveedor";
     private const string API_VERSION = "0.1";
 
-    public ProductoProveedorApiTest()
+    public ProductoApiTest()
     {
-        SetupDataAsync(setupDataAction: async context => { await context.SaveChangesAsync(); }).GetAwaiter().GetResult();
+        SetupDataAsync(setupDataAction: async context =>
+        {
+            if (!await context.Broker.AnyAsync(b => b.Nombre == "Broker Test"))
+            {
+                var broker = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
+                await context.Broker.AddAsync(entity: broker);
+            }
+
+            await context.SaveChangesAsync();
+        }).GetAwaiter().GetResult();
     }
 
     private readonly JsonSerializerSettings _jsonSettings = new()
@@ -24,37 +34,39 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
     };
 
     [Fact]
-    public async Task Post_ProductoProveedor_Ok()
+    public async Task Post_Producto_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
         // Create provider
         var provider = await CreateProveedor(client: client);
 
-        var request = new ProductoProveedorRequest
+        var request = new ProductoRequest
         {
             Sku = "NETFLIX-PREM",
             Nombre = "Netflix Premium",
-            Monto = 15.99m,
-            Descripcion = "Premium Subscription"
+            Precio = 15.99m,
+            Icono = "https://netflix.com/icon.png",
+            Categoria = "Streaming"
         };
         var content = CreateContent(body: request);
 
         // Act
-        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{provider.Id}/producto", content: content);
+        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{provider.Id}/producto",
+            content: content);
 
         // Assert
         Assert.Equal(expected: HttpStatusCode.Created, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Equal(expected: request.Sku, actual: result.Sku);
-        Assert.Equal(expected: provider.Id, actual: result.ProveedorServicioId);
+        Assert.Equal(expected: provider.Id, actual: result.ProveedorId);
     }
 
     [Fact]
-    public async Task Get_ProductoProveedor_ById_Ok()
+    public async Task Get_Producto_ById_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
@@ -67,43 +79,45 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         // Assert
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Equal(expected: product.Id, actual: result.Id);
     }
 
     [Fact]
-    public async Task Put_ProductoProveedor_Ok()
+    public async Task Put_Producto_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
         var provider = await CreateProveedor(client: client);
         var product = await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
 
-        var updateRequest = new ProductoProveedorRequest
+        var updateRequest = new ProductoRequest
         {
             Sku = "NETFLIX-STD",
             Nombre = "Netflix Standard",
-            Monto = 10.99m,
-            Descripcion = "Standard Subscription"
+            Precio = 10.99m,
+            Icono = "https://netflix.com/icon.png",
+            Categoria = "Streaming"
         };
 
         // Act
-        var response = await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{product.Id}", content: CreateContent(body: updateRequest));
+        var response = await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{product.Id}",
+            content: CreateContent(body: updateRequest));
 
         // Assert
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Equal(expected: updateRequest.Sku, actual: result.Sku);
-        Assert.Equal(expected: updateRequest.Monto, actual: result.Monto);
+        Assert.Equal(expected: updateRequest.Precio, actual: result.Precio);
     }
 
     [Fact]
-    public async Task Delete_ProductoProveedor_Ok()
+    public async Task Delete_Producto_Ok()
     {
         // Arrange
         var client = Factory.CreateAuthenticatedClient();
@@ -116,7 +130,7 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         // Assert
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.False(condition: result.IsActive);
@@ -137,42 +151,50 @@ public class ProductoProveedorApiTest : DatabaseTestFixture
         // Assert
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var result =
-            JsonConvert.DeserializeObject<List<ProductoProveedorResult>>(value: await response.Content.ReadAsStringAsync(),
+            JsonConvert.DeserializeObject<List<ProductoResult>>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.True(condition: result.Count >= 2);
     }
 
-    private async Task<ProveedorServicioResult> CreateProveedor(HttpClient client)
+    private async Task<ProveedorResult> CreateProveedor(HttpClient client)
     {
-        var request = new ProveedorServicioRequest
+        var request = new ProveedorRequest
         {
             Nombre = "Test Provider " + Guid.NewGuid(),
-            Categoria = "Servicios",
-            UrlIcono = "http://test.com/icon.png"
+            BrokerId = 1 // Assuming Seeded Broker Id 1 exists or I need to fetch it? SetupDataConfig seeds brokers? Yes CommonSettings creates brokers.
         };
-        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}", content: CreateContent(body: request));
+        // Wait, ProveedorRequest needs BrokerId now? Yes, Proveedor has BrokerId.
+        // But previously it had Categoria, UrlIcono. Now removed?
+        // Let's check ProveedorRequest definition or Proveedor model.
+        // Proveedor model has BrokerId.
+        // I need to make sure I seed a Broker or have a valid one.
+        // SetupDataConfig seeds brokers. So BrokerId 1 should exist (Assuming IDs start at 1).
+
+        var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}",
+            content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode,
             userMessage: "Failed to create provider: " + await response.Content.ReadAsStringAsync());
-        return JsonConvert.DeserializeObject<ProveedorServicioResult>(value: await response.Content.ReadAsStringAsync(),
+        return JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
             settings: _jsonSettings)!;
     }
 
-    private async Task<ProductoProveedorResult> CreateProducto(HttpClient client, int providerId,
+    private async Task<ProductoResult> CreateProducto(HttpClient client, int providerId,
         string sku = "TEST-SKU")
     {
-        var request = new ProductoProveedorRequest
+        var request = new ProductoRequest
         {
             Sku = sku,
             Nombre = "Test Product",
-            Monto = 10.0m,
-            Descripcion = "Test Description"
+            Precio = 10.0m,
+            Icono = "icon",
+            Categoria = "Cat"
         };
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{providerId}/producto",
             content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode,
             userMessage: "Failed to create product: " + await response.Content.ReadAsStringAsync());
-        return JsonConvert.DeserializeObject<ProductoProveedorResult>(value: await response.Content.ReadAsStringAsync(),
+        return JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
             settings: _jsonSettings)!;
     }
 

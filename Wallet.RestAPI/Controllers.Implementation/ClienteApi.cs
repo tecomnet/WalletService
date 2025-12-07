@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
 
@@ -75,6 +75,21 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         var cliente = await clienteFacade.ActivarClienteAsync(idCliente: idCliente, modificationUser: Guid.Empty);
         // Map to response model
         var response = mapper.Map<ClienteResult>(source: cliente);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    [Authorize]
+    public override async Task<IActionResult> GetServiciosFavoritosPorClienteAsync(
+        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
+        string version,
+        [FromRoute, Required] int idCliente)
+    {
+        // Call facade method
+        var serviciosFavoritos = await clienteFacade.ObtenerServiciosFavoritosAsync(idCliente: idCliente);
+        // Map to response model
+        var response = mapper.Map<List<ServicioFavoritoResult>>(source: serviciosFavoritos);
         // Return OK response
         return Ok(value: response);
     }

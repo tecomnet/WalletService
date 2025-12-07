@@ -1,9 +1,19 @@
+#nullable enable
 namespace Wallet.RestAPI.Errors;
 
+/// <summary>
+/// Default implementation of IRestAPIError
+/// </summary>
 public class DefaultRestAPIError : IRestAPIError
 {
+    /// <summary>
+    /// Error detail template
+    /// </summary>
     protected string _detail;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DefaultRestAPIError"/> class.
+    /// </summary>
     public DefaultRestAPIError()
     {
         this.ErrorCode = "REST-API-DEFAULT-ERROR";
@@ -14,18 +24,26 @@ public class DefaultRestAPIError : IRestAPIError
         this.Instance = "DEFAULT";
     }
 
+    /// <inheritdoc />
     public string ErrorCode { get; protected set; }
 
+    /// <inheritdoc />
     public string Type { get; protected set; }
 
+    /// <inheritdoc />
     public string Title { get; protected set; }
 
+    /// <inheritdoc />
     public int Status { get; protected set; }
 
+    /// <inheritdoc />
     public string Instance { get; protected set; }
 
+    /// <inheritdoc />
     public string Detail(string[]? args = null)
     {
-        return args == null || args.Length == 0 ? this._detail : string.Format(format: this._detail, args: (object[]) args);
+        return args == null || args.Length == 0
+            ? this._detail
+            : string.Format(format: this._detail, args: (object[])args);
     }
 }

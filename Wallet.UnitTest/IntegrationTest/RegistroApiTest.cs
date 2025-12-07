@@ -1,12 +1,12 @@
 using System.Net;
-using Microsoft.EntityFrameworkCore;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
-using Wallet.DOM.ApplicationDbContext;
 using Xunit.Abstractions;
 
 namespace Wallet.UnitTest.IntegrationTest;

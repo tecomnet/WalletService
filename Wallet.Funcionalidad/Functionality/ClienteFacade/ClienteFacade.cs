@@ -29,8 +29,9 @@ public class ClienteFacade(
                 .ThenInclude(navigationPropertyPath: u => u.DispositivoMovilAutorizados)
                 .Include(navigationPropertyPath: x => x.Usuario)
                 .ThenInclude(navigationPropertyPath: u => u.Verificaciones2Fa)
-                .Include(navigationPropertyPath: x => x.Estado).Include(navigationPropertyPath: x => x.Usuario)
-                .ThenInclude(navigationPropertyPath: u => u.Empresa)
+                .Include(navigationPropertyPath: x => x.Estado)
+                .Include(navigationPropertyPath: x => x.Usuario)
+                .Include(navigationPropertyPath: u => u.Empresa)
                 .FirstOrDefaultAsync(predicate: x => x.Id == idCliente);
             // Validar cliente
             if (cliente == null)
@@ -102,9 +103,6 @@ public class ClienteFacade(
                 .LoadAsync();
             // Validar que ya haya confirmado el código de verificación por SMS
             ValidarConfirmacionCodigoVerificacionSMS2FA(cliente: cliente);
-            // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
-            var empresa = await empresaFacade.ObtenerPorNombreAsync(nombre: "Tecomnet");
-            cliente.Usuario.AgregarEmpresa(empresa: empresa, modificationUser: modificationUser);
             // Agregar estado
             var estado = await estadoFacade.ObtenerEstadoPorNombreAsync(nombre: nombreEstado);
             cliente.AgregarEstado(estado: estado, modificationUser: modificationUser);
@@ -191,6 +189,38 @@ public class ClienteFacade(
         }
     }
 
+    /// <inheritdoc />
+    public async Task<List<ServicioFavorito>> ObtenerServiciosFavoritosAsync(int idCliente)
+    {
+        try
+        {
+            // Obtener cliente con sus servicios favoritos
+            var cliente = await context.Cliente
+                .Include(c => c.ServiciosFavoritos)
+                .FirstOrDefaultAsync(c => c.Id == idCliente);
+
+            // Validar cliente
+            if (cliente == null)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ClienteNoEncontrado,
+                    dynamicContent: [idCliente],
+                    module: this.GetType().Name));
+            }
+
+            // Retornar servicios favoritos
+            return cliente.ServiciosFavoritos.ToList();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
 
     #region Metodos privados
 
@@ -230,7 +260,7 @@ public class ClienteFacade(
             }
 
             // Crea la validacion con el resultado
-            ValidacionCheckton validacionCheckton = new ValidacionCheckton(
+            ValidacionCheckton validacionCheckton = new(
                 tipoCheckton: TipoCheckton.Curp,
                 resultado: validacionCurpResult.Success,
                 creationUser: creationUser,

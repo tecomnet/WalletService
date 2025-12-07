@@ -65,21 +65,26 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <summary>
     /// Obtiene o establece el nombre del cliente.
     /// </summary>
-    [MaxLength(length: 100)] public string? Nombre { get; private set; }
+    [MaxLength(length: 100)]
+    public string? Nombre { get; private set; }
 
     /// <summary>
     /// Obtiene o establece el primer apellido del cliente.
     /// </summary>
-    [MaxLength(length: 100)] public string? PrimerApellido { get; private set; }
+    [MaxLength(length: 100)]
+    public string? PrimerApellido { get; private set; }
 
     /// <summary>
     /// Obtiene o establece el segundo apellido del cliente.
     /// </summary>
-    [MaxLength(length: 100)] public string? SegundoApellido { get; private set; }
+    [MaxLength(length: 100)]
+    public string? SegundoApellido { get; private set; }
+
     /// <summary>
     /// Obtiene el nombre completo del cliente, concatenando Nombre, PrimerApellido y SegundoApellido.
     /// </summary>
-    [NotMapped] public string? NombreCompleto => $"{this.Nombre} {this.PrimerApellido} {this.SegundoApellido}";
+    [NotMapped]
+    public string? NombreCompleto => $"{this.Nombre} {this.PrimerApellido} {this.SegundoApellido}";
 
     /// <summary>
     /// Obtiene o establece la fecha de nacimiento del cliente.
@@ -99,17 +104,20 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <summary>
     /// Obtiene o establece la CURP (Clave Única de Registro de Población) del cliente.
     /// </summary>
-    [MaxLength(length: 18)] public string? Curp { get; private set; }
+    [MaxLength(length: 18)]
+    public string? Curp { get; private set; }
 
     /// <summary>
     /// Obtiene o establece el RFC (Registro Federal de Contribuyentes) del cliente.
     /// </summary>
-    [MaxLength(length: 13)] public string? Rfc { get; private set; }
+    [MaxLength(length: 13)]
+    public string? Rfc { get; private set; }
 
     /// <summary>
     /// Obtiene o establece la URL o identificador de la foto del cliente almacenada en AWS.
     /// </summary>
-    [MaxLength(length: 500)] public string? FotoAWS { get; private set; }
+    [MaxLength(length: 500)]
+    public string? FotoAWS { get; private set; }
 
     /// <summary>
     /// Obtiene o establece el identificador del estado asociado al cliente.
@@ -130,23 +138,39 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// Obtiene o establece el identificador del usuario asociado a este cliente.
     /// </summary>
     public int UsuarioId { get; private set; }
+
     /// <summary>
     /// Obtiene o establece el objeto Usuario asociado a este cliente.
     /// </summary>
     public Usuario Usuario { get; private set; }
 
     /// <summary>
+    /// Identificador de la empresa asociada al cliente.
+    /// </summary>
+    [Required]
+    public int EmpresaId { get; private set; }
+
+    /// <summary>
+    /// Objeto de navegación para la empresa.
+    /// </summary>
+    [ForeignKey(name: "EmpresaId")]
+    public Empresa Empresa { get; private set; }
+
+    /// <summary>
     /// Obtiene la lista de documentos adjuntos del cliente.
     /// </summary>
     public List<DocumentacionAdjunta> DocumentacionAdjuntas { get; private set; } = new();
+
     /// <summary>
     /// Obtiene la lista de actividades económicas del cliente.
     /// </summary>
     public List<ActividadEconomica> ActividadEconomicas { get; private set; } = new();
+
     /// <summary>
     /// Obtiene la lista de validaciones Checkton realizadas para el cliente.
     /// </summary>
     public List<ValidacionCheckton> ValidacionesChecktons { get; private set; } = new();
+
     /// <summary>
     /// Obtiene la lista de servicios favoritos del cliente.
     /// </summary>
@@ -161,21 +185,27 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     }
 
     /// <summary>
-    /// Inicializa una nueva instancia de la clase Cliente con un usuario y un usuario de creación.
+    /// Inicializa una nueva instancia de la clase Cliente con un usuario, empresa y un usuario de creación.
     /// </summary>
     /// <param name="usuario">El objeto Usuario asociado a este cliente.</param>
+    /// <param name="empresa">La empresa a la que pertenece el cliente.</param>
     /// <param name="creationUser">El GUID del usuario que crea el cliente.</param>
     /// <param name="testCase">Parámetro opcional para casos de prueba.</param>
-    /// <exception cref="ArgumentNullException">Se lanza si el usuario es nulo.</exception>
+    /// <exception cref="ArgumentNullException">Se lanza si el usuario o la empresa son nulos.</exception>
     public Cliente(
         Usuario usuario,
+        Empresa empresa,
         Guid creationUser,
         string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
         // Verifica que el usuario no sea nulo.
         if (usuario == null) throw new ArgumentNullException(paramName: nameof(usuario));
+        if (empresa == null) throw new ArgumentNullException(paramName: nameof(empresa));
+
         this.Usuario = usuario;
         this.UsuarioId = usuario.Id;
+        this.Empresa = empresa;
+        this.EmpresaId = empresa.Id;
 
         // Inicializa las listas de colecciones.
         this.DocumentacionAdjuntas = new List<DocumentacionAdjunta>();
@@ -232,9 +262,10 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     public void AgregarDireccion(Direccion direccion, Guid creationUser)
     {
         // Asigna la dirección, lanzando una excepción si es nula.
-        this.Direccion = direccion ?? throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-            errorCode: ServiceErrorsBuilder.DireccionRequerida,
-            dynamicContent: []));
+        this.Direccion = direccion ?? throw new EMGeneralAggregateException(
+            exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.DireccionRequerida,
+                dynamicContent: []));
         // Actualizamos el cliente (la línea anterior ya asigna, esta es redundante pero se mantiene por el original).
         // this.Direccion = direccion;
         // Actualiza los metadatos de la entidad base.

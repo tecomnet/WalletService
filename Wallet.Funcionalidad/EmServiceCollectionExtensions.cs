@@ -3,16 +3,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Helper;
+using Wallet.Funcionalidad.Functionality.AuthFacade;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
-using Wallet.Funcionalidad.Functionality.ProveedorServicioFacade;
+using Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
+using Wallet.Funcionalidad.Functionality.ProveedorFacade;
+using Wallet.Funcionalidad.Functionality.RegistroFacade;
 using Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
-using Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.ServiceClient;
-using Wallet.Funcionalidad.Functionality.AuthFacade;
 using Wallet.Funcionalidad.Services.TokenService;
-using Wallet.Funcionalidad.Functionality.RegistroFacade;
 
 namespace Wallet.Funcionalidad
 {
@@ -111,7 +111,7 @@ namespace Wallet.Funcionalidad
 			services.AddScoped<IDispositivoMovilAutorizadoFacade, DispositivoMovilAutorizadoFacadeFacade>();
 			services.AddScoped<IEmpresaFacade, EmpresaFacade>();
 			services.AddScoped<IEstadoFacade, EstadoFacade>();
-			services.AddScoped<IProveedorServicioFacade, ProveedorServicioFacade>();
+			services.AddScoped<IProveedorFacade, ProveedorFacade>();
 			services.AddScoped<IServicioFavoritoFacade, ServicioFavoritoFacade>();
 			services.AddScoped<IUsuarioFacade, UsuarioFacade>();
 			services.AddScoped<IConsentimientosUsuarioFacade, ConsentimientosUsuarioFacade>();

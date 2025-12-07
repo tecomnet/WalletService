@@ -7,20 +7,28 @@ using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Functionality;
 using Wallet.RestAPI.Models;
 
+#nullable enable
 namespace Wallet.RestAPI.Filters;
 
+/// <summary>
+/// Filter to handle exceptions globally in the service
+/// </summary>
 public class ServiceExceptionFilter : IExceptionFilter
 {
+    /// <summary>
+    /// Called after an action has thrown an <see cref="System.Exception"/>.
+    /// </summary>
+    /// <param name="context">The <see cref="ExceptionContext"/>.</param>
     public void OnException(ExceptionContext context)
     {
         Exception exceptionToHandle = context.Exception;
-        
+
         // --- 1. Manejo de Excepciones Controladas (EMGeneralAggregateException) ---
         if (exceptionToHandle is EMGeneralAggregateException aggregateException)
         {
             // Asumimos que podemos obtener el código de error de la InnerException
             string? errorCode = (aggregateException.InnerException as dynamic)?.Code;
-            
+
             // Creamos la respuesta de error 400 por defecto
             var statusCode = (int)HttpStatusCode.BadRequest; // 400
             var responseBody = new InlineResponse400(aggregateException: aggregateException);
@@ -29,11 +37,15 @@ public class ServiceExceptionFilter : IExceptionFilter
             if (errorCode == ServiceErrorsBuilder.ClienteNoEncontrado ||
                 errorCode == ServiceErrorsBuilder.EstadoNoEncontrado ||
                 errorCode == ServiceErrorsBuilder.EmpresaNoEncontrada ||
-                errorCode == ServiceErrorsBuilder.CodigoVerificacionNoEncontrado)
+                errorCode == ServiceErrorsBuilder.CodigoVerificacionNoEncontrado ||
+                errorCode == ServiceErrorsBuilder.BrokerNoEncontrado ||
+                errorCode == ServiceErrorsBuilder.ProveedorNoEncontrado ||
+                errorCode == ServiceErrorsBuilder.ProductoNoEncontrado ||
+                errorCode == ServiceErrorsBuilder.ServicioFavoritoNoEncontrado)
             {
                 statusCode = (int)HttpStatusCode.NotFound; // 404
             }
-            
+
             // Establecemos el resultado, deteniendo la propagación
             context.Result = new ObjectResult(value: responseBody)
             {
@@ -49,9 +61,9 @@ public class ServiceExceptionFilter : IExceptionFilter
                 serviceName: DomCommon.ServiceName,
                 // Asumimos que podemos obtener el nombre del controller/clase desde el contexto si es necesario,
                 // por simplicidad usaremos el nombre del filtro.
-                module: "RestApi", 
+                module: "RestApi",
                 exception: exceptionToHandle);
-            
+
             // 2. Crear una respuesta de error genérica (HTTP 500 es el estándar para errores no esperados)
             var statusCode = (int)HttpStatusCode.InternalServerError; // 500
             var responseBody = new InlineResponse400(aggregateException: encapsulatedException);
@@ -62,7 +74,7 @@ public class ServiceExceptionFilter : IExceptionFilter
                 StatusCode = statusCode
             };
         }
-        
+
         // Indicamos que la excepción ha sido manejada, independientemente de si fue 400, 404 o 500
         context.ExceptionHandled = true;
     }

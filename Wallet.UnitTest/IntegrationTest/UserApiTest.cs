@@ -1,9 +1,9 @@
-using Wallet.UnitTest.FixtureBase;
-using Newtonsoft.Json;
-using System.Text;
-using Wallet.RestAPI.Models;
-using System.Net.Http.Headers;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
+using Newtonsoft.Json;
+using Wallet.RestAPI.Models;
+using Wallet.UnitTest.FixtureBase;
 
 namespace Wallet.UnitTest.IntegrationTest;
 

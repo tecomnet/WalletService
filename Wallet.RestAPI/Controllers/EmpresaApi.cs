@@ -9,13 +9,13 @@
  */
 
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.ComponentModel.DataAnnotations;
-using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Attributes;
+using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Models;
-using System.Threading.Tasks;
 
 namespace Wallet.RestAPI.Controllers
 {
@@ -46,7 +46,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetEmpresasAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version);
 
         /// <summary>
         /// Guarda una empresa
@@ -70,7 +71,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PostEmpresaAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromBody] EmpresaRequest body);
 
         /// <summary>
@@ -96,7 +98,60 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutEmpresaAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] int? idEmpresa, [FromBody] EmpresaRequest body);
+
+        /// <summary>
+        /// Obtiene los productos de una empresa
+        /// </summary>
+        /// <remarks>Obtiene la lista de productos asignados a una empresa</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idEmpresa">Id de la empresa</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpGet]
+        [Route(template: "/{version:apiVersion}/empresa/{idEmpresa}/productos")]
+        [ValidateModelState]
+        [SwaggerOperation(summary: "GetProductosPorEmpresa")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<ProductoResult>), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetProductosPorEmpresaAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
+            [FromRoute] [Required] int? idEmpresa);
+
+        /// <summary>
+        /// Obtiene los clientes de una empresa
+        /// </summary>
+        /// <remarks>Obtiene la lista de clientes asignados a una empresa</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idEmpresa">Id de la empresa</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpGet]
+        [Route(template: "/{version:apiVersion}/empresa/{idEmpresa}/clientes")]
+        [ValidateModelState]
+        [SwaggerOperation(summary: "GetClientesPorEmpresa")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<ClienteResult>), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetClientesPorEmpresaAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
+            [FromRoute] [Required] int? idEmpresa);
     }
 }

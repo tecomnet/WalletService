@@ -171,6 +171,56 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         }
     }
 
+    /// <inheritdoc />
+    public async Task<List<Producto>> ObtenerProductosPorEmpresaAsync(int idEmpresa)
+    {
+        try
+        {
+            var empresa = await context.Empresa
+                .Include(e => e.Productos)
+                .FirstOrDefaultAsync(e => e.Id == idEmpresa);
+
+            if (empresa is null)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
+                    dynamicContent: [idEmpresa]));
+
+            return empresa.Productos.ToList();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<List<Cliente>> ObtenerClientesPorEmpresaAsync(int idEmpresa)
+    {
+        try
+        {
+            var empresa = await context.Empresa
+                .Include(e => e.Clientes)
+                .FirstOrDefaultAsync(e => e.Id == idEmpresa);
+
+            if (empresa is null)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
+                    dynamicContent: [idEmpresa]));
+
+            return empresa.Clientes.ToList();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
     #region Metodos privados
 
     /// <summary>
