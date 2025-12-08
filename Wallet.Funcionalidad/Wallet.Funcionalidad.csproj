@@ -35,8 +35,8 @@
             <OutputPath>OpenAPIs/TwilioService.cs</OutputPath>
             <OpenApiGenerateCodeOptions>
                 <InjectHttpClient>true</InjectHttpClient>
-                <GenerateExceptionClasses>false</GenerateExceptionClasses>
-                <ExceptionClass>Wallet.Funcionalidad.Remoting.REST.ApiException</ExceptionClass>
+                <GenerateExceptionClasses>true</GenerateExceptionClasses>
+                <ExceptionClass>Wallet.DOM.Comun.ApiException</ExceptionClass>
                 <WrapResponses>false</WrapResponses>
                 <GenerateResponseClasses>false</GenerateResponseClasses>
             </OpenApiGenerateCodeOptions>
@@ -48,8 +48,8 @@
             <OutputPath>OpenAPIs/ChecktonPldService.cs</OutputPath>
             <OpenApiGenerateCodeOptions>
                 <InjectHttpClient>true</InjectHttpClient>
-                <GenerateExceptionClasses>false</GenerateExceptionClasses>
-                <ExceptionClass>Wallet.Funcionalidad.Remoting.REST.ApiException</ExceptionClass>
+                <GenerateExceptionClasses>true</GenerateExceptionClasses>
+                <ExceptionClass>Wallet.DOM.Comun.ApiException</ExceptionClass>
                 <WrapResponses>false</WrapResponses>
                 <GenerateResponseClasses>false</GenerateResponseClasses>
             </OpenApiGenerateCodeOptions>
