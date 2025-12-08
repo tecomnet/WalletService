@@ -68,37 +68,6 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
-    post:
-      summary: Crea un cliente
-      operationId: PostCliente
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClienteResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-        '500':
-          description: Internal Server Error
-      description: Crea un cliente
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClienteRequest'
-        description: ''
-      tags:
-        - Cliente
   '/{version}/cliente/{idCliente}':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -122,32 +91,6 @@ paths:
       description: Obtiene un cliente por id
       security:
         - jwsToken: []
-      tags:
-        - Cliente
-    put:
-      summary: Actualiza un cliente por id
-      operationId: PutCliente
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClienteResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Actualiza un cliente por id
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClienteUpdateRequest'
       tags:
         - Cliente
     delete:
@@ -354,33 +297,6 @@ paths:
           description: token autorizacion del dispositivo
       tags:
         - DispositivoMovilAutorizado
-  '/{version}/registro/preRegistro':
-    parameters:
-      - $ref: '#/components/parameters/version'
-    post:
-      summary: Pre-registro de usuario
-      operationId: PostUsuarioPreRegistro
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UsuarioResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Crea un usuario y cliente en estado de pre-registro
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PreRegistroRequest'
-      tags:
-        - Registro
   '/{version}/estado':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -704,6 +620,40 @@ paths:
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
       description: Obtiene los proveedores asociados a un broker
+      tags:
+        - Broker
+  '/{version}/broker/{idBroker}/activar':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - name: idBroker
+        in: path
+        schema:
+          type: integer
+        description: Id del broker
+        required: true
+    put:
+      summary: Activar un broker
+      operationId: putActivarBroker
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrokerResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Activa un broker
       tags:
         - Broker
   '/{version}/proveedor/{idProveedor}/producto':
@@ -1095,6 +1045,33 @@ paths:
       description: Elimina un servicio favorito
       tags:
         - ServicioFavorito
+  '/{version}/registro/preRegistro':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Pre-registro de usuario
+      operationId: PostUsuarioPreRegistro
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Crea un usuario y cliente en estado de pre-registro
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreRegistroRequest'
+      tags:
+        - Registro
   '/{version}/registro/{idUsuario}/confirmar':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -1429,40 +1406,6 @@ paths:
               $ref: '#/components/schemas/TelefonoUpdateRequest'
       tags:
         - Usuario
-  '/{version}/usuario/{idUsuario}/confirmaVerificacion':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - name: idUsuario
-        in: path
-        required: true
-        schema:
-          type: integer
-    put:
-      summary: Confirma codigo de verificacion
-      operationId: PutUsuarioConfirmaVerificacion
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Confirma codigo de verificacion de 4 digitos
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Verificacion2FARequest'
-      tags:
-        - Usuario
   '/{version}/usuario/{idUsuario}/consentimiento':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -1586,8 +1529,10 @@ paths:
         - Auth
 components:
   schemas:
-    TipoDocumentoConsentimiento:
+    TipoDocumentoConsentimientoEnum:
       type: string
+      x-stoplight:
+        id: 94d48ef2c5166
       enum:
         - Terminos
         - Privacidad
@@ -1598,7 +1543,7 @@ components:
       type: object
       properties:
         tipoDocumento:
-          $ref: '#/components/schemas/TipoDocumentoConsentimiento'
+          $ref: '#/components/schemas/TipoDocumentoConsentimientoEnum'
         version:
           type: string
           minLength: 1
@@ -1615,7 +1560,7 @@ components:
         idUsuario:
           type: integer
         tipoDocumento:
-          $ref: '#/components/schemas/TipoDocumentoConsentimiento'
+          type: string
         version:
           type: string
         fechaAceptacion:
@@ -1871,93 +1816,6 @@ components:
       required:
         - codigoPais
         - telefono
-    ClienteRequest:
-      title: ClienteRequest
-      x-stoplight:
-        id: zdjtcdgwyvde7
-      type: object
-      description: Estructura para pre registrar un cliente
-      properties:
-        codigoPais:
-          type: string
-          minLength: 3
-          maxLength: 3
-          x-stoplight:
-            id: neep14yhburn4
-        telefono:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 9
-          maxLength: 10
-      required:
-        - codigoPais
-        - telefono
-    ClienteUpdateRequest:
-      title: ClienteUpdateRequest
-      x-stoplight:
-        id: 0skzdo892adg6
-      type: object
-      description: Estructura para actualizar datos personales de clientes
-      properties:
-        nombre:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-        primerApellido:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-        segundoApellido:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-        fechaNacimiento:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 10
-          format: date
-          maxLength: 10
-        genero:
-          $ref: '#/components/schemas/GeneroEnum'
-        estado:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 500
-      required:
-        - nombre
-        - primerApellido
-        - segundoApellido
-        - fechaNacimiento
-        - genero
-        - estado
-    Verificacion2FARequest:
-      title: Verificacion2FARequest
-      x-stoplight:
-        id: i04swzrm0cwii
-      type: object
-      description: Estructura para confirmar un codigo de verificacion
-      properties:
-        Tipo:
-          $ref: '#/components/schemas/Tipo2FAEnum'
-        Codigo:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 4
-          maxLength: 4
-      required:
-        - Tipo
-        - Codigo
     UbicacionRequest:
       title: UbicacionRequest
       x-stoplight:
@@ -2289,6 +2147,16 @@ components:
       enum:
         - SMS
         - EMAIL
+    CategoriaEnum:
+      title: Tipo2FAEnum
+      x-stoplight:
+        id: 0f8j5s3ilu4ci
+      type: string
+      description: Estructura enum para categoria de proveeedor y productos
+      enum:
+        - SERVICIOS
+        - RECARGAS
+        - MOVILIDAD
     GeneroEnum:
       title: GeneroEnum
       x-stoplight:
@@ -2735,12 +2603,11 @@ components:
           type: string
           minLength: 1
           maxLength: 100
-        categoria:
-          type: string
-          description: 'Categoria del producto (Servicios, Recargas, Movilidad)'
         urlIcono:
           type: string
           maxLength: 500
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
       required:
         - brokerId
         - nombre
@@ -2852,16 +2719,18 @@ components:
         nombre:
           type: string
           maxLength: 100
-        monto:
+        precio:
           type: number
           format: double
+          x-stoplight:
+            id: 4d54deghg8un9
         descripcion:
           type: string
           maxLength: 255
       required:
         - sku
         - nombre
-        - monto
+        - descripcion
     ConfirmacionRequest:
       title: ConfirmacionRequest
       type: object
