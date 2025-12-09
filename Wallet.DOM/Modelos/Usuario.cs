@@ -147,7 +147,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         this.CodigoPais = codigoPais;
         this.Telefono = telefono;
         this.CorreoElectronico = correoElectronico;
-        this.Contrasena = contrasena;
+        this.Contrasena = !string.IsNullOrEmpty(contrasena) ? BCrypt.Net.BCrypt.HashPassword(contrasena) : null;
         this.Estatus = estatus;
 
         Verificaciones2Fa = new List<Verificacion2FA>();
@@ -175,7 +175,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(Contrasena), value: contrasena, exceptions: ref exceptions);
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
-        this.Contrasena = contrasena;
+        this.Contrasena = !string.IsNullOrEmpty(contrasena) ? BCrypt.Net.BCrypt.HashPassword(contrasena) : null;
         Update(modificationUser: modificationUser);
     }
 
@@ -199,7 +199,8 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         }
 
         // Validar contraseña actual
-        if (this.Contrasena != contrasenaActual)
+        if (!string.IsNullOrEmpty(this.Contrasena) &&
+            !BCrypt.Net.BCrypt.Verify(text: contrasenaActual, hash: this.Contrasena))
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ContrasenaActualIncorrecta,
@@ -210,7 +211,9 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(Contrasena), value: contrasenaNueva, exceptions: ref exceptions);
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
-        this.Contrasena = contrasenaNueva;
+        this.Contrasena = !string.IsNullOrEmpty(contrasenaNueva)
+            ? BCrypt.Net.BCrypt.HashPassword(contrasenaNueva)
+            : null;
         Update(modificationUser: modificationUser);
     }
 
@@ -418,5 +421,17 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         this.RefreshToken = refreshToken;
         this.RefreshTokenExpiryTime = expiryTime;
         Update(modificationUser: modificationUser);
+    }
+
+    /// <summary>
+    /// Verifica si la contraseña proporcionada coincide con el hash almacenado.
+    /// </summary>
+    /// <param name="password">Contraseña en texto plano a verificar.</param>
+    /// <returns>True si coincide, False en caso contrario.</returns>
+    public bool VerificarContrasena(string password)
+    {
+        if (string.IsNullOrEmpty(this.Contrasena)) return false;
+        if (string.IsNullOrEmpty(password)) return false;
+        return BCrypt.Net.BCrypt.Verify(text: password, hash: this.Contrasena);
     }
 }

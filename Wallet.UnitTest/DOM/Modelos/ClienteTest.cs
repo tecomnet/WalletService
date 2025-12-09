@@ -361,14 +361,32 @@ public class ClienteTest : UnitTestTemplate
             {
                 case "CrearContrasena":
                     cliente.Usuario.CrearContrasena(contrasena: nuevaContrasena!, modificationUser: Guid.NewGuid());
-                    Assert.Equal(expected: nuevaContrasena, actual: cliente.Usuario.Contrasena);
+                    if (!string.IsNullOrEmpty(nuevaContrasena))
+                    {
+                        Assert.True(cliente.Usuario.VerificarContrasena(nuevaContrasena),
+                            "Password hash verification failed.");
+                    }
+                    else
+                    {
+                        Assert.Null(cliente.Usuario.Contrasena);
+                    }
+
                     break;
                 case "ActualizarContrasena":
 #pragma warning disable CS8604 // Possible null reference argument
                     cliente.Usuario.ActualizarContrasena(contrasenaNueva: nuevaContrasena!,
                         confirmacionContrasenaNueva: confirmacionNuevaContrasena!, contrasenaActual: contrasenaActual,
                         modificationUser: Guid.NewGuid());
-                    Assert.Equal(expected: nuevaContrasena, actual: cliente.Usuario.Contrasena);
+                    if (!string.IsNullOrEmpty(nuevaContrasena))
+                    {
+                        Assert.True(cliente.Usuario.VerificarContrasena(nuevaContrasena),
+                            "Password hash verification failed.");
+                    }
+                    else
+                    {
+                        Assert.Null(cliente.Usuario.Contrasena);
+                    }
+
                     break;
                 case "ActualizarTelefono":
                     cliente.Usuario.ActualizarTelefono(codigoPais: codigoPais!, telefono: telefono!,

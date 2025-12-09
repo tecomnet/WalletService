@@ -24,8 +24,8 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
             .FirstOrDefaultAsync(predicate: u => u.CorreoElectronico == login || u.Telefono == login);
 
         // Verifica si el usuario existe y si la contraseña es correcta.
-        // ¡ADVERTENCIA! En producción, las contraseñas deben ser hasheadas y verificadas de forma segura.
-        if (usuario == null || usuario.Contrasena != password)
+        // Se utiliza el método VerificarContrasena que usa BCrypt internamente.
+        if (usuario == null || !usuario.VerificarContrasena(password))
         {
             return new AuthResultDto
             {
@@ -38,7 +38,8 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
         var claims = new List<Claim>
         {
             new Claim(type: ClaimTypes.Name, value: usuario.Id.ToString()), // El Id del usuario como nombre.
-            new Claim(type: ClaimTypes.Email, value: usuario.CorreoElectronico ?? ""), // Correo electrónico del usuario.
+            new Claim(type: ClaimTypes.Email,
+                value: usuario.CorreoElectronico ?? ""), // Correo electrónico del usuario.
             new Claim(type: ClaimTypes.MobilePhone, value: usuario.Telefono) // Número de teléfono del usuario.
         };
 
@@ -49,7 +50,8 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
         // Actualiza el token de refresco del usuario en la base de datos.
         // La fecha de expiración se establece para 7 días en el futuro.
         // 'modificationUser' se establece como Guid.Empty ya que es una acción del sistema o del propio usuario.
-        usuario.UpdateRefreshToken(refreshToken: refreshToken, expiryTime: DateTime.UtcNow.AddDays(value: 7), modificationUser: Guid.Empty);
+        usuario.UpdateRefreshToken(refreshToken: refreshToken, expiryTime: DateTime.UtcNow.AddDays(value: 7),
+            modificationUser: Guid.Empty);
 
         // Guarda los cambios en la base de datos.
         await context.SaveChangesAsync();
@@ -99,7 +101,8 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
         var newRefreshToken = tokenService.GenerateRefreshToken();
 
         // Actualiza el token de refresco del usuario en la base de datos con el nuevo token y su nueva fecha de expiración.
-        usuario.UpdateRefreshToken(refreshToken: newRefreshToken, expiryTime: DateTime.UtcNow.AddDays(value: 7), modificationUser: Guid.Empty);
+        usuario.UpdateRefreshToken(refreshToken: newRefreshToken, expiryTime: DateTime.UtcNow.AddDays(value: 7),
+            modificationUser: Guid.Empty);
         await context.SaveChangesAsync();
 
         return new AuthResultDto
@@ -125,7 +128,8 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
             if (usuario != null)
             {
                 // Revoca el token de refresco estableciéndolo como vacío y la fecha de expiración al mínimo.
-                usuario.UpdateRefreshToken(refreshToken: string.Empty, expiryTime: DateTime.MinValue, modificationUser: Guid.Empty);
+                usuario.UpdateRefreshToken(refreshToken: string.Empty, expiryTime: DateTime.MinValue,
+                    modificationUser: Guid.Empty);
                 await context.SaveChangesAsync(); // Guarda los cambios en la base de datos.
             }
         }
