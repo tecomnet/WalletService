@@ -112,8 +112,8 @@ namespace Wallet.DOM.Modelos
         /// <param name="urlIcono">El ícono del producto.</param>
         /// <param name="categoria">La categoría del producto.</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
-        internal Producto(Proveedor proveedor, string sku, string nombre, decimal precio, string? urlIcono,
-            string? categoria,
+        internal Producto(Proveedor proveedor, string sku, string nombre, string urlIcono,
+            string categoria, decimal? precio, 
             Guid creationUser) : base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
@@ -131,9 +131,9 @@ namespace Wallet.DOM.Modelos
             ProveedorId = proveedor.Id;
             Sku = sku;
             Nombre = nombre;
-            Precio = precio;
             UrlIcono = urlIcono;
             Categoria = categoria;
+            Precio = precio;
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Wallet.DOM.Modelos
         /// <param name="urlIcono">El nuevo ícono.</param>
         /// <param name="categoria">La nueva categoría.</param>
         /// <param name="modificationUser">El usuario que modifica el registro.</param>
-        public void Update(string sku, string nombre, decimal precio, string? urlIcono, string? categoria,
+        public void Update(string sku, string nombre, string urlIcono, string categoria, decimal? precio,
             Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
@@ -161,9 +161,9 @@ namespace Wallet.DOM.Modelos
 
             Sku = sku;
             Nombre = nombre;
-            Precio = precio;
             UrlIcono = urlIcono;
             Categoria = categoria;
+            Precio = precio;
             base.Update(modificationUser: modificationUser);
         }
     }

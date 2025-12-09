@@ -117,7 +117,7 @@ namespace Wallet.DOM.Modelos
         /// <param name="categoria">La categoría del producto.</param>
         /// <param name="creationUser">El identificador del usuario que crea el producto.</param>
         /// <returns>El objeto <see cref="Producto"/> recién creado y agregado a la colección.</returns>
-        public Producto AgregarProducto(string sku, string nombre, decimal precio, string icono, string categoria,
+        public Producto AgregarProducto(string sku, string nombre, decimal? precio, string icono, string categoria,
             Guid creationUser)
         {
             var producto = new Producto(proveedor: this, sku: sku, nombre: nombre, precio: precio, urlIcono: icono,

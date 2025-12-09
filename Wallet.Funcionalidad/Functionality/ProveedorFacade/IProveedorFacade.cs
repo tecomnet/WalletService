@@ -67,7 +67,7 @@ public interface IProveedorFacade
     /// <param name="categoria">La categoría del producto.</param>
     /// <param name="creationUser">El identificador del usuario que crea el producto.</param>
     /// <returns>El objeto <see cref="Producto"/> guardado.</returns>
-    Task<Producto> GuardarProductoAsync(int proveedorId, string sku, string nombre, decimal precio, string icono,
+    Task<Producto> GuardarProductoAsync(int proveedorId, string sku, string nombre, decimal? precio, string icono,
         string categoria, Guid creationUser);
 
     /// <summary>
@@ -95,7 +95,7 @@ public interface IProveedorFacade
     /// <param name="categoria">La nueva categoría del producto.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <returns>El objeto <see cref="Producto"/> actualizado.</returns>
-    Task<Producto> ActualizarProductoAsync(int idProducto, string sku, string nombre, decimal precio, string icono,
+    Task<Producto> ActualizarProductoAsync(int idProducto, string sku, string nombre, decimal? precio, string icono,
         string categoria, Guid modificationUser);
 
     /// <summary>

@@ -48,22 +48,13 @@ namespace Wallet.RestAPI.Models
         public decimal? Precio { get; set; }
 
         /// <summary>
-        /// Gets or Sets Descripcion
+        /// Gets or Sets UrlIcono
         /// </summary>
         [Required]
 
         [MaxLength(255)]
-        [DataMember(Name="descripcion")]
-        public string Descripcion { get; set; }
-
-        /// <summary>
-        /// Gets or Sets UrlIcon
-        /// </summary>
-        [Required]
-
-        [MaxLength(255)]
-        [DataMember(Name="urlIcon")]
-        public string UrlIcon { get; set; }
+        [DataMember(Name="urlIcono")]
+        public string UrlIcono { get; set; }
 
         /// <summary>
         /// Gets or Sets Categoria
@@ -84,8 +75,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  Sku: ").Append(Sku).Append("\n");
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
             sb.Append("  Precio: ").Append(Precio).Append("\n");
-            sb.Append("  Descripcion: ").Append(Descripcion).Append("\n");
-            sb.Append("  UrlIcon: ").Append(UrlIcon).Append("\n");
+            sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
             sb.Append("  Categoria: ").Append(Categoria).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -139,14 +129,9 @@ namespace Wallet.RestAPI.Models
                     Precio.Equals(other.Precio)
                 ) && 
                 (
-                    Descripcion == other.Descripcion ||
-                    Descripcion != null &&
-                    Descripcion.Equals(other.Descripcion)
-                ) && 
-                (
-                    UrlIcon == other.UrlIcon ||
-                    UrlIcon != null &&
-                    UrlIcon.Equals(other.UrlIcon)
+                    UrlIcono == other.UrlIcono ||
+                    UrlIcono != null &&
+                    UrlIcono.Equals(other.UrlIcono)
                 ) && 
                 (
                     Categoria == other.Categoria ||
@@ -171,10 +156,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
                     if (Precio != null)
                     hashCode = hashCode * 59 + Precio.GetHashCode();
-                    if (Descripcion != null)
-                    hashCode = hashCode * 59 + Descripcion.GetHashCode();
-                    if (UrlIcon != null)
-                    hashCode = hashCode * 59 + UrlIcon.GetHashCode();
+                    if (UrlIcono != null)
+                    hashCode = hashCode * 59 + UrlIcono.GetHashCode();
                     if (Categoria != null)
                     hashCode = hashCode * 59 + Categoria.GetHashCode();
                 return hashCode;

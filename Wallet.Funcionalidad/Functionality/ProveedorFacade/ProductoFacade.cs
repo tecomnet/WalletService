@@ -16,7 +16,7 @@ public partial class ProveedorFacade : IProveedorFacade
 
     /// <inheritdoc />
     public async Task<Producto> GuardarProductoAsync(int proveedorId, string sku, string nombre,
-        decimal precio, string icono, string categoria, Guid creationUser)
+        decimal? precio, string icono, string categoria, Guid creationUser)
     {
         try
         {
@@ -93,7 +93,7 @@ public partial class ProveedorFacade : IProveedorFacade
 
     /// <inheritdoc />
     public async Task<Producto> ActualizarProductoAsync(int idProducto, string sku, string nombre,
-        decimal precio, string icono, string categoria, Guid modificationUser)
+        decimal? precio, string icono, string categoria, Guid modificationUser)
     {
         try
         {

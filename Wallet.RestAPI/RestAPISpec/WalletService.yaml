@@ -2703,9 +2703,6 @@ components:
           type: number
           x-stoplight:
             id: kd6k5ve4v14ly
-        descripcion:
-          type: string
-          maxLength: 255
         urlIcon:
           type: string
           x-stoplight:
@@ -2735,6 +2732,11 @@ components:
         - categoria
         - precio
         - urlIcon
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
         - isActive
     ProductoRequest:
       title: ProductoRequest
@@ -2751,9 +2753,6 @@ components:
           type: number
           x-stoplight:
             id: 4d54deghg8un9
-        descripcion:
-          type: string
-          maxLength: 255
         urlIcono:
           type: string
           maxLength: 255
@@ -2764,7 +2763,6 @@ components:
       required:
         - sku
         - nombre
-        - descripcion
         - urlIcono
         - categoria
     ConfirmacionRequest:
