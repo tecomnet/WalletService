@@ -85,14 +85,16 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Ícono del producto.
         /// </summary>
+        [Required]
         [MaxLength(length: 255)]
-        public string? UrlIcono { get; private set; }
+        public string UrlIcono { get; private set; }
 
         /// <summary>
         /// Categoría del producto.
         /// </summary>
+        [Required]
         [MaxLength(length: 100)]
-        public string? Categoria { get; private set; }
+        public string Categoria { get; private set; }
 
         /// <summary>
         /// Constructor privado para uso de Entity Framework.

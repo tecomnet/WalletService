@@ -19,6 +19,11 @@ namespace Wallet.DOM.Modelos
                 propertyName: nameof(Nombre),
                 isRequired: true,
                 maximumLength: 100,
+                minimumLength: 1),
+            PropertyConstraint.StringPropertyConstraint(
+                propertyName: nameof(UrlIcono),
+                isRequired: true,
+                maximumLength: 255,
                 minimumLength: 1)
         ];
 
@@ -76,6 +81,7 @@ namespace Wallet.DOM.Modelos
             }
 
             Nombre = nombre;
+            UrlIcono = urlIcono;
             Broker = broker;
             BrokerId = broker.Id;
             Productos = new HashSet<Producto>();
@@ -96,7 +102,7 @@ namespace Wallet.DOM.Modelos
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
             }
-
+            UrlIcono = urlIcono;
             Nombre = nombre;
             base.Update(modificationUser: modificationUser);
         }
