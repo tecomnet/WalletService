@@ -58,16 +58,11 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
         }
 
-        if (body.Precio == null)
-        {
-            throw new ArgumentNullException(nameof(body.Precio), "El Precio es requerido.");
-        }
-
         var producto = await proveedorFacade.GuardarProductoAsync(
             proveedorId: idProveedor.Value,
             sku: body.Sku,
             nombre: body.Nombre,
-            precio: body.Precio.Value,
+            precio: body.Precio.GetValueOrDefault(),
             icono: body.UrlIcon,
             categoria: body.Categoria.ToString(),
             creationUser: Guid.Empty);
@@ -97,16 +92,11 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
         }
 
-        if (body.Precio == null)
-        {
-            throw new ArgumentNullException(nameof(body.Precio), "El Precio es requerido.");
-        }
-
         var producto = await proveedorFacade.ActualizarProductoAsync(
             idProducto: idProducto.Value,
             sku: body.Sku,
             nombre: body.Nombre,
-            precio: body.Precio.Value,
+            precio: body.Precio.GetValueOrDefault(),
             icono: body.UrlIcon,
             categoria: body.Categoria.ToString(),
             modificationUser: Guid.Empty);

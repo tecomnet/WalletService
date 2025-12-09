@@ -2754,7 +2754,7 @@ components:
         descripcion:
           type: string
           maxLength: 255
-        urlIcon:
+        urlIcono:
           type: string
           maxLength: 255
           x-stoplight:
@@ -2765,7 +2765,7 @@ components:
         - sku
         - nombre
         - descripcion
-        - urlIcon
+        - urlIcono
         - categoria
     ConfirmacionRequest:
       title: ConfirmacionRequest

@@ -27,9 +27,9 @@ namespace Wallet.DOM.Modelos
                 minimumLength: 1),
             PropertyConstraint.DecimalPropertyConstraint(
                 propertyName: nameof(Precio),
-                isRequired: true,
+                isRequired: false,
                 allowNegative: false,
-                allowZero: false,
+                allowZero: true,
                 allowPositive: true,
                 allowedDecimals: 2),
             PropertyConstraint.StringPropertyConstraint(
@@ -78,9 +78,8 @@ namespace Wallet.DOM.Modelos
         /// <summary>
         /// Precio del producto.
         /// </summary>
-        [Required]
         [Column(TypeName = "decimal(19, 2)")]
-        public decimal Precio { get; private set; }
+        public decimal? Precio { get; private set; }
 
         /// <summary>
         /// Ícono del producto.
