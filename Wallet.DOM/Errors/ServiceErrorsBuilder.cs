@@ -491,9 +491,15 @@ public class ServiceErrorsBuilder
 
     /// <summary>Error: El proveedor de servicio no fue encontrado.</summary>
     public const string ProveedorNoEncontrado = "PROVEEDOR-NOT-FOUND";
+    public const string ProveedorExistente = "PROVEEDOR-EXISTENTE";
+    public const string ProveedorInactivo = "PROVEEDOR-INACTIVO";
+    
 
     /// <summary>Error: El producto del proveedor no fue encontrado.</summary>
     public const string ProductoNoEncontrado = "PRODUCTO-NOT-FOUND";
+    public const string ProductoExistente = "PRODUCTO-EXISTENTE";
+    public const string ProductoInactivo = "PRODUCTO-INACTIVO";
+    
 
     /// <summary>
     /// Carga los errores relacionados con la entidad Proveedor.
@@ -505,11 +511,31 @@ public class ServiceErrorsBuilder
             errorCode: ProveedorNoEncontrado,
             message: "El proveedor de servicio no fue encontrado.",
             description: "El proveedor de servicio con id {0} no existe.");
+        // Error de proveedor existente
+        AddServiceError(
+            errorCode: ProveedorExistente,
+            message: "El proveedor de servicio ya existe.",
+            description: "El proveedor de servicio {0} ya existe.");
+        // Error de proveedor inactivo
+        AddServiceError(
+            errorCode: ProveedorInactivo,
+            message: "El proveedor de servicio no está activo.",
+            description: "El proveedor de servicio {0} no está activo. Primero debe activarlo.");
         // Error de producto del proveedor no encontrado
         AddServiceError(
             errorCode: ProductoNoEncontrado,
             message: "El producto del proveedor de servicio no fue encontrado.",
             description: "El producto del proveedor de servicio con id {0} no existe.");
+        // Error de producto existente
+        AddServiceError(
+            errorCode: ProductoExistente,
+            message: "El producto del proveedor de servicio ya existe.",
+            description: "El producto del proveedor de servicio {0} ya existe.");
+        // Error de producto inactivo
+        AddServiceError(
+            errorCode: ProductoInactivo,
+            message: "El producto del proveedor de servicio no está activo.",
+            description: "El producto del proveedor de servicio {0} no está activo. Primero debe activarlo.");
     }
 
     #endregion

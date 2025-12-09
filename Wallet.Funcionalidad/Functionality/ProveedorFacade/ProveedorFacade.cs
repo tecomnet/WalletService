@@ -10,7 +10,7 @@ namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 /// Fachada para la gestión de proveedores de servicios y sus productos asociados.
 /// Implementa la lógica de negocio para operaciones CRUD sobre proveedores y productos.
 /// </summary>
-public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
+public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
 {
     /// <inheritdoc />
     public async Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, int brokerId, Guid creationUser,
@@ -30,7 +30,7 @@ public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
 
             // Crea una nueva instancia de Proveedor.
             var proveedor = new Proveedor(nombre: nombre, urlIcono: urlIcono, broker: broker, creationUser: creationUser);
-
+            ValidarDuplicidad(nombre: nombre);
             // Agrega el proveedor al contexto.
             await context.Proveedor.AddAsync(entity: proveedor);
 
@@ -86,6 +86,8 @@ public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
         {
             // Obtiene el proveedor existente.
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
+            ValidarIsActive(proveedor: proveedor);
+            ValidarDuplicidad(nombre: nombre, id: idProveedor);
             // Actualiza los datos del proveedor.
             proveedor.Update(nombre: nombre, urlIcono: urlIcono, modificationUser: modificationUser);
 
@@ -161,167 +163,45 @@ public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
                 exception: exception);
         }
     }
+    
+    #region Metodos privados
 
-    /// <inheritdoc />
-    public async Task<Producto> GuardarProductoAsync(int proveedorId, string sku, string nombre,
-        decimal precio, string icono, string categoria, Guid creationUser)
+    /// <summary>
+    /// Valida si ya existe un proveedor con el mismo nombre.
+    /// </summary>
+    /// <param name="nombre">Nombre de el proveedor a validar.</param>
+    /// <param name="id">ID de el proveedor (opcional, para excluir en actualizaciones).</param>
+    /// <exception cref="EMGeneralAggregateException">Si ya existe un proveedor con ese nombre.</exception>
+    private void ValidarDuplicidad(string nombre, int id = 0)
     {
-        try
+        // Obtiene estado existente
+        var existe = context.Proveedor.FirstOrDefault(predicate: x => x.Nombre == nombre && x.Id != id);
+        // Duplicado por nombre
+        if (existe != null)
         {
-            // Obtiene el proveedor al que se asociará el producto.
-            var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: proveedorId);
-            // Agrega el nuevo producto al proveedor.
-            var producto = proveedor.AgregarProducto(sku: sku, nombre: nombre, precio: precio, icono: icono,
-                categoria: categoria, creationUser: creationUser);
-
-            // Guarda los cambios.
-            await context.SaveChangesAsync();
-            return producto;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ProveedorExistente,
+                dynamicContent: [nombre],
+                module: this.GetType().Name));
         }
     }
 
-    /// <inheritdoc />
-    public async Task<Producto> ObtenerProductoPorIdAsync(int idProducto)
+    /// <summary>
+    /// Valida si el proveedor se encuentra activa.
+    /// </summary>
+    /// <param name="proveedor">La proveedor a validar.</param>
+    /// <exception cref="EMGeneralAggregateException">Si el proveedor está inactiva.</exception>
+    private void ValidarIsActive(Proveedor proveedor)
     {
-        try
+        if (!proveedor.IsActive)
         {
-            // Busca el producto por su ID.
-            var producto = await context.Producto
-                .FirstOrDefaultAsync(predicate: x => x.Id == idProducto);
-
-            // Si no se encuentra, lanza una excepción.
-            if (producto == null)
-            {
-                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.ProductoNoEncontrado,
-                    dynamicContent: [idProducto],
-                    module: this.GetType().Name));
-            }
-
-            return producto;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ProveedorInactivo,
+                dynamicContent: [proveedor.Nombre]));
         }
     }
 
-    /// <inheritdoc />
-    public async Task<List<Producto>> ObtenerProductosPorProveedorAsync(int proveedorId)
-    {
-        try
-        {
-            // Verifica que el proveedor exista.
-            await ObtenerProveedorPorIdAsync(idProveedor: proveedorId);
-
-            // Retorna los productos asociados al proveedor.
-            return await context.Producto
-                .Where(predicate: x => x.ProveedorId == proveedorId)
-                .ToListAsync();
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<Producto> ActualizarProductoAsync(int idProducto, string sku, string nombre,
-        decimal precio, string icono, string categoria, Guid modificationUser)
-    {
-        try
-        {
-            // Obtiene el producto existente.
-            var producto = await ObtenerProductoPorIdAsync(idProducto: idProducto);
-            // Actualiza los datos del producto.
-            producto.Update(sku: sku, nombre: nombre, precio: precio, urlIcono: icono, categoria: categoria,
-                modificationUser: modificationUser);
-
-            // Guarda los cambios.
-            await context.SaveChangesAsync();
-            return producto;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<Producto> EliminarProductoAsync(int idProducto, Guid modificationUser)
-    {
-        try
-        {
-            // Obtiene el producto existente.
-            var producto = await ObtenerProductoPorIdAsync(idProducto: idProducto);
-            // Desactiva el producto.
-            producto.Deactivate(modificationUser: modificationUser);
-
-            // Guarda los cambios.
-            await context.SaveChangesAsync();
-            return producto;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<Producto> ActivarProductoAsync(int idProducto, Guid modificationUser)
-    {
-        try
-        {
-            // Obtiene el producto existente.
-            var producto = await ObtenerProductoPorIdAsync(idProducto: idProducto);
-            // Activa el producto.
-            producto.Activate(modificationUser: modificationUser);
-
-            // Guarda los cambios.
-            await context.SaveChangesAsync();
-            return producto;
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task<List<Producto>> ObtenerProductosAsync()
-    {
-        try
-        {
-            return await context.Producto.ToListAsync();
-        }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
-        {
-            throw GenericExceptionManager.GetAggregateException(
-                serviceName: DomCommon.ServiceName,
-                module: this.GetType().Name,
-                exception: exception);
-        }
-    }
+    #endregion
+    
+    
 }

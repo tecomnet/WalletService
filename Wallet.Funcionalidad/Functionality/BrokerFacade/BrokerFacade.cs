@@ -90,8 +90,9 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
             try
             {
                 var broker = await ObtenerBrokerPorIdAsync(idBroker);
-                ValidarDuplicidad(nombre, broker.Id);
+                
                 ValidarIsActive(broker: broker);
+                ValidarDuplicidad(nombre, broker.Id);
                 broker.Update(nombre, modificationUser);
                 await _context.SaveChangesAsync();
                 return broker;
