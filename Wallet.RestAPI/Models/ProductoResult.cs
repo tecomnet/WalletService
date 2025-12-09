@@ -73,12 +73,12 @@ namespace Wallet.RestAPI.Models
         public decimal? Precio { get; set; }
 
         /// <summary>
-        /// Gets or Sets UrlIcon
+        /// Gets or Sets UrlIcono
         /// </summary>
         [Required]
 
-        [DataMember(Name="urlIcon")]
-        public string UrlIcon { get; set; }
+        [DataMember(Name="urlIcono")]
+        public string UrlIcono { get; set; }
 
         /// <summary>
         /// Gets or Sets Guid
@@ -142,7 +142,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
             sb.Append("  Categoria: ").Append(Categoria).Append("\n");
             sb.Append("  Precio: ").Append(Precio).Append("\n");
-            sb.Append("  UrlIcon: ").Append(UrlIcon).Append("\n");
+            sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
             sb.Append("  Guid: ").Append(Guid).Append("\n");
             sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
             sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
@@ -216,9 +216,9 @@ namespace Wallet.RestAPI.Models
                     Precio.Equals(other.Precio)
                 ) && 
                 (
-                    UrlIcon == other.UrlIcon ||
-                    UrlIcon != null &&
-                    UrlIcon.Equals(other.UrlIcon)
+                    UrlIcono == other.UrlIcono ||
+                    UrlIcono != null &&
+                    UrlIcono.Equals(other.UrlIcono)
                 ) && 
                 (
                     Guid == other.Guid ||
@@ -274,8 +274,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Categoria.GetHashCode();
                     if (Precio != null)
                     hashCode = hashCode * 59 + Precio.GetHashCode();
-                    if (UrlIcon != null)
-                    hashCode = hashCode * 59 + UrlIcon.GetHashCode();
+                    if (UrlIcono != null)
+                    hashCode = hashCode * 59 + UrlIcono.GetHashCode();
                     if (Guid != null)
                     hashCode = hashCode * 59 + Guid.GetHashCode();
                     if (CreationTimestamp != null)
