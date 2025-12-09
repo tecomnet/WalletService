@@ -48,14 +48,6 @@ namespace Wallet.RestAPI.Models
         public string UrlIcono { get; set; }
 
         /// <summary>
-        /// Gets or Sets Categoria
-        /// </summary>
-        [Required]
-
-        [DataMember(Name="categoria")]
-        public CategoriaEnum Categoria { get; set; }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -66,7 +58,6 @@ namespace Wallet.RestAPI.Models
             sb.Append("  BrokerId: ").Append(BrokerId).Append("\n");
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
             sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
-            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -117,11 +108,6 @@ namespace Wallet.RestAPI.Models
                     UrlIcono == other.UrlIcono ||
                     UrlIcono != null &&
                     UrlIcono.Equals(other.UrlIcono)
-                ) && 
-                (
-                    Categoria == other.Categoria ||
-                    Categoria != null &&
-                    Categoria.Equals(other.Categoria)
                 );
         }
 
@@ -141,8 +127,6 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
                     if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
-                    if (Categoria != null)
-                    hashCode = hashCode * 59 + Categoria.GetHashCode();
                 return hashCode;
             }
         }

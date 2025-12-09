@@ -57,6 +57,23 @@ namespace Wallet.RestAPI.Models
         public string Descripcion { get; set; }
 
         /// <summary>
+        /// Gets or Sets UrlIcon
+        /// </summary>
+        [Required]
+
+        [MaxLength(255)]
+        [DataMember(Name="urlIcon")]
+        public string UrlIcon { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Categoria
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="categoria")]
+        public CategoriaEnum Categoria { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -68,6 +85,8 @@ namespace Wallet.RestAPI.Models
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
             sb.Append("  Precio: ").Append(Precio).Append("\n");
             sb.Append("  Descripcion: ").Append(Descripcion).Append("\n");
+            sb.Append("  UrlIcon: ").Append(UrlIcon).Append("\n");
+            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -123,6 +142,16 @@ namespace Wallet.RestAPI.Models
                     Descripcion == other.Descripcion ||
                     Descripcion != null &&
                     Descripcion.Equals(other.Descripcion)
+                ) && 
+                (
+                    UrlIcon == other.UrlIcon ||
+                    UrlIcon != null &&
+                    UrlIcon.Equals(other.UrlIcon)
+                ) && 
+                (
+                    Categoria == other.Categoria ||
+                    Categoria != null &&
+                    Categoria.Equals(other.Categoria)
                 );
         }
 
@@ -144,6 +173,10 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Precio.GetHashCode();
                     if (Descripcion != null)
                     hashCode = hashCode * 59 + Descripcion.GetHashCode();
+                    if (UrlIcon != null)
+                    hashCode = hashCode * 59 + UrlIcon.GetHashCode();
+                    if (Categoria != null)
+                    hashCode = hashCode * 59 + Categoria.GetHashCode();
                 return hashCode;
             }
         }

@@ -57,12 +57,20 @@ namespace Wallet.RestAPI.Models
         public string Nombre { get; set; }
 
         /// <summary>
-        /// Gets or Sets Monto
+        /// Gets or Sets Categoria
         /// </summary>
         [Required]
 
-        [DataMember(Name="monto")]
-        public double? Monto { get; set; }
+        [DataMember(Name="categoria")]
+        public CategoriaEnum Categoria { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Precio
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="precio")]
+        public double? Precio { get; set; }
 
         /// <summary>
         /// Gets or Sets Descripcion
@@ -71,6 +79,49 @@ namespace Wallet.RestAPI.Models
         [MaxLength(255)]
         [DataMember(Name="descripcion")]
         public string Descripcion { get; set; }
+
+        /// <summary>
+        /// Gets or Sets UrlIcon
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="urlIcon")]
+        public string UrlIcon { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Guid
+        /// </summary>
+
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
+
+        /// <summary>
+        /// Gets or Sets CreationTimestamp
+        /// </summary>
+
+        [DataMember(Name="creationTimestamp")]
+        public DateTime? CreationTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ModificationTimestamp
+        /// </summary>
+
+        [DataMember(Name="modificationTimestamp")]
+        public DateTime? ModificationTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or Sets CreationUser
+        /// </summary>
+
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ModificationUser
+        /// </summary>
+
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
 
         /// <summary>
         /// Gets or Sets IsActive
@@ -92,8 +143,15 @@ namespace Wallet.RestAPI.Models
             sb.Append("  ProveedorId: ").Append(ProveedorId).Append("\n");
             sb.Append("  Sku: ").Append(Sku).Append("\n");
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
-            sb.Append("  Monto: ").Append(Monto).Append("\n");
+            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
+            sb.Append("  Precio: ").Append(Precio).Append("\n");
             sb.Append("  Descripcion: ").Append(Descripcion).Append("\n");
+            sb.Append("  UrlIcon: ").Append(UrlIcon).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
             sb.Append("  IsActive: ").Append(IsActive).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -152,14 +210,49 @@ namespace Wallet.RestAPI.Models
                     Nombre.Equals(other.Nombre)
                 ) && 
                 (
-                    Monto == other.Monto ||
-                    Monto != null &&
-                    Monto.Equals(other.Monto)
+                    Categoria == other.Categoria ||
+                    Categoria != null &&
+                    Categoria.Equals(other.Categoria)
+                ) && 
+                (
+                    Precio == other.Precio ||
+                    Precio != null &&
+                    Precio.Equals(other.Precio)
                 ) && 
                 (
                     Descripcion == other.Descripcion ||
                     Descripcion != null &&
                     Descripcion.Equals(other.Descripcion)
+                ) && 
+                (
+                    UrlIcon == other.UrlIcon ||
+                    UrlIcon != null &&
+                    UrlIcon.Equals(other.UrlIcon)
+                ) && 
+                (
+                    Guid == other.Guid ||
+                    Guid != null &&
+                    Guid.Equals(other.Guid)
+                ) && 
+                (
+                    CreationTimestamp == other.CreationTimestamp ||
+                    CreationTimestamp != null &&
+                    CreationTimestamp.Equals(other.CreationTimestamp)
+                ) && 
+                (
+                    ModificationTimestamp == other.ModificationTimestamp ||
+                    ModificationTimestamp != null &&
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
                 ) && 
                 (
                     IsActive == other.IsActive ||
@@ -186,10 +279,24 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Sku.GetHashCode();
                     if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                    if (Monto != null)
-                    hashCode = hashCode * 59 + Monto.GetHashCode();
+                    if (Categoria != null)
+                    hashCode = hashCode * 59 + Categoria.GetHashCode();
+                    if (Precio != null)
+                    hashCode = hashCode * 59 + Precio.GetHashCode();
                     if (Descripcion != null)
                     hashCode = hashCode * 59 + Descripcion.GetHashCode();
+                    if (UrlIcon != null)
+                    hashCode = hashCode * 59 + UrlIcon.GetHashCode();
+                    if (Guid != null)
+                    hashCode = hashCode * 59 + Guid.GetHashCode();
+                    if (CreationTimestamp != null)
+                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
+                    if (ModificationTimestamp != null)
+                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
                     if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;

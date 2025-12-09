@@ -64,6 +64,7 @@ namespace Wallet.RestAPI.Models
         /// <summary>
         /// Gets or Sets CreationUser
         /// </summary>
+        [Required]
 
         [DataMember(Name="creationUser")]
         public Guid? CreationUser { get; set; }
@@ -71,6 +72,7 @@ namespace Wallet.RestAPI.Models
         /// <summary>
         /// Gets or Sets ModificationUser
         /// </summary>
+        [Required]
 
         [DataMember(Name="modificationUser")]
         public Guid? ModificationUser { get; set; }
@@ -78,6 +80,7 @@ namespace Wallet.RestAPI.Models
         /// <summary>
         /// Gets or Sets CreationTimestamp
         /// </summary>
+        [Required]
 
         [DataMember(Name="creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
@@ -85,9 +88,18 @@ namespace Wallet.RestAPI.Models
         /// <summary>
         /// Gets or Sets ModificationTimestamp
         /// </summary>
+        [Required]
 
         [DataMember(Name="modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or Sets IsActive
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="isActive")]
+        public bool? IsActive { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -106,6 +118,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
             sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
             sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -186,6 +199,11 @@ namespace Wallet.RestAPI.Models
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
                     ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    IsActive == other.IsActive ||
+                    IsActive != null &&
+                    IsActive.Equals(other.IsActive)
                 );
         }
 
@@ -217,6 +235,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
                     if (ModificationTimestamp != null)
                     hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (IsActive != null)
+                    hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;
             }
         }

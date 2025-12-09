@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// 
+    /// Estructura para resultado de autenticacion
     /// </summary>
     [DataContract]
     public partial class AuthResult : IEquatable<AuthResult>

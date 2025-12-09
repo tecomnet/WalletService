@@ -63,6 +63,46 @@ namespace Wallet.RestAPI.Models
         public DateTime? FechaAceptacion { get; set; }
 
         /// <summary>
+        /// Gets or Sets Guid
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
+
+        /// <summary>
+        /// Gets or Sets CreationTimestamp
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="creationTimestamp")]
+        public DateTime? CreationTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ModificationTimestamp
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="modificationTimestamp")]
+        public DateTime? ModificationTimestamp { get; set; }
+
+        /// <summary>
+        /// Gets or Sets CreationUser
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ModificationUser
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
+
+        /// <summary>
         /// Gets or Sets IsActive
         /// </summary>
         [Required]
@@ -83,6 +123,11 @@ namespace Wallet.RestAPI.Models
             sb.Append("  TipoDocumento: ").Append(TipoDocumento).Append("\n");
             sb.Append("  Version: ").Append(Version).Append("\n");
             sb.Append("  FechaAceptacion: ").Append(FechaAceptacion).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
             sb.Append("  IsActive: ").Append(IsActive).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -146,6 +191,31 @@ namespace Wallet.RestAPI.Models
                     FechaAceptacion.Equals(other.FechaAceptacion)
                 ) && 
                 (
+                    Guid == other.Guid ||
+                    Guid != null &&
+                    Guid.Equals(other.Guid)
+                ) && 
+                (
+                    CreationTimestamp == other.CreationTimestamp ||
+                    CreationTimestamp != null &&
+                    CreationTimestamp.Equals(other.CreationTimestamp)
+                ) && 
+                (
+                    ModificationTimestamp == other.ModificationTimestamp ||
+                    ModificationTimestamp != null &&
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
+                ) && 
+                (
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other.IsActive)
@@ -172,6 +242,16 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Version.GetHashCode();
                     if (FechaAceptacion != null)
                     hashCode = hashCode * 59 + FechaAceptacion.GetHashCode();
+                    if (Guid != null)
+                    hashCode = hashCode * 59 + Guid.GetHashCode();
+                    if (CreationTimestamp != null)
+                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
+                    if (ModificationTimestamp != null)
+                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
                     if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;
