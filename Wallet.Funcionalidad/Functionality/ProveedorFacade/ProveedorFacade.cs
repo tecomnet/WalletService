@@ -30,7 +30,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
 
             // Crea una nueva instancia de Proveedor.
             var proveedor = new Proveedor(nombre: nombre, urlIcono: urlIcono, broker: broker, creationUser: creationUser);
-            ValidarDuplicidad(nombre: nombre);
+            ValidarProveedorDuplicado(nombre: nombre);
             // Agrega el proveedor al contexto.
             await context.Proveedor.AddAsync(entity: proveedor);
 
@@ -86,8 +86,8 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
         {
             // Obtiene el proveedor existente.
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
-            ValidarIsActive(proveedor: proveedor);
-            ValidarDuplicidad(nombre: nombre, id: idProveedor);
+            ValidarProveedorIsActive(proveedor: proveedor);
+            ValidarProveedorDuplicado(nombre: nombre, id: idProveedor);
             // Actualiza los datos del proveedor.
             proveedor.Update(nombre: nombre, urlIcono: urlIcono, modificationUser: modificationUser);
 
@@ -172,7 +172,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     /// <param name="nombre">Nombre de el proveedor a validar.</param>
     /// <param name="id">ID de el proveedor (opcional, para excluir en actualizaciones).</param>
     /// <exception cref="EMGeneralAggregateException">Si ya existe un proveedor con ese nombre.</exception>
-    private void ValidarDuplicidad(string nombre, int id = 0)
+    private void ValidarProveedorDuplicado(string nombre, int id = 0)
     {
         // Obtiene estado existente
         var existe = context.Proveedor.FirstOrDefault(predicate: x => x.Nombre == nombre && x.Id != id);
@@ -191,7 +191,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     /// </summary>
     /// <param name="proveedor">La proveedor a validar.</param>
     /// <exception cref="EMGeneralAggregateException">Si el proveedor está inactiva.</exception>
-    private void ValidarIsActive(Proveedor proveedor)
+    private void ValidarProveedorIsActive(Proveedor proveedor)
     {
         if (!proveedor.IsActive)
         {

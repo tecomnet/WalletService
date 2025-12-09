@@ -24,7 +24,7 @@ public partial class ProveedorFacade : IProveedorFacade
             var producto = proveedor.AgregarProducto(sku: sku, nombre: nombre, precio: precio, icono: icono,
                 categoria: categoria, creationUser: creationUser);
             // Valida duplicidad
-            ValidarProductoDuplicidad(nombre: nombre, idProveedor: proveedorId, id: producto.Id);
+            ValidarProductoDuplicado(nombre: nombre, idProveedor: proveedorId, id: producto.Id);
             // Guarda los cambios.
             await context.SaveChangesAsync();
             return producto;
@@ -100,7 +100,7 @@ public partial class ProveedorFacade : IProveedorFacade
             // Valida que el producto no esté inactivo.
             ValidarProductoIsActive(producto: producto);
             // Valida duplicidad
-            ValidarProductoDuplicidad(nombre: nombre, idProveedor: producto.ProveedorId, id: idProducto);
+            ValidarProductoDuplicado(nombre: nombre, idProveedor: producto.ProveedorId, id: idProducto);
             // Actualiza los datos del producto.
             producto.Update(sku: sku, nombre: nombre, precio: precio, urlIcono: icono, categoria: categoria,
                 modificationUser: modificationUser);
@@ -193,8 +193,9 @@ public partial class ProveedorFacade : IProveedorFacade
 
             // Obtiene el nuevo proveedor.
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
+            ValidarProveedorIsActive(proveedor: proveedor);
             // Valida duplicidad en el nuevo proveedor
-            ValidarProductoDuplicidad(nombre: producto.Nombre, idProveedor: idProveedor, id: idProducto);
+            ValidarProductoDuplicado(nombre: producto.Nombre, idProveedor: idProveedor, id: idProducto);
 
             // Asigna el nuevo proveedor.
             producto.AsignarProveedor(proveedor: proveedor, modificationUser: modificationUser);
@@ -222,7 +223,7 @@ public partial class ProveedorFacade : IProveedorFacade
     /// <param name="idProveedor">ID del proveedor al que pertenece el producto.</param>
     /// <param name="id">ID del producto (opcional, para excluir en actualizaciones).</param>
     /// <exception cref="EMGeneralAggregateException">Si ya existe un producto con ese nombre.</exception>
-    private void ValidarProductoDuplicidad(string nombre, int idProveedor, int id = 0)
+    private void ValidarProductoDuplicado(string nombre, int idProveedor, int id = 0)
     {
         // Obtiene estado existente
         var existe =
