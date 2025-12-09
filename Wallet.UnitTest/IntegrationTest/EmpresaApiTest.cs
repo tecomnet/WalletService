@@ -125,7 +125,7 @@ public class EmpresaApiTest : DatabaseTestFixture
             JsonConvert.DeserializeObject<BrokerResult>(await brokerRes.Content.ReadAsStringAsync(), _jsonSettings);
 
         // Proveedor
-        var provReq = new ProveedorRequest { Nombre = "Proveedor For Products", BrokerId = broker.Id };
+        var provReq = new ProveedorRequest { Nombre = "Proveedor For Products", BrokerId = broker.Id , UrlIcono = "https://icon.png" };
         var provRes = await client.PostAsync($"/{ApiVersion}/proveedor", CreateContent(provReq));
         var proveedor =
             JsonConvert.DeserializeObject<ProveedorResult>(await provRes.Content.ReadAsStringAsync(), _jsonSettings);
@@ -137,7 +137,7 @@ public class EmpresaApiTest : DatabaseTestFixture
             Sku = "SKU-LINKED",
             Precio = 100,
             Categoria = CategoriaEnum.MOVILIDADEnum,
-            UrlIcono = "icon.png"
+            UrlIcono = "http://icon.png"
         };
         var prodRes =
             await client.PostAsync($"/{ApiVersion}/proveedor/{proveedor.Id}/producto", CreateContent(prodReq));

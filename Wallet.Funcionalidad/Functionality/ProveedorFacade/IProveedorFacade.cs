@@ -13,7 +13,8 @@ public interface IProveedorFacade
     /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
     /// <param name="testCase">Caso de prueba (opcional).</param>
     /// <returns>El objeto <see cref="Proveedor"/> guardado.</returns>
-    Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, int brokerId, Guid creationUser, string? testCase = null);
+    Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, int brokerId, Guid creationUser,
+        string? testCase = null);
 
     /// <summary>
     /// Obtiene un proveedor por su identificador único.
@@ -119,4 +120,13 @@ public interface IProveedorFacade
     /// </summary>
     /// <returns>Una lista de todos los productos.</returns>
     Task<List<Producto>> ObtenerProductosAsync();
+
+    /// <summary>
+    /// Actualiza el proveedor de un producto.
+    /// </summary>
+    /// <param name="idProducto">El identificador único del producto a actualizar.</param>
+    /// <param name="idProveedor">El identificador único del nuevo proveedor.</param>
+    /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
+    /// <returns>El objeto <see cref="Producto"/> actualizado.</returns>
+    Task<Producto> ActualizarProveedorDeProductoAsync(int idProducto, int idProveedor, Guid modificationUser);
 }

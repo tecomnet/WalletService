@@ -29,7 +29,7 @@ namespace Wallet.DOM.Modelos
                 propertyName: nameof(Precio),
                 isRequired: false,
                 allowNegative: false,
-                allowZero: true,
+                allowZero: false,
                 allowPositive: true,
                 allowedDecimals: 2),
             PropertyConstraint.StringPropertyConstraint(
@@ -113,7 +113,7 @@ namespace Wallet.DOM.Modelos
         /// <param name="categoria">La categoría del producto.</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
         internal Producto(Proveedor proveedor, string sku, string nombre, string urlIcono,
-            string categoria, decimal? precio, 
+            string categoria, decimal? precio,
             Guid creationUser) : base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
@@ -164,6 +164,18 @@ namespace Wallet.DOM.Modelos
             UrlIcono = urlIcono;
             Categoria = categoria;
             Precio = precio;
+            base.Update(modificationUser: modificationUser);
+        }
+
+        /// <summary>
+        /// Asigna un nuevo proveedor al producto.
+        /// </summary>
+        /// <param name="proveedor">El nuevo proveedor.</param>
+        /// <param name="modificationUser">El usuario que modifica el registro.</param>
+        public void AsignarProveedor(Proveedor proveedor, Guid modificationUser)
+        {
+            Proveedor = proveedor;
+            ProveedorId = proveedor.Id;
             base.Update(modificationUser: modificationUser);
         }
     }

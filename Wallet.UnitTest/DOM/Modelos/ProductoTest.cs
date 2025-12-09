@@ -56,7 +56,7 @@ public class ProductoTest : UnitTestTemplate
     ])]
     [InlineData(data:
     [
-        "ERROR: Monto es cero", 1, "SKU-VALID", "Producto Y", 0.00, null, null, false,
+        "ERROR: Monto es cero", 1, "SKU-VALID", "Producto Y", 0, null, null, false,
         new[] { "PROPERTY-VALIDATION-ZERO-INVALID" }
     ])]
     [InlineData(data:

@@ -37,9 +37,12 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         return Ok(value: result);
     }
 
+    /// <inheritdoc />
     public override async Task<IActionResult> GetProductosAsync(string version)
     {
-        throw new NotImplementedException();
+        var productos = await proveedorFacade.ObtenerProductosAsync();
+        var result = mapper.Map<List<ProductoResult>>(source: productos);
+        return Ok(value: result);
     }
 
     /// <inheritdoc />
@@ -62,7 +65,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         {
             throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
         }
-        
+
         var producto = await proveedorFacade.GuardarProductoAsync(
             proveedorId: idProveedor.Value,
             sku: body.Sku,
@@ -89,9 +92,25 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         return Ok(value: mapper.Map<ProductoResult>(source: result));
     }
 
+    /// <inheritdoc />
     public override async Task<IActionResult> PutActualizarProveedorAsync(string version, int? idProducto, int? body)
     {
-        throw new NotImplementedException();
+        if (idProducto == null)
+        {
+            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
+        }
+
+        if (body == null)
+        {
+            throw new ArgumentNullException(nameof(body), "El ID del proveedor es requerido.");
+        }
+
+        var result = await proveedorFacade.ActualizarProveedorDeProductoAsync(
+            idProducto: idProducto.Value,
+            idProveedor: body.Value,
+            modificationUser: Guid.Empty);
+
+        return Ok(value: mapper.Map<ProductoResult>(source: result));
     }
 
     /// <inheritdoc />

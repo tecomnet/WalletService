@@ -13,7 +13,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     // Successfully case
     [InlineData(data:
     [
-        "1. Successfully case, create producto", 1, "SKU123", "Netflix Premium", 15.99, "https://netflix.com/icon.png",
+        "1. Successfully case, create producto", 1, "SKU123", "Netflix Premium Plus", 15.99, "https://netflix.com/icon.png",
         "Streaming", true, new string[] { }
     ])]
     // Wrong cases

@@ -107,6 +107,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         var request = new ProveedorRequest
         {
             Nombre = "Test Provider",
+            UrlIcono = "https://example.com/icon.png",
             BrokerId = 1 // Assuming Broker 1 exists from seed
         };
         var response =

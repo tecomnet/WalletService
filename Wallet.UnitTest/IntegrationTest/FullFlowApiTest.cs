@@ -113,6 +113,7 @@ public class FullFlowApiTest : DatabaseTestFixture
             var request = new ProveedorRequest
             {
                 Nombre = $"Proveedor Test {i}",
+                UrlIcono = $"https://example.com/icon_{i}.png",
                 BrokerId = brokerId
             };
             // Envía la solicitud POST para crear un proveedor.

@@ -90,7 +90,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             _output.WriteLine($"Error in CompletarDatosCliente: {errorContent}");
         }
 
-        Assert.Equal(HttpStatusCode.OK, responseDatos.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.Created, actual: responseDatos.StatusCode);
         var resultDatos = JsonConvert.DeserializeObject<UsuarioResult>(await responseDatos.Content.ReadAsStringAsync());
         Assert.NotNull(resultDatos);
         Assert.Equal(nameof(EstatusRegistroEnum.DatosClienteCompletado), resultDatos.Estatus);
@@ -131,10 +131,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Nombre = "Dispositivo Test",
             Caracteristicas = "Unit Test Specs"
         };
-        var responseBiometricos = await client.PutAsync($"/{version}/registro/{usuarioId}/biometricos",
+        var responseBiometricos = await client.PostAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(biometricosRequest), Encoding.UTF8, "application/json"));
 
-        Assert.Equal(HttpStatusCode.OK, responseBiometricos.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, responseBiometricos.StatusCode);
         var resultBiometricos =
             JsonConvert.DeserializeObject<UsuarioResult>(await responseBiometricos.Content.ReadAsStringAsync());
         Assert.NotNull(resultBiometricos);
@@ -151,7 +151,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         var responseTerminos = await client.PostAsync($"/{version}/registro/{usuarioId}/terminos",
             new StringContent(JsonConvert.SerializeObject(terminosRequest), Encoding.UTF8, "application/json"));
 
-        Assert.Equal(HttpStatusCode.OK, responseTerminos.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, responseTerminos.StatusCode);
         var resultTerminos =
             JsonConvert.DeserializeObject<UsuarioResult>(await responseTerminos.Content.ReadAsStringAsync());
         Assert.NotNull(resultTerminos);
@@ -251,7 +251,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 6. DatosCliente (Again)
         var responseDatos2 = await client.PostAsync($"/{version}/registro/{usuarioId}/datosCliente",
             new StringContent(JsonConvert.SerializeObject(datosClienteRequest), Encoding.UTF8, "application/json"));
-        Assert.Equal(HttpStatusCode.OK, responseDatos2.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, responseDatos2.StatusCode);
 
         // 7. RegistrarCorreo
         var correoRequest = new RegistrarCorreoRequest { Correo = "resume@test.com" };
@@ -272,14 +272,15 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Nombre = "Dispositivo Resume",
             Caracteristicas = "Unit Test Resume"
         };
-        var responseBio = await client.PutAsync($"/{version}/registro/{usuarioId}/biometricos",
+        var responseBio = await client.PostAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(bioRequest), Encoding.UTF8, "application/json"));
 
         // 10. Terminos
         var terminosRequest = new AceptarTerminosRequest
             { Version = "1", AceptoTerminos = true, AceptoPrivacidad = true, AceptoPld = true };
-        await client.PostAsync($"/{version}/registro/{usuarioId}/terminos",
+        var responseTerminos = await client.PostAsync($"/{version}/registro/{usuarioId}/terminos",
             new StringContent(JsonConvert.SerializeObject(terminosRequest), Encoding.UTF8, "application/json"));
+        Assert.Equal(HttpStatusCode.Created, responseTerminos.StatusCode);
 
         // 11. Completar
         var completarRequest = new CompletarRegistroRequest

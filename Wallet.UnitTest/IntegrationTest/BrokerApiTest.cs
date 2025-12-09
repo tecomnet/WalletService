@@ -61,7 +61,7 @@ public class BrokerApiTest : DatabaseTestFixture
         await client.PostAsync($"/{ApiVersion}/broker", CreateContent(request));
 
         // 3. Get List
-        var response = await client.GetAsync($"/{ApiVersion}/brokers");
+        var response = await client.GetAsync($"/{ApiVersion}/broker");
         var content = await response.Content.ReadAsStringAsync();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -114,12 +114,9 @@ public class BrokerApiTest : DatabaseTestFixture
             JsonConvert.DeserializeObject<BrokerResult>(await createResponse.Content.ReadAsStringAsync(),
                 _jsonSettings);
 
-        // 3. Update Broker (Using POST as per Swagger/Controller spec for update usually or maybe PUT? Controller says HttpPost for Update!??)
-        // Checking Controller Implementation: 
-        // [HttpPost] Route("/{version:apiVersion}/broker/{idBroker}") public abstract Task<IActionResult> ActualizarBroker...
-
+        // 3. Update Broker
         var updateRequest = new BrokerRequest { Nombre = "Broker Update Test Updated" };
-        var response = await client.PostAsync($"/{ApiVersion}/broker/{createResult.Id}", CreateContent(updateRequest));
+        var response = await client.PutAsync($"/{ApiVersion}/broker/{createResult.Id}", CreateContent(updateRequest));
         var content = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -148,24 +145,27 @@ public class BrokerApiTest : DatabaseTestFixture
 
         // 3. Delete Broker
         var response = await client.DeleteAsync($"/{ApiVersion}/broker/{createResult.Id}");
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         // 4. Verify Not Found (or deleted)
         var getResponse = await client.GetAsync($"/{ApiVersion}/broker/{createResult.Id}");
-        Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+        
+        var getContent = await getResponse.Content.ReadAsStringAsync();
+        var getResult = JsonConvert.DeserializeObject<BrokerResult>(getContent, _jsonSettings);
+        // If API returns logically deleted object, verify IsActive is false
+        Assert.False(getResult.IsActive, "Broker should be inactive after delete");
     }
 
     [Fact]
     public async Task Test_Get_Broker_Proveedores_Ok()
     {
-        // 1. Auths
+        // 1. Auth
         var (user, token) = await CreateAuthenticatedUserAsync();
         var client = Factory.CreateClient();
         client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
         // 2. Setup Data: Broker & Provider
-        // Using direct context for speed and relationship setup
         int brokerId;
         string providerName = "Provider for Broker Test " + Guid.NewGuid();
 
@@ -176,7 +176,8 @@ public class BrokerApiTest : DatabaseTestFixture
             await context.SaveChangesAsync();
             brokerId = broker.Id;
 
-            var proveedor = new Wallet.DOM.Modelos.Proveedor(providerName, "https://example.com/icon.png", broker, Guid.NewGuid());
+            var proveedor =
+                new Wallet.DOM.Modelos.Proveedor(providerName, "https://example.com/icon.png", broker, Guid.NewGuid());
             context.Proveedor.Add(proveedor);
             await context.SaveChangesAsync();
         }

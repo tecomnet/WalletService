@@ -36,6 +36,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var request = new ProveedorRequest
         {
             Nombre = "Netflix",
+            UrlIcono = "https://netflix.com/icon.png",
             BrokerId = 1
         };
         var content = CreateContent(body: request);
@@ -85,6 +86,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var request = new ProveedorRequest
         {
             Nombre = "Spotify",
+            UrlIcono = "https://spotify.com/icon.png",
             BrokerId = 1
         };
         var createResponse =
@@ -115,6 +117,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var createRequest = new ProveedorRequest
         {
             Nombre = "Amazon",
+            UrlIcono = "https://amazon.com/icon.png",
             BrokerId = 1
         };
         var createResponse = await client.PostAsync(requestUri: $"{API_VERSION}/{API_URI}",
@@ -128,6 +131,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var updateRequest = new ProveedorRequest
         {
             Nombre = "Amazon Prime",
+            UrlIcono = "https://amazon.com/icon.png",
             BrokerId = 2
         };
         var response =
@@ -153,6 +157,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var createRequest = new ProveedorRequest
         {
             Nombre = "Hulu",
+            UrlIcono = "https://hulu.com/icon.png",
             BrokerId = 1
         };
         var createResponse = await client.PostAsync(requestUri: $"{API_VERSION}/{API_URI}",

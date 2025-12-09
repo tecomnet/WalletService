@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,47 +21,43 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class ProductoRequest : IEquatable<ProductoRequest>
-    { 
+    {
         /// <summary>
         /// Gets or Sets Sku
         /// </summary>
         [Required]
-
         [MaxLength(50)]
-        [DataMember(Name="sku")]
+        [DataMember(Name = "sku")]
         public string Sku { get; set; }
 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-
         [MaxLength(100)]
-        [DataMember(Name="nombre")]
+        [DataMember(Name = "nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
         /// Gets or Sets Precio
         /// </summary>
 
-        [DataMember(Name="precio")]
+        [DataMember(Name = "precio")]
         public decimal? Precio { get; set; }
 
         /// <summary>
         /// Gets or Sets UrlIcono
         /// </summary>
         [Required]
-
         [MaxLength(255)]
-        [DataMember(Name="urlIcono")]
+        [DataMember(Name = "urlIcono")]
         public string UrlIcono { get; set; }
 
         /// <summary>
         /// Gets or Sets Categoria
         /// </summary>
         [Required]
-
-        [DataMember(Name="categoria")]
+        [DataMember(Name = "categoria")]
         public CategoriaEnum Categoria { get; set; }
 
         /// <summary>
@@ -112,27 +108,27 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Sku == other.Sku ||
                     Sku != null &&
                     Sku.Equals(other.Sku)
-                ) && 
+                ) &&
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(other.Nombre)
-                ) && 
+                ) &&
                 (
                     Precio == other.Precio ||
                     Precio != null &&
                     Precio.Equals(other.Precio)
-                ) && 
+                ) &&
                 (
                     UrlIcono == other.UrlIcono ||
                     UrlIcono != null &&
                     UrlIcono.Equals(other.UrlIcono)
-                ) && 
+                ) &&
                 (
                     Categoria == other.Categoria ||
                     Categoria != null &&
@@ -150,22 +146,23 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Sku != null)
+                if (Sku != null)
                     hashCode = hashCode * 59 + Sku.GetHashCode();
-                    if (Nombre != null)
+                if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                    if (Precio != null)
+                if (Precio != null)
                     hashCode = hashCode * 59 + Precio.GetHashCode();
-                    if (UrlIcono != null)
+                if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
-                    if (Categoria != null)
+                if (Categoria != null)
                     hashCode = hashCode * 59 + Categoria.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(ProductoRequest left, ProductoRequest right)
         {
@@ -177,7 +174,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

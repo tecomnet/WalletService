@@ -12,8 +12,6 @@ namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 /// </summary>
 public partial class ProveedorFacade : IProveedorFacade
 {
-    
-
     /// <inheritdoc />
     public async Task<Producto> GuardarProductoAsync(int proveedorId, string sku, string nombre,
         decimal? precio, string icono, string categoria, Guid creationUser)
@@ -181,9 +179,40 @@ public partial class ProveedorFacade : IProveedorFacade
                 exception: exception);
         }
     }
-    
-    
-    
+
+    /// <inheritdoc />
+    public async Task<Producto> ActualizarProveedorDeProductoAsync(int idProducto, int idProveedor,
+        Guid modificationUser)
+    {
+        try
+        {
+            // Obtiene el producto existente.
+            var producto = await ObtenerProductoPorIdAsync(idProducto: idProducto);
+            // Valida que el producto no esté inactivo.
+            ValidarProductoIsActive(producto: producto);
+
+            // Obtiene el nuevo proveedor.
+            var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
+            // Valida duplicidad en el nuevo proveedor
+            ValidarProductoDuplicidad(nombre: producto.Nombre, idProveedor: idProveedor, id: idProducto);
+
+            // Asigna el nuevo proveedor.
+            producto.AsignarProveedor(proveedor: proveedor, modificationUser: modificationUser);
+
+            // Guarda los cambios.
+            await context.SaveChangesAsync();
+            return producto;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+
     #region Metodos privados
 
     /// <summary>
@@ -196,7 +225,9 @@ public partial class ProveedorFacade : IProveedorFacade
     private void ValidarProductoDuplicidad(string nombre, int idProveedor, int id = 0)
     {
         // Obtiene estado existente
-        var existe = context.Producto.FirstOrDefault(predicate: x => x.Nombre == nombre && x.ProveedorId == idProveedor && x.Id != id);
+        var existe =
+            context.Producto.FirstOrDefault(predicate: x =>
+                x.Nombre == nombre && x.ProveedorId == idProveedor && x.Id != id);
         // Duplicado por nombre
         if (existe != null)
         {
@@ -223,6 +254,4 @@ public partial class ProveedorFacade : IProveedorFacade
     }
 
     #endregion
-    
-    
 }

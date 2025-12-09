@@ -38,6 +38,19 @@ namespace Wallet.RestAPI.Controllers.Implementation
         }
 
         /// <inheritdoc />
+        public override async Task<IActionResult> GetBrokerAsync(string version, int? idBroker)
+        {
+            if (idBroker == null)
+            {
+                throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
+            }
+
+            var broker = await brokerFacade.ObtenerBrokerPorIdAsync(idBroker.Value);
+            var result = mapper.Map<BrokerResult>(broker);
+            return Ok(result);
+        }
+
+        /// <inheritdoc />
         public override async Task<IActionResult> GetProveedoresPorBrokerAsync(string version, int? idBroker)
         {
             if (idBroker == null)

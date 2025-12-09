@@ -143,7 +143,8 @@ public class ProductoApiTest : DatabaseTestFixture
         var client = Factory.CreateAuthenticatedClient();
         var provider = await CreateProveedor(client: client);
         await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
-        await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault(), sku: "OTHER-SKU");
+        await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault(), sku: "OTHER-SKU",
+            nombre: "OTHER-Nombre");
 
         // Act
         var response = await client.GetAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{provider.Id}/productos");
@@ -157,20 +158,67 @@ public class ProductoApiTest : DatabaseTestFixture
         Assert.True(condition: result.Count >= 2);
     }
 
+    [Fact]
+    public async Task Get_Productos_Ok()
+    {
+        // Arrange
+        var client = Factory.CreateAuthenticatedClient();
+        var provider = await CreateProveedor(client: client);
+        await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
+        await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault(), sku: "SKU-2",
+            nombre: "Prod 2");
+
+        // Act
+        var response = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}");
+
+        // Assert
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+        var result =
+            JsonConvert.DeserializeObject<List<ProductoResult>>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(result);
+        Assert.True(condition: result.Count >= 2);
+    }
+
+    [Fact]
+    public async Task Put_ActualizarProveedor_Ok()
+    {
+        // Arrange
+        var client = Factory.CreateAuthenticatedClient();
+        var providerA = await CreateProveedor(client: client);
+        var providerB = await CreateProveedor(client: client);
+        var product = await CreateProducto(client: client, providerId: providerA.Id.GetValueOrDefault());
+
+        // Act
+        var response = await client.PutAsync(
+            requestUri: $"{API_VERSION}/{API_URI}/{product.Id}/actualizarProveedor",
+            content: CreateContent(body: providerB.Id.GetValueOrDefault()));
+
+        // Assert
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+        var result =
+            JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(result);
+
+        // Verify update
+        var getResponse = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}/{product.Id}");
+        var getResult = JsonConvert.DeserializeObject<ProductoResult>(
+            value: await getResponse.Content.ReadAsStringAsync(),
+            settings: _jsonSettings);
+        Assert.NotNull(getResult);
+        Assert.Equal(expected: providerB.Id, actual: getResult.ProveedorId);
+    }
+
     private async Task<ProveedorResult> CreateProveedor(HttpClient client)
     {
         var request = new ProveedorRequest
         {
             Nombre = "Test Provider " + Guid.NewGuid(),
-            BrokerId = 1 // Assuming Seeded Broker Id 1 exists or I need to fetch it? SetupDataConfig seeds brokers? Yes CommonSettings creates brokers.
+            BrokerId = 1, // Assuming Seeded Broker Id 1 exists or I need to fetch it? SetupDataConfig seeds brokers? Yes CommonSettings creates brokers.
+            UrlIcono = "https://icon.png",
         };
-        // Wait, ProveedorRequest needs BrokerId now? Yes, Proveedor has BrokerId.
-        // But previously it had Categoria, UrlIcono. Now removed?
-        // Let's check ProveedorRequest definition or Proveedor model.
-        // Proveedor model has BrokerId.
-        // I need to make sure I seed a Broker or have a valid one.
-        // SetupDataConfig seeds brokers. So BrokerId 1 should exist (Assuming IDs start at 1).
-
+     
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}",
             content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode,
@@ -180,12 +228,12 @@ public class ProductoApiTest : DatabaseTestFixture
     }
 
     private async Task<ProductoResult> CreateProducto(HttpClient client, int providerId,
-        string sku = "TEST-SKU")
+        string sku = "TEST-SKU", string nombre = "Test Product")
     {
         var request = new ProductoRequest
         {
             Sku = sku,
-            Nombre = "Test Product",
+            Nombre = nombre,
             Precio = 10.0m,
             UrlIcono = "icon",
             Categoria = CategoriaEnum.SERVICIOSEnum
