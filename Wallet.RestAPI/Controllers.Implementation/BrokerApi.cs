@@ -24,8 +24,9 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
             }
 
-            await brokerFacade.EliminarBrokerAsync(idBroker.Value, Guid.Empty);
-            return NoContent();
+            var broker = await brokerFacade.EliminarBrokerAsync(idBroker.Value, Guid.Empty);
+            var result = mapper.Map<BrokerResult>(broker);
+            return Ok(result);
         }
 
         /// <inheritdoc />
@@ -68,8 +69,9 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
             }
 
-            await brokerFacade.ActivarBrokerAsync(idBroker.Value, Guid.Empty);
-            return NoContent();
+            var broker = await brokerFacade.ActivarBrokerAsync(idBroker.Value, Guid.Empty);
+            var result = mapper.Map<BrokerResult>(broker);
+            return Ok(result);
         }
 
         /// <inheritdoc />

@@ -28,6 +28,7 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
             try
             {
                 var broker = new Broker(nombre, creationUser);
+                ValidarDuplicidad(nombre);
                 await _context.Broker.AddAsync(broker);
                 await _context.SaveChangesAsync();
                 return broker;
@@ -89,6 +90,8 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
             try
             {
                 var broker = await ObtenerBrokerPorIdAsync(idBroker);
+                ValidarDuplicidad(nombre, broker.Id);
+                ValidarIsActive(broker: broker);
                 broker.Update(nombre, modificationUser);
                 await _context.SaveChangesAsync();
                 return broker;
