@@ -10,7 +10,6 @@
 
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
@@ -19,8 +18,7 @@ namespace Wallet.RestAPI.Models
           /// Estructura enum para dispositivo cliente
           /// </summary>
           /// <value>Estructura enum para dispositivo cliente</value>
-          //[JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<DispositivoEnum>))] 
+          [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
           public enum DispositivoEnum
           {
               /// <summary>

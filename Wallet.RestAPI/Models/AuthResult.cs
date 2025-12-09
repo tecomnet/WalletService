@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -18,33 +18,37 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Estructura para resultado de autenticacion
+    /// 
     /// </summary>
     [DataContract]
     public partial class AuthResult : IEquatable<AuthResult>
-    {
+    { 
         /// <summary>
         /// Gets or Sets AccessToken
         /// </summary>
-        [DataMember(Name = "accessToken")]
+
+        [DataMember(Name="accessToken")]
         public string AccessToken { get; set; }
 
         /// <summary>
         /// Gets or Sets RefreshToken
         /// </summary>
-        [DataMember(Name = "refreshToken")]
+
+        [DataMember(Name="refreshToken")]
         public string RefreshToken { get; set; }
 
         /// <summary>
         /// Gets or Sets Success
         /// </summary>
-        [DataMember(Name = "success")]
+
+        [DataMember(Name="success")]
         public bool? Success { get; set; }
 
         /// <summary>
         /// Gets or Sets Errors
         /// </summary>
-        [DataMember(Name = "errors")]
+
+        [DataMember(Name="errors")]
         public List<string> Errors { get; set; }
 
         /// <summary>
@@ -54,12 +58,12 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class AuthResult {\n");
-            sb.Append(value: "  AccessToken: ").Append(value: AccessToken).Append(value: "\n");
-            sb.Append(value: "  RefreshToken: ").Append(value: RefreshToken).Append(value: "\n");
-            sb.Append(value: "  Success: ").Append(value: Success).Append(value: "\n");
-            sb.Append(value: "  Errors: ").Append(value: Errors).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class AuthResult {\n");
+            sb.Append("  AccessToken: ").Append(AccessToken).Append("\n");
+            sb.Append("  RefreshToken: ").Append(RefreshToken).Append("\n");
+            sb.Append("  Success: ").Append(Success).Append("\n");
+            sb.Append("  Errors: ").Append(Errors).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -69,7 +73,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -79,9 +83,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (AuthResult)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((AuthResult)obj);
         }
 
         /// <summary>
@@ -91,29 +95,29 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(AuthResult other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     AccessToken == other.AccessToken ||
                     AccessToken != null &&
-                    AccessToken.Equals(value: other.AccessToken)
-                ) &&
+                    AccessToken.Equals(other.AccessToken)
+                ) && 
                 (
                     RefreshToken == other.RefreshToken ||
                     RefreshToken != null &&
-                    RefreshToken.Equals(value: other.RefreshToken)
-                ) &&
+                    RefreshToken.Equals(other.RefreshToken)
+                ) && 
                 (
                     Success == other.Success ||
                     Success != null &&
-                    Success.Equals(other: other.Success)
-                ) &&
+                    Success.Equals(other.Success)
+                ) && 
                 (
                     Errors == other.Errors ||
                     Errors != null &&
-                    Errors.SequenceEqual(second: other.Errors)
+                    Errors.SequenceEqual(other.Errors)
                 );
         }
 
@@ -127,34 +131,32 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (AccessToken != null)
+                    if (AccessToken != null)
                     hashCode = hashCode * 59 + AccessToken.GetHashCode();
-                if (RefreshToken != null)
+                    if (RefreshToken != null)
                     hashCode = hashCode * 59 + RefreshToken.GetHashCode();
-                if (Success != null)
+                    if (Success != null)
                     hashCode = hashCode * 59 + Success.GetHashCode();
-                if (Errors != null)
+                    if (Errors != null)
                     hashCode = hashCode * 59 + Errors.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(AuthResult left, AuthResult right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(AuthResult left, AuthResult right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

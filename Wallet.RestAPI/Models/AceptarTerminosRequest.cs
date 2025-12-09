@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
@@ -20,30 +21,38 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class AceptarTerminosRequest : IEquatable<AceptarTerminosRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Version
         /// </summary>
-        [DataMember(Name = "version")]
+        [Required]
+
+        [DataMember(Name="version")]
         public string Version { get; set; }
 
         /// <summary>
         /// Gets or Sets AceptoTerminos
         /// </summary>
-        [DataMember(Name = "aceptoTerminos")]
-        public bool AceptoTerminos { get; set; }
+        [Required]
+
+        [DataMember(Name="aceptoTerminos")]
+        public bool? AceptoTerminos { get; set; }
 
         /// <summary>
         /// Gets or Sets AceptoPrivacidad
         /// </summary>
-        [DataMember(Name = "aceptoPrivacidad")]
-        public bool AceptoPrivacidad { get; set; }
+        [Required]
+
+        [DataMember(Name="aceptoPrivacidad")]
+        public bool? AceptoPrivacidad { get; set; }
 
         /// <summary>
         /// Gets or Sets AceptoPld
         /// </summary>
-        [DataMember(Name = "aceptoPld")]
-        public bool AceptoPld { get; set; }
+        [Required]
+
+        [DataMember(Name="aceptoPld")]
+        public bool? AceptoPld { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -52,10 +61,12 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class AceptarTerminosRequest {\n");
-            sb.Append(value: "class AceptarTerminosRequest {\n");
-            sb.Append(value: "  Version: ").Append(value: Version).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class AceptarTerminosRequest {\n");
+            sb.Append("  Version: ").Append(Version).Append("\n");
+            sb.Append("  AceptoTerminos: ").Append(AceptoTerminos).Append("\n");
+            sb.Append("  AceptoPrivacidad: ").Append(AceptoPrivacidad).Append("\n");
+            sb.Append("  AceptoPld: ").Append(AceptoPld).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -65,7 +76,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -75,9 +86,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (AceptarTerminosRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((AceptarTerminosRequest)obj);
         }
 
         /// <summary>
@@ -87,15 +98,30 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(AceptarTerminosRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
-            return
-            (
-                Version == other.Version ||
-                Version != null &&
-                Version.Equals(other.Version)
-            );
+            return 
+                (
+                    Version == other.Version ||
+                    Version != null &&
+                    Version.Equals(other.Version)
+                ) && 
+                (
+                    AceptoTerminos == other.AceptoTerminos ||
+                    AceptoTerminos != null &&
+                    AceptoTerminos.Equals(other.AceptoTerminos)
+                ) && 
+                (
+                    AceptoPrivacidad == other.AceptoPrivacidad ||
+                    AceptoPrivacidad != null &&
+                    AceptoPrivacidad.Equals(other.AceptoPrivacidad)
+                ) && 
+                (
+                    AceptoPld == other.AceptoPld ||
+                    AceptoPld != null &&
+                    AceptoPld.Equals(other.AceptoPld)
+                );
         }
 
         /// <summary>
@@ -108,28 +134,32 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Version != null)
+                    if (Version != null)
                     hashCode = hashCode * 59 + Version.GetHashCode();
+                    if (AceptoTerminos != null)
+                    hashCode = hashCode * 59 + AceptoTerminos.GetHashCode();
+                    if (AceptoPrivacidad != null)
+                    hashCode = hashCode * 59 + AceptoPrivacidad.GetHashCode();
+                    if (AceptoPld != null)
+                    hashCode = hashCode * 59 + AceptoPld.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(AceptarTerminosRequest left, AceptarTerminosRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(AceptarTerminosRequest left, AceptarTerminosRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

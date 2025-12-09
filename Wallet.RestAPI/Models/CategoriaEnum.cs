@@ -15,25 +15,25 @@ namespace Wallet.RestAPI.Models
 {
   
           /// <summary>
-          /// Estructura enum para genero
+          /// Estructura enum para categoria de proveeedor y productos
           /// </summary>
-          /// <value>Estructura enum para genero</value>
+          /// <value>Estructura enum para categoria de proveeedor y productos</value>
           [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-          public enum GeneroEnum
+          public enum CategoriaEnum
           {
               /// <summary>
-              /// Enum MasculinoEnum for Masculino
+              /// Enum SERVICIOSEnum for SERVICIOS
               /// </summary>
-              [EnumMember(Value = "Masculino")]
-              MasculinoEnum = 0,
+              [EnumMember(Value = "SERVICIOS")]
+              SERVICIOSEnum = 0,
               /// <summary>
-              /// Enum FemeninoEnum for Femenino
+              /// Enum RECARGASEnum for RECARGAS
               /// </summary>
-              [EnumMember(Value = "Femenino")]
-              FemeninoEnum = 1,
+              [EnumMember(Value = "RECARGAS")]
+              RECARGASEnum = 1,
               /// <summary>
-              /// Enum NoBinarioEnum for NoBinario
+              /// Enum MOVILIDADEnum for MOVILIDAD
               /// </summary>
-              [EnumMember(Value = "NoBinario")]
-              NoBinarioEnum = 2          }
+              [EnumMember(Value = "MOVILIDAD")]
+              MOVILIDADEnum = 2          }
 }

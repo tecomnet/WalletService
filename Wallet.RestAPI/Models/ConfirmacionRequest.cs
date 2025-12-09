@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
@@ -20,17 +21,21 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class ConfirmacionRequest : IEquatable<ConfirmacionRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Tipo
         /// </summary>
-        [DataMember(Name = "Tipo")]
+        [Required]
+
+        [DataMember(Name="Tipo")]
         public Tipo2FAEnum Tipo { get; set; }
 
         /// <summary>
         /// Gets or Sets Codigo
         /// </summary>
-        [DataMember(Name = "Codigo")]
+        [Required]
+
+        [DataMember(Name="Codigo")]
         public string Codigo { get; set; }
 
         /// <summary>
@@ -40,11 +45,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ConfirmacionRequest {\n");
-            sb.Append(value: "class ConfirmacionRequest {\n");
-            sb.Append(value: "  Tipo: ").Append(value: Tipo).Append(value: "\n");
-            sb.Append(value: "  Codigo: ").Append(value: Codigo).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class ConfirmacionRequest {\n");
+            sb.Append("  Tipo: ").Append(Tipo).Append("\n");
+            sb.Append("  Codigo: ").Append(Codigo).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -54,7 +58,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -64,9 +68,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ConfirmacionRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((ConfirmacionRequest)obj);
         }
 
         /// <summary>
@@ -76,14 +80,15 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ConfirmacionRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Tipo == other.Tipo ||
+                    Tipo != null &&
                     Tipo.Equals(other.Tipo)
-                ) &&
+                ) && 
                 (
                     Codigo == other.Codigo ||
                     Codigo != null &&
@@ -101,30 +106,28 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                // Suitable nullity checks etc, of course :)
-                hashCode = hashCode * 59 + Tipo.GetHashCode();
-                if (Codigo != null)
+                    if (Tipo != null)
+                    hashCode = hashCode * 59 + Tipo.GetHashCode();
+                    if (Codigo != null)
                     hashCode = hashCode * 59 + Codigo.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ConfirmacionRequest left, ConfirmacionRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(ConfirmacionRequest left, ConfirmacionRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

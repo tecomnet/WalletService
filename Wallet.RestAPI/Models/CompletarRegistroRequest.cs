@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
@@ -20,17 +21,21 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class CompletarRegistroRequest : IEquatable<CompletarRegistroRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Contrasena
         /// </summary>
-        [DataMember(Name = "contrasena")]
+        [Required]
+
+        [DataMember(Name="contrasena")]
         public string Contrasena { get; set; }
 
         /// <summary>
         /// Gets or Sets ConfirmacionContrasena
         /// </summary>
-        [DataMember(Name = "confirmacionContrasena")]
+        [Required]
+
+        [DataMember(Name="confirmacionContrasena")]
         public string ConfirmacionContrasena { get; set; }
 
         /// <summary>
@@ -40,11 +45,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class CompletarRegistroRequest {\n");
-            sb.Append(value: "class CompletarRegistroRequest {\n");
-            sb.Append(value: "  Contrasena: ").Append(value: Contrasena).Append(value: "\n");
-            sb.Append(value: "  ConfirmacionContrasena: ").Append(value: ConfirmacionContrasena).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class CompletarRegistroRequest {\n");
+            sb.Append("  Contrasena: ").Append(Contrasena).Append("\n");
+            sb.Append("  ConfirmacionContrasena: ").Append(ConfirmacionContrasena).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -54,7 +58,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -64,9 +68,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (CompletarRegistroRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((CompletarRegistroRequest)obj);
         }
 
         /// <summary>
@@ -76,15 +80,15 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(CompletarRegistroRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Contrasena == other.Contrasena ||
                     Contrasena != null &&
                     Contrasena.Equals(other.Contrasena)
-                ) &&
+                ) && 
                 (
                     ConfirmacionContrasena == other.ConfirmacionContrasena ||
                     ConfirmacionContrasena != null &&
@@ -102,30 +106,28 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Contrasena != null)
+                    if (Contrasena != null)
                     hashCode = hashCode * 59 + Contrasena.GetHashCode();
-                if (ConfirmacionContrasena != null)
+                    if (ConfirmacionContrasena != null)
                     hashCode = hashCode * 59 + ConfirmacionContrasena.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(CompletarRegistroRequest left, CompletarRegistroRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(CompletarRegistroRequest left, CompletarRegistroRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

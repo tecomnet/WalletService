@@ -1568,6 +1568,21 @@ components:
         fechaAceptacion:
           type: string
           format: date-time
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
         isActive:
           type: boolean
       required:
@@ -1576,6 +1591,11 @@ components:
         - tipoDocumento
         - version
         - fechaAceptacion
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
         - isActive
     LoginRequest:
       type: object
@@ -1617,6 +1637,8 @@ components:
           type: array
           items:
             type: string
+      description: Estructura para resultado de autenticacion
+      title: ''
     ClienteResult:
       title: ClienteResult
       x-stoplight:
@@ -1788,11 +1810,21 @@ components:
         modificationTimestamp:
           type: string
           format: date-time
+        isActive:
+          type: boolean
+          format: date-time
+          x-stoplight:
+            id: 114v5cpxh0ldo
       required:
         - id
         - codigoPais
         - telefono
         - estatus
+        - creationUser
+        - modificationUser
+        - creationTimestamp
+        - modificationTimestamp
+        - isActive
     PreRegistroRequest:
       title: PreRegistroRequest
       type: object
@@ -2537,9 +2569,6 @@ components:
           type: string
           minLength: 1
           maxLength: 100
-        categoria:
-          type: string
-          description: 'Categoria del producto (Servicios, Recargas, Movilidad)'
         urlIcono:
           type: string
           maxLength: 500
@@ -2563,7 +2592,6 @@ components:
       required:
         - id
         - nombre
-        - categoria
         - guid
         - creationTimestamp
         - modificationTimestamp
@@ -2584,12 +2612,9 @@ components:
         urlIcono:
           type: string
           maxLength: 500
-        categoria:
-          $ref: '#/components/schemas/CategoriaEnum'
       required:
         - brokerId
         - nombre
-        - categoria
     ServicioFavoritoResult:
       title: ServicioFavoritoResult
       type: object
@@ -2671,12 +2696,35 @@ components:
         nombre:
           type: string
           maxLength: 100
-        monto:
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
+        precio:
           type: number
           format: double
+          x-stoplight:
+            id: kd6k5ve4v14ly
         descripcion:
           type: string
           maxLength: 255
+        urlIcon:
+          type: string
+          x-stoplight:
+            id: e9qdswkg2xbi0
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
         isActive:
           type: boolean
       required:
@@ -2684,7 +2732,9 @@ components:
         - proveedorId
         - sku
         - nombre
-        - monto
+        - categoria
+        - precio
+        - urlIcon
         - isActive
     ProductoRequest:
       title: ProductoRequest
@@ -2705,10 +2755,19 @@ components:
         descripcion:
           type: string
           maxLength: 255
+        urlIcon:
+          type: string
+          maxLength: 255
+          x-stoplight:
+            id: xjzu7h7g5gz5m
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
       required:
         - sku
         - nombre
         - descripcion
+        - urlIcon
+        - categoria
     ConfirmacionRequest:
       title: ConfirmacionRequest
       type: object

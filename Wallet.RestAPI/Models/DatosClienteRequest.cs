@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
@@ -20,41 +21,53 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class DatosClienteRequest : IEquatable<DatosClienteRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
-        [DataMember(Name = "nombre")]
+        [Required]
+
+        [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
         /// Gets or Sets ApellidoPaterno
         /// </summary>
-        [DataMember(Name = "apellidoPaterno")]
+        [Required]
+
+        [DataMember(Name="apellidoPaterno")]
         public string ApellidoPaterno { get; set; }
 
         /// <summary>
         /// Gets or Sets ApellidoMaterno
         /// </summary>
-        [DataMember(Name = "apellidoMaterno")]
+        [Required]
+
+        [DataMember(Name="apellidoMaterno")]
         public string ApellidoMaterno { get; set; }
 
         /// <summary>
         /// Gets or Sets FechaNacimiento
         /// </summary>
-        [DataMember(Name = "fechaNacimiento")]
-        public DateTime FechaNacimiento { get; set; }
+        [Required]
+
+        [DataMember(Name="fechaNacimiento")]
+        public DateTime? FechaNacimiento { get; set; }
 
         /// <summary>
         /// Gets or Sets NombreEstado
         /// </summary>
-        [DataMember(Name = "nombreEstado")]
+        [Required]
+
+        [DataMember(Name="nombreEstado")]
         public string NombreEstado { get; set; }
 
         /// <summary>
         /// Gets or Sets Genero
         /// </summary>
-        [DataMember(Name = "genero")]
+        [Required]
+
+        [DataMember(Name="genero")]
         public GeneroEnum Genero { get; set; }
 
         /// <summary>
@@ -64,15 +77,14 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class DatosClienteRequest {\n");
-            sb.Append(value: "class DatosClienteRequest {\n");
-            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  ApellidoPaterno: ").Append(value: ApellidoPaterno).Append(value: "\n");
-            sb.Append(value: "  ApellidoMaterno: ").Append(value: ApellidoMaterno).Append(value: "\n");
-            sb.Append(value: "  FechaNacimiento: ").Append(value: FechaNacimiento).Append(value: "\n");
-            sb.Append(value: "  NombreEstado: ").Append(value: NombreEstado).Append(value: "\n");
-            sb.Append(value: "  Genero: ").Append(value: Genero).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class DatosClienteRequest {\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  ApellidoPaterno: ").Append(ApellidoPaterno).Append("\n");
+            sb.Append("  ApellidoMaterno: ").Append(ApellidoMaterno).Append("\n");
+            sb.Append("  FechaNacimiento: ").Append(FechaNacimiento).Append("\n");
+            sb.Append("  NombreEstado: ").Append(NombreEstado).Append("\n");
+            sb.Append("  Genero: ").Append(Genero).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -82,7 +94,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -92,9 +104,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (DatosClienteRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((DatosClienteRequest)obj);
         }
 
         /// <summary>
@@ -104,36 +116,38 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(DatosClienteRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(other.Nombre)
-                ) &&
+                ) && 
                 (
                     ApellidoPaterno == other.ApellidoPaterno ||
                     ApellidoPaterno != null &&
                     ApellidoPaterno.Equals(other.ApellidoPaterno)
-                ) &&
+                ) && 
                 (
                     ApellidoMaterno == other.ApellidoMaterno ||
                     ApellidoMaterno != null &&
                     ApellidoMaterno.Equals(other.ApellidoMaterno)
-                ) &&
+                ) && 
                 (
                     FechaNacimiento == other.FechaNacimiento ||
+                    FechaNacimiento != null &&
                     FechaNacimiento.Equals(other.FechaNacimiento)
-                ) &&
+                ) && 
                 (
                     NombreEstado == other.NombreEstado ||
                     NombreEstado != null &&
                     NombreEstado.Equals(other.NombreEstado)
-                ) &&
+                ) && 
                 (
                     Genero == other.Genero ||
+                    Genero != null &&
                     Genero.Equals(other.Genero)
                 );
         }
@@ -148,36 +162,36 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Nombre != null)
+                    if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                if (ApellidoPaterno != null)
+                    if (ApellidoPaterno != null)
                     hashCode = hashCode * 59 + ApellidoPaterno.GetHashCode();
-                if (ApellidoMaterno != null)
+                    if (ApellidoMaterno != null)
                     hashCode = hashCode * 59 + ApellidoMaterno.GetHashCode();
-                hashCode = hashCode * 59 + FechaNacimiento.GetHashCode();
-                if (NombreEstado != null)
+                    if (FechaNacimiento != null)
+                    hashCode = hashCode * 59 + FechaNacimiento.GetHashCode();
+                    if (NombreEstado != null)
                     hashCode = hashCode * 59 + NombreEstado.GetHashCode();
-                hashCode = hashCode * 59 + Genero.GetHashCode();
+                    if (Genero != null)
+                    hashCode = hashCode * 59 + Genero.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(DatosClienteRequest left, DatosClienteRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(DatosClienteRequest left, DatosClienteRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

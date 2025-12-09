@@ -107,8 +107,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             sku: body.Sku,
             nombre: body.Nombre,
             precio: body.Precio.Value,
-            icono: body.Icono,
-            categoria: body.Categoria,
             modificationUser: Guid.Empty);
 
         var result = mapper.Map<ProductoResult>(source: producto);
