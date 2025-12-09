@@ -10,6 +10,7 @@
 
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
@@ -18,7 +19,8 @@ namespace Wallet.RestAPI.Models
           /// Tipo de documento de consentimiento
           /// </summary>
           /// <value>Tipo de documento de consentimiento</value>
-          [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+          //[JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<TipoDocumentoConsentimientoEnum>))]
           public enum TipoDocumentoConsentimientoEnum
           {
               /// <summary>

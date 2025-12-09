@@ -70,7 +70,8 @@ public class ProveedorApiController : ProveedorApiControllerBase
     {
         var proveedorCreado = await _proveedorFacade.GuardarProveedorAsync(
             nombre: body.Nombre,
-            brokerId: body.BrokerId,
+            urlIcono: body.UrlIcono,
+            brokerId: body.BrokerId.Value,
             creationUser: Guid.Empty);
 
         // Activating provider if necessary or assuming Guardar activates it. 
@@ -104,6 +105,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
 
         var proveedor = await _proveedorFacade.ActualizarProveedorAsync(
             idProveedor: idProveedor.Value,
+            urlIcono: body.UrlIcono,
             nombre: body.Nombre,
             modificationUser: Guid.Empty);
 

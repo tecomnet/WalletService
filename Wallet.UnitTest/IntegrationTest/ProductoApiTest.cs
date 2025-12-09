@@ -187,8 +187,8 @@ public class ProductoApiTest : DatabaseTestFixture
             Sku = sku,
             Nombre = "Test Product",
             Precio = 10.0m,
-            Icono = "icon",
-            Categoria = "Cat"
+            UrlIcon = "icon",
+            Categoria = CategoriaEnum.SERVICIOSEnum
         };
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{providerId}/producto",
             content: CreateContent(body: request));

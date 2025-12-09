@@ -42,6 +42,7 @@ public class ProveedorTest : UnitTestTemplate
             // Act
             var proveedor = new Proveedor(
                 broker: mockBroker.Object,
+                urlIcono: "https://cfe.mx/logo.png",
                 nombre: nombre,
                 creationUser: Guid.NewGuid()
             );

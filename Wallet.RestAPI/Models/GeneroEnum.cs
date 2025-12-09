@@ -10,6 +10,7 @@
 
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
@@ -18,7 +19,8 @@ namespace Wallet.RestAPI.Models
           /// Estructura enum para genero
           /// </summary>
           /// <value>Estructura enum para genero</value>
-          [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+          //[JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<GeneroEnum>))]
           public enum GeneroEnum
           {
               /// <summary>

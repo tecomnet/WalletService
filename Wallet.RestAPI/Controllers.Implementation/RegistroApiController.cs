@@ -39,8 +39,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
         {
             var modificationUser = Guid.Empty;
             var usuario =
-                await registroFacade.AceptarTerminosCondicionesAsync(idUsuario.Value, body.Version, body.AceptoTerminos,
-                    body.AceptoPrivacidad, body.AceptoPld, modificationUser);
+                await registroFacade.AceptarTerminosCondicionesAsync(idUsuario.Value, body.Version, body.AceptoTerminos.Value,
+                    body.AceptoPrivacidad.Value, body.AceptoPld.Value, modificationUser);
             return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
         }
 
@@ -89,7 +89,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 body.ApellidoPaterno,
                 body.ApellidoMaterno,
                 body.NombreEstado,
-                DateOnly.FromDateTime(body.FechaNacimiento),
+                DateOnly.FromDateTime(body.FechaNacimiento.Value),
                 (DOM.Enums.Genero)body.Genero,
                 modificationUser);
             return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));

@@ -183,6 +183,7 @@ public class CommonSettings
 		// Nuevo proveedor
 		var proveedor = new Proveedor(
 			nombre: "CFE",
+			urlIcono: "https://cfe.mx/logo.png",
 			broker: broker,
 			creationUser: UserId);
 		// Agrega proveedor
@@ -200,6 +201,7 @@ public class CommonSettings
 		// Nuevo proveedor
 		proveedor = new Proveedor(
 			nombre: "Telmex",
+			urlIcono: "https://telmex.com/logo.png",
 			broker: broker,
 			creationUser: UserId);
 		// Agrega proveedor

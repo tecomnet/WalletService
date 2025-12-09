@@ -69,7 +69,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             nombre: body.Nombre,
             precio: body.Precio.Value,
             icono: body.UrlIcon,
-            categoria: body.Categoria,
+            categoria: body.Categoria.ToString(),
             creationUser: Guid.Empty);
 
         var result = mapper.Map<ProductoResult>(source: producto);
@@ -107,6 +107,8 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             sku: body.Sku,
             nombre: body.Nombre,
             precio: body.Precio.Value,
+            icono: body.UrlIcon,
+            categoria: body.Categoria.ToString(),
             modificationUser: Guid.Empty);
 
         var result = mapper.Map<ProductoResult>(source: producto);
