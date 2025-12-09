@@ -46,7 +46,7 @@ public class ProductoApiTest : DatabaseTestFixture
             Sku = "NETFLIX-PREM",
             Nombre = "Netflix Premium",
             Precio = 15.99m,
-            UrlIcon = "https://netflix.com/icon.png",
+            UrlIcono = "https://netflix.com/icon.png",
             Categoria = CategoriaEnum.SERVICIOSEnum
         };
         var content = CreateContent(body: request);
@@ -98,7 +98,7 @@ public class ProductoApiTest : DatabaseTestFixture
             Sku = "NETFLIX-STD",
             Nombre = "Netflix Standard",
             Precio = 10.99m,
-            UrlIcon = "https://netflix.com/icon.png",
+            UrlIcono = "https://netflix.com/icon.png",
             Categoria = CategoriaEnum.SERVICIOSEnum
         };
 
@@ -187,7 +187,7 @@ public class ProductoApiTest : DatabaseTestFixture
             Sku = sku,
             Nombre = "Test Product",
             Precio = 10.0m,
-            UrlIcon = "icon",
+            UrlIcono = "icon",
             Categoria = CategoriaEnum.SERVICIOSEnum
         };
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{providerId}/producto",

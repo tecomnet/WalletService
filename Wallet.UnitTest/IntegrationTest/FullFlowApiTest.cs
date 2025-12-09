@@ -141,7 +141,7 @@ public class FullFlowApiTest : DatabaseTestFixture
                 Sku = $"SKU-{i}",
                 Nombre = $"Producto Test {i}",
                 Precio = 100 + i,
-                UrlIcon = $"icon_{i}.png",
+                UrlIcono = $"icon_{i}.png",
                 Categoria = CategoriaEnum.MOVILIDADEnum
             };
             // Envía la solicitud POST para crear un producto asociado a un proveedor.
