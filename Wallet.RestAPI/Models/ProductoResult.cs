@@ -70,7 +70,7 @@ namespace Wallet.RestAPI.Models
         [Required]
 
         [DataMember(Name="precio")]
-        public double? Precio { get; set; }
+        public decimal? Precio { get; set; }
 
         /// <summary>
         /// Gets or Sets Descripcion

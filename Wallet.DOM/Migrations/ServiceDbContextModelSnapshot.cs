@@ -661,7 +661,7 @@ namespace Wallet.DOM.Migrations
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Icono")
+                    b.Property<string>("UrlIcono")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 

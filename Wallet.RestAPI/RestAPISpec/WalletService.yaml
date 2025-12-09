@@ -2182,6 +2182,7 @@ components:
         - SERVICIOS
         - RECARGAS
         - MOVILIDAD
+        - OTROS
     GeneroEnum:
       title: GeneroEnum
       x-stoplight:
@@ -2700,7 +2701,6 @@ components:
           $ref: '#/components/schemas/CategoriaEnum'
         precio:
           type: number
-          format: double
           x-stoplight:
             id: kd6k5ve4v14ly
         descripcion:
@@ -2749,7 +2749,6 @@ components:
           maxLength: 100
         precio:
           type: number
-          format: double
           x-stoplight:
             id: 4d54deghg8un9
         descripcion:

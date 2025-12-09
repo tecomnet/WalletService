@@ -28,6 +28,10 @@ namespace Wallet.DOM.Modelos
         [Required]
         [MaxLength(length: 100)]
         public string Nombre { get; private set; }
+        
+        [Required]
+        [MaxLength(length: 255)]
+        public string UrlIcono { get; private set; }
 
         /// <summary>
         /// ID del broker al que pertenece este proveedor.
@@ -57,13 +61,15 @@ namespace Wallet.DOM.Modelos
         /// Inicializa una nueva instancia de la clase <see cref="Proveedor"/>.
         /// </summary>
         /// <param name="nombre">El nombre del proveedor.</param>
+        /// <param name="urlIcono">La URL del ícono del proveedor.</param>
         /// <param name="broker">El broker asociado.</param>
         /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
-        public Proveedor(string nombre, Broker broker, Guid creationUser) :
+        public Proveedor(string nombre, string urlIcono, Broker broker, Guid creationUser) :
             base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(UrlIcono), value: urlIcono, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
@@ -79,11 +85,13 @@ namespace Wallet.DOM.Modelos
         /// Actualiza los datos del proveedor.
         /// </summary>
         /// <param name="nombre">El nuevo nombre del proveedor.</param>
+        /// <param name="urlIcono">La URL del ícono del proveedor.</param>
         /// <param name="modificationUser">El identificador del usuario que modifica el registro.</param>
-        public void Update(string nombre, Guid modificationUser)
+        public void Update(string nombre, string urlIcono, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(UrlIcono), value: urlIcono, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
@@ -106,7 +114,7 @@ namespace Wallet.DOM.Modelos
         public Producto AgregarProducto(string sku, string nombre, decimal precio, string icono, string categoria,
             Guid creationUser)
         {
-            var producto = new Producto(proveedor: this, sku: sku, nombre: nombre, precio: precio, icono: icono,
+            var producto = new Producto(proveedor: this, sku: sku, nombre: nombre, precio: precio, urlIcono: icono,
                 categoria: categoria, creationUser: creationUser);
             this.Productos.Add(item: producto); // Agrega el producto a la colección local.
             return producto;

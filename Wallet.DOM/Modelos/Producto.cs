@@ -33,7 +33,7 @@ namespace Wallet.DOM.Modelos
                 allowPositive: true,
                 allowedDecimals: 2),
             PropertyConstraint.StringPropertyConstraint(
-                propertyName: nameof(Icono),
+                propertyName: nameof(UrlIcono),
                 isRequired: false,
                 maximumLength: 255,
                 minimumLength: 0),
@@ -86,7 +86,7 @@ namespace Wallet.DOM.Modelos
         /// Ícono del producto.
         /// </summary>
         [MaxLength(length: 255)]
-        public string? Icono { get; private set; }
+        public string? UrlIcono { get; private set; }
 
         /// <summary>
         /// Categoría del producto.
@@ -108,10 +108,10 @@ namespace Wallet.DOM.Modelos
         /// <param name="sku">El SKU del producto.</param>
         /// <param name="nombre">El nombre del producto.</param>
         /// <param name="precio">El precio del producto.</param>
-        /// <param name="icono">El ícono del producto.</param>
+        /// <param name="urlIcono">El ícono del producto.</param>
         /// <param name="categoria">La categoría del producto.</param>
         /// <param name="creationUser">El usuario que crea el registro.</param>
-        internal Producto(Proveedor proveedor, string sku, string nombre, decimal precio, string? icono,
+        internal Producto(Proveedor proveedor, string sku, string nombre, decimal precio, string? urlIcono,
             string? categoria,
             Guid creationUser) : base(creationUser: creationUser)
         {
@@ -119,7 +119,7 @@ namespace Wallet.DOM.Modelos
             IsPropertyValid(propertyName: nameof(Sku), value: sku, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Precio), value: precio, exceptions: ref exceptions);
-            IsPropertyValid(propertyName: nameof(Icono), value: icono, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(UrlIcono), value: urlIcono, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Categoria), value: categoria, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
@@ -131,7 +131,7 @@ namespace Wallet.DOM.Modelos
             Sku = sku;
             Nombre = nombre;
             Precio = precio;
-            Icono = icono;
+            UrlIcono = urlIcono;
             Categoria = categoria;
         }
 
@@ -141,17 +141,17 @@ namespace Wallet.DOM.Modelos
         /// <param name="sku">El nuevo SKU.</param>
         /// <param name="nombre">El nuevo nombre.</param>
         /// <param name="precio">El nuevo precio.</param>
-        /// <param name="icono">El nuevo ícono.</param>
+        /// <param name="urlIcono">El nuevo ícono.</param>
         /// <param name="categoria">La nueva categoría.</param>
         /// <param name="modificationUser">El usuario que modifica el registro.</param>
-        public void Update(string sku, string nombre, decimal precio, string? icono, string? categoria,
+        public void Update(string sku, string nombre, decimal precio, string? urlIcono, string? categoria,
             Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
             IsPropertyValid(propertyName: nameof(Sku), value: sku, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Precio), value: precio, exceptions: ref exceptions);
-            IsPropertyValid(propertyName: nameof(Icono), value: icono, exceptions: ref exceptions);
+            IsPropertyValid(propertyName: nameof(UrlIcono), value: urlIcono, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Categoria), value: categoria, exceptions: ref exceptions);
             if (exceptions.Count > 0)
             {
@@ -161,7 +161,7 @@ namespace Wallet.DOM.Modelos
             Sku = sku;
             Nombre = nombre;
             Precio = precio;
-            Icono = icono;
+            UrlIcono = urlIcono;
             Categoria = categoria;
             base.Update(modificationUser: modificationUser);
         }

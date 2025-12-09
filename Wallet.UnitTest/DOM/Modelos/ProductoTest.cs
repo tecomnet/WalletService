@@ -12,7 +12,7 @@ public class ProductoTest : UnitTestTemplate
     [InlineData(data:
         ["OK: Datos válidos", 1, "SKU001", "Producto A", 150.75, "icon.png", "Servicios", true, new string[] { }])]
     [InlineData(data:
-        ["OK: Sin icono/categoria", 2, "SKU002", "Producto B", 99.99, null, null, true, new string[] { }])]
+        ["OK: Sin urlIcono/categoria", 2, "SKU002", "Producto B", 99.99, null, null, true, new string[] { }])]
     [InlineData(data:
         ["OK: Precio sin decimales", 3, "SKU003", "Producto C", 200, "icon.png", "Servicios", true, new string[] { }])]
     [InlineData(data:
@@ -103,7 +103,7 @@ public class ProductoTest : UnitTestTemplate
                 sku: sku,
                 nombre: nombre,
                 precio: (decimal)precio,
-                icono: icono,
+                urlIcono: icono,
                 categoria: categoria,
                 creationUser: Guid.NewGuid()
             );
@@ -115,7 +115,7 @@ public class ProductoTest : UnitTestTemplate
             Assert.Equal(expected: sku, actual: producto.Sku);
             Assert.Equal(expected: nombre, actual: producto.Nombre);
             Assert.Equal(expected: (decimal)precio, actual: producto.Precio);
-            Assert.Equal(expected: icono, actual: producto.Icono);
+            Assert.Equal(expected: icono, actual: producto.UrlIcono);
             Assert.Equal(expected: categoria, actual: producto.Categoria);
         }
         catch (EMGeneralAggregateException exception)

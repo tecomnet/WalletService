@@ -68,7 +68,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             sku: body.Sku,
             nombre: body.Nombre,
             precio: body.Precio.Value,
-            icono: body.Icono,
+            icono: body.UrlIcon,
             categoria: body.Categoria,
             creationUser: Guid.Empty);
 

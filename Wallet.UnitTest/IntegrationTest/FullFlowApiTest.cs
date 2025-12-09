@@ -99,7 +99,7 @@ public class FullFlowApiTest : DatabaseTestFixture
             var result = JsonConvert.DeserializeObject<BrokerResult>(content, _jsonSettings);
             Assert.NotNull(result);
             // Almacena el ID del broker creado.
-            brokerIds.Add(result.Id);
+            brokerIds.Add(result.Id.Value);
             _output.WriteLine($"Broker creado: {result.Nombre} (ID: {result.Id})");
         }
 
@@ -141,8 +141,8 @@ public class FullFlowApiTest : DatabaseTestFixture
                 Sku = $"SKU-{i}",
                 Nombre = $"Producto Test {i}",
                 Precio = 100 + i,
-                Icono = $"icon_{i}.png",
-                Categoria = "General"
+                UrlIcon = $"icon_{i}.png",
+                Categoria = CategoriaEnum.MOVILIDADEnum
             };
             // Envía la solicitud POST para crear un producto asociado a un proveedor.
             var response = await client.PostAsync($"/{ApiVersion}/proveedor/{proveedorId}/producto",

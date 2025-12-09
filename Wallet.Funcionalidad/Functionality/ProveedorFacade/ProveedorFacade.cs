@@ -13,7 +13,7 @@ namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
 {
     /// <inheritdoc />
-    public async Task<Proveedor> GuardarProveedorAsync(string nombre, int brokerId, Guid creationUser,
+    public async Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, int brokerId, Guid creationUser,
         string? testCase = null)
     {
         try
@@ -29,7 +29,7 @@ public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
             }
 
             // Crea una nueva instancia de Proveedor.
-            var proveedor = new Proveedor(nombre: nombre, broker: broker, creationUser: creationUser);
+            var proveedor = new Proveedor(nombre: nombre, urlIcono: urlIcono, broker: broker, creationUser: creationUser);
 
             // Agrega el proveedor al contexto.
             await context.Proveedor.AddAsync(entity: proveedor);
@@ -79,7 +79,7 @@ public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
     }
 
     /// <inheritdoc />
-    public async Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, Guid modificationUser,
+    public async Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, string urlIcono, Guid modificationUser,
         string? testCase = null)
     {
         try
@@ -87,7 +87,7 @@ public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
             // Obtiene el proveedor existente.
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
             // Actualiza los datos del proveedor.
-            proveedor.Update(nombre: nombre, modificationUser: modificationUser);
+            proveedor.Update(nombre: nombre, urlIcono: urlIcono, modificationUser: modificationUser);
 
             // Guarda los cambios.
             await context.SaveChangesAsync();
@@ -247,7 +247,7 @@ public class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
             // Obtiene el producto existente.
             var producto = await ObtenerProductoPorIdAsync(idProducto: idProducto);
             // Actualiza los datos del producto.
-            producto.Update(sku: sku, nombre: nombre, precio: precio, icono: icono, categoria: categoria,
+            producto.Update(sku: sku, nombre: nombre, precio: precio, urlIcono: icono, categoria: categoria,
                 modificationUser: modificationUser);
 
             // Guarda los cambios.

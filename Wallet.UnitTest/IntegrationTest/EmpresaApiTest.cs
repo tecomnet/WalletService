@@ -136,8 +136,8 @@ public class EmpresaApiTest : DatabaseTestFixture
             Nombre = "Producto Linked",
             Sku = "SKU-LINKED",
             Precio = 100,
-            Categoria = "Test",
-            Icono = "icon.png"
+            Categoria = CategoriaEnum.MOVILIDADEnum,
+            UrlIcon = "icon.png"
         };
         var prodRes =
             await client.PostAsync($"/{ApiVersion}/proveedor/{proveedor.Id}/producto", CreateContent(prodReq));

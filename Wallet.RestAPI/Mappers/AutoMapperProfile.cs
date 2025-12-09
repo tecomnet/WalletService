@@ -37,11 +37,7 @@ public class AutoMapperProfile : Profile
         CreateMap<Empresa, EmpresaResult>();
         CreateMap<Estado, EstadoResult>();
         CreateMap<ServicioFavorito, ServicioFavoritoResult>();
-        CreateMap<Proveedor, ProveedorResult>()
-            .ForMember(dest => dest.Categoria,
-                opt => opt.MapFrom(src => "General")) // Default value as property removed
-            .ForMember(dest => dest.UrlIcono, opt => opt.Ignore()); // Property removed from Domain
-
+        CreateMap<Proveedor, ProveedorResult>();
         CreateMap<Producto, ProductoResult>();
         CreateMap<Usuario, UsuarioResult>();
         CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();

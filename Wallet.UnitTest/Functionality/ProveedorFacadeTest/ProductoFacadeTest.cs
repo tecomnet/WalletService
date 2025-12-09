@@ -56,7 +56,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
             Assert.True(condition: producto.Sku == sku &&
                                    producto.Nombre == nombre &&
                                    producto.Precio == (decimal)precio &&
-                                   producto.Icono == icono &&
+                                   producto.UrlIcono == icono &&
                                    producto.Categoria == categoria &&
                                    producto.CreationUser == SetupConfig.UserId);
 
@@ -67,7 +67,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
             Assert.True(condition: productoContext.Sku == sku &&
                                    productoContext.Nombre == nombre &&
                                    productoContext.Precio == (decimal)precio &&
-                                   productoContext.Icono == icono &&
+                                   productoContext.UrlIcono == icono &&
                                    productoContext.Categoria == categoria &&
                                    productoContext.CreationUser == SetupConfig.UserId);
 
@@ -123,7 +123,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
             Assert.True(condition: producto.Sku == sku &&
                                    producto.Nombre == nombre &&
                                    producto.Precio == (decimal)precio &&
-                                   producto.Icono == icono &&
+                                   producto.UrlIcono == icono &&
                                    producto.Categoria == categoria &&
                                    producto.ModificationUser == SetupConfig.UserId);
 
@@ -133,7 +133,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
             Assert.True(condition: productoContext.Sku == sku &&
                                    productoContext.Nombre == nombre &&
                                    productoContext.Precio == (decimal)precio &&
-                                   productoContext.Icono == icono &&
+                                   productoContext.UrlIcono == icono &&
                                    productoContext.Categoria == categoria &&
                                    productoContext.ModificationUser == SetupConfig.UserId);
 

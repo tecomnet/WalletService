@@ -35,5 +35,10 @@ namespace Wallet.RestAPI.Models
               /// Enum MOVILIDADEnum for MOVILIDAD
               /// </summary>
               [EnumMember(Value = "MOVILIDAD")]
-              MOVILIDADEnum = 2          }
+              MOVILIDADEnum = 2,
+              /// <summary>
+              /// Enum OTROSEnum for OTROS
+              /// </summary>
+              [EnumMember(Value = "OTROS")]
+              OTROSEnum = 3          }
 }

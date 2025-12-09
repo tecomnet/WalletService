@@ -46,8 +46,8 @@ public class ProductoApiTest : DatabaseTestFixture
             Sku = "NETFLIX-PREM",
             Nombre = "Netflix Premium",
             Precio = 15.99m,
-            Icono = "https://netflix.com/icon.png",
-            Categoria = "Streaming"
+            UrlIcon = "https://netflix.com/icon.png",
+            Categoria = CategoriaEnum.SERVICIOSEnum
         };
         var content = CreateContent(body: request);
 
@@ -98,8 +98,8 @@ public class ProductoApiTest : DatabaseTestFixture
             Sku = "NETFLIX-STD",
             Nombre = "Netflix Standard",
             Precio = 10.99m,
-            Icono = "https://netflix.com/icon.png",
-            Categoria = "Streaming"
+            UrlIcon = "https://netflix.com/icon.png",
+            Categoria = CategoriaEnum.SERVICIOSEnum
         };
 
         // Act

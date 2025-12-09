@@ -176,7 +176,7 @@ public class BrokerApiTest : DatabaseTestFixture
             await context.SaveChangesAsync();
             brokerId = broker.Id;
 
-            var proveedor = new Wallet.DOM.Modelos.Proveedor(providerName, broker, Guid.NewGuid());
+            var proveedor = new Wallet.DOM.Modelos.Proveedor(providerName, "https://example.com/icon.png", broker, Guid.NewGuid());
             context.Proveedor.Add(proveedor);
             await context.SaveChangesAsync();
         }

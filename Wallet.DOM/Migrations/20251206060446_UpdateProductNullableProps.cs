@@ -11,7 +11,7 @@ namespace Wallet.DOM.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Icono",
+                name: "UrlIcono",
                 table: "Producto",
                 type: "nvarchar(255)",
                 maxLength: 255,
@@ -35,7 +35,7 @@ namespace Wallet.DOM.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Icono",
+                name: "UrlIcono",
                 table: "Producto",
                 type: "nvarchar(255)",
                 maxLength: 255,

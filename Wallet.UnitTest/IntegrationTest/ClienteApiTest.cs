@@ -54,7 +54,7 @@ public class ClienteApiTest : DatabaseTestFixture
             context.Broker.Add(broker);
             await context.SaveChangesAsync(); // IDs generated
 
-            var proveedor = new Proveedor("Provider " + guid, broker, guid);
+            var proveedor = new Proveedor("Provider " + guid, "https://example.com/icon.png", broker, guid);
             context.Proveedor.Add(proveedor);
             
             var usuario = new Usuario("+52", "55" + new Random().Next(10000000, 99999999), "test" + guid + "@test.com", "Pass123!", EstatusRegistroEnum.RegistroCompletado, guid);

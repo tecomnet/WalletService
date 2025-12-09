@@ -27,6 +27,7 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
             // Call facade method
             var proveedor = await Facade.GuardarProveedorAsync(
                 nombre: nombre,
+                urlIcono: "https://example.com/icon.png",
                 brokerId: brokerId,
                 creationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
@@ -77,6 +78,7 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
             var proveedor = await Facade.ActualizarProveedorAsync(
                 idProveedor: idProveedor,
                 nombre: nombre,
+                urlIcono: "https://example.com/icon.png",
                 modificationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 
