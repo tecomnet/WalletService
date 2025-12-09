@@ -460,6 +460,8 @@ public class ServiceErrorsBuilder
 
     /// <summary>Error: El broker no fue encontrado.</summary>
     public const string BrokerNoEncontrado = "BROKER-NOT-FOUND";
+    public const string BrokerExistente = "BROKER-EXISTENTE";
+    public const string BrokerInactivo = "BROKER-INACTIVO";
 
     /// <summary>
     /// Carga los errores relacionados con la entidad Broker.
@@ -471,6 +473,16 @@ public class ServiceErrorsBuilder
             errorCode: BrokerNoEncontrado,
             message: "El broker no fue encontrado.",
             description: "El broker con id {0} no existe.");
+        // Error de broker existente
+        AddServiceError(
+            errorCode: BrokerExistente,
+            message: "El broker ya existe.",
+            description: "El broker {0} ya existe.");
+        // Error de broker inactivo
+        AddServiceError(
+            errorCode: BrokerInactivo,
+            message: "El broker no está activo.",
+            description: "El broker {0} no está activo. Primero debe activarlo.");
     }
 
     #endregion

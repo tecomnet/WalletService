@@ -46,7 +46,7 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         {
             try
             {
-                return await _context.Broker.Where(b => b.IsActive).ToListAsync();
+                return await _context.Broker.ToListAsync();
             }
             catch (Exception exception) when (exception is not EMGeneralAggregateException)
             {
@@ -62,7 +62,7 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         {
             try
             {
-                var broker = await _context.Broker.FirstOrDefaultAsync(b => b.Id == idBroker && b.IsActive);
+                var broker = await _context.Broker.FirstOrDefaultAsync(b => b.Id == idBroker);
                 if (broker == null)
                 {
                     throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -160,5 +160,46 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
                     exception: exception);
             }
         }
+        
+        
+        
+        #region Metodos privados
+
+        /// <summary>
+        /// Valida si ya existe un broker con el mismo nombre.
+        /// </summary>
+        /// <param name="nombre">Nombre de la broker a validar.</param>
+        /// <param name="id">ID de la broker (opcional, para excluir en actualizaciones).</param>
+        /// <exception cref="EMGeneralAggregateException">Si ya existe un broker con ese nombre.</exception>
+        private void ValidarDuplicidad(string nombre, int id = 0)
+        {
+            // Obtiene estado existente
+            var brokerExiste = _context.Broker.FirstOrDefault(predicate: x => x.Nombre == nombre && x.Id != id);
+            // Duplicado por nombre
+            if (brokerExiste != null)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.BrokerExistente,
+                    dynamicContent: [nombre],
+                    module: this.GetType().Name));
+            }
+        }
+
+        /// <summary>
+        /// Valida si la broker se encuentra activa.
+        /// </summary>
+        /// <param name="broker">La broker a validar.</param>
+        /// <exception cref="EMGeneralAggregateException">Si la broker está inactiva.</exception>
+        private void ValidarIsActive(Broker broker)
+        {
+            if (!broker.IsActive)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.BrokerInactivo,
+                    dynamicContent: [broker.Nombre]));
+            }
+        }
+
+        #endregion
     }
 }
