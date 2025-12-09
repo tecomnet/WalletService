@@ -16,33 +16,27 @@ namespace Wallet.RestAPI.Controllers.Implementation
     public class ConsentimientoUsuarioApiController(
         IConsentimientosUsuarioFacade consentimientosUsuarioFacade,
         IMapper mapper)
-        : ConsentimientoUsuarioApi
+        : ConsentimientoUsuarioApiControllerBase
     {
-        /// <inheritdoc/>
-        public override async Task<IActionResult> PostConsentimientoUsuarioAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int idUsuario, [FromBody] ConsentimientoUsuarioRequest body)
+        /// <inheritdoc />
+        public override async Task<IActionResult> GetConsentimientosUsuarioAsync(string version, int? idUsuario)
+        {
+            var consentimientos = await consentimientosUsuarioFacade.ObtenerUltimosConsentimientosAsync(idUsuario: idUsuario.Value);
+            var result = mapper.Map<List<ConsentimientoUsuarioResult>>(source: consentimientos);
+            return Ok(value: result);
+        }
+
+        /// <inheritdoc />
+        public override async Task<IActionResult> PostConsentimientoUsuarioAsync(string version, int? idUsuario, ConsentimientoUsuarioRequest body)
         {
             var consentimiento = await consentimientosUsuarioFacade.GuardarConsentimientoAsync(
-                idUsuario: idUsuario,
+                idUsuario: idUsuario.Value,
                 tipoDocumento: (TipoDocumentoConsentimiento)body.TipoDocumento!,
                 version: body.Version,
                 creationUser: Guid.Empty); // Assuming creationUser is handled internally or passed via context
 
             var result = mapper.Map<ConsentimientoUsuarioResult>(source: consentimiento);
             return Created(uri: "", value: result);
-        }
-
-        /// <inheritdoc/>
-        public override async Task<IActionResult> GetConsentimientosUsuarioAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int idUsuario)
-        {
-            var consentimientos = await consentimientosUsuarioFacade.ObtenerUltimosConsentimientosAsync(idUsuario: idUsuario);
-            var result = mapper.Map<List<ConsentimientoUsuarioResult>>(source: consentimientos);
-            return Ok(value: result);
         }
     }
 }

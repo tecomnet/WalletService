@@ -12,34 +12,7 @@ using Wallet.RestAPI.Models;
 public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper mapper) : ProductoApiControllerBase
 {
     /// <inheritdoc />
-    public override async Task<IActionResult> ActualizarProducto([FromRoute] [Required] int? idProducto,
-        [FromBody] ProductoRequest body)
-    {
-        if (idProducto == null)
-        {
-            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
-        }
-
-        if (body.Precio == null)
-        {
-            throw new ArgumentNullException(nameof(body.Precio), "El Precio es requerido.");
-        }
-
-        var producto = await proveedorFacade.ActualizarProductoAsync(
-            idProducto: idProducto.Value,
-            sku: body.Sku,
-            nombre: body.Nombre,
-            precio: body.Precio.Value,
-            icono: body.Icono,
-            categoria: body.Categoria,
-            modificationUser: Guid.Empty);
-
-        var result = mapper.Map<ProductoResult>(source: producto);
-        return Ok(value: result);
-    }
-
-    /// <inheritdoc />
-    public override async Task<IActionResult> EliminarProductoAsync([FromRoute] [Required] int? idProducto)
+    public override async Task<IActionResult> DeleteProductoAsync(string version, int? idProducto)
     {
         if (idProducto == null)
         {
@@ -52,7 +25,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> ObtenerProductoPorIdAsync([FromRoute] [Required] int? idProducto)
+    public override async Task<IActionResult> GetProductoAsync(string version, int? idProducto)
     {
         if (idProducto == null)
         {
@@ -64,20 +37,21 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         return Ok(value: result);
     }
 
-    /// <summary>
-    ///  Listar todos los productos
-    /// </summary>
-    /// <returns></returns>
-    public override async Task<IActionResult> ObtenerProductosAsync()
+    /// <inheritdoc />
+    public override async Task<IActionResult> GetProductosPorProveedorAsync(string version, int? idProveedor)
     {
-        var productos = await proveedorFacade.ObtenerProductosAsync();
+        if (idProveedor == null)
+        {
+            throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
+        }
+
+        var productos = await proveedorFacade.ObtenerProductosPorProveedorAsync(proveedorId: idProveedor.Value);
         var response = mapper.Map<List<ProductoResult>>(source: productos);
         return Ok(value: response);
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> CrearProducto([FromRoute] [Required] int? idProveedor,
-        [FromBody] ProductoRequest body)
+    public override async Task<IActionResult> PostProductoAsync(string version, int? idProveedor, ProductoRequest body)
     {
         if (idProveedor == null)
         {
@@ -103,15 +77,41 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> ObtenerProductosPorProveedorAsync([FromRoute] [Required] int? idProveedor)
+    public override async Task<IActionResult> PutActivarProductoAsync(string version, int? idProducto)
     {
-        if (idProveedor == null)
+        if (idProducto == null)
         {
-            throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
         }
 
-        var productos = await proveedorFacade.ObtenerProductosPorProveedorAsync(proveedorId: idProveedor.Value);
-        var response = mapper.Map<List<ProductoResult>>(source: productos);
-        return Ok(value: response);
+        var result =
+            await proveedorFacade.ActivarProductoAsync(idProducto: idProducto.Value, modificationUser: Guid.Empty);
+        return Ok(value: mapper.Map<ProductoResult>(source: result));
+    }
+
+    /// <inheritdoc />
+    public override async Task<IActionResult> PutProductoAsync(string version, int? idProducto, ProductoRequest body)
+    {
+        if (idProducto == null)
+        {
+            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
+        }
+
+        if (body.Precio == null)
+        {
+            throw new ArgumentNullException(nameof(body.Precio), "El Precio es requerido.");
+        }
+
+        var producto = await proveedorFacade.ActualizarProductoAsync(
+            idProducto: idProducto.Value,
+            sku: body.Sku,
+            nombre: body.Nombre,
+            precio: body.Precio.Value,
+            icono: body.Icono,
+            categoria: body.Categoria,
+            modificationUser: Guid.Empty);
+
+        var result = mapper.Map<ProductoResult>(source: producto);
+        return Ok(value: result);
     }
 }

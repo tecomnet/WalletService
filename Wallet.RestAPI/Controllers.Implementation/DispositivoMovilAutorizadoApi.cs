@@ -17,8 +17,8 @@ public class DispositivoMovilAutorizadoApiController(
 {
     /// <inheritdoc/>
     public override async Task<IActionResult> GetDispositivoMovilAutorizadoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
-        [FromRoute, Required] int? idCliente, [FromQuery] string idDispositivo, [FromQuery] string token)
+        string version,
+        int? idCliente, string idDispositivo, string token)
     {
         // Call facade method
         var esDispositivoAutorizado =
@@ -30,15 +30,14 @@ public class DispositivoMovilAutorizadoApiController(
         return Ok(value: esDispositivoAutorizado);
     }
 
-
     /// <inheritdoc/>
     public override async Task<IActionResult> PostDispositivoMovilAutorizadoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
-        [FromRoute, Required] int idCliente, [FromBody] DispositivoMovilAutorizadoRequest body)
+        string version,
+        int? idCliente, DispositivoMovilAutorizadoRequest body)
     {
         // Call facade method
         var dispositivoMovilAutorizado = await dispositivoMovilAutorizadoFacade.GuardarDispositivoAutorizadoAsync(
-            idCliente: idCliente,
+            idCliente: idCliente.Value,
             idDispositivo: body.IdDispositivo,
             token: body.Token,
             nombre: body.Nombre,

@@ -15,15 +15,12 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavoritoFacade, IMapper mapper)
     : ServicioFavoritoApiControllerBase
 {
-    /// <inheritdoc/>
-    public override async Task<IActionResult> DeleteServicioFavoritoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idServicioFavorito)
+    /// <inheritdoc />
+    public override async Task<IActionResult> DeleteServicioFavoritoAsync(string version, int? idServicioFavorito)
     {
         // Call facade method
         var servicio =
-            await servicioFavoritoFacade.EliminarServicioFavoritoAsync(idServicioFavorito: idServicioFavorito,
+            await servicioFavoritoFacade.EliminarServicioFavoritoAsync(idServicioFavorito: idServicioFavorito.Value,
                 modificationUser: Guid.Empty);
         // Map to response model
         var response = mapper.Map<ServicioFavoritoResult>(source: servicio);
@@ -31,14 +28,11 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
         return Ok(value: response);
     }
 
-    /// <inheritdoc/>
-    public override async Task<IActionResult> GetServiciosFavoritosAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idCliente)
+    /// <inheritdoc />
+    public override async Task<IActionResult> GetServiciosFavoritosAsync(string version, int? idCliente)
     {
         // Call facade method
-        var servicios = await servicioFavoritoFacade.ObtenerServiciosFavoritosPorClienteAsync(clienteId: idCliente);
+        var servicios = await servicioFavoritoFacade.ObtenerServiciosFavoritosPorClienteAsync(clienteId: idCliente.Value);
         // Map to response model
         var response = mapper.Map<List<ServicioFavoritoResult>>(source: servicios);
         // Return OK response
@@ -47,9 +41,8 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PostServicioFavoritoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
         string version,
-        [FromBody] ServicioFavoritoRequest body)
+        ServicioFavoritoRequest body)
     {
         // Call facade method
         var servicio = await servicioFavoritoFacade.GuardarServicioFavoritoAsync(
@@ -64,15 +57,12 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
         return Created(uri: $"/{version}/servicioFavorito/{servicio.Id}", value: result);
     }
 
-    /// <inheritdoc/>
-    public override async Task<IActionResult> PutServicioFavoritoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idServicioFavorito, [FromBody] ServicioFavoritoRequest body)
+    /// <inheritdoc />
+    public override async Task<IActionResult> PutServicioFavoritoAsync(string version, int? idServicioFavorito, ServicioFavoritoRequest body)
     {
         // Call facade method
         var servicio = await servicioFavoritoFacade.ActualizarServicioFavoritoAsync(
-            idServicioFavorito: idServicioFavorito,
+            idServicioFavorito: idServicioFavorito.Value,
             alias: body.Alias,
             numeroReferencia: body.NumeroReferencia,
             modificationUser: Guid.Empty);

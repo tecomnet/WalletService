@@ -13,15 +13,23 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// </summary>
 public class DireccionApiController(IDireccionFacade direccionFacade, IMapper mapper) : DireccionApiControllerBase
 {
-    /// <inheritdoc/>
-    public override async Task<IActionResult> PutDireccionAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idCliente, [FromBody] DireccionUpdateRequest body)
+    /// <inheritdoc />
+    public override async Task<IActionResult> GetDireccionAsync(string version, int? idCliente)
+    {
+        // Call facade method
+        var direccion = await direccionFacade.ObtenerDireccionPorClienteIdAsync(idCliente: idCliente.Value);
+        // Map to response model
+        var response = mapper.Map<DireccionResult>(source: direccion);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc />
+    public override async Task<IActionResult> PutDireccionAsync(string version, int? idCliente, DireccionUpdateRequest body)
     {
         // Call facade method
         var direccion = await direccionFacade.ActualizarDireccionCliente(
-            idCliente: idCliente,
+            idCliente: idCliente.Value,
             codigoPostal: body.CodigoPostal,
             municipio: body.Municipio,
             colonia: body.Colonia,
@@ -30,21 +38,6 @@ public class DireccionApiController(IDireccionFacade direccionFacade, IMapper ma
             numeroInterior: body.NumeroInterior,
             referencia: body.Referencia,
             modificationUser: Guid.Empty);
-        // Map to response model
-        var response = mapper.Map<DireccionResult>(source: direccion);
-        // Return OK response
-        return Ok(value: response);
-    }
-
-
-    /// <inheritdoc/>
-    public override async Task<IActionResult> GetDireccionAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idCliente)
-    {
-        // Call facade method
-        var direccion = await direccionFacade.ObtenerDireccionPorClienteIdAsync(idCliente: idCliente);
         // Map to response model
         var response = mapper.Map<DireccionResult>(source: direccion);
         // Return OK response

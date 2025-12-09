@@ -1050,7 +1050,7 @@ paths:
       - $ref: '#/components/parameters/version'
     post:
       summary: Pre-registro de usuario
-      operationId: PostUsuarioPreRegistro
+      operationId: PostPreRegistro
       responses:
         '201':
           description: Created
@@ -1085,7 +1085,7 @@ paths:
     put:
       summary: Confirmar
       description: Confirma el número de teléfono o correo electrónico
-      operationId: Confirmar
+      operationId: PutConfirmar
       requestBody:
         content:
           application/json:
@@ -1099,6 +1099,12 @@ paths:
             application/json:
               schema:
                 type: boolean
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
       tags:
         - Registro
   '/{version}/registro/{idUsuario}/datosCliente':
@@ -1113,15 +1119,19 @@ paths:
           format: int32
     post:
       summary: Completa los datos del cliente
-      operationId: PutDatosCliente
+      operationId: PostDatosCliente
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsuarioResult'
         '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
           $ref: '#/components/responses/HTTP_Error_400'
       description: Completa los datos personales del cliente
       requestBody:
@@ -1143,7 +1153,7 @@ paths:
           format: int32
     put:
       summary: Registra el correo electronico
-      operationId: PostRegistrarCorreo
+      operationId: PutRegistrarCorreo
       responses:
         '200':
           description: OK
@@ -1152,6 +1162,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UsuarioResult'
         '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
           $ref: '#/components/responses/HTTP_Error_400'
       description: Registra el correo electronico del usuario
       requestBody:
@@ -1171,17 +1185,21 @@ paths:
         schema:
           type: integer
           format: int32
-    put:
+    post:
       summary: Registra datos biometricos
       operationId: PostRegistrarBiometricos
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsuarioResult'
         '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
           $ref: '#/components/responses/HTTP_Error_400'
       description: Registra los datos biometricos del usuario
       requestBody:
@@ -1205,13 +1223,17 @@ paths:
       summary: Acepta terminos y condiciones
       operationId: PostAceptarTerminos
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsuarioResult'
         '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
           $ref: '#/components/responses/HTTP_Error_400'
       description: Registra la aceptacion de terminos y condiciones
       requestBody:
@@ -1233,7 +1255,7 @@ paths:
           format: int32
     put:
       summary: Completa el registro
-      operationId: PostCompletarRegistro
+      operationId: PutCompletarRegistro
       responses:
         '200':
           description: OK
@@ -1242,6 +1264,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/UsuarioResult'
         '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
           $ref: '#/components/responses/HTTP_Error_400'
       description: Finaliza el proceso de registro estableciendo la contraseña
       requestBody:
@@ -1288,30 +1314,6 @@ paths:
         required: true
         schema:
           type: integer
-    post:
-      summary: Guarda contraseña
-      operationId: PostUsuarioContrasena
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Agrega contraseña
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContrasenaRequest'
-      tags:
-        - Usuario
     put:
       summary: Actualiza contraseña
       operationId: PutUsuarioContrasena
@@ -1791,15 +1793,6 @@ components:
         - codigoPais
         - telefono
         - estatus
-    TokenResult:
-      title: TokenResult
-      type: object
-      description: Estructura para el token de acceso
-      properties:
-        token:
-          type: string
-      required:
-        - token
     PreRegistroRequest:
       title: PreRegistroRequest
       type: object
@@ -2282,21 +2275,6 @@ components:
         - idDispositivo
         - nombre
         - caracteristicas
-    ContrasenaRequest:
-      title: ContrasenaRequest
-      x-stoplight:
-        id: j2ftnp0wbf13n
-      type: object
-      description: Estructura para guardar la contraseña del cliente
-      properties:
-        contrasena:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-      required:
-        - contrasena
     ContrasenaUpdateRequest:
       title: ContrasenaUpdateRequest
       x-stoplight:

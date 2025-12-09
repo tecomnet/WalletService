@@ -18,17 +18,20 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     : ClienteApiControllerBase
 {
     // TODO EMD: PENDIENTE IMPLEMENTAR JWT PARA EL USUSARIO QUE REALIZA LA OPERACION
-
-
-    /// <inheritdoc/>
-    [Authorize]
-    public override async Task<IActionResult> GetClienteAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idCliente)
+    public override async Task<IActionResult> DeleteClienteAsync(string version, int? idCliente)
     {
         // Call facade method
-        var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
+        var cliente = await clienteFacade.EliminarClienteAsync(idCliente: idCliente.Value, modificationUser: Guid.Empty);
+        // Map to response model
+        var response = mapper.Map<ClienteResult>(source: cliente);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    public override async Task<IActionResult> GetClienteAsync(string version, int? idCliente)
+    {
+        // Call facade method
+        var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente.Value);
         // Map to response model
         var response = mapper.Map<ClienteResult>(source: cliente);
         // Return OK response
@@ -38,7 +41,6 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     /// <inheritdoc/>
     [Authorize]
     public override async Task<IActionResult> GetClientesAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
         string version)
     {
         // Call facade method
@@ -49,50 +51,26 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         return Ok(value: response);
     }
 
-    /// <inheritdoc/>
-    [Authorize]
-    public override async Task<IActionResult> DeleteClienteAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idCliente)
+    public override async Task<IActionResult> GetServiciosFavoritosPorClienteAsync(string version, int? idCliente)
     {
         // Call facade method
-        var cliente = await clienteFacade.EliminarClienteAsync(idCliente: idCliente, modificationUser: Guid.Empty);
-        // Map to response model
-        var response = mapper.Map<ClienteResult>(source: cliente);
-        // Return OK response
-        return Ok(value: response);
-    }
-
-    /// <inheritdoc/>
-    [Authorize]
-    public override async Task<IActionResult> PutActivarClienteAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idCliente)
-    {
-        // Call facade method
-        var cliente = await clienteFacade.ActivarClienteAsync(idCliente: idCliente, modificationUser: Guid.Empty);
-        // Map to response model
-        var response = mapper.Map<ClienteResult>(source: cliente);
-        // Return OK response
-        return Ok(value: response);
-    }
-
-    /// <inheritdoc/>
-    [Authorize]
-    public override async Task<IActionResult> GetServiciosFavoritosPorClienteAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required]
-        string version,
-        [FromRoute, Required] int idCliente)
-    {
-        // Call facade method
-        var serviciosFavoritos = await clienteFacade.ObtenerServiciosFavoritosAsync(idCliente: idCliente);
+        var serviciosFavoritos = await clienteFacade.ObtenerServiciosFavoritosAsync(idCliente: idCliente.Value);
         // Map to response model
         var response = mapper.Map<List<ServicioFavoritoResult>>(source: serviciosFavoritos);
         // Return OK response
         return Ok(value: response);
     }
+
+    public override async Task<IActionResult> PutActivarClienteAsync(string version, int? idCliente)
+    {
+        // Call facade method
+        var cliente = await clienteFacade.ActivarClienteAsync(idCliente: idCliente.Value, modificationUser: Guid.Empty);
+        // Map to response model
+        var response = mapper.Map<ClienteResult>(source: cliente);
+        // Return OK response
+        return Ok(value: response);
+    }
+    
 }
 
 

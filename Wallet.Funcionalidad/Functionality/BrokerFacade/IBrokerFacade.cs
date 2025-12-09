@@ -44,6 +44,14 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         /// <param name="modificationUser">Usuario que elimina</param>
         /// <returns>El broker eliminado</returns>
         Task<Broker> EliminarBrokerAsync(int idBroker, Guid modificationUser);
+        
+        /// <summary>
+        /// Elimina (lógicamente) un broker.
+        /// </summary>
+        /// <param name="idBroker">ID del broker</param>
+        /// <param name="modificationUser">Usuario que elimina</param>
+        /// <returns>El broker eliminado</returns>
+        Task<Broker> ActivarBrokerAsync(int idBroker, Guid modificationUser);
 
         /// <summary>
         /// Obtiene los proveedores asociados a un broker.

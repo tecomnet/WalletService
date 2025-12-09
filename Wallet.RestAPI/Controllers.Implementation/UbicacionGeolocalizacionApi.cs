@@ -15,10 +15,8 @@ public class UbicacionApiController(IUbicacionGeolocalizacionFacade ubicacionFac
     : UbicacionGeolocalizacionApiControllerBase
 {
     // TODO EMD: PENDIENTE IMPLEMENTAR get de ubicacion
-    /// <inheritdoc/>
-    public override async Task<IActionResult> PostUbicacionAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
-        [FromRoute, Required] int idCliente, [FromBody] UbicacionRequest body)
+    /// <inheritdoc />
+    public override async Task<IActionResult> PostUbicacionAsync(string version, int? idCliente, UbicacionRequest body)
     {
         // Obtienes el valor como entero de forma segura.
         int dispositivo = (int)body.Dispositivo;
@@ -31,7 +29,7 @@ public class UbicacionApiController(IUbicacionGeolocalizacionFacade ubicacionFac
 
         // Call facade method
         var ubicacion = await ubicacionFacade.GuardarUbicacionGeolocalizacionAsync(
-            idCliente: idCliente,
+            idCliente: idCliente.Value,
             latitud: body.Latitud.Value,
             longitud: body.Longitud.Value,
             dispositivo: (DOM.Enums.Dispositivo)body.Dispositivo,

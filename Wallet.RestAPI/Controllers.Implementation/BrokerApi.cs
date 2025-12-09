@@ -17,7 +17,40 @@ namespace Wallet.RestAPI.Controllers.Implementation
     public class BrokerApiController(IBrokerFacade brokerFacade, IMapper mapper) : BrokerApiControllerBase
     {
         /// <inheritdoc />
-        public override async Task<IActionResult> CrearBroker([FromBody] BrokerRequest body)
+        public override async Task<IActionResult> DeleteBrokerAsync(string version, int? idBroker)
+        {
+            if (idBroker == null)
+            {
+                throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
+            }
+
+            await brokerFacade.EliminarBrokerAsync(idBroker.Value, Guid.Empty);
+            return NoContent();
+        }
+
+        /// <inheritdoc />
+        public override async Task<IActionResult> GetBrokersAsync(string version)
+        {
+            var brokers = await brokerFacade.ObtenerBrokersAsync();
+            var result = mapper.Map<List<BrokerResult>>(brokers);
+            return Ok(result);
+        }
+
+        /// <inheritdoc />
+        public override async Task<IActionResult> GetProveedoresPorBrokerAsync(string version, int? idBroker)
+        {
+            if (idBroker == null)
+            {
+                throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
+            }
+
+            var proveedores = await brokerFacade.ObtenerProveedoresPorBrokerAsync(idBroker.Value);
+            var result = mapper.Map<List<ProveedorResult>>(proveedores);
+            return Ok(result);
+        }
+
+        /// <inheritdoc />
+        public override async Task<IActionResult> PostBrokerAsync(string version, BrokerRequest body)
         {
             var broker = await brokerFacade.GuardarBrokerAsync(
                 nombre: body.Nombre,
@@ -28,29 +61,19 @@ namespace Wallet.RestAPI.Controllers.Implementation
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> ObtenerBrokersAsync()
-        {
-            var brokers = await brokerFacade.ObtenerBrokersAsync();
-            var result = mapper.Map<List<BrokerResult>>(brokers);
-            return Ok(result);
-        }
-
-        /// <inheritdoc />
-        public override async Task<IActionResult> ObtenerBrokerPorIdAsync([FromRoute] [Required] int? idBroker)
+        public override async Task<IActionResult> PutActivarBrokerAsync(string version, int? idBroker)
         {
             if (idBroker == null)
             {
                 throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
             }
 
-            var broker = await brokerFacade.ObtenerBrokerPorIdAsync(idBroker.Value);
-            var result = mapper.Map<BrokerResult>(broker);
-            return Ok(result);
+            await brokerFacade.ActivarBrokerAsync(idBroker.Value, Guid.Empty);
+            return NoContent();
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> ActualizarBroker([FromRoute] [Required] int? idBroker,
-            [FromBody] BrokerRequest body)
+        public override async Task<IActionResult> PutBrokerAsync(string version, int? idBroker, BrokerRequest body)
         {
             if (idBroker == null)
             {
@@ -63,31 +86,6 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 modificationUser: Guid.Empty);
 
             var result = mapper.Map<BrokerResult>(broker);
-            return Ok(result);
-        }
-
-        /// <inheritdoc />
-        public override async Task<IActionResult> EliminarBrokerAsync([FromRoute] [Required] int? idBroker)
-        {
-            if (idBroker == null)
-            {
-                throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
-            }
-
-            await brokerFacade.EliminarBrokerAsync(idBroker.Value, Guid.Empty);
-            return NoContent();
-        }
-
-        /// <inheritdoc />
-        public override async Task<IActionResult> ObtenerProveedoresPorBrokerAsync([FromRoute] [Required] int? idBroker)
-        {
-            if (idBroker == null)
-            {
-                throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
-            }
-
-            var proveedores = await brokerFacade.ObtenerProveedoresPorBrokerAsync(idBroker.Value);
-            var result = mapper.Map<List<ProveedorResult>>(proveedores);
             return Ok(result);
         }
     }

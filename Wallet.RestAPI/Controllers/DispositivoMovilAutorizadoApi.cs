@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -10,18 +10,21 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Wallet.RestAPI.Attributes;
+using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
-{
+{ 
     /// <summary>
-    /// Base controller for DispositivoMovilAutorizado operations.
+    /// 
     /// </summary>
     [ApiController]
-    public abstract class DispositivoMovilAutorizadoApiControllerBase : ControllerBase
+    public abstract class DispositivoMovilAutorizadoApiControllerBase : ServiceBaseController
     {
         /// <summary>
         /// Obtiene el dispositivo movil autroizado
@@ -36,19 +39,15 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route(template: "/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
+        [Route("/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "GetDispositivoMovilAutorizado")]
+        [SwaggerOperation("GetDispositivoMovilAutorizado")]
         [SwaggerResponse(statusCode: 200, type: typeof(bool?), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetDispositivoMovilAutorizadoAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-            [FromRoute] [Required] int? idCliente, [FromQuery] string idDispositivo, [FromQuery] string token);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetDispositivoMovilAutorizadoAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute] [Required] int? idCliente, [FromQuery] string idDispositivo,
+            [FromQuery] string token);
 
         /// <summary>
         /// Guarda dispositivo movil autorizado
@@ -58,17 +57,18 @@ namespace Wallet.RestAPI.Controllers
         /// <param name="idCliente">Id del cliente</param>
         /// <param name="body"></param>
         /// <response code="201">Created</response>
-        /// <response code="400">Bad Request</response>
-        /// <response code="401">Unauthorized</response>
-        /// <response code="403">Forbidden</response>
-        /// <response code="404">Not Found</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
         [HttpPost]
-        [Route(template: "/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
+        [Route("/{version:apiVersion}/dispositivoMovilAutorizado/{idCliente}")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "PostDispositivoMovilAutorizado")]
+        [SwaggerOperation("PostDispositivoMovilAutorizado")]
         [SwaggerResponse(statusCode: 201, type: typeof(DispositivoMovilAutorizadoResult), description: "Created")]
-        public abstract Task<IActionResult> PostDispositivoMovilAutorizadoAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-            [FromRoute] [Required] int idCliente, [FromBody] DispositivoMovilAutorizadoRequest body);
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PostDispositivoMovilAutorizadoAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute] [Required] int? idCliente,
+            [FromBody] DispositivoMovilAutorizadoRequest body);
     }
 }

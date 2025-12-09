@@ -120,6 +120,23 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
                     exception: exception);
             }
         }
+        public async Task<Broker> ActivarBrokerAsync(int idBroker, Guid modificationUser)
+        {
+            try
+            {
+                var broker = await ObtenerBrokerPorIdAsync(idBroker);
+                broker.Activate(modificationUser);
+                await _context.SaveChangesAsync();
+                return broker;
+            }
+            catch (Exception exception) when (exception is not EMGeneralAggregateException)
+            {
+                throw GenericExceptionManager.GetAggregateException(
+                    serviceName: DomCommon.ServiceName,
+                    module: this.GetType().Name,
+                    exception: exception);
+            }
+        }
 
         /// <inheritdoc />
         public async Task<List<Proveedor>> ObtenerProveedoresPorBrokerAsync(int idBroker)

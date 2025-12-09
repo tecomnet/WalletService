@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -11,142 +11,140 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Wallet.RestAPI.Attributes;
+using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
-{
+{ 
     /// <summary>
-    /// Base controller for ProveedorServicio
+    /// 
     /// </summary>
     [ApiController]
-    public abstract class ProveedorApiControllerBase : ControllerBase
+    public abstract class ProveedorApiControllerBase : ServiceBaseController
     {
         /// <summary>
-        /// Actualizar un proveedor de servicio existente
+        /// Elimina un proveedor de servicio
         /// </summary>
-        /// <remarks>Actualiza los detalles de un proveedor de servicio específico.</remarks>
-        /// <param name="idProveedor">ID del proveedor de servicio a actualizar</param>
-        /// <param name="body">Objeto con los datos actualizados del proveedor</param>
-        /// <response code="200">Proveedor de servicio actualizado exitosamente</response>
-        /// <response code="400">Datos inválidos suministrados</response>
-        /// <response code="401">No autorizado</response>
-        /// <response code="403">Prohibido</response>
-        /// <response code="404">Proveedor de servicio no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
-        [HttpPut]
-        [Route(template: "/{version:apiVersion}/proveedor/{idProveedor}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "Actualizar un proveedor de servicio existente",
-            description: "Actualiza los detalles de un proveedor de servicio específico.")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ProveedorResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Bad Request")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "No autorizado")]
-        [SwaggerResponse(statusCode: 403, type: typeof(InlineResponse400), description: "Prohibido")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Proveedor de servicio no encontrado")]
-        [SwaggerResponse(statusCode: 500, type: typeof(InlineResponse400), description: "Internal Server Error")]
-        public abstract Task<IActionResult> ActualizarProveedorServicio(
-            [FromRoute] [Required] int? idProveedor, [FromBody] ProveedorRequest body);
-
-        /// <summary>
-        /// Eliminar un proveedor de servicio
-        /// </summary>
-        /// <remarks>Elimina un proveedor de servicio del sistema.</remarks>
-        /// <param name="idProveedor">ID del proveedor de servicio a eliminar</param>
-        /// <response code="204">Proveedor de servicio eliminado exitosamente</response>
-        /// <response code="400">Datos inválidos suministrados</response>
-        /// <response code="401">No autorizado</response>
-        /// <response code="403">Prohibido</response>
-        /// <response code="404">Proveedor de servicio no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
+        /// <remarks>Elimina un proveedor de servicio</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idProveedor">Id del proveedor de servicio</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
         [HttpDelete]
-        [Route(template: "/{version:apiVersion}/proveedor/{idProveedor}")]
+        [Route("/{version:apiVersion}/proveedor/{idProveedor}")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "Eliminar un proveedor de servicio",
-            description: "Elimina un proveedor de servicio del sistema.")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Datos inválidos suministrados")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "No autorizado")]
-        [SwaggerResponse(statusCode: 403, type: typeof(InlineResponse400), description: "Prohibido")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Proveedor de servicio no encontrado")]
-        [SwaggerResponse(statusCode: 500, type: typeof(InlineResponse400), description: "Error interno del servidor")]
-        public abstract Task<IActionResult> EliminarProveedorServicioAsync(
-            [FromRoute] [Required] int? idProveedor);
+        [SwaggerOperation("DeleteProveedor")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ProveedorResult), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> DeleteProveedorAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute] [Required] int? idProveedor);
 
         /// <summary>
-        /// Obtener proveedor de servicio por ID
+        /// Obtiene un proveedor de servicio por id
         /// </summary>
-        /// <remarks>Devuelve los detalles de un proveedor de servicio específico.</remarks>
-        /// <param name="idProveedor">ID del proveedor de servicio a consultar</param>
-        /// <response code="200">Detalles del proveedor de servicio</response>
-        /// <response code="400">Datos inválidos suministrados</response>
-        /// <response code="401">No autorizado</response>
-        /// <response code="403">Prohibido</response>
-        /// <response code="404">Proveedor de servicio no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
+        /// <remarks>Obtiene un proveedor de servicio por id</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idProveedor">Id del proveedor de servicio</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route(template: "/{version:apiVersion}/proveedor/{idProveedor}")]
+        [Route("/{version:apiVersion}/proveedor/{idProveedor}")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "Obtener proveedor de servicio por ID",
-            description: "Devuelve los detalles de un proveedor de servicio específico.")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ProveedorResult),
-            description: "Detalles del proveedor de servicio")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Datos inválidos suministrados")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "No autorizado")]
-        [SwaggerResponse(statusCode: 403, type: typeof(InlineResponse400), description: "Prohibido")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Proveedor de servicio no encontrado")]
-        [SwaggerResponse(statusCode: 500, type: typeof(InlineResponse400), description: "Error interno del servidor")]
-        public abstract Task<IActionResult> ObtenerProveedorServicioPorIdAsync(
-            [FromRoute] [Required] int? idProveedor);
+        [SwaggerOperation("GetProveedor")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ProveedorResult), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetProveedorAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute] [Required] int? idProveedor);
 
         /// <summary>
-        /// Listar todos los proveedores de servicio
+        /// Obtiene todos los proveedores de servicio
         /// </summary>
-        /// <remarks>Devuelve una lista de todos los proveedores de servicio registrados.</remarks>
-        /// <response code="200">Lista de proveedores de servicio</response>
-        /// <response code="401">No autorizado</response>
-        /// <response code="403">Prohibido</response>
-        /// <response code="500">Error interno del servidor</response>
+        /// <remarks>Obtiene todos los proveedores de servicio</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route(template: "/{version:apiVersion}/proveedor")]
+        [Route("/{version:apiVersion}/proveedor")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "Listar todos los proveedores de servicio",
-            description: "Devuelve una lista de todos los proveedores de servicio registrados.")]
+        [SwaggerOperation("GetProveedoresServicio")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<ProveedorResult>), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Bad Request")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "No autorizado")]
-        [SwaggerResponse(statusCode: 403, type: typeof(InlineResponse400), description: "Prohibido")]
-        [SwaggerResponse(statusCode: 500, type: typeof(InlineResponse400), description: "Internal Server Error")]
-        public abstract Task<IActionResult> ObtenerProveedoresAsync();
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetProveedoresServicioAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
 
         /// <summary>
-        /// Crear un nuevo proveedor de servicio
+        /// Guarda un proveedor de servicio
         /// </summary>
-        /// <remarks>Registra un nuevo proveedor de servicio en el sistema.</remarks>
-        /// <param name="body">Objeto con los datos del nuevo proveedor</param>
-        /// <response code="201">Proveedor de servicio creado exitosamente</response>
-        /// <response code="400">Datos inválidos suministrados</response>
-        /// <response code="401">No autorizado</response>
-        /// <response code="403">Prohibido</response>
-        /// <response code="500">Error interno del servidor</response>
+        /// <remarks>Guarda un proveedor de servicio</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="body"></param>
+        /// <response code="201">Created</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
         [HttpPost]
-        [Route(template: "/{version:apiVersion}/proveedor")]
+        [Route("/{version:apiVersion}/proveedor")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "Crear un nuevo proveedor de servicio",
-            description: "Registra un nuevo proveedor de servicio en el sistema.")]
-        [SwaggerResponse(statusCode: 201, type: typeof(ProveedorResult),
-            description: "Proveedor de servicio creado exitosamente")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Datos inválidos suministrados")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "No autorizado")]
-        [SwaggerResponse(statusCode: 403, type: typeof(InlineResponse400), description: "Prohibido")]
-        [SwaggerResponse(statusCode: 500, type: typeof(InlineResponse400), description: "Error interno del servidor")]
-        public abstract Task<IActionResult> CrearProveedor([FromBody] ProveedorRequest body);
+        [SwaggerOperation("PostProveedor")]
+        [SwaggerResponse(statusCode: 201, type: typeof(ProveedorResult), description: "Created")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PostProveedorAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromBody] ProveedorRequest body);
+
+        /// <summary>
+        /// Activa un proveedor de servicio
+        /// </summary>
+        /// <remarks>Activa un proveedor de servicio</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idProveedor">Id del proveedor de servicio</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpPut]
+        [Route("/{version:apiVersion}/proveedor/{idProveedor}/activar")]
+        [ValidateModelState]
+        [SwaggerOperation("PutActivarProveedor")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ProveedorResult), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PutActivarProveedorAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute] [Required] int? idProveedor);
+
+        /// <summary>
+        /// Actualiza un proveedor de servicio
+        /// </summary>
+        /// <remarks>Actualiza un proveedor de servicio</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idProveedor">Id del proveedor de servicio</param>
+        /// <param name="body"></param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpPut]
+        [Route("/{version:apiVersion}/proveedor/{idProveedor}")]
+        [ValidateModelState]
+        [SwaggerOperation("PutProveedor")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ProveedorResult), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PutProveedorAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromRoute] [Required] int? idProveedor, [FromBody] ProveedorRequest body);
     }
 }

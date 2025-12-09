@@ -16,7 +16,7 @@ public class EstadoApiController(IEstadoFacade estadoFacade, IMapper mapper) : E
 {
     /// <inheritdoc/>
     public override async Task<IActionResult> GetEstadosAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version)
+        string version)
     {
         var estados = await estadoFacade.ObtenerTodosAsync();
         var response = mapper.Map<List<EstadoResult>>(source: estados);
@@ -25,8 +25,8 @@ public class EstadoApiController(IEstadoFacade estadoFacade, IMapper mapper) : E
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PostEstadoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
-        [FromBody] EstadoRequest body)
+        string version,
+        EstadoRequest body)
     {
         var estado = await estadoFacade.GuardarEstadoAsync(nombre: body.Nombre, creationUser: Guid.Empty);
         var response = mapper.Map<EstadoResult>(source: estado);
@@ -35,8 +35,8 @@ public class EstadoApiController(IEstadoFacade estadoFacade, IMapper mapper) : E
 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutEstadoAsync(
-        [FromRoute, RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version,
-        [FromRoute, Required] int? idEstado, [FromBody] EstadoRequest body)
+        string version,
+        int? idEstado, EstadoRequest body)
     {
         var estado = await estadoFacade.ActualizaEstadoAsync(idEstado: idEstado.Value, nombre: body.Nombre,
             modificationUser: Guid.Empty);
