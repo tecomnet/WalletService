@@ -37,6 +37,11 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         return Ok(value: result);
     }
 
+    public override async Task<IActionResult> GetProductosAsync(string version)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <inheritdoc />
     public override async Task<IActionResult> GetProductosPorProveedorAsync(string version, int? idProveedor)
     {
@@ -82,6 +87,11 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         var result =
             await proveedorFacade.ActivarProductoAsync(idProducto: idProducto.Value, modificationUser: Guid.Empty);
         return Ok(value: mapper.Map<ProductoResult>(source: result));
+    }
+
+    public override async Task<IActionResult> PutActualizarProveedorAsync(string version, int? idProducto, int? body)
+    {
+        throw new NotImplementedException();
     }
 
     /// <inheritdoc />
