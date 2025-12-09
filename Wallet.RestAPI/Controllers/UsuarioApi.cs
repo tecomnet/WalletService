@@ -24,7 +24,7 @@ namespace Wallet.RestAPI.Controllers
     /// 
     /// </summary>
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public abstract class UsuarioApiControllerBase : ServiceBaseController
     {
         /// <summary>
