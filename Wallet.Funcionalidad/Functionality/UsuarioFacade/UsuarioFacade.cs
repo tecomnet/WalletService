@@ -261,7 +261,7 @@ public class UsuarioFacade(
     }
 
     /// <inheritdoc />
-    public async Task<Usuario> GuardarUsuarioPreRegistroAsync(string codigoPais, string telefono, Guid creationUser,
+    public async Task<Usuario> GuardarUsuarioPreRegistroAsync(string codigoPais, string telefono,
         string? testCase = null)
     {
         try
@@ -286,11 +286,11 @@ public class UsuarioFacade(
                 var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(
                     codigoPais: codigoPais,
                     telefono: telefono,
-                    creationUser: creationUser,
+                    creationUser: usuario.CreationUser,
                     testCase: testCase);
                 // Agrega el código de verificación.
                 usuario.AgregarVerificacion2Fa(verificacion: verificacion2Fa,
-                    modificationUser: creationUser);
+                    modificationUser: usuario.CreationUser);
             }
             else
             {
@@ -301,19 +301,19 @@ public class UsuarioFacade(
                     correoElectronico: null,
                     contrasena: null,
                     estatus: EstatusRegistroEnum.PreRegistro,
-                    creationUser: creationUser,
+                    creationUser: Guid.NewGuid(),
                     testCase: testCase);
                 await context.Usuario.AddAsync(entity: usuario);
                 // Genera código de verificación y envía por Twilio service.
                 var verificacion2Fa = await GeneraCodigoVerificacionTwilio2FASMSAsync(
                     codigoPais: codigoPais,
                     telefono: telefono,
-                    creationUser: creationUser,
+                    creationUser: usuario.CreationUser,
                     testCase: testCase);
                 // Agrega el código de verificación.
                 usuario.AgregarVerificacion2Fa(
                     verificacion: verificacion2Fa,
-                    modificationUser: creationUser);
+                    modificationUser: usuario.CreationUser);
             }
 
             // Guardar cambios.

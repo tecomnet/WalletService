@@ -154,15 +154,13 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
             var usuario = await Facade.GuardarUsuarioPreRegistroAsync(
                 codigoPais: codigoPais,
                 telefono: telefono,
-                creationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 
             // Assert user created
             Assert.NotNull(usuario);
             // Assert user properties
             Assert.True(condition: usuario.CodigoPais == codigoPais &&
-                                   usuario.Telefono == telefono &&
-                                   usuario.CreationUser == SetupConfig.UserId);
+                                   usuario.Telefono == telefono);
 
             // Get the user from context
             var usuarioContext = await Context.Usuario
@@ -172,8 +170,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
             Assert.NotNull(usuarioContext);
             // Assert user properties
             Assert.True(condition: usuarioContext.CodigoPais == codigoPais &&
-                                   usuarioContext.Telefono == telefono &&
-                                   usuarioContext.CreationUser == SetupConfig.UserId);
+                                   usuarioContext.Telefono == telefono);
             // Assert successful test
             Assert.True(condition: success);
         }

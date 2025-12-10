@@ -1,16 +1,17 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
 /// <summary>
 /// Implementation of the DispositivoMovilAutorizado API controller.
 /// </summary>
+[Authorize]
 public class DispositivoMovilAutorizadoApiController(
     IDispositivoMovilAutorizadoFacade dispositivoMovilAutorizadoFacade,
     IMapper mapper) : DispositivoMovilAutorizadoApiControllerBase
@@ -42,7 +43,7 @@ public class DispositivoMovilAutorizadoApiController(
             token: body.Token,
             nombre: body.Nombre,
             caracteristicas: body.Caracteristicas,
-            creationUser: Guid.Empty);
+            creationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<DispositivoMovilAutorizadoResult>(source: dispositivoMovilAutorizado);
         // Return OK response

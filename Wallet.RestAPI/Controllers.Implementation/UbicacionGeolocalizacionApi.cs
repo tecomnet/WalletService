@@ -1,16 +1,18 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
 /// <summary>
 /// Implementation of the UbicacionGeolocalizacion API controller.
 /// </summary>
+[Authorize]
 public class UbicacionApiController(IUbicacionGeolocalizacionFacade ubicacionFacade, IMapper mapper)
     : UbicacionGeolocalizacionApiControllerBase
 {
@@ -37,7 +39,7 @@ public class UbicacionApiController(IUbicacionGeolocalizacionFacade ubicacionFac
             tipoDispositivo: body.TipoDispositivo,
             agente: body.Agente,
             direccionIp: body.DireccionIP,
-            creationUser: Guid.Empty);
+            creationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<UbicacionResult>(source: ubicacion);
         // Return OK response

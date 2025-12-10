@@ -1,16 +1,17 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation
 {
     /// <summary>
     /// Implementation of the Usuario API controller.
     /// </summary>
+    [Authorize]
     public class UsuarioApiController(IUsuarioFacade usuarioFacade, IMapper mapper) : UsuarioApiControllerBase
     {
         /// <inheritdoc />
@@ -22,32 +23,36 @@ namespace Wallet.RestAPI.Controllers.Implementation
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PutUsuarioContrasenaAsync(string version, int? idUsuario, ContrasenaUpdateRequest body)
+        public override async Task<IActionResult> PutUsuarioContrasenaAsync(string version, int? idUsuario,
+            ContrasenaUpdateRequest body)
         {
             var usuario = await usuarioFacade.ActualizarContrasenaAsync(idUsuario: idUsuario.Value,
                 contrasenaActual: body.ContrasenaActual,
                 contrasenaNueva: body.ContrasenaNueva, confirmacionContrasenaNueva: body.ContrasenaNuevaConfrimacion,
-                modificationUser: Guid.Empty);
+                modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PutUsuarioEmailAsync(string version, int? idUsuario, EmailUpdateRequest body)
+        public override async Task<IActionResult> PutUsuarioEmailAsync(string version, int? idUsuario,
+            EmailUpdateRequest body)
         {
             var usuario = await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario: idUsuario.Value,
                 correoElectronico: body.CorreoElectronico,
-                modificationUser: Guid.Empty);
+                modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PutUsuarioTelefonoAsync(string version, int? idUsuario, TelefonoUpdateRequest body)
+        public override async Task<IActionResult> PutUsuarioTelefonoAsync(string version, int? idUsuario,
+            TelefonoUpdateRequest body)
         {
-            var usuario = await usuarioFacade.ActualizarTelefonoAsync(idUsuario: idUsuario.Value, codigoPais: body.CodigoPais,
+            var usuario = await usuarioFacade.ActualizarTelefonoAsync(idUsuario: idUsuario.Value,
+                codigoPais: body.CodigoPais,
                 telefono: body.Telefono,
-                modificationUser: Guid.Empty);
+                modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
         }

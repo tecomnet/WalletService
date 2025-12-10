@@ -57,7 +57,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             .ReturnsAsync(true);
 
         // Act
-        var result = await _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", _userId);
+        var result = await _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456");
 
         // Assert
         Assert.True(result);
@@ -79,7 +79,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             .ReturnsAsync(usuario);
 
         await Assert.ThrowsAsync<EMGeneralAggregateException>(() =>
-            _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", _userId));
+            _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456"));
     }
 
     [Fact]
@@ -105,8 +105,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             "Lopez",
             "Campeche",
             new DateOnly(1990, 1, 1),
-            Genero.Masculino,
-            _userId);
+            Genero.Masculino);
 
         // Assert
         Assert.NotNull(result);

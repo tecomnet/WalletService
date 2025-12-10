@@ -72,9 +72,8 @@ public interface IUsuarioFacade
     /// </summary>
     /// <param name="codigoPais">El código de país del teléfono.</param>
     /// <param name="telefono">El número de teléfono.</param>
-    /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> creado.</returns>
-    Task<Usuario> GuardarUsuarioPreRegistroAsync(string codigoPais, string telefono, Guid creationUser,
+    Task<Usuario> GuardarUsuarioPreRegistroAsync(string codigoPais, string telefono,
         string? testCase = null);
 }

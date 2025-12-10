@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.BrokerFacade;
-using Wallet.RestAPI.Controllers.Base;
+using Wallet.RestAPI.Helpers;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers.Implementation
@@ -14,6 +14,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
     /// Implementation of the Broker API controller.
     /// </summary>
     [ApiController]
+    [Authorize]
     public class BrokerApiController(IBrokerFacade brokerFacade, IMapper mapper) : BrokerApiControllerBase
     {
         /// <inheritdoc />
@@ -24,7 +25,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
             }
 
-            var broker = await brokerFacade.EliminarBrokerAsync(idBroker.Value, Guid.Empty);
+            var broker = await brokerFacade.EliminarBrokerAsync(idBroker.Value, this.GetAuthenticatedUserGuid());
             var result = mapper.Map<BrokerResult>(broker);
             return Ok(result);
         }
@@ -68,7 +69,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
         {
             var broker = await brokerFacade.GuardarBrokerAsync(
                 nombre: body.Nombre,
-                creationUser: Guid.Empty);
+                creationUser: this.GetAuthenticatedUserGuid());
 
             var result = mapper.Map<BrokerResult>(broker);
             return Created(uri: $"/broker/{result.Id}", value: result);
@@ -82,7 +83,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 throw new ArgumentNullException(nameof(idBroker), "El ID del broker es requerido.");
             }
 
-            var broker = await brokerFacade.ActivarBrokerAsync(idBroker.Value, Guid.Empty);
+            var broker = await brokerFacade.ActivarBrokerAsync(idBroker.Value, this.GetAuthenticatedUserGuid());
             var result = mapper.Map<BrokerResult>(broker);
             return Ok(result);
         }
@@ -98,7 +99,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var broker = await brokerFacade.ActualizarBrokerAsync(
                 idBroker: idBroker.Value,
                 nombre: body.Nombre,
-                modificationUser: Guid.Empty);
+                modificationUser: this.GetAuthenticatedUserGuid());
 
             var result = mapper.Map<BrokerResult>(broker);
             return Ok(result);

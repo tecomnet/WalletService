@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 
 namespace Wallet.RestAPI.Controllers.Implementation;
@@ -14,6 +13,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the Cliente API controller.
 /// </summary>
+[Authorize]
 public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     : ClienteApiControllerBase
 {
@@ -21,7 +21,9 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     public override async Task<IActionResult> DeleteClienteAsync(string version, int? idCliente)
     {
         // Call facade method
-        var cliente = await clienteFacade.EliminarClienteAsync(idCliente: idCliente.Value, modificationUser: Guid.Empty);
+        var cliente =
+            await clienteFacade.EliminarClienteAsync(idCliente: idCliente.Value,
+                modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<ClienteResult>(source: cliente);
         // Return OK response
@@ -64,13 +66,13 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     public override async Task<IActionResult> PutActivarClienteAsync(string version, int? idCliente)
     {
         // Call facade method
-        var cliente = await clienteFacade.ActivarClienteAsync(idCliente: idCliente.Value, modificationUser: Guid.Empty);
+        var cliente = await clienteFacade.ActivarClienteAsync(idCliente: idCliente.Value,
+            modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<ClienteResult>(source: cliente);
         // Return OK response
         return Ok(value: response);
     }
-    
 }
 
 

@@ -21,6 +21,7 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
     {
         // El login puede ser un correo electrónico o un número de teléfono.
         var usuario = await context.Usuario
+            .Include(user => user.Cliente)
             .FirstOrDefaultAsync(predicate: u => u.CorreoElectronico == login || u.Telefono == login);
 
         // Verifica si el usuario existe y si la contraseña es correcta.
@@ -37,10 +38,11 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
         // Crea los claims para el token de acceso.
         var claims = new List<Claim>
         {
-            new Claim(type: ClaimTypes.Name, value: usuario.Id.ToString()), // El Id del usuario como nombre.
-            new Claim(type: ClaimTypes.Email,
-                value: usuario.CorreoElectronico ?? ""), // Correo electrónico del usuario.
-            new Claim(type: ClaimTypes.MobilePhone, value: usuario.Telefono) // Número de teléfono del usuario.
+            new Claim(type: "UsuarioId", value: usuario.Id.ToString()), // El Id del usuario como nombre.
+            new Claim(type: "CorreoElectronico", value: usuario.CorreoElectronico ?? ""), // Correo electrónico del usuario.
+            new Claim(type: "Telefono", value: usuario.Telefono), // Número de teléfono del usuario.
+            new Claim(type: "ClienteId", value: usuario.Cliente?.Id.ToString() ?? string.Empty), // El Id del cliente como nombre.
+            new Claim(type: "Guid", value: usuario.Guid.ToString()) // El Id del cliente como nombre.
         };
 
         // Genera el token de acceso y el token de refresco.

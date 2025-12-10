@@ -113,7 +113,8 @@ namespace Wallet.UnitTest.FixtureBase
             var claims = new List<System.Security.Claims.Claim>
             {
                 new(type: System.Security.Claims.ClaimTypes.Name, value: user.CorreoElectronico ?? user.Telefono),
-                new(type: System.Security.Claims.ClaimTypes.NameIdentifier, value: user.Id.ToString())
+                new(type: System.Security.Claims.ClaimTypes.NameIdentifier, value: user.Id.ToString()),
+                new(type: "Guid", value: user.Guid.ToString())
             };
 
             var token = tokenService.GenerateAccessToken(claims: claims);

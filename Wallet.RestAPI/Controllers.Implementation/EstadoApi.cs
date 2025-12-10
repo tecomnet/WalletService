@@ -1,17 +1,18 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
 /// <summary>
 /// Implementation of the Estado API controller.
 /// </summary>
+[Authorize]
 public class EstadoApiController(IEstadoFacade estadoFacade, IMapper mapper) : EstadoApiControllerBase
 {
     /// <inheritdoc/>
@@ -28,7 +29,8 @@ public class EstadoApiController(IEstadoFacade estadoFacade, IMapper mapper) : E
         string version,
         EstadoRequest body)
     {
-        var estado = await estadoFacade.GuardarEstadoAsync(nombre: body.Nombre, creationUser: Guid.Empty);
+        var estado =
+            await estadoFacade.GuardarEstadoAsync(nombre: body.Nombre, creationUser: this.GetAuthenticatedUserGuid());
         var response = mapper.Map<EstadoResult>(source: estado);
         return Ok(value: response);
     }
@@ -39,7 +41,7 @@ public class EstadoApiController(IEstadoFacade estadoFacade, IMapper mapper) : E
         int? idEstado, EstadoRequest body)
     {
         var estado = await estadoFacade.ActualizaEstadoAsync(idEstado: idEstado.Value, nombre: body.Nombre,
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
         var response = mapper.Map<EstadoResult>(source: estado);
         return Ok(value: response);
     }
