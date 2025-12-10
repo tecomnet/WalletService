@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
@@ -17,8 +17,7 @@ public class RegistroFacade(
     ServiceDbContext context,
     IUsuarioFacade usuarioFacade,
     IClienteFacade clienteFacade,
-    IConsentimientosUsuarioFacade consentimientosUsuarioFacade,
-    IEmpresaFacade empresaFacade)
+    IConsentimientosUsuarioFacade consentimientosUsuarioFacade)
     : IRegistroFacade
 {
     /// <summary>
@@ -74,21 +73,9 @@ public class RegistroFacade(
         // Valida que el usuario esté en el estado esperado (NumeroConfirmado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.NumeroConfirmado);
 
-        // Busca si ya existe un cliente asociado a este usuario
-        var cliente = await context.Cliente.FirstOrDefaultAsync(c => c.UsuarioId == idUsuario);
-        if (cliente == null)
-        {
-            // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
-            var empresa = await empresaFacade.ObtenerPorNombreAsync(nombre: "Tecomnet");
-            // Si no existe, lo creamos manualmente ya que IClienteFacade no tiene método de crear expuesto
-            cliente = new Cliente(usuario, creationUser: usuario.CreationUser, empresa: empresa);
-            await context.Cliente.AddAsync(cliente);
-            await context.SaveChangesAsync();
-        }
-
         // Actualizamos datos usando el facade de cliente
         await clienteFacade.ActualizarClienteDatosPersonalesAsync(
-            idCliente: cliente.Id,
+            idUsuario: usuario.Id,
             nombre: nombre,
             primerApellido: apellidoPaterno,
             segundoApellido: apellidoMaterno,

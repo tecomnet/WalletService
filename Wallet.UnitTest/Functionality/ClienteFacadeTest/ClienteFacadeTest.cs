@@ -23,8 +23,8 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
     // Wrong cases
     [InlineData(data:
     [
-        "2. Caso de error, el cliente no existe por id", 25, "Nombre", "Apellido", "Apellido", "Aguascalientes",
-        "2000-01-01", Genero.Masculino, false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado }
+        "2. Caso de error, el usuario no existe por id", 25, "Nombre", "Apellido", "Apellido", "Aguascalientes",
+        "2000-01-01", Genero.Masculino, false, new string[] { ServiceErrorsBuilder.UsuarioNoEncontrado }
     ])]
     [InlineData(data:
     [
@@ -33,7 +33,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
     ])]
     public async Task ActualizarDatosPersonalesTest(
         string caseName,
-        int idCliente,
+        int idUsuario,
         string nombre,
         string primerApellido,
         string segundoApellido,
@@ -52,9 +52,11 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 .ReturnsAsync(value: new ValidacionCurpResult { Success = true, CurpGenerada = "AAAA000000HDFXXX00" });
 
             // Pre-requisite: Client must have verified SMS for this test
+            // We find the client associated with the user to set up 2FA, assuming idUsuario links to a user that has a client in the setup (Test Case 1)
             var clientToUpdate =
                 await Context.Cliente.Include(navigationPropertyPath: x => x.Usuario)
-                    .FirstOrDefaultAsync(predicate: x => x.Id == idCliente);
+                    .FirstOrDefaultAsync(predicate: x => x.UsuarioId == idUsuario);
+
             if (clientToUpdate != null)
             {
                 var verificacion = new Verificacion2FA(twilioSid: "SID_PRE_VERIFIED",
@@ -73,7 +75,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             DateOnly fechaNacimientoDateOnly = DateOnly.Parse(s: fechaNacimiento);
             // Call facade method
             var cliente = await Facade.ActualizarClienteDatosPersonalesAsync(
-                idCliente: idCliente,
+                idUsuario: idUsuario,
                 nombre: nombre,
                 primerApellido: primerApellido,
                 segundoApellido: segundoApellido,
