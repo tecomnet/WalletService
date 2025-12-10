@@ -11,7 +11,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the DispositivoMovilAutorizado API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class DispositivoMovilAutorizadoApiController(
     IDispositivoMovilAutorizadoFacade dispositivoMovilAutorizadoFacade,
     IMapper mapper) : DispositivoMovilAutorizadoApiControllerBase

@@ -14,7 +14,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 ///  API para la gestión de proveedores de servicio.
 /// </summary>
 [ApiController]
-[Authorize]
+//[Authorize]
 public class ProveedorApiController : ProveedorApiControllerBase
 {
     private readonly IProveedorFacade _proveedorFacade;

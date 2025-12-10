@@ -10,7 +10,7 @@ using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Helpers;
 
 /// <inheritdoc />
-[Authorize]
+//[Authorize]
 public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper mapper) : ProductoApiControllerBase
 {
     /// <inheritdoc />

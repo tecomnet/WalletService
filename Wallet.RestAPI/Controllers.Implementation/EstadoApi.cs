@@ -12,7 +12,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the Estado API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class EstadoApiController(IEstadoFacade estadoFacade, IMapper mapper) : EstadoApiControllerBase
 {
     /// <inheritdoc/>

@@ -11,7 +11,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the Direccion API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class DireccionApiController(IDireccionFacade direccionFacade, IMapper mapper) : DireccionApiControllerBase
 {
     /// <inheritdoc />

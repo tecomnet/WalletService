@@ -11,7 +11,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
     /// <summary>
     /// Implementation of the Usuario API controller.
     /// </summary>
-    [Authorize]
+    //[Authorize]
     public class UsuarioApiController(IUsuarioFacade usuarioFacade, IMapper mapper) : UsuarioApiControllerBase
     {
         /// <inheritdoc />

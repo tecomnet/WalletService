@@ -12,7 +12,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the ServicioFavorito API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavoritoFacade, IMapper mapper)
     : ServicioFavoritoApiControllerBase
 {

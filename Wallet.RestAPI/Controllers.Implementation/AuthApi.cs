@@ -44,7 +44,7 @@ public class AuthApi(IAuthFacade authFacade, IMapper mapper) : AuthApiController
     }
 
     /// <inheritdoc />
-    [Authorize]
+    //[Authorize]
     public override async Task<IActionResult> RevokeAsync(
         [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
         string version,

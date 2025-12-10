@@ -14,7 +14,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
     /// Implementation of the Broker API controller.
     /// </summary>
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class BrokerApiController(IBrokerFacade brokerFacade, IMapper mapper) : BrokerApiControllerBase
     {
         /// <inheritdoc />

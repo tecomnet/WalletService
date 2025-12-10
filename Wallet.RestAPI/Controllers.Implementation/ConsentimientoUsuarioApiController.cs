@@ -13,7 +13,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
     /// <summary>
     /// Implementation of the ConsentimientoUsuario API controller.
     /// </summary>
-    [Authorize]
+    //[Authorize]
     public class ConsentimientoUsuarioApiController(
         IConsentimientosUsuarioFacade consentimientosUsuarioFacade,
         IMapper mapper)

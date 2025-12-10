@@ -12,7 +12,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the UbicacionGeolocalizacion API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class UbicacionApiController(IUbicacionGeolocalizacionFacade ubicacionFacade, IMapper mapper)
     : UbicacionGeolocalizacionApiControllerBase
 {

@@ -12,7 +12,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the Empresa API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) : EmpresaApiControllerBase
 {
     /// <inheritdoc/>
