@@ -20,7 +20,7 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
     public async Task<AuthResultDto> LoginAsync(string login, string password)
     {
         // El login puede ser un correo electrónico o un número de teléfono.
-        var usuario = await context.Usuario
+        var usuario = await context.Usuario.Include(usuario => usuario.Cliente)
             .FirstOrDefaultAsync(predicate: u => u.CorreoElectronico == login || u.Telefono == login);
 
         // Verifica si el usuario existe y si la contraseña es correcta.
@@ -53,12 +53,13 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
 
         // Guarda los cambios en la base de datos.
         await context.SaveChangesAsync();
-
+        
         return new AuthResultDto
         {
             Success = true,
             AccessToken = accessToken,
-            RefreshToken = refreshToken
+            RefreshToken = refreshToken,
+            IdCliente = usuario.Cliente?.Id ?? 0
         };
     }
 

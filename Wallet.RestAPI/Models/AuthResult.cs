@@ -52,6 +52,13 @@ namespace Wallet.RestAPI.Models
         public List<string> Errors { get; set; }
 
         /// <summary>
+        /// Gets or Sets IdCliente
+        /// </summary>
+
+        [DataMember(Name="idCliente")]
+        public int? IdCliente { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -63,6 +70,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  RefreshToken: ").Append(RefreshToken).Append("\n");
             sb.Append("  Success: ").Append(Success).Append("\n");
             sb.Append("  Errors: ").Append(Errors).Append("\n");
+            sb.Append("  IdCliente: ").Append(IdCliente).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -118,6 +126,11 @@ namespace Wallet.RestAPI.Models
                     Errors == other.Errors ||
                     Errors != null &&
                     Errors.SequenceEqual(other.Errors)
+                ) && 
+                (
+                    IdCliente == other.IdCliente ||
+                    IdCliente != null &&
+                    IdCliente.Equals(other.IdCliente)
                 );
         }
 
@@ -139,6 +152,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Success.GetHashCode();
                     if (Errors != null)
                     hashCode = hashCode * 59 + Errors.GetHashCode();
+                    if (IdCliente != null)
+                    hashCode = hashCode * 59 + IdCliente.GetHashCode();
                 return hashCode;
             }
         }

@@ -39,7 +39,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     }
 
     /// <inheritdoc/>
-    [Authorize]
+    //[Authorize]
     public override async Task<IActionResult> GetClientesAsync(
         string version)
     {

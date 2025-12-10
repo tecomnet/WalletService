@@ -1696,6 +1696,7 @@ components:
         - username
     AuthResult:
       type: object
+      description: Estructura para resultado de autenticacion
       properties:
         accessToken:
           type: string
@@ -1707,8 +1708,8 @@ components:
           type: array
           items:
             type: string
-      description: Estructura para resultado de autenticacion
-      title: ''
+        idCliente:
+          type: integer
     ClienteResult:
       title: ClienteResult
       x-stoplight:
