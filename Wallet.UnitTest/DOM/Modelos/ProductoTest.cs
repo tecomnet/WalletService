@@ -26,48 +26,48 @@ public class ProductoTest : UnitTestTemplate
     [InlineData(data:
     [
         "ERROR: Sku nulo", 1, null, "Producto X", 10.0, null, null, false,
-        new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "ERROR: Sku vacío", 1, "", "Producto X", 10.0, null, null, false,
-        new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "ERROR: Sku excede límite", 1, "Este SKU es demasiado largo y excede el límite de 50 caracteres", "Producto X",
-        10.0, null, null, false, new[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        10.0, null, null, false, new[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     [InlineData(data:
     [
         "ERROR: Nombre nulo", 1, "SKU-VALID", null, 10.0, null, null, false,
-        new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "ERROR: Nombre vacío", 1, "SKU-VALID", "", 10.0, null, null, false,
-        new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "ERROR: Nombre excede límite", 1, "SKU-VALID",
         "Este nombre es excesivamente largo y supera los 100 caracteres permitidos para el nombre de un producto...",
-        10.0, null, null, false, new[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        10.0, null, null, false, new[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     [InlineData(data:
     [
         "ERROR: Monto es cero", 1, "SKU-VALID", "Producto Y", 0, null, null, false,
-        new[] { "PROPERTY-VALIDATION-ZERO-INVALID" }
+        new[] { ServiceErrorsBuilder.PropertyValidationZeroInvalid }
     ])]
     [InlineData(data:
     [
         "ERROR: Monto es negativo", 1, "SKU-VALID", "Producto Y", -50.0, null, null, false,
-        new[] { "PROPERTY-VALIDATION-NEGATIVE-INVALID" }
+        new[] { ServiceErrorsBuilder.PropertyValidationNegativeInvalid }
     ])]
     [InlineData(data:
     [
         "ERROR: Monto con muchos decimales", 1, "SKU-VALID", "Producto Y", 10.123, null, null, false,
-        new[] { "PROPERTY-VALIDATION-DECIMALS-INVALID" }
+        new[] { ServiceErrorsBuilder.PropertyValidationDecimalsInvalid }
     ])]
 
     // --- Casos de error múltiples ---
@@ -75,8 +75,8 @@ public class ProductoTest : UnitTestTemplate
     [
         "ERROR: Múltiples errores", 1, "", "", -10, null, null, false, new[]
         {
-            "PROPERTY-VALIDATION-REQUIRED-ERROR", "PROPERTY-VALIDATION-REQUIRED-ERROR",
-            "PROPERTY-VALIDATION-NEGATIVE-INVALID"
+            ServiceErrorsBuilder.PropertyValidationRequiredError, ServiceErrorsBuilder.PropertyValidationRequiredError,
+            ServiceErrorsBuilder.PropertyValidationNegativeInvalid
         }
     ])]
     public void ConstructorValidation_Test(

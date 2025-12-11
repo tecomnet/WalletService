@@ -14,7 +14,9 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
     [InlineData(data: ["1. Successfully case, create proveedor", "Netflix", 1, true, new string[] { }])]
     // Wrong cases
     [InlineData(data:
-        ["2. Wrong case, empty name", "", 1, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [
+        "2. Wrong case, empty name", "", 1, false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
+    ])]
     public async Task GuardarProveedorAsyncTest(
         string caseName,
         string nombre,
@@ -65,7 +67,9 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
     [InlineData(data: ["1. Successfully case, update proveedor", 1, "CFE Updated", true, new string[] { }])]
     // Wrong cases
     [InlineData(data:
-        ["2. Wrong case, not found", 99, "Name", false, new string[] { "PROVEEDOR-NOT-FOUND" }])] // CHECK ERROR CODE
+    [
+        "2. Wrong case, not found", 99, "Name", false, new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
+    ])] // CHECK ERROR CODE
     public async Task ActualizarProveedorAsyncTest(
         string caseName,
         int idProveedor,
@@ -108,7 +112,9 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
     [Theory]
     [InlineData(data: ["1. Successfully case, delete proveedor", 1, true, new string[] { }])]
     [InlineData(data:
-        ["2. Wrong case, not found", 99, false, new string[] { "PROVEEDOR-NOT-FOUND" }])] // CHECK ERROR CODE
+    [
+        "2. Wrong case, not found", 99, false, new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
+    ])] // CHECK ERROR CODE
     public async Task EliminarProveedorAsyncTest(
         string caseName,
         int idProveedor,
@@ -143,7 +149,9 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
     [Theory]
     [InlineData(data: ["1. Successfully case, activate proveedor", 1, true, new string[] { }])]
     [InlineData(data:
-        ["2. Wrong case, not found", 99, false, new string[] { "PROVEEDOR-NOT-FOUND" }])] // CHECK ERROR CODE
+    [
+        "2. Wrong case, not found", 99, false, new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
+    ])] // CHECK ERROR CODE
     public async Task ActivarProveedorAsyncTest(
         string caseName,
         int idProveedor,

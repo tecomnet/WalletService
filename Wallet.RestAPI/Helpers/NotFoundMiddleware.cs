@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Errors;
 
 namespace Wallet.RestAPI.Helpers
 {
@@ -74,8 +75,23 @@ namespace Wallet.RestAPI.Helpers
                 problemDetails.Extensions.Add(key: "RestAPIErrors", value: new
                 {
                     // Las propiedades se serializarán directamente en el JSON
-                    ErrorCode = "REST-API-BAD-VERSION",
+                    ErrorCode = RestAPIErrors.RestApiBadVersion,
                     Messages = new[] { "The API version provided is not supported or it wasn't specified." }
+                });
+                await context.Response.WriteAsync(text: JsonConvert.SerializeObject(value: problemDetails));
+            }
+            else if (context.Response.StatusCode == (int)HttpStatusCode.BadRequest &&
+                     context.Items.ContainsKey("BadVersion"))
+            {
+                context.Response.ContentType = "application/json";
+                var problemDetails = new ProblemDetails();
+                problemDetails.Detail = "Versión incorrecta utilizada para la API REST";
+                problemDetails.Type = "EM-CustomProblemDetails";
+                problemDetails.Extensions.Add(key: "RestAPIErrors", value: new
+                {
+                    // Las propiedades se serializarán directamente en el JSON
+                    ErrorCode = RestAPIErrors.RestApiBadVersion,
+                    Messages = new[] { "La versión de API proporcionada no es compatible o no se especificó." }
                 });
                 await context.Response.WriteAsync(text: JsonConvert.SerializeObject(value: problemDetails));
             }
@@ -86,12 +102,12 @@ namespace Wallet.RestAPI.Helpers
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             context.Response.ContentType = "application/json";
             var problemDetails = new ProblemDetails();
-            problemDetails.Detail = "The requested resource was not found.";
+            problemDetails.Detail = "El recurso solicitado no fue encontrado.";
             problemDetails.Type = "EM-CustomProblemDetails";
             problemDetails.Extensions.Add(key: "RestAPIErrors", value: new
             {
-                ErrorCode = "RESOURCE-NOT-FOUND",
-                Messages = new[] { "The requested resource was not found." }
+                ErrorCode = RestAPIErrors.ResourceNotFound,
+                Messages = new[] { "El recurso solicitado no fue encontrado." }
             });
             await context.Response.WriteAsync(text: JsonConvert.SerializeObject(value: problemDetails));
         }

@@ -21,17 +21,17 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     [InlineData(data:
     [
         "2. Wrong case, empty sku", 1, "", "Netflix Premium", 15.99, "icon", "Streaming", false,
-        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "3. Wrong case, negative price", 1, "SKU123", "Netflix Premium", -1.0, "icon", "Streaming", false,
-        new string[] { "PROPERTY-VALIDATION-NEGATIVE-INVALID" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationNegativeInvalid }
     ])] // Check property constraint error code
     [InlineData(data:
     [
         "4. Wrong case, duplicate sku", 1, "SKU123-DUP", "Unique Name", 15.99, "icon", "Streaming", false,
-        new string[] { "PRODUCTO-SKU-EXISTENTE" }
+        new string[] { ServiceErrorsBuilder.ProductoSkuExistente }
     ])] // Check sku duplication error code
     public async Task GuardarProductoTest(
         string caseName,
@@ -110,12 +110,12 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     [InlineData(data:
     [
         "2. Wrong case, not found", 99, "SKU123", "Netflix Premium", 15.99, "icon", "Cat", false,
-        new string[] { "PRODUCTO-NOT-FOUND" }
+        new string[] { ServiceErrorsBuilder.ProductoNoEncontrado }
     ])]
     [InlineData(data:
     [
         "3. Wrong case, duplicate sku", 1, "SKU-DUP-UPD", "New Name", 15.99, "icon", "Cat", false,
-        new string[] { "PRODUCTO-SKU-EXISTENTE" }
+        new string[] { ServiceErrorsBuilder.ProductoSkuExistente }
     ])]
     public async Task ActualizarProductoTest(
         string caseName,
@@ -180,7 +180,9 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     [Theory]
     [InlineData(data: ["1. Successfully case, delete producto", 1, true, new string[] { }])]
     [InlineData(data:
-        ["2. Wrong case, not found", 99, false, new string[] { "PRODUCTO-NOT-FOUND" }])] // CHECK ERROR CODE
+    [
+        "2. Wrong case, not found", 99, false, new string[] { ServiceErrorsBuilder.ProductoNoEncontrado }
+    ])] // CHECK ERROR CODE
     public async Task EliminarProductoTest(
         string caseName,
         int idProducto,
@@ -213,7 +215,9 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     [Theory]
     [InlineData(data: ["1. Successfully case, activate producto", 1, true, new string[] { }])]
     [InlineData(data:
-        ["2. Wrong case, not found", 99, false, new string[] { "PRODUCTO-NOT-FOUND" }])] // CHECK ERROR CODE
+    [
+        "2. Wrong case, not found", 99, false, new string[] { ServiceErrorsBuilder.ProductoNoEncontrado }
+    ])] // CHECK ERROR CODE
     public async Task ActivarProductoTest(
         string caseName,
         int idProducto,

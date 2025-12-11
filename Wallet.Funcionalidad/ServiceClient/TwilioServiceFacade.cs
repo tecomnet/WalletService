@@ -10,7 +10,7 @@ internal static class TwilioSettingsData
     internal const string ServiceName = "TwilioService";
     internal const string Version = "0.1";
     internal const string RemoteServiceNameConfig = "twilio-service";
-    internal const string ServiceErrorCode = "EM-INCORRECT-AUTHORIZATION-TYPE";
+    internal const string ServiceErrorCode = ServiceErrorsBuilder.EmIncorrectAuthorizationType;
 }
 
 public interface ITwilioServiceFacade

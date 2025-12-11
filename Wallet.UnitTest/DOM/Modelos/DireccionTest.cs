@@ -31,33 +31,35 @@ public class DireccionTest : UnitTestTemplate
     [InlineData(data:
     [
         "4. ERROR: Codigo Postal null", null, "México", "Jalisco", "Guadalajara", "Centro", "Av. Principal", "123",
-        "Apto 1", "Cerca del parque", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        "Apto 1", "Cerca del parque", false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "5. ERROR: Codigo Postal empty", "", "México", "Jalisco", "Guadalajara", "Centro", "Av. Principal", "123",
-        "Apto 1", "Cerca del parque", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        "Apto 1", "Cerca del parque", false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "6. ERROR: Codigo Postal too short", "1234", "México", "Jalisco", "Guadalajara", "Centro", "Av. Principal",
-        "123", "Apto 1", "Cerca del parque", false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        "123", "Apto 1", "Cerca del parque", false,
+        new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     [InlineData(data:
     [
         "7. ERROR: Codigo Postal too long", "123456", "México", "Jalisco", "Guadalajara", "Centro", "Av. Principal",
-        "123", "Apto 1", "Cerca del parque", false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        "123", "Apto 1", "Cerca del parque", false,
+        new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     // CASOS DE ERROR PARA PAÍS (string, min 1, max 100)
     [InlineData(data:
     [
         "8. ERROR: País null", "12345", null, "Jalisco", "Guadalajara", "Centro", "Av. Principal", "123", "Apto 1",
-        "Cerca del parque", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        "Cerca del parque", false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "9. ERROR: País empty", "12345", "", "Jalisco", "Guadalajara", "Centro", "Av. Principal", "123", "Apto 1",
-        "Cerca del parque", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        "Cerca del parque", false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
@@ -69,7 +71,7 @@ public class DireccionTest : UnitTestTemplate
         "Nombre de calle con exactamente cien caracteres.Total de cien caracteres para el nombre de la calle", "123456",
         "123456",
         "Referencia con exactamente doscientos cincuenta caracteres. Un total de doscientos cincuenta caracteres para la referencia.",
-        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        false, new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     // MÁS CASOS DE ERROR PARA OTRAS PROPIEDADES SE PUEDEN AGREGAR AQUÍ...
     public void Direccion_Constructor_Tests(

@@ -10,13 +10,15 @@ public class ClienteTest : UnitTestTemplate
 {
     [Theory]
     [InlineData(data: ["OK: New user", "+52", "9815263699", true, new string[] { }])]
-    [InlineData(data: ["ERROR: User null", null, null, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
-    [InlineData(data: ["ERROR: User empty", "", "", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [InlineData(data:
+        ["ERROR: User null", null, null, false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }])]
+    [InlineData(data:
+        ["ERROR: User empty", "", "", false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }])]
     [InlineData(data:
     [
         "ERROR: User long string",
         "ThisisexampleofastringthatcontainsmorethanfiftycharactersokThisisexampleofastringthatcontainsmorethanfiftycharactersok1",
-        "5959595959595959595959595", false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        "5959595959595959595959595", false, new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     public void BasicClienteTest(
         // Case name
@@ -100,22 +102,22 @@ public class ClienteTest : UnitTestTemplate
     [InlineData(data:
     [
         "4. ERROR: Nombre null", null, "Perez", null, "1990-01-01", Genero.Masculino, false,
-        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "5. ERROR: Primer Apellido vacío", "Juan", "", "Gomez", "1990-01-01", Genero.Masculino, false,
-        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "6. ERROR: Fecha Nacimiento null", "Juan", "Perez", "Gomez", null, Genero.Masculino, false,
-        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "7. ERROR: Género null", "Juan", "Perez", "Gomez", "1990-01-01", null, false,
-        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     // ----------------------------------------------------------------------------------------------------------------
     // 3. ERRORES DE LONGITUD (PROPERTY-VALIDATION-LENGTH-INVALID)
@@ -124,7 +126,8 @@ public class ClienteTest : UnitTestTemplate
     [
         "8. ERROR: Nombre > 100 caracteres",
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", // 101 chars
-        "Perez", "Gomez", "1990-01-01", Genero.Masculino, false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        "Perez", "Gomez", "1990-01-01", Genero.Masculino, false,
+        new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     // ----------------------------------------------------------------------------------------------------------------
     // 5. CASO DE ERRORES MÚLTIPLES 
@@ -135,12 +138,12 @@ public class ClienteTest : UnitTestTemplate
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
         "Gomez", null, null, false, new string[]
         {
-            "PROPERTY-VALIDATION-REQUIRED-ERROR", // Nombre
-            "PROPERTY-VALIDATION-LENGTH-INVALID", // PrimerApellido
-            "PROPERTY-VALIDATION-REQUIRED-ERROR", // FechaNacimiento
-            "PROPERTY-VALIDATION-REQUIRED-ERROR", // Genero
-            "PROPERTY-VALIDATION-LENGTH-INVALID", // CorreoElectronico (asumo min 5)
-            "PROPERTY-VALIDATION-REGEX-INVALID" // CorreoElectronico
+            ServiceErrorsBuilder.PropertyValidationRequiredError, // Nombre
+            ServiceErrorsBuilder.PropertyValidationLengthInvalid, // PrimerApellido
+            ServiceErrorsBuilder.PropertyValidationRequiredError, // FechaNacimiento
+            ServiceErrorsBuilder.PropertyValidationRequiredError, // Genero
+            ServiceErrorsBuilder.PropertyValidationLengthInvalid, // CorreoElectronico (asumo min 5)
+            ServiceErrorsBuilder.PropertyValidationRegexInvalid // CorreoElectronico
         }
     ])]
     public void AgregarDatosPersonales_ValidationTest(
@@ -268,7 +271,7 @@ public class ClienteTest : UnitTestTemplate
     [InlineData(data:
     [
         "8. ERROR: Contrasena muy larga (>100)", "CrearContrasena", MaxContrasenaMas100Chars, null, null, null, null,
-        null, false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        null, false, new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
 
     // === ERRORES DE ACTUALIZAR TELEFONO (REQUIRED, LENGTH-INVALID) ===
@@ -276,23 +279,23 @@ public class ClienteTest : UnitTestTemplate
     [InlineData(data:
     [
         "9. ERROR: CodigoPais null", "ActualizarTelefono", null, null, null, null, "5512345678", null, false,
-        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "10. ERROR: CodigoPais < 3", "ActualizarTelefono", null, null, null, "MX", "5512345678", null, false,
-        new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     // Telefono (9-10)
     [InlineData(data:
     [
         "11. ERROR: Telefono < 9", "ActualizarTelefono", null, null, null, "MEX", "12345678", null, false,
-        new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     [InlineData(data:
     [
         "12. ERROR: Telefono > 10", "ActualizarTelefono", null, null, null, "MEX", "12345678901", null, false,
-        new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
 
     // === ERRORES DE CORREO ELECTRONICO (REQUIRED, LENGTH-INVALID, REGEX-INVALID) ===
@@ -304,13 +307,17 @@ public class ClienteTest : UnitTestTemplate
     [InlineData(data:
     [
         "14. ERROR: Correo REGEX-INVALID", "ActualizarCorreoElectronico", null, null, null, null, null, "correo@malo",
-        false, new string[] { "PROPERTY-VALIDATION-REGEX-INVALID" }
+        false, new string[] { ServiceErrorsBuilder.PropertyValidationRegexInvalid }
     ])]
     [InlineData(data:
     [
         "15. ERROR: Correo muy largo (>150)", "ActualizarCorreoElectronico", null, null, null, null, null,
         LongCorreoElectronicoMas150Chars + "@dominio.com", // 151 chars
-        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID", "PROPERTY-VALIDATION-REGEX-INVALID" }
+        false,
+        new string[]
+        {
+            ServiceErrorsBuilder.PropertyValidationLengthInvalid, ServiceErrorsBuilder.PropertyValidationRegexInvalid
+        }
     ])]
 
     // === ERRORES MÚLTIPLES ===
@@ -320,9 +327,10 @@ public class ClienteTest : UnitTestTemplate
         null, // Código: < 3; Teléfono: < 9 y REQUIRED
         false, new string[]
         {
-            "PROPERTY-VALIDATION-LENGTH-INVALID", // CodigoPais
-            "PROPERTY-VALIDATION-REQUIRED-ERROR", // Telefono
-            "PROPERTY-VALIDATION-LENGTH-INVALID" // Telefono (si el validador maneja ambas, required y length, en ese orden)
+            ServiceErrorsBuilder.PropertyValidationLengthInvalid, // CodigoPais
+            ServiceErrorsBuilder.PropertyValidationRequiredError, // Telefono
+            ServiceErrorsBuilder
+                .PropertyValidationLengthInvalid // Telefono (si el validador maneja ambas, required y length, en ese orden)
         }
     ])]
     public void DatosContactoYSeguridadTest(

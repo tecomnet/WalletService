@@ -20,7 +20,7 @@ namespace Wallet.Funcionalidad.ServiceClient
         string remoteServiceNameConfig,
         string version)
     {
-        private readonly string _unmanagedServiceErrorCode = "EM-UNMANAGED-SERVICE-CLIENT-ERROR";
+        private readonly string _unmanagedServiceErrorCode = ServiceErrorsBuilder.EmUnmanagedServiceClientError;
         protected readonly Guid User = new Guid(g: "75BAF9A7-BBBC-4BCF-B65B-2AAE35F31050");
 
         /// <summary>

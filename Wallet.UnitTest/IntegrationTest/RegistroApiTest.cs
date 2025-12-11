@@ -1,4 +1,5 @@
 using System.Net;
+using Wallet.DOM.Errors;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -332,6 +333,6 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.False(response.IsSuccessStatusCode, "Should return error status code");
 
         var responseContent = await response.Content.ReadAsStringAsync();
-        Assert.Contains("CLIENTE-YA-REGISTRADO", responseContent);
+        Assert.Contains(ServiceErrorsBuilder.ClienteYaRegistrado, responseContent);
     }
 }

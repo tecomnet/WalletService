@@ -13,7 +13,7 @@ internal static class ChecktonPldSettingsData
     internal const string ServiceName = "ChecktonPldService";
     internal const string Version = "0.1";
     internal const string RemoteServiceNameConfig = "checkton-pld-service";
-    internal const string ServiceErrorCode = "EM-INCORRECT-AUTHORIZATION-TYPE";
+    internal const string ServiceErrorCode = ServiceErrorsBuilder.EmIncorrectAuthorizationType;
 }
 
 public interface IChecktonPldServiceFacade
