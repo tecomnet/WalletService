@@ -13,7 +13,8 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     // Successfully case
     [InlineData(data:
     [
-        "1. Successfully case, create producto", 1, "SKU123", "Netflix Premium Plus", 15.99, "https://netflix.com/icon.png",
+        "1. Successfully case, create producto", 1, "SKU-NEW-123", "Netflix Premium Plus", 15.99,
+        "https://netflix.com/icon.png",
         "Streaming", true, new string[] { }
     ])]
     // Wrong cases
@@ -27,6 +28,11 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
         "3. Wrong case, negative price", 1, "SKU123", "Netflix Premium", -1.0, "icon", "Streaming", false,
         new string[] { "PROPERTY-VALIDATION-NEGATIVE-INVALID" }
     ])] // Check property constraint error code
+    [InlineData(data:
+    [
+        "4. Wrong case, duplicate sku", 1, "SKU123-DUP", "Unique Name", 15.99, "icon", "Streaming", false,
+        new string[] { "PRODUCTO-SKU-EXISTENTE" }
+    ])] // Check sku duplication error code
     public async Task GuardarProductoTest(
         string caseName,
         int proveedorId,
@@ -40,6 +46,15 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     {
         try
         {
+            // Setup duplicate product for validation test
+            if (caseName.Contains("duplicate sku"))
+            {
+                var duplicateProduct = new Wallet.DOM.Modelos.Producto(await Context.Proveedor.FindAsync(proveedorId),
+                    "SKU123-DUP", "Other Name", "icon", "Cat", 10, SetupConfig.UserId);
+                await Context.Producto.AddAsync(duplicateProduct);
+                await Context.SaveChangesAsync();
+            }
+
             // Call facade method
             var producto = await Facade.GuardarProductoAsync(
                 proveedorId: proveedorId,
@@ -96,7 +111,12 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     [
         "2. Wrong case, not found", 99, "SKU123", "Netflix Premium", 15.99, "icon", "Cat", false,
         new string[] { "PRODUCTO-NOT-FOUND" }
-    ])] // CHECK ERROR CODE
+    ])]
+    [InlineData(data:
+    [
+        "3. Wrong case, duplicate sku", 1, "SKU-DUP-UPD", "New Name", 15.99, "icon", "Cat", false,
+        new string[] { "PRODUCTO-SKU-EXISTENTE" }
+    ])]
     public async Task ActualizarProductoTest(
         string caseName,
         int idProducto,
@@ -110,6 +130,16 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
     {
         try
         {
+            // Setup duplicate product for validation test
+            if (caseName.Contains("duplicate sku"))
+            {
+                var duplicateProduct = new Wallet.DOM.Modelos.Producto(await Context.Proveedor.FindAsync(1),
+                    "SKU-DUP-UPD",
+                    "Conflict Name", "icon", "Cat", 10, SetupConfig.UserId);
+                await Context.Producto.AddAsync(duplicateProduct);
+                await Context.SaveChangesAsync();
+            }
+
             var producto = await Facade.ActualizarProductoAsync(
                 idProducto: idProducto,
                 sku: sku,
@@ -118,7 +148,6 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                 icono: icono,
                 categoria: categoria,
                 modificationUser: SetupConfig.UserId);
-
             Assert.NotNull(producto);
             Assert.True(condition: producto.Sku == sku &&
                                    producto.Nombre == nombre &&
@@ -126,7 +155,6 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                                    producto.UrlIcono == icono &&
                                    producto.Categoria == categoria &&
                                    producto.ModificationUser == SetupConfig.UserId);
-
             var productoContext = await Context.Producto.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
             Assert.NotNull(productoContext);
@@ -136,7 +164,6 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                                    productoContext.UrlIcono == icono &&
                                    productoContext.Categoria == categoria &&
                                    productoContext.ModificationUser == SetupConfig.UserId);
-
             Assert.True(condition: success);
         }
         catch (EMGeneralAggregateException exception)
@@ -166,12 +193,10 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                 await Facade.EliminarProductoAsync(idProducto: idProducto, modificationUser: SetupConfig.UserId);
             Assert.NotNull(producto);
             Assert.False(condition: producto.IsActive);
-
             var productoContext = await Context.Producto.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
             Assert.NotNull(productoContext);
             Assert.False(condition: productoContext.IsActive);
-
             Assert.True(condition: success);
         }
         catch (EMGeneralAggregateException exception)
@@ -201,12 +226,10 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                 await Facade.ActivarProductoAsync(idProducto: idProducto, modificationUser: SetupConfig.UserId);
             Assert.NotNull(producto);
             Assert.True(condition: producto.IsActive);
-
             var productoContext = await Context.Producto.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
             Assert.NotNull(productoContext);
             Assert.True(condition: productoContext.IsActive);
-
             Assert.True(condition: success);
         }
         catch (EMGeneralAggregateException exception)

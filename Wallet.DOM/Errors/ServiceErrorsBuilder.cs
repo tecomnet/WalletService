@@ -460,6 +460,7 @@ public class ServiceErrorsBuilder
 
     /// <summary>Error: El broker no fue encontrado.</summary>
     public const string BrokerNoEncontrado = "BROKER-NOT-FOUND";
+
     public const string BrokerExistente = "BROKER-EXISTENTE";
     public const string BrokerInactivo = "BROKER-INACTIVO";
 
@@ -491,15 +492,18 @@ public class ServiceErrorsBuilder
 
     /// <summary>Error: El proveedor de servicio no fue encontrado.</summary>
     public const string ProveedorNoEncontrado = "PROVEEDOR-NOT-FOUND";
+
     public const string ProveedorExistente = "PROVEEDOR-EXISTENTE";
     public const string ProveedorInactivo = "PROVEEDOR-INACTIVO";
-    
+
 
     /// <summary>Error: El producto del proveedor no fue encontrado.</summary>
     public const string ProductoNoEncontrado = "PRODUCTO-NOT-FOUND";
+
     public const string ProductoExistente = "PRODUCTO-EXISTENTE";
+    public const string ProductoSkuExistente = "PRODUCTO-SKU-EXISTENTE";
     public const string ProductoInactivo = "PRODUCTO-INACTIVO";
-    
+
 
     /// <summary>
     /// Carga los errores relacionados con la entidad Proveedor.
@@ -531,6 +535,11 @@ public class ServiceErrorsBuilder
             errorCode: ProductoExistente,
             message: "El producto del proveedor de servicio ya existe.",
             description: "El producto del proveedor de servicio {0} ya existe.");
+        // Error de producto sku existente
+        AddServiceError(
+            errorCode: ProductoSkuExistente,
+            message: "El SKU del producto ya existe.",
+            description: "El SKU {0} ya está registrado para este proveedor.");
         // Error de producto inactivo
         AddServiceError(
             errorCode: ProductoInactivo,
