@@ -61,11 +61,34 @@ namespace Wallet.RestAPI.Errors
         #region Errors
 
         // Constants
+        /// <summary>
+        /// Error code for bad API version
+        /// </summary>
         public const string RestApiBadVersion = "REST-API-BAD-VERSION";
+
+        /// <summary>
+        /// Error code for resource not found
+        /// </summary>
         public const string ResourceNotFound = "RESOURCE-NOT-FOUND";
+
+        /// <summary>
+        /// Error code for generic 500 exception
+        /// </summary>
         public const string EmGeneric500Exception = "EM-GENERIC-500-EXCEPTION";
+
+        /// <summary>
+        /// Error code for AutoMapper mapping exception
+        /// </summary>
         public const string AutomapperMappingException = "AUTOMAPPER-MAPPING-EXCEPTION";
+
+        /// <summary>
+        /// Error code for default REST API error
+        /// </summary>
         public const string RestApiDefaultError = "REST-API-DEFAULT-ERROR";
+
+        /// <summary>
+        /// Error code for general problem processing error
+        /// </summary>
         public const string EmGeneralErrorProblemProcessingError = "EM-GENERAL-ERROR-PROBLEM-PROCESSING-ERROR";
 
         /// <summary>

@@ -501,6 +501,87 @@ paths:
       description: Obtiene los clientes asignados a una empresa
       tags:
         - Empresa
+  '/{version}/empresa/{idEmpresa}/productos':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idEmpresa'
+    get:
+      summary: Obtiene los productos de una empresa
+      operationId: getProductosPorEmpresa
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los productos asignados a una empresa
+      tags:
+        - Empresa
+    post:
+      summary: Asigna productos a una empresa
+      operationId: AsignarProductos
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsignarProductosRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Asigna una lista de productos a una empresa
+      tags:
+        - Empresa
+  '/{version}/empresa/{idEmpresa}/productos/remover':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idEmpresa'
+    post:
+      summary: Remueve productos de una empresa
+      operationId: DesasignarProductos
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsignarProductosRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Remueve una lista de productos de una empresa
+      tags:
+        - Empresa
   '/{version}/broker':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -2475,6 +2556,17 @@ components:
           minLength: 1
       required:
         - nombre
+    AsignarProductosRequest:
+      title: AsignarProductosRequest
+      type: object
+      description: Estructura para asignar productos a una empresa
+      properties:
+        productoIds:
+          type: array
+          items:
+            type: integer
+      required:
+        - productoIds
     EstadoResult:
       title: EstadoResult
       x-stoplight:

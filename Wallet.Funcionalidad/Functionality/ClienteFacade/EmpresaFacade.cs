@@ -221,6 +221,90 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         }
     }
 
+    /// <inheritdoc />
+    public async Task<Empresa> AsignarProductosAsync(int idEmpresa, List<int> idsProductos, Guid modificationUser)
+    {
+        try
+        {
+            var empresa = await context.Empresa
+                .Include(e => e.Productos)
+                .FirstOrDefaultAsync(e => e.Id == idEmpresa);
+
+            if (empresa is null)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
+                    dynamicContent: [idEmpresa]));
+
+            ValidarEmpresaActiva(empresa: empresa);
+
+            // Obtener los productos que se quieren asignar y verificar que existan
+            var productosEntidad = await context.Producto
+                .Where(p => idsProductos.Contains(p.Id))
+                .ToListAsync();
+
+            foreach (var producto in productosEntidad)
+            {
+                // Si la empresa no tiene asignado este producto, se agrega
+                if (empresa.Productos.All(p => p.Id != producto.Id))
+                {
+                    empresa.Productos.Add(producto);
+                    // Actualizamos usuario de modificación en la empresa si es necesario para trackear el cambio
+                    empresa.Actualizar(nombre: empresa.Nombre, modificationUser: modificationUser);
+                }
+            }
+
+            await context.SaveChangesAsync();
+            return empresa;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Empresa> DesasignarProductosAsync(int idEmpresa, List<int> idsProductos, Guid modificationUser)
+    {
+        try
+        {
+            var empresa = await context.Empresa
+                .Include(e => e.Productos)
+                .FirstOrDefaultAsync(e => e.Id == idEmpresa);
+
+            if (empresa is null)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EmpresaNoEncontrada,
+                    dynamicContent: [idEmpresa]));
+
+            ValidarEmpresaActiva(empresa: empresa);
+
+            // Identificar los productos a remover que efectivamente están en la lista de la empresa
+            var productosARemover = empresa.Productos
+                .Where(p => idsProductos.Contains(p.Id))
+                .ToList();
+
+            foreach (var producto in productosARemover)
+            {
+                empresa.Productos.Remove(producto);
+                // Actualizamos usuario de modificación
+                empresa.Actualizar(nombre: empresa.Nombre, modificationUser: modificationUser);
+            }
+
+            await context.SaveChangesAsync();
+            return empresa;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
     #region Metodos privados
 
     /// <summary>

@@ -80,4 +80,42 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         // Return OK response
         return Ok(value: response);
     }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> AsignarProductosAsync(
+        string version,
+        [FromRoute] int idEmpresa,
+        [FromBody] AsignarProductosRequest body)
+    {
+        // Call facade method
+        var empresa = await empresaFacade.AsignarProductosAsync(
+            idEmpresa: idEmpresa,
+            idsProductos: body.ProductoIds,
+            modificationUser: this.GetAuthenticatedUserGuid());
+
+        // Map to response model
+        var response = mapper.Map<EmpresaResult>(source: empresa);
+
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> DesasignarProductosAsync(
+        string version,
+        [FromRoute] int idEmpresa,
+        [FromBody] AsignarProductosRequest body)
+    {
+        // Call facade method
+        var empresa = await empresaFacade.DesasignarProductosAsync(
+            idEmpresa: idEmpresa,
+            idsProductos: body.ProductoIds,
+            modificationUser: this.GetAuthenticatedUserGuid());
+
+        // Map to response model
+        var response = mapper.Map<EmpresaResult>(source: empresa);
+
+        // Return OK response
+        return Ok(value: response);
+    }
 }
