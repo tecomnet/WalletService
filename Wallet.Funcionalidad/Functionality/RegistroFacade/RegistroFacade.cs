@@ -97,8 +97,8 @@ public class RegistroFacade(
     /// <returns>El objeto <see cref="Usuario"/> con el correo electrónico registrado.</returns>
     public async Task<Usuario> RegistrarCorreoAsync(int idUsuario, string correo)
     {
-        // Valida que el usuario esté en el estado esperado (DatosClienteCompletado)
-        var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.DatosClienteCompletado);
+        // Valida que el usuario esté en el estado esperado (DatosClienteCompletado o CorreoRegistrado si es reenvío)
+        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: [EstatusRegistroEnum.DatosClienteCompletado, EstatusRegistroEnum.CorreoRegistrado]);
 
         // Actualiza el correo electrónico del usuario a través del facade de usuario
         await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo, usuario.CreationUser);
@@ -231,10 +231,10 @@ public class RegistroFacade(
     /// Valida que el usuario exista y que su estado de registro actual sea el esperado.
     /// </summary>
     /// <param name="idUsuario">ID del usuario a validar.</param>
-    /// <param name="estatusEsperado">El estado de registro que se espera del usuario.</param>
+    /// <param name="estatusEsperados">Los estados de registro que se esperan del usuario (uno o varios).</param>
     /// <returns>El objeto <see cref="Usuario"/> si la validación es exitosa.</returns>
     /// <exception cref="EMGeneralAggregateException">Se lanza si el usuario no es encontrado o si su estado no coincide con el esperado.</exception>
-    private async Task<Usuario> ValidarEstadoAsync(int idUsuario, EstatusRegistroEnum estatusEsperado)
+    private async Task<Usuario> ValidarEstadoAsync(int idUsuario, params EstatusRegistroEnum[] estatusEsperados)
     {
         // Obtiene el usuario por su ID
         var usuario = await usuarioFacade.ObtenerUsuarioPorIdAsync(idUsuario);
@@ -243,16 +243,18 @@ public class RegistroFacade(
             // Lanza una excepción si el usuario no es encontrado
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.UsuarioNoEncontrado,
-                dynamicContent: []));
+                dynamicContent: [],
+                module: this.GetType().Name));
         }
 
-        // Verifica si el estado actual del usuario coincide con el estado esperado
-        if (usuario.Estatus != estatusEsperado)
+        // Verifica si el estado actual del usuario coincide con alguno de los estados esperados
+        if (!estatusEsperados.Contains(usuario.Estatus))
         {
             // Lanza una excepción si el estado no coincide
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.InvalidRegistrationState,
-                dynamicContent: [usuario.Estatus.ToString(), estatusEsperado.ToString()]));
+                dynamicContent: [usuario.Estatus.ToString(), string.Join(" o ", estatusEsperados)],
+                module: this.GetType().Name));
         }
 
         return usuario;
