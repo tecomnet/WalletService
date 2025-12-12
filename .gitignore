@@ -410,3 +410,6 @@ code-ql
 
 # Bundles
 */bundles/*.sh
+
+# Ignorar toda la carpeta de configuración de VS Code
+.vscode/

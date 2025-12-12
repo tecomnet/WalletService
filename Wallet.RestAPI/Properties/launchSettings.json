@@ -1,0 +1,28 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:5000",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "dev": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "em-api/0.1",
+      "applicationUrl": "https://localhost:4000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Database": "WalletService",
+        "DbUser": "sa",
+        "DbPassword": "123",
+        "DbServer": ".",
+        "API-Key": "14bb0ffb-7503-4fa6-9969-b721635929db",
+        "twilio-service": "https://localhost:4001",
+        "checkton-pld-service": "https://localhost:4002"
+      }
+    }
+  }
+}

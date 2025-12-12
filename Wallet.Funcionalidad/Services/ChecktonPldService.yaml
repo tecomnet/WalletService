@@ -1,0 +1,278 @@
+openapi: 3.0.0
+info:
+  title: ChecktonPld API
+  version: 0.1.0
+  description: |
+    Api para exponer la funcionalidad del ChecktonPld.
+  contact:
+    name: Edilberto Martinez
+    url: 'https://edilbertomd.github.io/portafoliolaboral/'
+    email: edilberto_diaz14@hotmail.com
+servers:
+  - url: 'http://localhost:3000'
+    description: Development/Test Server
+  - url: 'http://localhost:4000'
+    description: Production Server
+paths:
+  /health:
+    get:
+      summary: Ping echo for testing the services is up
+      tags:
+        - Health
+      responses:
+        '200':
+          description: OK
+      operationId: get-health
+      description: Health check for the service
+      security: []
+  /ready:
+    get:
+      summary: Readiness check by executing base functionality
+      tags:
+        - Health
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      operationId: GetReady
+      description: Readiness check for the service
+      security: []
+  '/{version}/checktonpld':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Valida datos personales con checkton pld
+      operationId: PostValidaConRenapo
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidacionCurpResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Valida un cliente con renapo usando api de checkton pld
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidacionCurpRequest'
+        description: ''
+      tags:
+        - checktonPld
+components:
+  schemas:
+    ValidacionCurpRequest:
+      title: ValidacionCurpRequest
+      x-stoplight:
+        id: ftnocc7wbt65m
+      type: object
+      description: Estructura para validar datos personales en checkton pld
+      properties:
+        nombre:
+          type: string
+          x-stoplight:
+            id: cmh7pv6rstqw2
+          minLength: 1
+          maxLength: 100
+        primerApellido:
+          type: string
+          x-stoplight:
+            id: 3gqw0gpaee1h1
+          minLength: 1
+          maxLength: 100
+        segundoApellido:
+          type: string
+          x-stoplight:
+            id: ta3bh1ass3ns6
+          minLength: 1
+          maxLength: 100
+        fechaNacimiento:
+          type: string
+          x-stoplight:
+            id: ap2nj6amogy3q
+          minLength: 10
+          format: date
+          maxLength: 10
+        genero:
+          $ref: '#/components/schemas/GeneroEnum'
+        estado:
+          type: string
+          x-stoplight:
+            id: gsr24n102oa0m
+          minLength: 1
+          maxLength: 100
+        nombreServicioCliente:
+          type: string
+          x-stoplight:
+            id: gsr24n102oa0m
+          minLength: 1
+          maxLength: 100
+      required:
+        - nombre
+        - primerApellido
+        - segundoApellido
+        - fechaNacimiento
+        - genero
+        - estado
+        - nombreServicioCliente
+    ValidacionCurpResult:
+      title: ValidacionCurpResult
+      x-stoplight:
+        id: yogip2dhjitkj
+      type: object
+      description: Estructura del resultado de la validacion de datos personales en checkton pld
+      properties:
+        validationId:
+          type: string
+          x-stoplight:
+            id: cmh7pv6rstqw2
+          minLength: 1
+          maxLength: 100
+        curpGenerada:
+          type: string
+          x-stoplight:
+            id: cmh7pv6rstqw2
+          minLength: 18
+          maxLength: 18
+        success:
+          type: boolean
+          x-stoplight:
+            id: 3gqw0gpaee1h1
+      required:
+        - validationId
+        - curpGenerada
+        - success
+    GeneroEnum:
+      title: GeneroEnum
+      x-stoplight:
+        id: mayl2eqw4lv1l
+      type: string
+      description: Estructura enum para genero
+      enum:
+        - Masculino
+        - Femenino
+        - NoBinario
+  securitySchemes:
+    jwsToken:
+      type: http
+      scheme: bearer
+    X-API-Key:
+      name: X-API-Key
+      type: apiKey
+      in: header
+  parameters:
+    version:
+      name: version
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+      description: Version of the API to use
+  responses:
+    HTTP_Error_400:
+      description: Response to client error status code
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                description: List of errors
+                items:
+                  type: object
+                  description: Standard error
+                  properties:
+                    errorCode:
+                      type: string
+                      description: Error key for internationalization purposes
+                    type:
+                      type: string
+                      format: uri
+                      description: Original URI
+                      readOnly: true
+                    title:
+                      type: string
+                      description: 'Error title, clear and concise'
+                      readOnly: true
+                    status:
+                      type: integer
+                      description: HTTP status for the specific error
+                      format: int32
+                      minimum: 0
+                      exclusiveMinimum: true
+                      readOnly: true
+                    detail:
+                      type: string
+                      description: Full detail of the error
+                      minLength: 15
+                      readOnly: true
+                    instance:
+                      type: string
+                      description: Specific instance where the error occurs without the base URI
+                      minLength: 1
+                      readOnly: true
+                    extraAttributes:
+                      type: object
+                      description: Extra attributes
+                      nullable: true
+                      properties:
+                        desciptionDynamicContents:
+                          type: array
+                          description: List of dynamic fields used in the detail of the error
+                          nullable: true
+                          items:
+                            type: string
+                        module:
+                          type: string
+                          description: Module that generated the error
+                          nullable: true
+                        serviceName:
+                          type: string
+                          description: Name of the service generating the error
+                          nullable: true
+                        serviceLocation:
+                          type: string
+                          description: Location of the service's instance
+                          nullable: true
+                  required:
+                    - errorCode
+                    - type
+                    - title
+                    - status
+                    - detail
+                    - instance
+            required:
+              - errors
+          examples:
+            Basic example:
+              value:
+                errors:
+                  - errorCode: string
+                    type: 'http://example.com'
+                    title: string
+                    status: 1
+                    detail: stringstringstr
+                    instance: string
+                    extraAttributes:
+                      desciptionDynamicContents:
+                        - string
+                      module: string
+                      serviceName: string
+                      serviceLocation: string
+tags:
+  - name: checktonPld
+  - name: Health
+security:
+  - jwsToken: []
+  - X-API-Key: []
