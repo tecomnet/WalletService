@@ -33,10 +33,8 @@ namespace Wallet.DOM.Modelos
         [Required]
         [MaxLength(length: 100)]
         public string Nombre { get; private set; }
-        
-        [Required]
-        [MaxLength(length: 255)]
-        public string UrlIcono { get; private set; }
+
+        [Required] [MaxLength(length: 255)] public string UrlIcono { get; private set; }
 
         /// <summary>
         /// ID del broker al que pertenece este proveedor.
@@ -96,15 +94,32 @@ namespace Wallet.DOM.Modelos
         public void Update(string nombre, string urlIcono, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
+
             IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(UrlIcono), value: urlIcono, exceptions: ref exceptions);
+
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
             }
-            UrlIcono = urlIcono;
-            Nombre = nombre;
-            base.Update(modificationUser: modificationUser);
+
+            bool hasChanges = false;
+            if (this.Nombre != nombre)
+            {
+                Nombre = nombre;
+                hasChanges = true;
+            }
+
+            if (this.UrlIcono != urlIcono)
+            {
+                UrlIcono = urlIcono;
+                hasChanges = true;
+            }
+
+            if (hasChanges)
+            {
+                base.Update(modificationUser: modificationUser);
+            }
         }
 
         /// <summary>

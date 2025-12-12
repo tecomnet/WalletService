@@ -97,12 +97,13 @@ public class TipoDocumentoTest : UnitTestTemplate
         {
             if (caseName == "9. ERROR: Agregar documento null")
             {
-                tipoDocumento.AgregarDocumento(documento: null!); // Simular un documento null
+                tipoDocumento.AgregarDocumento(documento: null!,
+                    modificationUser: Guid.NewGuid()); // Simular un documento null
                 Assert.Fail(message: $"El caso '{caseName}' falló al no lanzar la excepción requerida.");
             }
 
             // Primer intento: Agregar el documento inicial (siempre debe ser exitoso para la prueba de duplicidad)
-            tipoDocumento.AgregarDocumento(documento: documentoToAdd);
+            tipoDocumento.AgregarDocumento(documento: documentoToAdd, modificationUser: Guid.NewGuid());
 
             // Si el test espera solo 1 intento (OK o caso especial), terminar aquí.
             if (intentos == 1)
@@ -114,7 +115,8 @@ public class TipoDocumentoTest : UnitTestTemplate
             // Segundo intento (si intentos = 2): Probar la duplicidad
             if (intentos == 2)
             {
-                tipoDocumento.AgregarDocumento(documento: documentoToAdd); // Intentar agregar el mismo (duplicado)
+                tipoDocumento.AgregarDocumento(documento: documentoToAdd,
+                    modificationUser: Guid.NewGuid()); // Intentar agregar el mismo (duplicado)
                 Assert.False(condition: success,
                     userMessage: "El segundo intento no lanzó la excepción de duplicidad.");
             }

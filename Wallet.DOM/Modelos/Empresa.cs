@@ -84,6 +84,9 @@ public class Empresa : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
         // Si hay excepciones, las lanza como una excepción agregada.
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
+        if (this.Nombre == nombre) return;
+
         // Asignación de propiedades después de una validación exitosa.
         this.Nombre = nombre;
         // Llama al método de actualización de la clase base para registrar el usuario de modificación.

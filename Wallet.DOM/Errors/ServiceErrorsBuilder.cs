@@ -48,6 +48,8 @@ public class ServiceErrorsBuilder
         ServicioFavoritoErrors();
         // 10. Errores de Registro
         RegistroErrors();
+        // 11. Errores de KeyValueConfig
+        KeyValueConfigErrors();
     }
 
     /// <summary>
@@ -663,6 +665,34 @@ public class ServiceErrorsBuilder
             errorCode: TerminosNoAceptados,
             message: "Términos y condiciones no aceptados.",
             description: "Debe aceptar los términos y condiciones, política de privacidad y PLD para continuar.");
+    }
+
+    #endregion
+
+    #region KeyValueConfig
+
+    /// <summary>Error: La configuración KeyValue no fue encontrada.</summary>
+    public const string KeyValueConfigNoEncontrado = "KEY-VALUE-CONFIG-NO-ENCONTRADO";
+
+    /// <summary>Error: La configuración KeyValue ya existe.</summary>
+    public const string KeyValueConfigYaExiste = "KEY-VALUE-CONFIG-YA-EXISTE";
+
+    /// <summary>
+    /// Carga los errores relacionados con la entidad KeyValueConfig.
+    /// </summary>
+    private void KeyValueConfigErrors()
+    {
+        // Error de configuración no encontrada
+        AddServiceError(
+            errorCode: KeyValueConfigNoEncontrado,
+            message: "La configuración no fue encontrada.",
+            description: "La configuración con clave {0} no existe.");
+
+        // Error de configuración ya existente
+        AddServiceError(
+            errorCode: KeyValueConfigYaExiste,
+            message: "La configuración ya existe.",
+            description: "La configuración con clave {0} ya existe.");
     }
 
     #endregion

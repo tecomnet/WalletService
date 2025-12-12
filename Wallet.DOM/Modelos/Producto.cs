@@ -149,22 +149,54 @@ namespace Wallet.DOM.Modelos
             Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
+
             IsPropertyValid(propertyName: nameof(Sku), value: sku, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Precio), value: precio, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(UrlIcono), value: urlIcono, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(Categoria), value: categoria, exceptions: ref exceptions);
+
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
-            Sku = sku;
-            Nombre = nombre;
-            UrlIcono = urlIcono;
-            Categoria = categoria;
-            Precio = precio;
-            base.Update(modificationUser: modificationUser);
+            bool hasChanges = false;
+
+            if (this.Sku != sku)
+            {
+                Sku = sku;
+                hasChanges = true;
+            }
+
+            if (this.Nombre != nombre)
+            {
+                Nombre = nombre;
+                hasChanges = true;
+            }
+
+            if (this.UrlIcono != urlIcono)
+            {
+                UrlIcono = urlIcono;
+                hasChanges = true;
+            }
+
+            if (this.Categoria != categoria)
+            {
+                Categoria = categoria;
+                hasChanges = true;
+            }
+
+            if (this.Precio != precio)
+            {
+                Precio = precio;
+                hasChanges = true;
+            }
+
+            if (hasChanges)
+            {
+                base.Update(modificationUser: modificationUser);
+            }
         }
 
         /// <summary>
@@ -174,6 +206,7 @@ namespace Wallet.DOM.Modelos
         /// <param name="modificationUser">El usuario que modifica el registro.</param>
         public void AsignarProveedor(Proveedor proveedor, Guid modificationUser)
         {
+            if (this.ProveedorId == proveedor.Id) return;
             Proveedor = proveedor;
             ProveedorId = proveedor.Id;
             base.Update(modificationUser: modificationUser);

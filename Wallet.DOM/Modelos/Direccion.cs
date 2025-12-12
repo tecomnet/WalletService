@@ -25,17 +25,17 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
 
         // Restricción para el País: requerido, longitud entre 1 y 100 caracteres.
         PropertyConstraint.StringPropertyConstraint(
-                   propertyName: nameof(Pais),
-                   isRequired: true,
-                   minimumLength: 1,
-                   maximumLength: 100),
+            propertyName: nameof(Pais),
+            isRequired: true,
+            minimumLength: 1,
+            maximumLength: 100),
 
         // Restricción para el Estado: requerido, longitud entre 1 y 100 caracteres.
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Estado),
             isRequired: true,
             minimumLength: 1,
-            maximumLength:100),
+            maximumLength: 100),
 
         // Restricción para el Municipio: requerido, longitud entre 1 y 100 caracteres.
         PropertyConstraint.StringPropertyConstraint(
@@ -166,7 +166,8 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
     /// <param name="creationUser">El GUID del usuario que crea la dirección.</param>
     /// <param name="testCase">Opcional: un caso de prueba para propósitos de desarrollo/testing.</param>
     /// <exception cref="EMGeneralAggregateException">Se lanza si alguna de las propiedades iniciales (país, estado) no es válida.</exception>
-    public Direccion(string pais, string estado, Guid creationUser, string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
+    public Direccion(string pais, string estado, Guid creationUser, string? testCase = null) : base(
+        creationUser: creationUser, testCase: testCase)
     {
         // Inicializa la lista de excepciones para recolectar errores de validación.
         List<EMGeneralException> exceptions = new();
@@ -203,9 +204,8 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
         string referencia,
         Guid modificationUser)
     {
-        // Inicializa la lista de excepciones para recolectar errores de validación.
         List<EMGeneralException> exceptions = new();
-        // Valida cada una de las propiedades antes de la asignación.
+
         IsPropertyValid(propertyName: nameof(CodigoPostal), value: codigoPostal, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(Municipio), value: municipio, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(Colonia), value: colonia, exceptions: ref exceptions);
@@ -213,17 +213,56 @@ public class Direccion : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(NumeroExterior), value: numeroExterior, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(NumeroInterior), value: numeroInterior, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(Referencia), value: referencia, exceptions: ref exceptions);
-        // Si hay excepciones, las lanza agrupadas.
+
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Asigna los valores validados a las propiedades correspondientes.
-        CodigoPostal = codigoPostal;
-        Municipio = municipio;
-        Colonia = colonia;
-        Calle = calle;
-        NumeroExterior = numeroExterior;
-        NumeroInterior = numeroInterior;
-        Referencia = referencia;
-        // Llama al método base para actualizar la información de modificación.
-        base.Update(modificationUser: modificationUser);
+
+        bool hasChanges = false;
+
+        if (this.CodigoPostal != codigoPostal)
+        {
+            this.CodigoPostal = codigoPostal;
+            hasChanges = true;
+        }
+
+        if (this.Municipio != municipio)
+        {
+            this.Municipio = municipio;
+            hasChanges = true;
+        }
+
+        if (this.Colonia != colonia)
+        {
+            this.Colonia = colonia;
+            hasChanges = true;
+        }
+
+        if (this.Calle != calle)
+        {
+            this.Calle = calle;
+            hasChanges = true;
+        }
+
+        if (this.NumeroExterior != numeroExterior)
+        {
+            this.NumeroExterior = numeroExterior;
+            hasChanges = true;
+        }
+
+        if (this.NumeroInterior != numeroInterior)
+        {
+            this.NumeroInterior = numeroInterior;
+            hasChanges = true;
+        }
+
+        if (this.Referencia != referencia)
+        {
+            this.Referencia = referencia;
+            hasChanges = true;
+        }
+
+        if (hasChanges)
+        {
+            base.Update(modificationUser: modificationUser);
+        }
     }
 }

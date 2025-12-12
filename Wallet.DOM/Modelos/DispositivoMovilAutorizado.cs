@@ -40,30 +40,42 @@ public class DispositivoMovilAutorizado : ValidatablePersistentObjectLogicalDele
     /// <summary>
     /// Obtiene el token único del dispositivo móvil.
     /// </summary>
-    [Required] [MaxLength(length: 100)] public string Token { get; private set; }
+    [Required]
+    [MaxLength(length: 100)]
+    public string Token { get; private set; }
+
     /// <summary>
     /// Obtiene el identificador único del dispositivo móvil.
     /// </summary>
-    [Required] [MaxLength(length: 100)] public string IdDispositivo { get; private set; }
+    [Required]
+    [MaxLength(length: 100)]
+    public string IdDispositivo { get; private set; }
+
     /// <summary>
     /// Obtiene el nombre asignado al dispositivo móvil.
     /// </summary>
-    [Required] [MaxLength(length: 100)] public string Nombre { get; private set; }
+    [Required]
+    [MaxLength(length: 100)]
+    public string Nombre { get; private set; }
 
     /// <summary>
     /// Obtiene las características o descripción del dispositivo móvil.
     /// </summary>
-    [Required] [MaxLength(length: 100)] public string Caracteristicas { get; private set; }
+    [Required]
+    [MaxLength(length: 100)]
+    public string Caracteristicas { get; private set; }
 
     /// <summary>
     /// Indica si este dispositivo es el dispositivo móvil actualmente activo o en uso.
     /// </summary>
-    [Required] public bool Actual { get; private set; }
+    [Required]
+    public bool Actual { get; private set; }
 
     /// <summary>
     /// Obtiene el identificador del usuario al que pertenece este dispositivo.
     /// </summary>
     public int UsuarioId { get; private set; }
+
     /// <summary>
     /// Obtiene el objeto <see cref="Usuario"/> asociado a este dispositivo.
     /// </summary>
@@ -116,8 +128,12 @@ public class DispositivoMovilAutorizado : ValidatablePersistentObjectLogicalDele
     /// <summary>
     /// Marca este dispositivo móvil como no actual.
     /// </summary>
-    public void MarcarComoNoActual()
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
+    public void MarcarComoNoActual(Guid modificationUser)
     {
+        if (!Actual) return;
+
         Actual = false;
+        base.Update(modificationUser: modificationUser);
     }
 }

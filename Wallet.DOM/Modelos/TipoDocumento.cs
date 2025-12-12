@@ -39,7 +39,9 @@ public class TipoDocumento : ValidatablePersistentObjectLogicalDelete
     /// Constructor por defecto de TipoDocumento.
     /// Utilizado principalmente por el ORM.
     /// </summary>
-    public TipoDocumento() : base() { }
+    public TipoDocumento() : base()
+    {
+    }
 
     /// <summary>
     /// Constructor para crear una nueva instancia de TipoDocumento con un nombre específico.
@@ -48,7 +50,8 @@ public class TipoDocumento : ValidatablePersistentObjectLogicalDelete
     /// <param name="creationUser">El ID del usuario que crea el tipo de documento.</param>
     /// <param name="testCase">Caso de prueba opcional para validación.</param>
     /// <exception cref="EMGeneralAggregateException">Se lanza si las validaciones iniciales fallan.</exception>
-    public TipoDocumento(string nombre, Guid creationUser, string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
+    public TipoDocumento(string nombre, Guid creationUser, string? testCase = null) : base(creationUser: creationUser,
+        testCase: testCase)
     {
         // Inicializa la lista de excepciones para recolectar errores de validación
         List<EMGeneralException> exceptions = new();
@@ -64,32 +67,36 @@ public class TipoDocumento : ValidatablePersistentObjectLogicalDelete
     /// Agrega un documento a la lista de documentos asociados a este tipo de documento.
     /// </summary>
     /// <param name="documento">El objeto Documento a agregar.</param>
+    /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     /// <exception cref="EMGeneralAggregateException">
     /// Se lanza si el documento es nulo, o si ya existe un documento con el mismo nombre y tipo de persona.
     /// </exception>
-    public void AgregarDocumento(Documento documento)
+    public void AgregarDocumento(Documento documento, Guid modificationUser)
     {
         // Inicializa la lista de documentos si es nula
         if (this.Documentos == null)
         {
             this.Documentos = new List<Documento>();
         }
+
         // Valida que el documento a agregar no sea nulo
         if (documento == null)
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                   errorCode: ServiceErrorsBuilder.DocumentoRequerido,
-                   dynamicContent: []));
+                errorCode: ServiceErrorsBuilder.DocumentoRequerido,
+                dynamicContent: []));
         }
+
         // Verifica si ya existe un documento con el mismo nombre y tipo de persona en la lista
         if (this.Documentos.Any(predicate: d => d.Nombre == documento.Nombre && d.TipoPersona == documento.TipoPersona))
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                   errorCode: ServiceErrorsBuilder.DocumentoYaExisteEnTipoDocumento,
-                   dynamicContent: [documento.Nombre, documento.TipoPersona]));
+                errorCode: ServiceErrorsBuilder.DocumentoYaExisteEnTipoDocumento,
+                dynamicContent: [documento.Nombre, documento.TipoPersona]));
         }
+
         // Agrega el documento a la lista
         this.Documentos.Add(item: documento);
+        base.Update(modificationUser: modificationUser);
     }
-
 }

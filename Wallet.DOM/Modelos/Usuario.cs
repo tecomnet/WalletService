@@ -176,7 +176,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
         this.Contrasena = !string.IsNullOrEmpty(contrasena) ? BCrypt.Net.BCrypt.HashPassword(contrasena) : null;
-        Update(modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
     }
 
     /// <summary>
@@ -214,7 +214,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         this.Contrasena = !string.IsNullOrEmpty(contrasenaNueva)
             ? BCrypt.Net.BCrypt.HashPassword(contrasenaNueva)
             : null;
-        Update(modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
     }
 
     /// <summary>
@@ -226,13 +226,37 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
     public void ActualizarTelefono(string codigoPais, string telefono, Guid modificationUser)
     {
         List<EMGeneralException> exceptions = new();
-        IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, exceptions: ref exceptions);
-        IsPropertyValid(propertyName: nameof(Telefono), value: telefono, exceptions: ref exceptions);
+
+        if (this.CodigoPais != codigoPais)
+        {
+            IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, exceptions: ref exceptions);
+        }
+
+        if (this.Telefono != telefono)
+        {
+            IsPropertyValid(propertyName: nameof(Telefono), value: telefono, exceptions: ref exceptions);
+        }
+
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
-        this.CodigoPais = codigoPais;
-        this.Telefono = telefono;
-        Update(modificationUser: modificationUser);
+        bool hasChanges = false;
+
+        if (this.CodigoPais != codigoPais)
+        {
+            this.CodigoPais = codigoPais;
+            hasChanges = true;
+        }
+
+        if (this.Telefono != telefono)
+        {
+            this.Telefono = telefono;
+            hasChanges = true;
+        }
+
+        if (hasChanges)
+        {
+            base.Update(modificationUser: modificationUser);
+        }
     }
 
     /// <summary>
@@ -242,12 +266,14 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
     /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void ActualizarCorreoElectronico(string correoElectronico, Guid modificationUser)
     {
+        if (this.CorreoElectronico == correoElectronico) return;
+
         List<EMGeneralException> exceptions = new();
         IsPropertyValid(propertyName: nameof(CorreoElectronico), value: correoElectronico, exceptions: ref exceptions);
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
         this.CorreoElectronico = correoElectronico;
-        Update(modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
     }
 
     /// <summary>
@@ -277,7 +303,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
 
         this.Verificaciones2Fa.Add(item: verificacion);
         this.Estatus = EstatusRegistroEnum.PreRegistro;
-        Update(modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
     }
 
     /// <summary>
@@ -328,7 +354,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         }
 
         verificacion.MarcarComoVerificado(codigo: codigo, modificationUser: modificationUser);
-        Update(modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
         return verificacion.Verificado;
     }
 
@@ -347,7 +373,7 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         }
 
         this.UbicacionesGeolocalizacion.Add(item: ubicacion);
-        Update(modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
     }
 
     /// <summary>
@@ -378,11 +404,11 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         var dispositivoActual = this.DispositivoMovilAutorizados.FirstOrDefault(predicate: x => x.Actual);
         if (dispositivoActual != null)
         {
-            dispositivoActual.MarcarComoNoActual();
+            dispositivoActual.MarcarComoNoActual(modificationUser: modificationUser);
         }
 
         this.DispositivoMovilAutorizados.Add(item: dispositivo);
-        Update(modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
     }
 
     /// <summary>
@@ -406,8 +432,9 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
     /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void ActualizarEstatus(EstatusRegistroEnum nuevoEstatus, Guid modificationUser)
     {
+        if (this.Estatus == nuevoEstatus) return;
         this.Estatus = nuevoEstatus;
-        Update(modificationUser: modificationUser);
+        base.Update(modificationUser: modificationUser);
     }
 
     /// <summary>
@@ -418,9 +445,23 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
     /// <param name="modificationUser">Usuario que realiza la modificación.</param>
     public void UpdateRefreshToken(string refreshToken, DateTime expiryTime, Guid modificationUser)
     {
-        this.RefreshToken = refreshToken;
-        this.RefreshTokenExpiryTime = expiryTime;
-        Update(modificationUser: modificationUser);
+        bool hasChanges = false;
+        if (this.RefreshToken != refreshToken)
+        {
+            this.RefreshToken = refreshToken;
+            hasChanges = true;
+        }
+
+        if (this.RefreshTokenExpiryTime != expiryTime)
+        {
+            this.RefreshTokenExpiryTime = expiryTime;
+            hasChanges = true;
+        }
+
+        if (hasChanges)
+        {
+            base.Update(modificationUser: modificationUser);
+        }
     }
 
     /// <summary>

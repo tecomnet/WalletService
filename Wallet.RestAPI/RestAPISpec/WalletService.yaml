@@ -42,6 +42,128 @@ paths:
       operationId: GetReady
       description: Readiness check for the service
       security: []
+  "/{version}/configurations":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    get:
+      summary: Obtiene todas las configuraciones
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KeyValueConfigResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+    post:
+      summary: Crea una nueva configuracion
+      operationId: CreateKeyValueConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KeyValueConfigRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KeyValueConfigResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+  "/{version}/configurations/{key}":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Clave de la configuracion
+    get:
+      summary: Obtiene una configuracion por su clave
+      operationId: GetKeyValueConfigByKey
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KeyValueConfigResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+    put:
+      summary: Actualiza una configuracion existente
+      operationId: UpdateKeyValueConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KeyValueConfigUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KeyValueConfigResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+    delete:
+      summary: Elimina una configuracion por su clave
+      operationId: DeleteKeyValueConfig
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KeyValueConfigResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+
   "/{version}/cliente":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -3035,6 +3157,42 @@ components:
       required:
         - contrasena
         - confirmacionContrasena
+    KeyValueConfigRequest:
+      title: KeyValueConfigRequest
+      type: object
+      description: Estructura para crear una configuracion
+      properties:
+        key:
+          type: string
+          description: Clave de la configuracion
+        value:
+          type: string
+          description: Valor de la configuracion
+      required:
+        - key
+        - value
+    KeyValueConfigUpdateRequest:
+      title: KeyValueConfigUpdateRequest
+      type: object
+      description: Estructura para actualizar una configuracion
+      properties:
+        value:
+          type: string
+          description: Valor de la configuracion
+      required:
+        - value
+    KeyValueConfigResult:
+      title: KeyValueConfigResult
+      type: object
+      description: Estructura de resultado de configuracion key-value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      required:
+        - key
+        - value
   securitySchemes:
     jwsToken:
       type: http
@@ -3196,6 +3354,7 @@ tags:
   - name: Empresa
   - name: Estado
   - name: Health
+  - name: KeyValueConfig
   - name: Producto
   - name: Proveedor
   - name: Registro
