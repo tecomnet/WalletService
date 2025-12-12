@@ -118,4 +118,15 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         // Return OK response
         return Ok(value: response);
     }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> GetEmpresaAsync(string version, int idEmpresa)
+    {
+        // Call facade method
+        var empresa = await empresaFacade.ObtenerPorIdAsync(idEmpresa: idEmpresa);
+        // Map to response model
+        var response = mapper.Map<EmpresaResult>(source: empresa);
+        // Return OK response
+        return Ok(value: response);
+    }
 }

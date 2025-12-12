@@ -74,6 +74,34 @@ public class EmpresaApiTest : DatabaseTestFixture
     }
 
     [Fact]
+    public async Task Test_Get_Empresa_Ok()
+    {
+        // 1. Auth
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        // 2. Create an Empresa
+        var createRequest = new EmpresaRequest { Nombre = "Empresa Get By Id Test" };
+        var createResponse = await client.PostAsync($"/{ApiVersion}/empresa", CreateContent(createRequest));
+        var createResult =
+            JsonConvert.DeserializeObject<EmpresaResult>(await createResponse.Content.ReadAsStringAsync(),
+                _jsonSettings);
+
+        // 3. Get Empresa by Id
+        var getResponse = await client.GetAsync($"/{ApiVersion}/empresa/{createResult.Id}");
+        var getContent = await getResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+        var getResult = JsonConvert.DeserializeObject<EmpresaResult>(getContent, _jsonSettings);
+
+        Assert.NotNull(getResult);
+        Assert.Equal(createResult.Id, getResult.Id);
+        Assert.Equal(createResult.Nombre, getResult.Nombre);
+    }
+
+    [Fact]
     public async Task Test_Update_Empresa_Ok()
     {
         // 1. Auth
