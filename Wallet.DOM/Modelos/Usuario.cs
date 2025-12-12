@@ -302,7 +302,11 @@ public class Usuario : ValidatablePersistentObjectLogicalDelete
         }
 
         this.Verificaciones2Fa.Add(item: verificacion);
-        this.Estatus = EstatusRegistroEnum.PreRegistro;
+        if (this.Estatus != EstatusRegistroEnum.RegistroCompletado)
+        {
+            this.Estatus = EstatusRegistroEnum.PreRegistro;
+        }
+
         base.Update(modificationUser: modificationUser);
     }
 
