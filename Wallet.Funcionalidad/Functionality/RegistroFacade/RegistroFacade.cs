@@ -265,9 +265,8 @@ public class RegistroFacade(
                 errorCode: ServiceErrorsBuilder.UsuarioNoEncontrado,
                 dynamicContent: []));
         }
-
         // Verifica si el estado actual del usuario coincide con el estado esperado
-        if (usuario.Estatus != estatusEsperado)
+        if (estatusEsperado != EstatusRegistroEnum.DatosBiometricosRegistrado && usuario.Estatus != estatusEsperado)
         {
             // Lanza una excepción si el estado no coincide
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
