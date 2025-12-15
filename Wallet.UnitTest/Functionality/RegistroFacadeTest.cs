@@ -16,19 +16,13 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
     private readonly Mock<IUsuarioFacade> _usuarioFacadeMock = new();
     private readonly Mock<IClienteFacade> _clienteFacadeMock = new();
     private readonly Mock<IConsentimientosUsuarioFacade> _consentimientosFacadeMock = new();
-    private readonly Mock<IEmpresaFacade> _empresaFacadeMock = new();
-    private readonly RegistroFacade _registroFacade;
+    private readonly IRegistroFacade _registroFacade;
     private readonly Guid _userId = Guid.NewGuid();
 
     public RegistroFacadeTest() : base(new SetupDataConfig())
     {
-        _registroFacade = new RegistroFacade(
-            Context,
-            _usuarioFacadeMock.Object,
-            _clienteFacadeMock.Object,
-            _consentimientosFacadeMock.Object,
-            _empresaFacadeMock.Object
-        );
+        _registroFacade = new RegistroFacade(Context, _usuarioFacadeMock.Object, _clienteFacadeMock.Object,
+            _consentimientosFacadeMock.Object);
     }
 
     public void Dispose()
@@ -57,7 +51,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             .ReturnsAsync(true);
 
         // Act
-        var result = await _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", _userId);
+        var result = await _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456");
 
         // Assert
         Assert.True(result);
@@ -79,7 +73,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             .ReturnsAsync(usuario);
 
         await Assert.ThrowsAsync<EMGeneralAggregateException>(() =>
-            _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456", _userId));
+            _registroFacade.ConfirmarNumeroAsync(usuario.Id, "123456"));
     }
 
     [Fact]
@@ -93,10 +87,6 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
         _usuarioFacadeMock.Setup(x => x.ObtenerUsuarioPorIdAsync(usuario.Id))
             .ReturnsAsync(usuario);
 
-        var empresaMock = new Empresa("Tecomnet", Guid.NewGuid());
-        _empresaFacadeMock.Setup(x => x.ObtenerPorNombreAsync(It.IsAny<string>()))
-            .ReturnsAsync(empresaMock);
-
         // Act
         var result = await _registroFacade.CompletarDatosClienteAsync(
             usuario.Id,
@@ -105,8 +95,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             "Lopez",
             "Campeche",
             new DateOnly(1990, 1, 1),
-            Genero.Masculino,
-            _userId);
+            Genero.Masculino);
 
         // Assert
         Assert.NotNull(result);
@@ -114,11 +103,8 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
         Assert.NotNull(updatedUser);
         Assert.Equal(EstatusRegistroEnum.DatosClienteCompletado, updatedUser.Estatus);
 
-        var cliente = await Context.Cliente.FirstOrDefaultAsync(c => c.UsuarioId == usuario.Id);
-        Assert.NotNull(cliente);
-
         _clienteFacadeMock.Verify(x => x.ActualizarClienteDatosPersonalesAsync(
-            cliente.Id,
+            usuario.Id,
             "Juan",
             "Perez",
             "Lopez",

@@ -14,18 +14,16 @@ public interface IRegistroFacade
     /// </summary>
     /// <param name="codigoPais">El código del país del número de teléfono.</param>
     /// <param name="telefono">El número de teléfono del usuario.</param>
-    /// <param name="creationUser">El GUID del usuario que realiza la creación.</param>
     /// <returns>Un objeto <see cref="Usuario"/> que representa el usuario pre-registrado.</returns>
-    Task<Usuario> PreRegistroAsync(string codigoPais, string telefono, Guid creationUser);
+    Task<Usuario> PreRegistroAsync(string codigoPais, string telefono);
 
     /// <summary>
     /// Confirma el número de teléfono de un usuario utilizando un código de verificación.
     /// </summary>
     /// <param name="idUsuario">El identificador único del usuario.</param>
     /// <param name="codigo">El código de verificación enviado al número de teléfono.</param>
-    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
     /// <returns>True si la confirmación fue exitosa, de lo contrario, false.</returns>
-    Task<bool> ConfirmarNumeroAsync(int idUsuario, string codigo, Guid modificationUser);
+    Task<bool> ConfirmarNumeroAsync(int idUsuario, string codigo);
 
     /// <summary>
     /// Completa los datos personales básicos del cliente.
@@ -37,28 +35,25 @@ public interface IRegistroFacade
     /// <param name="nombreEstado">El nombre del estado de residencia del usuario.</param>
     /// <param name="fechaNacimiento">La fecha de nacimiento del usuario.</param>
     /// <param name="genero">El género del usuario.</param>
-    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
     /// <returns>Un objeto <see cref="Usuario"/> con los datos actualizados.</returns>
     Task<Usuario> CompletarDatosClienteAsync(int idUsuario, string nombre, string apellidoPaterno,
-        string apellidoMaterno, string nombreEstado, DateOnly fechaNacimiento, Genero genero, Guid modificationUser);
+        string apellidoMaterno, string nombreEstado, DateOnly fechaNacimiento, Genero genero);
 
     /// <summary>
     /// Registra la dirección de correo electrónico de un usuario.
     /// </summary>
     /// <param name="idUsuario">El identificador único del usuario.</param>
     /// <param name="correo">La dirección de correo electrónico a registrar.</param>
-    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
     /// <returns>Un objeto <see cref="Usuario"/> con el correo electrónico registrado.</returns>
-    Task<Usuario> RegistrarCorreoAsync(int idUsuario, string correo, Guid modificationUser);
+    Task<Usuario> RegistrarCorreoAsync(int idUsuario, string correo);
 
     /// <summary>
     /// Verifica la dirección de correo electrónico de un usuario utilizando un código.
     /// </summary>
     /// <param name="idUsuario">El identificador único del usuario.</param>
     /// <param name="codigo">El código de verificación enviado al correo electrónico.</param>
-    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
     /// <returns>True si la verificación fue exitosa, de lo contrario, false.</returns>
-    Task<bool> VerificarCorreoAsync(int idUsuario, string codigo, Guid modificationUser);
+    Task<bool> VerificarCorreoAsync(int idUsuario, string codigo);
 
     /// <summary>
     /// Registra los datos biométricos de un usuario asociados a un dispositivo.
@@ -68,10 +63,9 @@ public interface IRegistroFacade
     /// <param name="token">El token biométrico o de autenticación del dispositivo.</param>
     /// <param name="nombre">Nombre del dispositivo.</param>
     /// <param name="caracteristicas">Caracteristicas del dispositivo.</param>
-    /// <param name="modificationUser">ID del usuario que realiza la modificación.</param>
     /// <returns>El objeto <see cref="Usuario"/> con el dispositivo móvil autorizado registrado.</returns>
     Task<Usuario> RegistrarDatosBiometricosAsync(int idUsuario, string idDispositivo, string token, string nombre,
-        string caracteristicas, Guid modificationUser);
+        string caracteristicas);
 
     /// <summary>
     /// Registra la aceptación de los términos y condiciones, política de privacidad y política de PLD por parte del usuario.
@@ -81,10 +75,9 @@ public interface IRegistroFacade
     /// <param name="aceptoTerminos">Indica si el usuario aceptó los términos y condiciones.</param>
     /// <param name="aceptoPrivacidad">Indica si el usuario aceptó la política de privacidad.</param>
     /// <param name="aceptoPld">Indica si el usuario aceptó la política de prevención de lavado de dinero (PLD).</param>
-    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
     /// <returns>Un objeto <see cref="Usuario"/> con el estado de aceptación actualizado.</returns>
     Task<Usuario> AceptarTerminosCondicionesAsync(int idUsuario, string version, bool aceptoTerminos,
-        bool aceptoPrivacidad, bool aceptoPld, Guid modificationUser);
+        bool aceptoPrivacidad, bool aceptoPld);
 
     /// <summary>
     /// Completa el proceso de registro del usuario estableciendo una contraseña.
@@ -92,8 +85,6 @@ public interface IRegistroFacade
     /// <param name="idUsuario">El identificador único del usuario.</param>
     /// <param name="contrasena">La contraseña que el usuario desea establecer.</param>
     /// <param name="confirmacionContrasena">La confirmación de la contraseña.</param>
-    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
     /// <returns>Un objeto <see cref="Usuario"/> con la contraseña establecida.</returns>
-    Task<Usuario> CompletarRegistroAsync(int idUsuario, string contrasena, string confirmacionContrasena,
-        Guid modificationUser);
+    Task<Usuario> CompletarRegistroAsync(int idUsuario, string contrasena, string confirmacionContrasena);
 }

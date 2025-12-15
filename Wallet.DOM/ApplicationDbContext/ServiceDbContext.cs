@@ -22,6 +22,7 @@ public class ServiceDbContext : DbContext
     public DbSet<Producto> Producto { get; set; }
     public DbSet<ServicioFavorito> ServicioFavorito { get; set; }
     public DbSet<ConsentimientosUsuario> ConsentimientosUsuario { get; set; } = null!;
+    public DbSet<KeyValueConfig> KeyValueConfig { get; set; } = null!;
 
 
     // Sobrescribimos este método para configurar el modelo y agregar los datos iniciales

@@ -67,6 +67,44 @@ public class AuthFacadeTest
     }
 
     [Fact]
+    public async Task LoginAsync_ValidCredentials_GeneratesCorrectClaims()
+    {
+        // Arrange
+        using var context = CreateContext();
+        var authFacade = new AuthFacade(context: context, tokenService: _tokenServiceMock.Object);
+
+        var creationUser = Guid.NewGuid();
+        var usuario = new Usuario(codigoPais: "052", telefono: "5512345678", correoElectronico: "test@example.com",
+            contrasena: "password", estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: creationUser);
+        context.Usuario.Add(entity: usuario);
+
+        var empresa = new Empresa("Tecomnet", creationUser);
+        context.Empresa.Add(empresa);
+
+        var cliente = new Cliente(usuario, empresa, creationUser);
+        context.Cliente.Add(cliente);
+
+        await context.SaveChangesAsync();
+
+        _tokenServiceMock.Setup(expression: x => x.GenerateAccessToken(It.IsAny<IEnumerable<Claim>>()))
+            .Returns(value: "access_token");
+        _tokenServiceMock.Setup(expression: x => x.GenerateRefreshToken()).Returns(value: "refresh_token");
+
+        // Act
+        await authFacade.LoginAsync(login: "test@example.com", password: "password");
+
+        // Assert
+        _tokenServiceMock.Verify(x => x.GenerateAccessToken(It.Is<IEnumerable<Claim>>(c =>
+            c.Any(claim => claim.Type == "UsuarioId" && claim.Value == usuario.Id.ToString()) &&
+            c.Any(claim => claim.Type == "CorreoElectronico" && claim.Value == usuario.CorreoElectronico) &&
+            c.Any(claim => claim.Type == "Telefono" && claim.Value == usuario.Telefono) &&
+            c.Any(claim => claim.Type == "ClienteId" && claim.Value == cliente.Id.ToString()) &&
+            c.Any(claim => claim.Type == "Guid" && claim.Value == usuario.Guid.ToString())
+        )), Times.Once);
+    }
+
+
+    [Fact]
     public async Task RefreshTokenAsync_ValidToken_ReturnsNewTokens()
     {
         // Arrange

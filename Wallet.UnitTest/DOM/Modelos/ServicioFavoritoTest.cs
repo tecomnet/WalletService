@@ -17,36 +17,47 @@ public class ServicioFavoritoTest : UnitTestTemplate
 
     // --- Casos de error de validación para Alias ---
     [InlineData(data:
-        ["ERROR: Alias nulo", 1, 10, null, "1234567890", false, new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [
+        "ERROR: Alias nulo", 1, 10, null, "1234567890", false,
+        new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
+    ])]
     [InlineData(data:
-        ["ERROR: Alias vacío", 1, 10, "", "1234567890", false, new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [
+        "ERROR: Alias vacío", 1, 10, "", "1234567890", false,
+        new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
+    ])]
     [InlineData(data:
     [
         "ERROR: Alias excede límite", 1, 10, "Este alias es demasiado largo, excede los 50 caracteres", "1234567890",
-        false, new[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        false, new[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
 
     // --- Casos de error de validación para NumeroReferencia ---
     [InlineData(data:
     [
-        "ERROR: NumeroReferencia nulo", 1, 10, "Luz Casa", null, false, new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        "ERROR: NumeroReferencia nulo", 1, 10, "Luz Casa", null, false,
+        new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
-        "ERROR: NumeroReferencia vacío", 1, 10, "Luz Casa", "", false, new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        "ERROR: NumeroReferencia vacío", 1, 10, "Luz Casa", "", false,
+        new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "ERROR: NumeroReferencia excede límite", 1, 10, "Luz Casa",
         "Este número de referencia es demasiado largo y excede el límite", false,
-        new[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        new[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
 
     // --- Caso de error múltiple ---
     [InlineData(data:
     [
         "ERROR: Múltiples errores", 1, 10, "", "", false,
-        new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR", "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new[]
+        {
+            ServiceErrorsBuilder.PropertyValidationRequiredError, ServiceErrorsBuilder.PropertyValidationRequiredError
+        }
     ])]
     public void ConstructorValidation_Test(
         string caseName,

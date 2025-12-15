@@ -1,17 +1,18 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
 /// <summary>
 /// Implementation of the ServicioFavorito API controller.
 /// </summary>
+//[Authorize]
 public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavoritoFacade, IMapper mapper)
     : ServicioFavoritoApiControllerBase
 {
@@ -21,7 +22,7 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
         // Call facade method
         var servicio =
             await servicioFavoritoFacade.EliminarServicioFavoritoAsync(idServicioFavorito: idServicioFavorito.Value,
-                modificationUser: Guid.Empty);
+                modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<ServicioFavoritoResult>(source: servicio);
         // Return OK response
@@ -32,7 +33,8 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
     public override async Task<IActionResult> GetServiciosFavoritosAsync(string version, int? idCliente)
     {
         // Call facade method
-        var servicios = await servicioFavoritoFacade.ObtenerServiciosFavoritosPorClienteAsync(clienteId: idCliente.Value);
+        var servicios =
+            await servicioFavoritoFacade.ObtenerServiciosFavoritosPorClienteAsync(clienteId: idCliente.Value);
         // Map to response model
         var response = mapper.Map<List<ServicioFavoritoResult>>(source: servicios);
         // Return OK response
@@ -50,7 +52,7 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
             proveedorId: body.ProveedorId.Value,
             alias: body.Alias,
             numeroReferencia: body.NumeroReferencia,
-            creationUser: Guid.Empty);
+            creationUser: this.GetAuthenticatedUserGuid());
         // Map to result
         var result = mapper.Map<ServicioFavoritoResult>(source: servicio);
         // Return created
@@ -58,14 +60,15 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> PutServicioFavoritoAsync(string version, int? idServicioFavorito, ServicioFavoritoRequest body)
+    public override async Task<IActionResult> PutServicioFavoritoAsync(string version, int? idServicioFavorito,
+        ServicioFavoritoRequest body)
     {
         // Call facade method
         var servicio = await servicioFavoritoFacade.ActualizarServicioFavoritoAsync(
             idServicioFavorito: idServicioFavorito.Value,
             alias: body.Alias,
             numeroReferencia: body.NumeroReferencia,
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<ServicioFavoritoResult>(source: servicio);
         // Return OK response

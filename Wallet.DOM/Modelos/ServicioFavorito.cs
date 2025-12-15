@@ -139,17 +139,33 @@ namespace Wallet.DOM.Modelos
         public void Update(string alias, string numeroReferencia, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
+
             IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
             IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia,
                 exceptions: ref exceptions);
+
             if (exceptions.Count > 0)
             {
                 throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
-            Alias = alias;
-            NumeroReferencia = numeroReferencia;
-            base.Update(modificationUser: modificationUser);
+            bool hasChanges = false;
+            if (this.Alias != alias)
+            {
+                Alias = alias;
+                hasChanges = true;
+            }
+
+            if (this.NumeroReferencia != numeroReferencia)
+            {
+                NumeroReferencia = numeroReferencia;
+                hasChanges = true;
+            }
+
+            if (hasChanges)
+            {
+                base.Update(modificationUser: modificationUser);
+            }
         }
     }
 }

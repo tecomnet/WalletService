@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
@@ -13,6 +14,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 ///  API para la gestión de proveedores de servicio.
 /// </summary>
 [ApiController]
+//[Authorize]
 public class ProveedorApiController : ProveedorApiControllerBase
 {
     private readonly IProveedorFacade _proveedorFacade;
@@ -38,7 +40,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
         }
 
         var proveedor = await _proveedorFacade.EliminarProveedorAsync(idProveedor: idProveedor.Value,
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
         var response = _mapper.Map<ProveedorResult>(source: proveedor);
         return Ok(value: response);
     }
@@ -72,7 +74,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
             nombre: body.Nombre,
             urlIcono: body.UrlIcono,
             brokerId: body.BrokerId.Value,
-            creationUser: Guid.Empty);
+            creationUser: this.GetAuthenticatedUserGuid());
 
         // Activating provider if necessary or assuming Guardar activates it. 
         // If specific activation is needed, use proveedorCreado.Id
@@ -90,7 +92,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
         }
 
         var proveedor = await _proveedorFacade.ActivarProveedorAsync(idProveedor: idProveedor.Value,
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
         var response = _mapper.Map<ProveedorResult>(source: proveedor);
         return Ok(value: response);
     }
@@ -107,7 +109,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
             idProveedor: idProveedor.Value,
             urlIcono: body.UrlIcono,
             nombre: body.Nombre,
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
 
         var response = _mapper.Map<ProveedorResult>(source: proveedor);
         return Ok(value: response);

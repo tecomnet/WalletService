@@ -233,24 +233,52 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         Guid modificationUser
     )
     {
-        // Inicializa la lista de excepciones para acumular errores de validación.
         List<EMGeneralException> exceptions = new();
-        // Valida cada una de las propiedades proporcionadas.
+
         IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(PrimerApellido), value: primerApellido, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(SegundoApellido), value: segundoApellido, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(FechaNacimiento), value: fechaNacimiento, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(Genero), value: genero, exceptions: ref exceptions);
-        // Si hay excepciones, las lanza agrupadas.
+
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Asigna los valores a las propiedades del cliente.
-        this.Nombre = nombre;
-        this.PrimerApellido = primerApellido;
-        this.SegundoApellido = segundoApellido;
-        this.FechaNacimiento = fechaNacimiento;
-        this.Genero = genero;
-        // Actualiza los metadatos de la entidad base.
-        base.Update(modificationUser: modificationUser);
+
+        bool hasChanges = false;
+
+        if (this.Nombre != nombre)
+        {
+            this.Nombre = nombre;
+            hasChanges = true;
+        }
+
+        if (this.PrimerApellido != primerApellido)
+        {
+            this.PrimerApellido = primerApellido;
+            hasChanges = true;
+        }
+
+        if (this.SegundoApellido != segundoApellido)
+        {
+            this.SegundoApellido = segundoApellido;
+            hasChanges = true;
+        }
+
+        if (this.FechaNacimiento != fechaNacimiento)
+        {
+            this.FechaNacimiento = fechaNacimiento;
+            hasChanges = true;
+        }
+
+        if (this.Genero != genero)
+        {
+            this.Genero = genero;
+            hasChanges = true;
+        }
+
+        if (hasChanges)
+        {
+            base.Update(modificationUser: modificationUser);
+        }
     }
 
     /// <summary>
@@ -280,16 +308,11 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <exception cref="EMGeneralAggregateException">Se lanza si el estado proporcionado es nulo.</exception>
     public void AgregarEstado(Estado estado, Guid modificationUser)
     {
-        // Verifica que el estado no sea nulo.
-        if (estado == null)
-        {
-            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.EstadoRequerido,
-                dynamicContent: []));
-        }
 
         // Asigna el estado al cliente.
-        this.Estado = estado;
+        this.Estado = estado ?? throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.EstadoRequerido,
+                dynamicContent: []));
         // Actualiza los metadatos de la entidad base.
         base.Update(modificationUser: modificationUser);
     }
@@ -302,15 +325,13 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <exception cref="EMGeneralAggregateException">Se lanza si la validación de la propiedad FotoAWS falla.</exception>
     public void AgregarFotoAWS(string fotoAWS, Guid modificationUser)
     {
-        // Inicializa la lista de excepciones.
         List<EMGeneralException> exceptions = new();
-        // Valida la propiedad FotoAWS.
         IsPropertyValid(propertyName: nameof(FotoAWS), value: fotoAWS, exceptions: ref exceptions);
-        // Si hay excepciones, las lanza.
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Asigna el valor de FotoAWS.
+
+        if (this.FotoAWS == fotoAWS) return;
+
         this.FotoAWS = fotoAWS;
-        // Actualiza los metadatos de la entidad base.
         base.Update(modificationUser: modificationUser);
     }
 
@@ -321,9 +342,8 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
     public void AgregarTipoPersona(TipoPersona tipoPersona, Guid modificationUser)
     {
-        // Asigna el tipo de persona al cliente.
+        if (this.TipoPersona == tipoPersona) return;
         this.TipoPersona = tipoPersona;
-        // Actualiza los metadatos de la entidad base.
         base.Update(modificationUser: modificationUser);
     }
 
@@ -335,15 +355,13 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <exception cref="EMGeneralAggregateException">Se lanza si la validación de la propiedad Rfc falla.</exception>
     public void AgregarRfc(string rfc, Guid modificationUser)
     {
-        // Inicializa la lista de excepciones.
         List<EMGeneralException> exceptions = new();
-        // Valida la propiedad Rfc.
         IsPropertyValid(propertyName: nameof(Rfc), value: rfc, exceptions: ref exceptions);
-        // Si hay excepciones, las lanza.
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Asigna el valor de Rfc.
+
+        if (this.Rfc == rfc) return;
+
         this.Rfc = rfc;
-        // Actualiza los metadatos de la entidad base.
         base.Update(modificationUser: modificationUser);
     }
 
@@ -355,15 +373,13 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
     /// <exception cref="EMGeneralAggregateException">Se lanza si la validación de la propiedad Curp falla.</exception>
     public void AgregarCurp(string curp, Guid modificationUser)
     {
-        // Inicializa la lista de excepciones.
         List<EMGeneralException> exceptions = new();
-        // Valida la propiedad Curp.
         IsPropertyValid(propertyName: nameof(Curp), value: curp, exceptions: ref exceptions);
-        // Si hay excepciones, las lanza.
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Asigna el valor de Curp.
+
+        if (this.Curp == curp) return;
+
         this.Curp = curp;
-        // Actualiza los metadatos de la entidad base.
         base.Update(modificationUser: modificationUser);
     }
 

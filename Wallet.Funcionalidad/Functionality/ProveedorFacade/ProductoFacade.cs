@@ -24,7 +24,7 @@ public partial class ProveedorFacade : IProveedorFacade
             var producto = proveedor.AgregarProducto(sku: sku, nombre: nombre, precio: precio, icono: icono,
                 categoria: categoria, creationUser: creationUser);
             // Valida duplicidad
-            ValidarProductoDuplicado(nombre: nombre, idProveedor: proveedorId, id: producto.Id);
+            ValidarProductoDuplicidad(nombre: nombre, sku: sku, idProveedor: proveedorId, id: producto.Id);
             // Guarda los cambios.
             await context.SaveChangesAsync();
             return producto;
@@ -100,7 +100,7 @@ public partial class ProveedorFacade : IProveedorFacade
             // Valida que el producto no esté inactivo.
             ValidarProductoIsActive(producto: producto);
             // Valida duplicidad
-            ValidarProductoDuplicado(nombre: nombre, idProveedor: producto.ProveedorId, id: idProducto);
+            ValidarProductoDuplicidad(nombre: nombre, sku: sku, idProveedor: producto.ProveedorId, id: idProducto);
             // Actualiza los datos del producto.
             producto.Update(sku: sku, nombre: nombre, precio: precio, urlIcono: icono, categoria: categoria,
                 modificationUser: modificationUser);
@@ -195,7 +195,8 @@ public partial class ProveedorFacade : IProveedorFacade
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
             ValidarProveedorIsActive(proveedor: proveedor);
             // Valida duplicidad en el nuevo proveedor
-            ValidarProductoDuplicado(nombre: producto.Nombre, idProveedor: idProveedor, id: idProducto);
+            ValidarProductoDuplicidad(nombre: producto.Nombre, sku: producto.Sku, idProveedor: idProveedor,
+                id: idProducto);
 
             // Asigna el nuevo proveedor.
             producto.AsignarProveedor(proveedor: proveedor, modificationUser: modificationUser);
@@ -217,24 +218,40 @@ public partial class ProveedorFacade : IProveedorFacade
     #region Metodos privados
 
     /// <summary>
-    /// Valida si ya existe un producto con el mismo nombre para el mismo proveedor.
+    /// Valida si ya existe un producto con el mismo nombre o SKU para el mismo proveedor.
     /// </summary>
     /// <param name="nombre">Nombre del producto a validar.</param>
+    /// <param name="sku">SKU del producto a validar.</param>
     /// <param name="idProveedor">ID del proveedor al que pertenece el producto.</param>
     /// <param name="id">ID del producto (opcional, para excluir en actualizaciones).</param>
-    /// <exception cref="EMGeneralAggregateException">Si ya existe un producto con ese nombre.</exception>
-    private void ValidarProductoDuplicado(string nombre, int idProveedor, int id = 0)
+    /// <exception cref="EMGeneralAggregateException">Si ya existe un producto con ese nombre o SKU.</exception>
+    private void ValidarProductoDuplicidad(string nombre, string sku, int idProveedor, int id = 0)
     {
-        // Obtiene estado existente
-        var existe =
-            context.Producto.FirstOrDefault(predicate: x =>
-                x.Nombre == nombre && x.ProveedorId == idProveedor && x.Id != id);
-        // Duplicado por nombre
-        if (existe != null)
+        // Obtiene producto existente si hay coincidencia de nombre O sku
+        var existentes = context.Producto
+            .Where(predicate: x =>
+                (x.Nombre == nombre || x.Sku == sku) &&
+                x.ProveedorId == idProveedor &&
+                x.Id != id)
+            .ToList();
+
+        if (existentes.Count == 0) return;
+
+        // Validar duplicidad de nombre
+        if (existentes.Any(x => x.Nombre == nombre))
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ProductoExistente,
                 dynamicContent: [nombre],
+                module: this.GetType().Name));
+        }
+
+        // Validar duplicidad de SKU
+        if (existentes.Any(x => x.Sku == sku))
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ProductoSkuExistente,
+                dynamicContent: [sku],
                 module: this.GetType().Name));
         }
     }

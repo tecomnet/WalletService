@@ -21,9 +21,15 @@ public class TipoDocumentoTest : UnitTestTemplate
     [InlineData(data: ["1. OK: Nombre Válido (Full)", "Cédula de Identidad", true, new string[] { }])]
     [InlineData(data: ["2. OK: Nombre Mínimo (1)", "A", true, new string[] { }])]
     [InlineData(data: ["3. OK: Nombre Máximo (100)", Max100Chars, true, new string[] { }])]
-    [InlineData(data: ["4. ERROR: Nombre null", null, false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
-    [InlineData(data: ["5. ERROR: Nombre empty", "", false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
-    [InlineData(data: ["6. ERROR: Nombre too long (101)", Max101Chars, false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }])]
+    [InlineData(data:
+        ["4. ERROR: Nombre null", null, false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }])]
+    [InlineData(data:
+        ["5. ERROR: Nombre empty", "", false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }])]
+    [InlineData(data:
+    [
+        "6. ERROR: Nombre too long (101)", Max101Chars, false,
+        new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
+    ])]
     public void TipoDocumento_ConstructorTest(
         string caseName,
         string? nombre,
@@ -49,7 +55,8 @@ public class TipoDocumentoTest : UnitTestTemplate
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
                                           exception is not TrueException && exception is not FalseException)
         {
-            Assert.Fail(message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
+            Assert.Fail(
+                message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
         }
     }
 
@@ -61,9 +68,18 @@ public class TipoDocumentoTest : UnitTestTemplate
     // PARÁMETROS: CaseName, DocumentoNombre, DocumentoTipoPersona, Intentos, 
     // Intentos: 1 = Agregar con éxito. 2 = Agregar dos veces (espera error).
     [InlineData(data: ["7. OK: Agregar el primer documento", "Cedula", TipoPersona.Fisica, 1, true, new string[] { }])]
-    [InlineData(data: ["8. OK: Agregar dos documentos diferentes", "Pasaporte", TipoPersona.Moral, 1, true, new string[] { }])]
-    [InlineData(data: ["9. ERROR: Agregar documento null", "Licencia", TipoPersona.Extranjero, 1, false, new string[] { ServiceErrorsBuilder.DocumentoRequerido }])]
-    [InlineData(data: ["10. ERROR: Documento ya existe (duplicado por Nombre y TipoPersona)", "RUC", TipoPersona.Moral, 2, false, new string[] { ServiceErrorsBuilder.DocumentoYaExisteEnTipoDocumento }])]
+    [InlineData(data:
+        ["8. OK: Agregar dos documentos diferentes", "Pasaporte", TipoPersona.Moral, 1, true, new string[] { }])]
+    [InlineData(data:
+    [
+        "9. ERROR: Agregar documento null", "Licencia", TipoPersona.Extranjero, 1, false,
+        new string[] { ServiceErrorsBuilder.DocumentoRequerido }
+    ])]
+    [InlineData(data:
+    [
+        "10. ERROR: Documento ya existe (duplicado por Nombre y TipoPersona)", "RUC", TipoPersona.Moral, 2, false,
+        new string[] { ServiceErrorsBuilder.DocumentoYaExisteEnTipoDocumento }
+    ])]
     public void TipoDocumento_AgregarDocumentoTest(
         string caseName,
         string docNombre,
@@ -74,18 +90,20 @@ public class TipoDocumentoTest : UnitTestTemplate
     {
         // Setup: Crear 3 documentos 
         var tipoDocumento = new TipoDocumento(nombre: "Identificaciones", creationUser: Guid.NewGuid());
-        var documentoToAdd = new Documento(nombre: docNombre, tipoPersona: docTipoPersona, creationUser: Guid.NewGuid());
+        var documentoToAdd =
+            new Documento(nombre: docNombre, tipoPersona: docTipoPersona, creationUser: Guid.NewGuid());
 
         try
         {
             if (caseName == "9. ERROR: Agregar documento null")
             {
-                tipoDocumento.AgregarDocumento(documento: null!); // Simular un documento null
+                tipoDocumento.AgregarDocumento(documento: null!,
+                    modificationUser: Guid.NewGuid()); // Simular un documento null
                 Assert.Fail(message: $"El caso '{caseName}' falló al no lanzar la excepción requerida.");
             }
 
             // Primer intento: Agregar el documento inicial (siempre debe ser exitoso para la prueba de duplicidad)
-            tipoDocumento.AgregarDocumento(documento: documentoToAdd);
+            tipoDocumento.AgregarDocumento(documento: documentoToAdd, modificationUser: Guid.NewGuid());
 
             // Si el test espera solo 1 intento (OK o caso especial), terminar aquí.
             if (intentos == 1)
@@ -97,8 +115,10 @@ public class TipoDocumentoTest : UnitTestTemplate
             // Segundo intento (si intentos = 2): Probar la duplicidad
             if (intentos == 2)
             {
-                tipoDocumento.AgregarDocumento(documento: documentoToAdd); // Intentar agregar el mismo (duplicado)
-                Assert.False(condition: success, userMessage: "El segundo intento no lanzó la excepción de duplicidad.");
+                tipoDocumento.AgregarDocumento(documento: documentoToAdd,
+                    modificationUser: Guid.NewGuid()); // Intentar agregar el mismo (duplicado)
+                Assert.False(condition: success,
+                    userMessage: "El segundo intento no lanzó la excepción de duplicidad.");
             }
         }
         catch (EMGeneralAggregateException exception)
@@ -108,7 +128,8 @@ public class TipoDocumentoTest : UnitTestTemplate
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
                                           exception is not TrueException && exception is not FalseException)
         {
-            Assert.Fail(message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
+            Assert.Fail(
+                message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
         }
     }
 }

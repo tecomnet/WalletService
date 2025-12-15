@@ -18,13 +18,15 @@ public class ProveedorTest : UnitTestTemplate
     ])]
 
     // --- Casos de error de validación ---
-    [InlineData(data: ["ERROR: Nombre nulo", 1, null, false, new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
-    [InlineData(data: ["ERROR: Nombre vacío", 1, "", false, new[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }])]
+    [InlineData(data:
+        ["ERROR: Nombre nulo", 1, null, false, new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }])]
+    [InlineData(data:
+        ["ERROR: Nombre vacío", 1, "", false, new[] { ServiceErrorsBuilder.PropertyValidationRequiredError }])]
     [InlineData(data:
     [
         "ERROR: Nombre excede límite", 1,
         "Este es un nombre de proveedor que excede el límite de los cien caracteres permitidos para el campo de nombre.",
-        false, new[] { "PROPERTY-VALIDATION-LENGTH-INVALID" }
+        false, new[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
     ])]
     public void ConstructorValidation_Test(
         string caseName,

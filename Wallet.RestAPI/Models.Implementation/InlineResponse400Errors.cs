@@ -192,8 +192,8 @@ namespace Wallet.RestAPI.Models
                     newErrors.Add(item: new InlineResponse400Errors(
                         type: null,
                         status: 400,
-                        errorCode: "EM-GENERAL-ERROR-PROBLEM-PROCESSING-ERROR",
-                        title: "Error trying to process an error",
+                        errorCode: RestAPIErrors.EmGeneralErrorProblemProcessingError,
+                        title: "Error al intentar procesar un error",
                         detail: exc.Message,
                         instance: "DEFAULT"));
                 }

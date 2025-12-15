@@ -43,5 +43,6 @@ public class AutoMapperProfile : Profile
         CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();
         CreateMap<Wallet.DOM.Modelos.Broker, BrokerResult>();
         CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>();
+        CreateMap<KeyValueConfig, KeyValueConfigResult>();
     }
 }

@@ -71,4 +71,24 @@ public interface IEmpresaFacade
     /// <param name="idEmpresa">El identificador único de la empresa.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con una lista de objetos <see cref="Cliente"/>.</returns>
     public Task<List<Cliente>> ObtenerClientesPorEmpresaAsync(int idEmpresa);
+
+    /// <summary>
+    /// Asigna una lista de productos a una empresa.
+    /// Si un producto ya está asignado, se ignora (idempotencia).
+    /// </summary>
+    /// <param name="idEmpresa">El identificador de la empresa.</param>
+    /// <param name="idsProductos">La lista de identificadores de productos a asignar.</param>
+    /// <param name="modificationUser">El usuario que realiza la modificación.</param>
+    /// <returns>La empresa con los productos actualizados.</returns>
+    public Task<Empresa> AsignarProductosAsync(int idEmpresa, List<int> idsProductos, Guid modificationUser);
+
+    /// <summary>
+    /// Desasigna una lista de productos de una empresa.
+    /// Si un producto no está asignado, se ignora.
+    /// </summary>
+    /// <param name="idEmpresa">El identificador de la empresa.</param>
+    /// <param name="idsProductos">La lista de identificadores de productos a desasignar.</param>
+    /// <param name="modificationUser">El usuario que realiza la modificación.</param>
+    /// <returns>La empresa con los productos actualizados.</returns>
+    public Task<Empresa> DesasignarProductosAsync(int idEmpresa, List<int> idsProductos, Guid modificationUser);
 }

@@ -66,6 +66,8 @@ namespace Wallet.DOM.Modelos
                 throw new EMGeneralAggregateException(exceptions: exceptions);
             }
 
+            if (Nombre == nombre) return;
+
             Nombre = nombre;
             base.Update(modificationUser: modificationUser);
         }

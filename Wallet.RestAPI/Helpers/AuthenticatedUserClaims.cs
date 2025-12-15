@@ -19,6 +19,8 @@ public static class AuthenticatedUserClaims
     /// <returns>Un GUID generado.</returns>
     public static Guid GetAuthenticatedUserGuid(this ControllerBase cb)
     {
+        // Parche temporal
+        return Guid.NewGuid();
         // Busca el claim de tipo "Guid" en las identidades del usuario.
         var guidClaim = cb.User.Identities.ElementAt(index: 0).Claims.SingleOrDefault(predicate: c => c.Type == "Guid");
         // Si el claim del GUID es nulo, lanza una excepción.

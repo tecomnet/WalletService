@@ -1,17 +1,18 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
 /// <summary>
 /// Implementation of the Empresa API controller.
 /// </summary>
+//[Authorize]
 public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) : EmpresaApiControllerBase
 {
     /// <inheritdoc/>
@@ -32,7 +33,8 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         EmpresaRequest body)
     {
         // Call facade method
-        var empresa = await empresaFacade.GuardarEmpresaAsync(nombre: body.Nombre, creationUser: Guid.Empty);
+        var empresa =
+            await empresaFacade.GuardarEmpresaAsync(nombre: body.Nombre, creationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<EmpresaResult>(source: empresa);
         // Return OK response
@@ -46,7 +48,7 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     {
         // Call facade method
         var empresa = await empresaFacade.ActualizaEmpresaAsync(idEmpresa: idEmpresa.Value, nombre: body.Nombre,
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<EmpresaResult>(source: empresa);
         // Return OK response
@@ -75,6 +77,55 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         var clientes = await empresaFacade.ObtenerClientesPorEmpresaAsync(idEmpresa: idEmpresa.Value);
         // Map to response model
         var response = mapper.Map<List<ClienteResult>>(source: clientes);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> AsignarProductosAsync(
+        string version,
+        [FromRoute] int idEmpresa,
+        [FromBody] AsignarProductosRequest body)
+    {
+        // Call facade method
+        var empresa = await empresaFacade.AsignarProductosAsync(
+            idEmpresa: idEmpresa,
+            idsProductos: body.ProductoIds,
+            modificationUser: this.GetAuthenticatedUserGuid());
+
+        // Map to response model
+        var response = mapper.Map<EmpresaResult>(source: empresa);
+
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> DesasignarProductosAsync(
+        string version,
+        [FromRoute] int idEmpresa,
+        [FromBody] AsignarProductosRequest body)
+    {
+        // Call facade method
+        var empresa = await empresaFacade.DesasignarProductosAsync(
+            idEmpresa: idEmpresa,
+            idsProductos: body.ProductoIds,
+            modificationUser: this.GetAuthenticatedUserGuid());
+
+        // Map to response model
+        var response = mapper.Map<EmpresaResult>(source: empresa);
+
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> GetEmpresaAsync(string version, int idEmpresa)
+    {
+        // Call facade method
+        var empresa = await empresaFacade.ObtenerPorIdAsync(idEmpresa: idEmpresa);
+        // Map to response model
+        var response = mapper.Map<EmpresaResult>(source: empresa);
         // Return OK response
         return Ok(value: response);
     }

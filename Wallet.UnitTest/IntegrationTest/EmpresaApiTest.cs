@@ -74,6 +74,34 @@ public class EmpresaApiTest : DatabaseTestFixture
     }
 
     [Fact]
+    public async Task Test_Get_Empresa_Ok()
+    {
+        // 1. Auth
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        // 2. Create an Empresa
+        var createRequest = new EmpresaRequest { Nombre = "Empresa Get By Id Test" };
+        var createResponse = await client.PostAsync($"/{ApiVersion}/empresa", CreateContent(createRequest));
+        var createResult =
+            JsonConvert.DeserializeObject<EmpresaResult>(await createResponse.Content.ReadAsStringAsync(),
+                _jsonSettings);
+
+        // 3. Get Empresa by Id
+        var getResponse = await client.GetAsync($"/{ApiVersion}/empresa/{createResult.Id}");
+        var getContent = await getResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+        var getResult = JsonConvert.DeserializeObject<EmpresaResult>(getContent, _jsonSettings);
+
+        Assert.NotNull(getResult);
+        Assert.Equal(createResult.Id, getResult.Id);
+        Assert.Equal(createResult.Nombre, getResult.Nombre);
+    }
+
+    [Fact]
     public async Task Test_Update_Empresa_Ok()
     {
         // 1. Auth
@@ -125,7 +153,8 @@ public class EmpresaApiTest : DatabaseTestFixture
             JsonConvert.DeserializeObject<BrokerResult>(await brokerRes.Content.ReadAsStringAsync(), _jsonSettings);
 
         // Proveedor
-        var provReq = new ProveedorRequest { Nombre = "Proveedor For Products", BrokerId = broker.Id , UrlIcono = "https://icon.png" };
+        var provReq = new ProveedorRequest
+            { Nombre = "Proveedor For Products", BrokerId = broker.Id, UrlIcono = "https://icon.png" };
         var provRes = await client.PostAsync($"/{ApiVersion}/proveedor", CreateContent(provReq));
         var proveedor =
             JsonConvert.DeserializeObject<ProveedorResult>(await provRes.Content.ReadAsStringAsync(), _jsonSettings);
@@ -230,6 +259,109 @@ public class EmpresaApiTest : DatabaseTestFixture
         Assert.NotNull(result);
         Assert.NotEmpty(result);
         Assert.Contains(result, c => c.Nombre == "Juan");
+    }
+
+    [Fact]
+    public async Task Test_Asignar_Y_Desasignar_Productos_Ok()
+    {
+        // 1. Auth
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        var suffix = Guid.NewGuid().ToString().Substring(0, 8);
+
+        // 2. Setup Data
+        // Empresa
+        var empresaReq = new EmpresaRequest { Nombre = $"Empresa Assign {suffix}" };
+        var empresaRes = await client.PostAsync($"/{ApiVersion}/empresa", CreateContent(empresaReq));
+        Assert.Equal(HttpStatusCode.OK, empresaRes.StatusCode);
+        var empresa =
+            JsonConvert.DeserializeObject<EmpresaResult>(await empresaRes.Content.ReadAsStringAsync(), _jsonSettings);
+
+        // Broker & Proveedor
+        var brokerRes = await client.PostAsync($"/{ApiVersion}/broker",
+            CreateContent(new BrokerRequest { Nombre = $"Broker Assign {suffix}" }));
+        Assert.Equal(HttpStatusCode.Created, brokerRes.StatusCode);
+        var broker =
+            JsonConvert.DeserializeObject<BrokerResult>(await brokerRes.Content.ReadAsStringAsync(), _jsonSettings);
+
+        var provReq = new ProveedorRequest
+            { Nombre = $"Prov Assign {suffix}", BrokerId = broker.Id, UrlIcono = "http://icon.com" };
+        var provRes = await client.PostAsync($"/{ApiVersion}/proveedor", CreateContent(provReq));
+        Assert.Equal(HttpStatusCode.Created, provRes.StatusCode); // Verify status code (likely 200 or 201)
+        var proveedor =
+            JsonConvert.DeserializeObject<ProveedorResult>(await provRes.Content.ReadAsStringAsync(), _jsonSettings);
+
+        // Products
+        var prod1Req = new ProductoRequest
+        {
+            Nombre = $"P1 {suffix}", Sku = $"SKU1-{suffix}", Precio = 10, Categoria = CategoriaEnum.OTROSEnum,
+            UrlIcono = "http://icon.com"
+        };
+        var prod1Res =
+            await client.PostAsync($"/{ApiVersion}/proveedor/{proveedor.Id}/producto", CreateContent(prod1Req));
+        Assert.True(prod1Res.IsSuccessStatusCode, $"Product 1 creation failed: {prod1Res.StatusCode}");
+        var prod1 = JsonConvert.DeserializeObject<ProductoResult>(await prod1Res.Content.ReadAsStringAsync(),
+            _jsonSettings);
+
+        var prod2Req = new ProductoRequest
+        {
+            Nombre = $"P2 {suffix}", Sku = $"SKU2-{suffix}", Precio = 20, Categoria = CategoriaEnum.OTROSEnum,
+            UrlIcono = "http://icon.com"
+        };
+        var prod2Res =
+            await client.PostAsync($"/{ApiVersion}/proveedor/{proveedor.Id}/producto", CreateContent(prod2Req));
+        Assert.True(prod2Res.IsSuccessStatusCode, $"Product 2 creation failed: {prod2Res.StatusCode}");
+        var prod2 = JsonConvert.DeserializeObject<ProductoResult>(await prod2Res.Content.ReadAsStringAsync(),
+            _jsonSettings);
+
+
+        // 3. Assign Products
+        Assert.NotNull(prod1);
+        Assert.NotNull(prod1.Id);
+        Assert.NotNull(prod2);
+        Assert.NotNull(prod2.Id);
+        var assignIds = new AsignarProductosRequest { ProductoIds = new List<int> { prod1.Id.Value, prod2.Id.Value } };
+        var assignRes =
+            await client.PostAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos", CreateContent(assignIds));
+        Assert.Equal(HttpStatusCode.OK, assignRes.StatusCode);
+
+        // 4. Verify Assignment
+        var getRes = await client.GetAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos");
+        var products =
+            JsonConvert.DeserializeObject<List<ProductoResult>>(await getRes.Content.ReadAsStringAsync(),
+                _jsonSettings);
+        Assert.Equal(2, products.Count);
+        Assert.Contains(products, p => p.Id == prod1.Id);
+        Assert.Contains(products, p => p.Id == prod2.Id);
+
+        // 5. Test Idempotency (Duplicated Assignment)
+        var assignResDuplicate =
+            await client.PostAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos", CreateContent(assignIds));
+        Assert.Equal(HttpStatusCode.OK, assignResDuplicate.StatusCode);
+
+        var getResDup = await client.GetAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos");
+        var productsDup =
+            JsonConvert.DeserializeObject<List<ProductoResult>>(await getResDup.Content.ReadAsStringAsync(),
+                _jsonSettings);
+        Assert.Equal(2, productsDup.Count); // Should still be 2
+
+        // 6. Remove One Product
+        var removeIds = new AsignarProductosRequest { ProductoIds = new List<int> { prod1.Id.Value } };
+        var removeRes = await client.PostAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos/remover",
+            CreateContent(removeIds));
+        Assert.Equal(HttpStatusCode.OK, removeRes.StatusCode);
+
+        // 7. Verify Removal
+        var getResFinal = await client.GetAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos");
+        var productsFinal =
+            JsonConvert.DeserializeObject<List<ProductoResult>>(await getResFinal.Content.ReadAsStringAsync(),
+                _jsonSettings);
+        Assert.Single(productsFinal);
+        Assert.Contains(productsFinal, p => p.Id == prod2.Id); // Only P2 remains
+        Assert.DoesNotContain(productsFinal, p => p.Id == prod1.Id);
     }
 
     private StringContent CreateContent(object body)

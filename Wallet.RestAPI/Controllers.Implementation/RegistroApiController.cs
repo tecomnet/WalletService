@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -14,18 +13,18 @@ namespace Wallet.RestAPI.Controllers.Implementation
         IMapper mapper) : RegistroApiControllerBase
     {
         /// <inheritdoc />
-        public override async Task<IActionResult> PutConfirmarAsync(ConfirmacionRequest body, string version, int? idUsuario)
+        public override async Task<IActionResult> PutConfirmarAsync(ConfirmacionRequest body, string version,
+            int? idUsuario)
         {
-            var modificationUser = Guid.Empty;
             bool result = false;
 
             switch (body.Tipo)
             {
                 case Tipo2FAEnum.SMSEnum:
-                    result = await registroFacade.ConfirmarNumeroAsync(idUsuario.Value, body.Codigo, modificationUser);
+                    result = await registroFacade.ConfirmarNumeroAsync(idUsuario.Value, body.Codigo);
                     break;
                 case Tipo2FAEnum.EMAILEnum:
-                    result = await registroFacade.VerificarCorreoAsync(idUsuario.Value, body.Codigo, modificationUser);
+                    result = await registroFacade.VerificarCorreoAsync(idUsuario.Value, body.Codigo);
                     break;
                 default:
                     return BadRequest("Tipo de verificación no soportado.");
@@ -35,63 +34,63 @@ namespace Wallet.RestAPI.Controllers.Implementation
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PostAceptarTerminosAsync(string version, int? idUsuario, AceptarTerminosRequest body)
+        public override async Task<IActionResult> PostAceptarTerminosAsync(string version, int? idUsuario,
+            AceptarTerminosRequest body)
         {
-            var modificationUser = Guid.Empty;
             var usuario =
-                await registroFacade.AceptarTerminosCondicionesAsync(idUsuario.Value, body.Version, body.AceptoTerminos.Value,
-                    body.AceptoPrivacidad.Value, body.AceptoPld.Value, modificationUser);
+                await registroFacade.AceptarTerminosCondicionesAsync(idUsuario.Value, body.Version,
+                    body.AceptoTerminos.Value,
+                    body.AceptoPrivacidad.Value, body.AceptoPld.Value);
             return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PutCompletarRegistroAsync(string version, int? idUsuario, CompletarRegistroRequest body)
+        public override async Task<IActionResult> PutCompletarRegistroAsync(string version, int? idUsuario,
+            CompletarRegistroRequest body)
         {
-            var modificationUser = Guid.Empty;
             var usuario = await registroFacade.CompletarRegistroAsync(idUsuario.Value, body.Contrasena,
-                body.ConfirmacionContrasena, modificationUser);
+                body.ConfirmacionContrasena);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PostRegistrarBiometricosAsync(string version, int? idUsuario, RegistrarBiometricosRequest body)
+        public override async Task<IActionResult> PostRegistrarBiometricosAsync(string version, int? idUsuario,
+            RegistrarBiometricosRequest body)
         {
-            var modificationUser = Guid.Empty;
             var usuario = await registroFacade.RegistrarDatosBiometricosAsync(idUsuario.Value, body.IdDispositivo,
-                body.Token, body.Nombre, body.Caracteristicas, modificationUser);
+                body.Token, body.Nombre, body.Caracteristicas);
             return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PutRegistrarCorreoAsync(string version, int? idUsuario, RegistrarCorreoRequest body)
+        public override async Task<IActionResult> PutRegistrarCorreoAsync(string version, int? idUsuario,
+            RegistrarCorreoRequest body)
         {
-            var modificationUser = Guid.Empty;
-            var usuario = await registroFacade.RegistrarCorreoAsync(idUsuario.Value, body.Correo, modificationUser);
+            var usuario = await registroFacade.RegistrarCorreoAsync(idUsuario.Value, body.Correo);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
 
         /// <inheritdoc />
         public override async Task<IActionResult> PostPreRegistroAsync(string version, PreRegistroRequest body)
         {
-            var modificationUser = Guid.Empty;
-            var usuario =
-                await registroFacade.PreRegistroAsync(body.CodigoPais, body.Telefono, modificationUser);
+            var usuario = await registroFacade.PreRegistroAsync(
+                codigoPais: body.CodigoPais,
+                telefono: body.Telefono);
             return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PostDatosClienteAsync(string version, int? idUsuario, DatosClienteRequest body)
+        public override async Task<IActionResult> PostDatosClienteAsync(string version, int? idUsuario,
+            DatosClienteRequest body)
         {
-            var modificationUser = Guid.Empty;
             var usuario = await registroFacade.CompletarDatosClienteAsync(
-                idUsuario.Value,
-                body.Nombre,
-                body.ApellidoPaterno,
-                body.ApellidoMaterno,
-                body.NombreEstado,
-                DateOnly.FromDateTime(body.FechaNacimiento.Value),
-                (DOM.Enums.Genero)body.Genero,
-                modificationUser);
+                idUsuario: idUsuario.Value,
+                nombre: body.Nombre,
+                apellidoPaterno: body.ApellidoPaterno,
+                apellidoMaterno: body.ApellidoMaterno,
+                nombreEstado: body.NombreEstado,
+                fechaNacimiento: DateOnly.FromDateTime(body.FechaNacimiento.Value),
+                genero: (DOM.Enums.Genero)body.Genero);
             return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
         }
     }

@@ -58,7 +58,7 @@ public class ClienteFacade(
 
     /// <inheritdoc />
     public async Task<Cliente> ActualizarClienteDatosPersonalesAsync(
-        int idCliente,
+        int idUsuario,
         string nombre,
         string primerApellido,
         string segundoApellido,
@@ -70,19 +70,7 @@ public class ClienteFacade(
     {
         try
         {
-            // TODO: Crear cliente si no existe
-
-            // Obtener cliente 
-            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
-            // Actualizar datos personales
-            cliente.AgregarDatosPersonales(
-                nombre: nombre,
-                primerApellido: primerApellido,
-                segundoApellido: segundoApellido,
-                fechaNacimiento: fechaNacimiento,
-                genero: genero,
-                modificationUser: modificationUser);
-            // Validar con checkton pld
+            // Validar con checkton pld PRIMERO
             var (validacionCheckton, curpGenerada) = await ValidaDatosPersonalesChecktonPldAsync(
                 nombre: nombre,
                 primerApellido: primerApellido,
@@ -93,6 +81,41 @@ public class ClienteFacade(
                 nombreEstado: nombreEstado,
                 creationUser: modificationUser,
                 testCase: testCase);
+
+            // Buscar si ya existe un cliente asociado a este usuario
+            var cliente = await context.Cliente
+                .Include(navigationPropertyPath: x => x.Direccion)
+                .Include(navigationPropertyPath: x => x.Usuario)
+                .FirstOrDefaultAsync(c => c.UsuarioId == idUsuario);
+
+            if (cliente == null)
+            {
+                // Recuperar el usuario para vincularlo
+                var usuario = await context.Usuario.FirstOrDefaultAsync(u => u.Id == idUsuario);
+                if (usuario == null)
+                {
+                    throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.UsuarioNoEncontrado,
+                        dynamicContent: [idUsuario],
+                        module: this.GetType().Name));
+                }
+
+                // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
+                var empresa = await empresaFacade.ObtenerPorNombreAsync(nombre: "Tecomnet");
+                // Crear cliente
+                cliente = new Cliente(usuario, creationUser: usuario.CreationUser, empresa: empresa);
+                await context.Cliente.AddAsync(cliente);
+            }
+
+            // Actualizar datos personales
+            cliente.AgregarDatosPersonales(
+                nombre: nombre,
+                primerApellido: primerApellido,
+                segundoApellido: segundoApellido,
+                fechaNacimiento: fechaNacimiento,
+                genero: genero,
+                modificationUser: modificationUser);
+
             // Agrega validacion checkton
             cliente.AgregarValidacionCheckton(validacion: validacionCheckton, modificationUser: modificationUser);
             // Agrega curp
@@ -102,7 +125,7 @@ public class ClienteFacade(
                 .Collection(propertyExpression: c => c.Verificaciones2Fa)
                 .LoadAsync();
             // Validar que ya haya confirmado el código de verificación por SMS
-            ValidarConfirmacionCodigoVerificacionSMS2FA(cliente: cliente);
+            ValidarConfirmacionCodigoVerificacionSms2Fa(cliente: cliente);
             // Agregar estado
             var estado = await estadoFacade.ObtenerEstadoPorNombreAsync(nombre: nombreEstado);
             cliente.AgregarEstado(estado: estado, modificationUser: modificationUser);
@@ -312,28 +335,13 @@ public class ClienteFacade(
         }
     }
 
-    /// <summary>
-    /// Valida si el cliente se encuentra activo.
-    /// </summary>
-    /// <param name="cliente">El cliente a validar.</param>
-    /// <exception cref="EMGeneralAggregateException">Si el cliente está inactivo.</exception>
-    private void ValidarClienteActivo(Cliente cliente)
-    {
-        if (!cliente.IsActive)
-        {
-            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.ClienteInactivo,
-                dynamicContent: [cliente.NombreCompleto!],
-                module: this.GetType().Name));
-        }
-    }
 
     /// <summary>
     /// Valida que el cliente tenga confirmado el código de verificación por SMS.
     /// </summary>
     /// <param name="cliente">El cliente a validar.</param>
     /// <exception cref="EMGeneralAggregateException">Si no tiene confirmación SMS.</exception>
-    private void ValidarConfirmacionCodigoVerificacionSMS2FA(Cliente cliente)
+    private void ValidarConfirmacionCodigoVerificacionSms2Fa(Cliente cliente)
     {
         // Obtiene el código de verificación SMS
         var confirmacionSmsCode =
@@ -347,23 +355,6 @@ public class ClienteFacade(
                 dynamicContent: [],
                 module: this.GetType().Name));
         }
-    }
-
-    /// <summary>
-    /// Verifica si un cliente ya ha realizado la verificación por SMS.
-    /// </summary>
-    /// <param name="codigoPais">Código de país del teléfono.</param>
-    /// <param name="telefono">Número de teléfono.</param>
-    /// <returns>True si ya está verificado, False en caso contrario.</returns>
-    private async Task<bool> ClienteYaVerificoPorSmsAsync(string codigoPais, string telefono)
-    {
-        var estaVerificado = await context.Usuario
-            .AnyAsync(predicate: c =>
-                c.CodigoPais == codigoPais &&
-                c.Telefono == telefono &&
-                c.Verificaciones2Fa.Any(v => v.Tipo == Tipo2FA.Sms && v.Verificado));
-
-        return estaVerificado;
     }
 
     #endregion

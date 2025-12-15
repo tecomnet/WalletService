@@ -21,7 +21,7 @@ public class Estado : ValidatablePersistentObjectLogicalDelete
             minimumLength: 1,
             maximumLength: 100),
     ];
-    
+
     /// <summary>
     /// Obtiene o establece el nombre del estado.
     /// Es un campo requerido con una longitud máxima de 100 caracteres.
@@ -34,12 +34,14 @@ public class Estado : ValidatablePersistentObjectLogicalDelete
     /// Obtiene la lista de clientes asociados a este estado.
     /// </summary>
     public List<Cliente> Clientes { get; private set; }
-    
+
     /// <summary>
     /// Constructor predeterminado de la clase <see cref="Estado"/>.
     /// Inicializa una nueva instancia de la clase base.
     /// </summary>
-    public Estado() : base() { }
+    public Estado() : base()
+    {
+    }
 
     /// <summary>
     /// Constructor parametrizado de la clase <see cref="Estado"/>.
@@ -76,10 +78,12 @@ public class Estado : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
         // Si hay excepciones, las lanza
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
+        if (this.Nombre == nombre) return;
+
         // Asigna el nuevo valor a la propiedad
         this.Nombre = nombre;
         // Actualiza los campos de auditoría de la clase base
         base.Update(modificationUser: modificationUser);
     }
- 
 }

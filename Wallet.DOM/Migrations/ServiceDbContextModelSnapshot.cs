@@ -635,6 +635,56 @@ namespace Wallet.DOM.Migrations
                     b.ToTable("Estado");
                 });
 
+            modelBuilder.Entity("Wallet.DOM.Modelos.KeyValueConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("KeyValueConfig");
+                });
+
             modelBuilder.Entity("Wallet.DOM.Modelos.Producto", b =>
                 {
                     b.Property<int>("Id")

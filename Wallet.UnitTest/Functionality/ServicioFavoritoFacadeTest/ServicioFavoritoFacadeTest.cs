@@ -17,17 +17,17 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
     [InlineData(data:
     [
         "2. Wrong case, empty alias", 1, 1, "", "987654321", false,
-        new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" }
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     [InlineData(data:
     [
         "3. Wrong case, Cliente not found", 99, 1, "Mi Internet", "987654321", false,
-        new string[] { "CLIENTE-NO-ENCONTRADO" }
+        new string[] { ServiceErrorsBuilder.ClienteNoEncontrado }
     ])]
     [InlineData(data:
     [
         "4. Wrong case, Proveedor not found", 1, 99, "Mi Internet", "987654321", false,
-        new string[] { "PROVEEDOR-NOT-FOUND" }
+        new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
     ])]
     public async Task GuardarServicioFavoritoTest(
         string caseName,
@@ -77,7 +77,10 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
     [InlineData(data:
         ["1. Successfully case, update servicio favorito", 1, "Mi Luz Updated", "111111", true, new string[] { }])]
     [InlineData(data:
-        ["2. Wrong case, not found", 99, "Alias", "Ref", false, new string[] { "SERVICIO-FAVORITO-NOT-FOUND" }])]
+    [
+        "2. Wrong case, not found", 99, "Alias", "Ref", false,
+        new string[] { ServiceErrorsBuilder.ServicioFavoritoNoEncontrado }
+    ])]
     public async Task ActualizarServicioFavoritoTest(
         string caseName,
         int idServicio,
@@ -120,7 +123,8 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
 
     [Theory]
     [InlineData(data: ["1. Successfully case, delete servicio favorito", 1, true, new string[] { }])]
-    [InlineData(data: ["2. Wrong case, not found", 99, false, new string[] { "SERVICIO-FAVORITO-NOT-FOUND" }])]
+    [InlineData(data:
+        ["2. Wrong case, not found", 99, false, new string[] { ServiceErrorsBuilder.ServicioFavoritoNoEncontrado }])]
     public async Task EliminarServicioFavoritoTest(
         string caseName,
         int idServicio,

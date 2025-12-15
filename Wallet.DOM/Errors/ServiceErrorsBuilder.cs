@@ -48,6 +48,8 @@ public class ServiceErrorsBuilder
         ServicioFavoritoErrors();
         // 10. Errores de Registro
         RegistroErrors();
+        // 11. Errores de KeyValueConfig
+        KeyValueConfigErrors();
     }
 
     /// <summary>
@@ -98,6 +100,12 @@ public class ServiceErrorsBuilder
             message: "Error Interno del Servidor",
             description: "Ocurrió un error inesperado que ha sido registrado. Inténtelo de nuevo más tarde.");
     }
+
+    /// <summary>Error: El tipo de autorización es incorrecto.</summary>
+    public const string EmIncorrectAuthorizationType = "EM-TIPO-AUTORIZACION-INCORRECTO";
+
+    /// <summary>Error: Error no gestionado del cliente de servicio.</summary>
+    public const string EmUnmanagedServiceClientError = "EM-ERROR-CLIENTE-SERVICIO-NO-CONTROLADO";
 
     #endregion
 
@@ -440,7 +448,7 @@ public class ServiceErrorsBuilder
     #region Errores de Autenticación
 
     /// <summary>Error: Error en el claim de usuario.</summary>
-    public const string EmClaimUserError = "EM-CLAIM-USER-ERROR";
+    public const string EmClaimUserError = "EM-ERROR-USUARIO-CLAIM";
 
     /// <summary>
     /// Carga los errores relacionados con la autenticación.
@@ -459,7 +467,8 @@ public class ServiceErrorsBuilder
     #region Broker
 
     /// <summary>Error: El broker no fue encontrado.</summary>
-    public const string BrokerNoEncontrado = "BROKER-NOT-FOUND";
+    public const string BrokerNoEncontrado = "BROKER-NO-ENCONTRADO";
+
     public const string BrokerExistente = "BROKER-EXISTENTE";
     public const string BrokerInactivo = "BROKER-INACTIVO";
 
@@ -490,16 +499,19 @@ public class ServiceErrorsBuilder
     #region Proveedor
 
     /// <summary>Error: El proveedor de servicio no fue encontrado.</summary>
-    public const string ProveedorNoEncontrado = "PROVEEDOR-NOT-FOUND";
+    public const string ProveedorNoEncontrado = "PROVEEDOR-NO-ENCONTRADO";
+
     public const string ProveedorExistente = "PROVEEDOR-EXISTENTE";
     public const string ProveedorInactivo = "PROVEEDOR-INACTIVO";
-    
+
 
     /// <summary>Error: El producto del proveedor no fue encontrado.</summary>
-    public const string ProductoNoEncontrado = "PRODUCTO-NOT-FOUND";
+    public const string ProductoNoEncontrado = "PRODUCTO-NO-ENCONTRADO";
+
     public const string ProductoExistente = "PRODUCTO-EXISTENTE";
+    public const string ProductoSkuExistente = "PRODUCTO-SKU-EXISTENTE";
     public const string ProductoInactivo = "PRODUCTO-INACTIVO";
-    
+
 
     /// <summary>
     /// Carga los errores relacionados con la entidad Proveedor.
@@ -531,6 +543,11 @@ public class ServiceErrorsBuilder
             errorCode: ProductoExistente,
             message: "El producto del proveedor de servicio ya existe.",
             description: "El producto del proveedor de servicio {0} ya existe.");
+        // Error de producto sku existente
+        AddServiceError(
+            errorCode: ProductoSkuExistente,
+            message: "El SKU del producto ya existe.",
+            description: "El SKU {0} ya está registrado para este proveedor.");
         // Error de producto inactivo
         AddServiceError(
             errorCode: ProductoInactivo,
@@ -543,31 +560,31 @@ public class ServiceErrorsBuilder
     #region Validación de Propiedades
 
     /// <summary>Error: Validación de propiedad requerida.</summary>
-    public const string PropertyValidationRequiredError = "PROPERTY-VALIDATION-REQUIRED-ERROR";
+    public const string PropertyValidationRequiredError = "ERROR-VALIDACION-PROPIEDAD-REQUERIDA";
 
     /// <summary>Error: Longitud de propiedad inválida.</summary>
-    public const string PropertyValidationLengthInvalid = "PROPERTY-VALIDATION-LENGTH-INVALID";
+    public const string PropertyValidationLengthInvalid = "ERROR-VALIDACION-PROPIEDAD-LONGITUD-INVALIDA";
 
     /// <summary>Error: Regex de propiedad inválido.</summary>
-    public const string PropertyValidationRegexInvalid = "PROPERTY-VALIDATION-REGEX-INVALID";
+    public const string PropertyValidationRegexInvalid = "ERROR-VALIDACION-PROPIEDAD-REGEX-INVALIDO";
 
     /// <summary>Error: Valor negativo no permitido en propiedad.</summary>
-    public const string PropertyValidationNegativeInvalid = "PROPERTY-VALIDATION-NEGATIVE-INVALID";
+    public const string PropertyValidationNegativeInvalid = "ERROR-VALIDACION-PROPIEDAD-NEGATIVA-INVALIDA";
 
     /// <summary>Error: Valor cero no permitido en propiedad.</summary>
-    public const string PropertyValidationZeroInvalid = "PROPERTY-VALIDATION-ZERO-INVALID";
+    public const string PropertyValidationZeroInvalid = "ERROR-VALIDACION-PROPIEDAD-CERO-INVALIDO";
 
     /// <summary>Error: Valor positivo no permitido en propiedad.</summary>
-    public const string PropertyValidationPositiveInvalid = "PROPERTY-VALIDATION-POSITIVE-INVALID";
+    public const string PropertyValidationPositiveInvalid = "ERROR-VALIDACION-PROPIEDAD-POSITIVA-INVALIDA";
 
     /// <summary>Error: Decimales inválidos en propiedad.</summary>
-    public const string PropertyValidationDecimalsInvalid = "PROPERTY-VALIDATION-DECIMALS-INVALID";
+    public const string PropertyValidationDecimalsInvalid = "ERROR-VALIDACION-PROPIEDAD-DECIMALES-INVALIDOS";
 
     /// <summary>Error: Moneda inválida en propiedad.</summary>
-    public const string PropertyValidationCurrencyInvalid = "PROPERTY-VALIDATION-CURRENCY-INVALID";
+    public const string PropertyValidationCurrencyInvalid = "ERROR-VALIDACION-PROPIEDAD-MONEDA-INVALIDA";
 
     /// <summary>Error: Propiedad no encontrada para validación.</summary>
-    public const string PropertyValidationPropertyNotFound = "PROPERTY-VALIDATION-PROPERTY-NOT-FOUND";
+    public const string PropertyValidationPropertyNotFound = "ERROR-VALIDACION-PROPIEDAD-NO-ENCONTRADA";
 
     /// <summary>
     /// Carga los errores relacionados con la validación de propiedades.
@@ -608,7 +625,7 @@ public class ServiceErrorsBuilder
     #region ServicioFavorito
 
     /// <summary>Error: Servicio favorito no encontrado.</summary>
-    public const string ServicioFavoritoNoEncontrado = "SERVICIO-FAVORITO-NOT-FOUND";
+    public const string ServicioFavoritoNoEncontrado = "SERVICIO-FAVORITO-NO-ENCONTRADO";
 
     /// <summary>
     /// Carga los errores relacionados con la entidad ServicioFavorito.
@@ -627,7 +644,7 @@ public class ServiceErrorsBuilder
     #region Registro
 
     /// <summary>Error: El estado del registro es inválido para la operación solicitada.</summary>
-    public const string InvalidRegistrationState = "INVALID-REGISTRATION-STATE";
+    public const string InvalidRegistrationState = "ESTADO-REGISTRO-INVALIDO";
 
     /// <summary>Error: Los términos y condiciones no fueron aceptados.</summary>
     public const string TerminosNoAceptados = "TERMINOS-NO-ACEPTADOS";
@@ -648,6 +665,34 @@ public class ServiceErrorsBuilder
             errorCode: TerminosNoAceptados,
             message: "Términos y condiciones no aceptados.",
             description: "Debe aceptar los términos y condiciones, política de privacidad y PLD para continuar.");
+    }
+
+    #endregion
+
+    #region KeyValueConfig
+
+    /// <summary>Error: La configuración KeyValue no fue encontrada.</summary>
+    public const string KeyValueConfigNoEncontrado = "KEY-VALUE-CONFIG-NO-ENCONTRADO";
+
+    /// <summary>Error: La configuración KeyValue ya existe.</summary>
+    public const string KeyValueConfigYaExiste = "KEY-VALUE-CONFIG-YA-EXISTE";
+
+    /// <summary>
+    /// Carga los errores relacionados con la entidad KeyValueConfig.
+    /// </summary>
+    private void KeyValueConfigErrors()
+    {
+        // Error de configuración no encontrada
+        AddServiceError(
+            errorCode: KeyValueConfigNoEncontrado,
+            message: "La configuración no fue encontrada.",
+            description: "La configuración con clave {0} no existe.");
+
+        // Error de configuración ya existente
+        AddServiceError(
+            errorCode: KeyValueConfigYaExiste,
+            message: "La configuración ya existe.",
+            description: "La configuración con clave {0} ya existe.");
     }
 
     #endregion

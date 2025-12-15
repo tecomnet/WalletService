@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 using Wallet.RestAPI.Controllers;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 /// <inheritdoc />
+//[Authorize]
 public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper mapper) : ProductoApiControllerBase
 {
     /// <inheritdoc />
@@ -20,7 +22,8 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         }
 
         var result =
-            await proveedorFacade.EliminarProductoAsync(idProducto: idProducto.Value, modificationUser: Guid.Empty);
+            await proveedorFacade.EliminarProductoAsync(idProducto: idProducto.Value,
+                modificationUser: this.GetAuthenticatedUserGuid());
         return Ok(value: mapper.Map<ProductoResult>(source: result));
     }
 
@@ -73,7 +76,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             precio: body.Precio,
             icono: body.UrlIcono,
             categoria: body.Categoria.ToString(),
-            creationUser: Guid.Empty);
+            creationUser: this.GetAuthenticatedUserGuid());
 
         var result = mapper.Map<ProductoResult>(source: producto);
         return Created(uri: $"/proveedor/{idProveedor}/producto/{result.Id}", value: result);
@@ -88,7 +91,8 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         }
 
         var result =
-            await proveedorFacade.ActivarProductoAsync(idProducto: idProducto.Value, modificationUser: Guid.Empty);
+            await proveedorFacade.ActivarProductoAsync(idProducto: idProducto.Value,
+                modificationUser: this.GetAuthenticatedUserGuid());
         return Ok(value: mapper.Map<ProductoResult>(source: result));
     }
 
@@ -108,7 +112,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         var result = await proveedorFacade.ActualizarProveedorDeProductoAsync(
             idProducto: idProducto.Value,
             idProveedor: body.Value,
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
 
         return Ok(value: mapper.Map<ProductoResult>(source: result));
     }
@@ -128,7 +132,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             precio: body.Precio,
             icono: body.UrlIcono,
             categoria: body.Categoria.ToString(),
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
 
         var result = mapper.Map<ProductoResult>(source: producto);
         return Ok(value: result);

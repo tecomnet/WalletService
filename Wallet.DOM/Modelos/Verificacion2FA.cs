@@ -125,16 +125,32 @@ public class Verificacion2FA : ValidatablePersistentObjectLogicalDelete
     /// <exception cref="EMGeneralAggregateException">Se lanza si el código proporcionado no es válido.</exception>
     public void MarcarComoVerificado(string codigo, Guid modificationUser)
     {
+        if (this.Verificado && this.Codigo == codigo) return;
+
         // Inicializa la lista de excepciones para la validación
         List<EMGeneralException> exceptions = new();
         // Valida el código proporcionado
         IsPropertyValid(propertyName: nameof(Codigo), value: codigo, exceptions: ref exceptions);
         // Si hay excepciones, las lanza en un agregado
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Asigna el estado de verificación y el código
-        this.Verificado = true;
-        this.Codigo = codigo;
-        // Actualiza los metadatos de la entidad base (fecha de modificación, usuario de modificación)
-        base.Update(modificationUser: modificationUser);
+
+        bool hasChanges = false;
+        if (!this.Verificado)
+        {
+            this.Verificado = true;
+            hasChanges = true;
+        }
+
+        if (this.Codigo != codigo)
+        {
+            this.Codigo = codigo;
+            hasChanges = true;
+        }
+
+        if (hasChanges)
+        {
+            // Actualiza los metadatos de la entidad base (fecha de modificación, usuario de modificación)
+            base.Update(modificationUser: modificationUser);
+        }
     }
 }

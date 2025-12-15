@@ -16,9 +16,9 @@ public class DefaultRestAPIError : IRestAPIError
     /// </summary>
     public DefaultRestAPIError()
     {
-        this.ErrorCode = "REST-API-DEFAULT-ERROR";
+        this.ErrorCode = RestAPIErrors.RestApiDefaultError;
         this.Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4";
-        this.Title = "Default REST API error";
+        this.Title = "Error Predeterminado de API REST";
         this.Status = 400;
         this._detail = "Default REST API error used when no specific one exists.";
         this.Instance = "DEFAULT";
