@@ -20,6 +20,13 @@ namespace Wallet.RestAPI.Models
         public string Value { get; set; }
 
         /// <summary>
+        /// Gets or Sets ConcurrencyToken
+        /// </summary>
+        [Required]
+        [DataMember(Name = "concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -28,6 +35,7 @@ namespace Wallet.RestAPI.Models
             var sb = new StringBuilder();
             sb.Append("class KeyValueConfigUpdateRequest {\n");
             sb.Append("  Value: ").Append(Value).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -67,6 +75,11 @@ namespace Wallet.RestAPI.Models
                     Value == other.Value ||
                     Value != null &&
                     Value.Equals(other.Value)
+                ) &&
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -82,6 +95,8 @@ namespace Wallet.RestAPI.Models
                 // Suitable nullity checks etc, of course :)
                 if (Value != null)
                     hashCode = hashCode * 59 + Value.GetHashCode();
+                if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }

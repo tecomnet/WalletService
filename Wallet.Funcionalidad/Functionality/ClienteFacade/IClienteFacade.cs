@@ -27,8 +27,8 @@ public interface IClienteFacade
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Cliente"/> actualizado.</returns>
     public Task<Cliente> ActualizarClienteDatosPersonalesAsync(int idUsuario, string nombre, string primerApellido,
-        string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, Guid modificationUser,
-        string? testCase = null);
+        string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, byte[] concurrencyToken,
+        Guid modificationUser, bool enforceClientConcurrency = true, string? testCase = null);
 
 
     /// <summary>
@@ -59,5 +59,23 @@ public interface IClienteFacade
     /// <param name="idCliente">El identificador único del cliente.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con una lista de objetos <see cref="ServicioFavorito"/>.</returns>
     public Task<List<ServicioFavorito>> ObtenerServiciosFavoritosAsync(int idCliente);
+
+    /// <summary>
+    /// Actualiza un cliente existente por su ID.
+    /// </summary>
+    /// <param name="idCliente">El identificador único del cliente a actualizar.</param>
+    /// <param name="nombre">El nuevo nombre del cliente.</param>
+    /// <param name="primerApellido">El nuevo primer apellido del cliente.</param>
+    /// <param name="segundoApellido">El nuevo segundo apellido del cliente.</param>
+    /// <param name="nombreEstado">El nombre del estado de residencia del cliente.</param>
+    /// <param name="fechaNacimiento">La fecha de nacimiento del cliente.</param>
+    /// <param name="genero">El género del cliente.</param>
+    /// <param name="concurrencyToken">Token de concurrencia.</param>
+    /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
+    /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
+    /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Cliente"/> actualizado.</returns>
+    public Task<Cliente> ActualizarClienteAsync(int idCliente, string nombre, string primerApellido,
+        string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, byte[] concurrencyToken,
+        Guid modificationUser, string? testCase = null);
 }
     

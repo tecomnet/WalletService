@@ -29,7 +29,8 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             }
 
             // Crea una nueva instancia de Proveedor.
-            var proveedor = new Proveedor(nombre: nombre, urlIcono: urlIcono, broker: broker, creationUser: creationUser);
+            var proveedor = new Proveedor(nombre: nombre, urlIcono: urlIcono, broker: broker,
+                creationUser: creationUser);
             ValidarDuplicidad(nombre: nombre);
             // Agrega el proveedor al contexto.
             await context.Proveedor.AddAsync(entity: proveedor);
@@ -79,13 +80,17 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     }
 
     /// <inheritdoc />
-    public async Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, string urlIcono, Guid modificationUser,
+    public async Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, string urlIcono,
+        string concurrencyToken, Guid modificationUser,
         string? testCase = null)
     {
         try
         {
             // Obtiene el proveedor existente.
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(proveedor).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             ValidarIsActive(proveedor: proveedor);
             ValidarDuplicidad(nombre: nombre, id: idProveedor);
             // Actualiza los datos del proveedor.
@@ -95,7 +100,8 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             await context.SaveChangesAsync();
             return proveedor;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
@@ -163,7 +169,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
                 exception: exception);
         }
     }
-    
+
     #region Metodos privados
 
     /// <summary>
@@ -202,6 +208,4 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     }
 
     #endregion
-    
-    
 }

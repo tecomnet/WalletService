@@ -99,11 +99,15 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     }
 
     /// <inheritdoc />
-    public async Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, Guid modificationUser)
+    public async Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, string concurrencyToken,
+        Guid modificationUser)
     {
         try
         {
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(empresa).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Validamos que la empresa este activa
             ValidarEmpresaActiva(empresa: empresa);
             // Validamos duplicidad
@@ -115,7 +119,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             await context.SaveChangesAsync();
             return empresa;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(

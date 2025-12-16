@@ -80,12 +80,19 @@ public class ServicioFavoritoFacade(
 
     /// <inheritdoc />
     public async Task<ServicioFavorito> ActualizarServicioFavoritoAsync(int idServicioFavorito, string alias,
-        string numeroReferencia, Guid modificationUser, string? testCase = null)
+        string numeroReferencia, string? concurrencyToken, Guid modificationUser, string? testCase = null)
     {
         try
         {
             // Obtiene el servicio favorito existente.
             var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito: idServicioFavorito);
+
+            // Manejo de ConcurrencyToken
+            if (!string.IsNullOrEmpty(concurrencyToken))
+            {
+                context.Entry(servicioFavorito).Property(x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(concurrencyToken);
+            }
 
             // Actualiza los datos del servicio favorito.
             servicioFavorito.Update(alias: alias, numeroReferencia: numeroReferencia,
@@ -94,6 +101,12 @@ public class ServicioFavoritoFacade(
             // Guarda los cambios.
             await context.SaveChangesAsync();
             return servicioFavorito;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ConcurrencyError,
+                dynamicContent: []));
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

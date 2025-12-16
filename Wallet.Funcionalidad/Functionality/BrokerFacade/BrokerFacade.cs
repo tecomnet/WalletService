@@ -85,19 +85,24 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         }
 
         /// <inheritdoc />
-        public async Task<Broker> ActualizarBrokerAsync(int idBroker, string nombre, Guid modificationUser)
+        public async Task<Broker> ActualizarBrokerAsync(int idBroker, string nombre, string concurrencyToken,
+            Guid modificationUser)
         {
             try
             {
                 var broker = await ObtenerBrokerPorIdAsync(idBroker);
-                
+                // Establece el token original para la validación de concurrencia optimista
+                _context.Entry(broker).Property(x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(concurrencyToken);
+
                 ValidarIsActive(broker: broker);
                 ValidarDuplicidad(nombre, broker.Id);
                 broker.Update(nombre, modificationUser);
                 await _context.SaveChangesAsync();
                 return broker;
             }
-            catch (Exception exception) when (exception is not EMGeneralAggregateException)
+            catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                              exception is not DbUpdateConcurrencyException)
             {
                 throw GenericExceptionManager.GetAggregateException(
                     serviceName: DomCommon.ServiceName,
@@ -124,6 +129,7 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
                     exception: exception);
             }
         }
+
         public async Task<Broker> ActivarBrokerAsync(int idBroker, Guid modificationUser)
         {
             try
@@ -164,9 +170,8 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
                     exception: exception);
             }
         }
-        
-        
-        
+
+
         #region Metodos privados
 
         /// <summary>

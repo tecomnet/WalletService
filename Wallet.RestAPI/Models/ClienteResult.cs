@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,138 +21,123 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class ClienteResult : IEquatable<ClienteResult>
-    { 
+    {
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [Required]
-
-        [DataMember(Name="id")]
+        [DataMember(Name = "id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets CodigoPais
         /// </summary>
         [Required]
-
-        [StringLength(3, MinimumLength=3)]
-        [DataMember(Name="codigoPais")]
+        [StringLength(3, MinimumLength = 3)]
+        [DataMember(Name = "codigoPais")]
         public string CodigoPais { get; set; }
 
         /// <summary>
         /// Gets or Sets Telefono
         /// </summary>
         [Required]
-
-        [StringLength(10, MinimumLength=9)]
-        [DataMember(Name="telefono")]
+        [StringLength(10, MinimumLength = 9)]
+        [DataMember(Name = "telefono")]
         public string Telefono { get; set; }
 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="nombre")]
+        [StringLength(100, MinimumLength = 1)]
+        [DataMember(Name = "nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
         /// Gets or Sets PrimerApellido
         /// </summary>
         [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="primerApellido")]
+        [StringLength(100, MinimumLength = 1)]
+        [DataMember(Name = "primerApellido")]
         public string PrimerApellido { get; set; }
 
         /// <summary>
         /// Gets or Sets SegundoApellido
         /// </summary>
         [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="segundoApellido")]
+        [StringLength(100, MinimumLength = 1)]
+        [DataMember(Name = "segundoApellido")]
         public string SegundoApellido { get; set; }
 
         /// <summary>
         /// Gets or Sets FechaNacimiento
         /// </summary>
         [Required]
-
-        [DataMember(Name="fechaNacimiento")]
+        [DataMember(Name = "fechaNacimiento")]
         public DateTime? FechaNacimiento { get; set; }
 
         /// <summary>
         /// Gets or Sets Genero
         /// </summary>
         [Required]
-
-        [StringLength(50, MinimumLength=1)]
-        [DataMember(Name="genero")]
+        [StringLength(50, MinimumLength = 1)]
+        [DataMember(Name = "genero")]
         public string Genero { get; set; }
 
         /// <summary>
         /// Gets or Sets CorreoElectronico
         /// </summary>
         [Required]
-
-        [StringLength(150, MinimumLength=1)]
-        [DataMember(Name="correoElectronico")]
+        [StringLength(150, MinimumLength = 1)]
+        [DataMember(Name = "correoElectronico")]
         public string CorreoElectronico { get; set; }
 
         /// <summary>
         /// Gets or Sets TipoPersona
         /// </summary>
         [Required]
-
-        [StringLength(50, MinimumLength=1)]
-        [DataMember(Name="tipoPersona")]
+        [StringLength(50, MinimumLength = 1)]
+        [DataMember(Name = "tipoPersona")]
         public string TipoPersona { get; set; }
 
         /// <summary>
         /// Gets or Sets Curp
         /// </summary>
         [Required]
-
-        [StringLength(18, MinimumLength=1)]
-        [DataMember(Name="curp")]
+        [StringLength(18, MinimumLength = 1)]
+        [DataMember(Name = "curp")]
         public string Curp { get; set; }
 
         /// <summary>
         /// Gets or Sets Rfc
         /// </summary>
         [Required]
-
-        [StringLength(13, MinimumLength=1)]
-        [DataMember(Name="rfc")]
+        [StringLength(13, MinimumLength = 1)]
+        [DataMember(Name = "rfc")]
         public string Rfc { get; set; }
 
         /// <summary>
         /// Gets or Sets Foto
         /// </summary>
         [Required]
-
-        [StringLength(500, MinimumLength=1)]
-        [DataMember(Name="foto")]
+        [StringLength(500, MinimumLength = 1)]
+        [DataMember(Name = "foto")]
         public string Foto { get; set; }
 
         /// <summary>
         /// Gets or Sets Estado
         /// </summary>
         [Required]
-
-        [StringLength(500, MinimumLength=1)]
-        [DataMember(Name="estado")]
+        [StringLength(500, MinimumLength = 1)]
+        [DataMember(Name = "estado")]
         public string Estado { get; set; }
 
         /// <summary>
         /// Gets or Sets Empresa
         /// </summary>
         [Required]
-
-        [StringLength(13, MinimumLength=1)]
-        [DataMember(Name="empresa")]
+        [StringLength(13, MinimumLength = 1)]
+        [DataMember(Name = "empresa")]
         public string Empresa { get; set; }
 
         /// <summary>
@@ -160,8 +145,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Guid of the key-value configuration</value>
         [Required]
-
-        [DataMember(Name="guid")]
+        [DataMember(Name = "guid")]
         public Guid? Guid { get; set; }
 
         /// <summary>
@@ -169,8 +153,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Creation timestamp</value>
         [Required]
-
-        [DataMember(Name="creationTimestamp")]
+        [DataMember(Name = "creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
@@ -178,8 +161,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Modification timestamp</value>
         [Required]
-
-        [DataMember(Name="modificationTimestamp")]
+        [DataMember(Name = "modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
 
         /// <summary>
@@ -187,8 +169,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Guid of the creation user</value>
         [Required]
-
-        [DataMember(Name="creationUser")]
+        [DataMember(Name = "creationUser")]
         public Guid? CreationUser { get; set; }
 
         /// <summary>
@@ -196,8 +177,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Guid of the modification user</value>
         [Required]
-
-        [DataMember(Name="modificationUser")]
+        [DataMember(Name = "modificationUser")]
         public Guid? ModificationUser { get; set; }
 
         /// <summary>
@@ -205,9 +185,14 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Guid of the modification user</value>
         [Required]
-
-        [DataMember(Name="isActive")]
+        [DataMember(Name = "isActive")]
         public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Concurrency Token
+        /// </summary>
+        [DataMember(Name = "concurrencyToken")]
+        public byte[] ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -273,107 +258,107 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
                 (
                     CodigoPais == other.CodigoPais ||
                     CodigoPais != null &&
                     CodigoPais.Equals(other.CodigoPais)
-                ) && 
+                ) &&
                 (
                     Telefono == other.Telefono ||
                     Telefono != null &&
                     Telefono.Equals(other.Telefono)
-                ) && 
+                ) &&
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(other.Nombre)
-                ) && 
+                ) &&
                 (
                     PrimerApellido == other.PrimerApellido ||
                     PrimerApellido != null &&
                     PrimerApellido.Equals(other.PrimerApellido)
-                ) && 
+                ) &&
                 (
                     SegundoApellido == other.SegundoApellido ||
                     SegundoApellido != null &&
                     SegundoApellido.Equals(other.SegundoApellido)
-                ) && 
+                ) &&
                 (
                     FechaNacimiento == other.FechaNacimiento ||
                     FechaNacimiento != null &&
                     FechaNacimiento.Equals(other.FechaNacimiento)
-                ) && 
+                ) &&
                 (
                     Genero == other.Genero ||
                     Genero != null &&
                     Genero.Equals(other.Genero)
-                ) && 
+                ) &&
                 (
                     CorreoElectronico == other.CorreoElectronico ||
                     CorreoElectronico != null &&
                     CorreoElectronico.Equals(other.CorreoElectronico)
-                ) && 
+                ) &&
                 (
                     TipoPersona == other.TipoPersona ||
                     TipoPersona != null &&
                     TipoPersona.Equals(other.TipoPersona)
-                ) && 
+                ) &&
                 (
                     Curp == other.Curp ||
                     Curp != null &&
                     Curp.Equals(other.Curp)
-                ) && 
+                ) &&
                 (
                     Rfc == other.Rfc ||
                     Rfc != null &&
                     Rfc.Equals(other.Rfc)
-                ) && 
+                ) &&
                 (
                     Foto == other.Foto ||
                     Foto != null &&
                     Foto.Equals(other.Foto)
-                ) && 
+                ) &&
                 (
                     Estado == other.Estado ||
                     Estado != null &&
                     Estado.Equals(other.Estado)
-                ) && 
+                ) &&
                 (
                     Empresa == other.Empresa ||
                     Empresa != null &&
                     Empresa.Equals(other.Empresa)
-                ) && 
+                ) &&
                 (
                     Guid == other.Guid ||
                     Guid != null &&
                     Guid.Equals(other.Guid)
-                ) && 
+                ) &&
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
                     CreationTimestamp.Equals(other.CreationTimestamp)
-                ) && 
+                ) &&
                 (
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
                     ModificationTimestamp.Equals(other.ModificationTimestamp)
-                ) && 
+                ) &&
                 (
                     CreationUser == other.CreationUser ||
                     CreationUser != null &&
                     CreationUser.Equals(other.CreationUser)
-                ) && 
+                ) &&
                 (
                     ModificationUser == other.ModificationUser ||
                     ModificationUser != null &&
                     ModificationUser.Equals(other.ModificationUser)
-                ) && 
+                ) &&
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
@@ -391,54 +376,55 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
+                if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (CodigoPais != null)
+                if (CodigoPais != null)
                     hashCode = hashCode * 59 + CodigoPais.GetHashCode();
-                    if (Telefono != null)
+                if (Telefono != null)
                     hashCode = hashCode * 59 + Telefono.GetHashCode();
-                    if (Nombre != null)
+                if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                    if (PrimerApellido != null)
+                if (PrimerApellido != null)
                     hashCode = hashCode * 59 + PrimerApellido.GetHashCode();
-                    if (SegundoApellido != null)
+                if (SegundoApellido != null)
                     hashCode = hashCode * 59 + SegundoApellido.GetHashCode();
-                    if (FechaNacimiento != null)
+                if (FechaNacimiento != null)
                     hashCode = hashCode * 59 + FechaNacimiento.GetHashCode();
-                    if (Genero != null)
+                if (Genero != null)
                     hashCode = hashCode * 59 + Genero.GetHashCode();
-                    if (CorreoElectronico != null)
+                if (CorreoElectronico != null)
                     hashCode = hashCode * 59 + CorreoElectronico.GetHashCode();
-                    if (TipoPersona != null)
+                if (TipoPersona != null)
                     hashCode = hashCode * 59 + TipoPersona.GetHashCode();
-                    if (Curp != null)
+                if (Curp != null)
                     hashCode = hashCode * 59 + Curp.GetHashCode();
-                    if (Rfc != null)
+                if (Rfc != null)
                     hashCode = hashCode * 59 + Rfc.GetHashCode();
-                    if (Foto != null)
+                if (Foto != null)
                     hashCode = hashCode * 59 + Foto.GetHashCode();
-                    if (Estado != null)
+                if (Estado != null)
                     hashCode = hashCode * 59 + Estado.GetHashCode();
-                    if (Empresa != null)
+                if (Empresa != null)
                     hashCode = hashCode * 59 + Empresa.GetHashCode();
-                    if (Guid != null)
+                if (Guid != null)
                     hashCode = hashCode * 59 + Guid.GetHashCode();
-                    if (CreationTimestamp != null)
+                if (CreationTimestamp != null)
                     hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                    if (ModificationTimestamp != null)
+                if (ModificationTimestamp != null)
                     hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
-                    if (CreationUser != null)
+                if (CreationUser != null)
                     hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                    if (ModificationUser != null)
+                if (ModificationUser != null)
                     hashCode = hashCode * 59 + ModificationUser.GetHashCode();
-                    if (IsActive != null)
+                if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(ClienteResult left, ClienteResult right)
         {
@@ -450,7 +436,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

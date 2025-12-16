@@ -89,7 +89,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> PutBrokerAsync(string version, int? idBroker, BrokerRequest body)
+        public override async Task<IActionResult> PutBrokerAsync(string version, int? idBroker,
+            BrokerUpdateRequest body)
         {
             if (idBroker == null)
             {
@@ -99,6 +100,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var broker = await brokerFacade.ActualizarBrokerAsync(
                 idBroker: idBroker.Value,
                 nombre: body.Nombre,
+                concurrencyToken: body.ConcurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
 
             var result = mapper.Map<BrokerResult>(broker);

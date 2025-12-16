@@ -118,7 +118,8 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> PutProductoAsync(string version, int? idProducto, ProductoRequest body)
+    public override async Task<IActionResult> PutProductoAsync(string version, int? idProducto,
+        ProductoUpdateRequest body)
     {
         if (idProducto == null)
         {
@@ -132,6 +133,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             precio: body.Precio,
             icono: body.UrlIcono,
             categoria: body.Categoria.ToString(),
+            concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
 
         var result = mapper.Map<ProductoResult>(source: producto);

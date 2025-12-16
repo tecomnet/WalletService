@@ -118,7 +118,13 @@ public class EmpresaApiTest : DatabaseTestFixture
                 _jsonSettings);
 
         // 3. Update 
-        var updateRequest = new EmpresaRequest { Nombre = "Empresa Update Test Updated" };
+        // 3. Update 
+        // 3. Update 
+        var updateRequest = new EmpresaUpdateRequest
+        {
+            Nombre = "Empresa Update Test Updated",
+            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken)
+        };
         var response = await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest));
         var content = await response.Content.ReadAsStringAsync();
 
@@ -362,6 +368,44 @@ public class EmpresaApiTest : DatabaseTestFixture
         Assert.Single(productsFinal);
         Assert.Contains(productsFinal, p => p.Id == prod2.Id); // Only P2 remains
         Assert.DoesNotContain(productsFinal, p => p.Id == prod1.Id);
+    }
+
+    [Fact]
+    public async Task Test_Update_Empresa_Returns_Conflict_With_Stale_Token()
+    {
+        // 1. Auth
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        // 2. Create 
+        var createRequest = new EmpresaRequest { Nombre = "Empresa Conflict Test" };
+        var createResponse = await client.PostAsync($"/{ApiVersion}/empresa", CreateContent(createRequest));
+        var createResult =
+            JsonConvert.DeserializeObject<EmpresaResult>(await createResponse.Content.ReadAsStringAsync(),
+                _jsonSettings);
+
+        // 3. Update 1 (Success)
+        var updateRequest1 = new EmpresaUpdateRequest
+        {
+            Nombre = "Empresa Conflict Test Updated 1",
+            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken)
+        };
+        var response1 =
+            await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest1));
+        Assert.Equal(HttpStatusCode.OK, response1.StatusCode);
+
+        // 4. Update 2 (Stale Token - Should Fail)
+        var updateRequest2 = new EmpresaUpdateRequest
+        {
+            Nombre = "Empresa Conflict Test Updated 2",
+            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken) // Stale token
+        };
+        var response2 =
+            await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest2));
+
+        Assert.Equal(HttpStatusCode.Conflict, response2.StatusCode);
     }
 
     private StringContent CreateContent(object body)

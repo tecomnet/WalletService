@@ -57,8 +57,10 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 await Context.Cliente.Include(navigationPropertyPath: x => x.Usuario)
                     .FirstOrDefaultAsync(predicate: x => x.UsuarioId == idUsuario);
 
+            byte[] concurrencyToken = [];
             if (clientToUpdate != null)
             {
+                concurrencyToken = clientToUpdate.ConcurrencyToken;
                 var verificacion = new Verificacion2FA(twilioSid: "SID_PRE_VERIFIED",
                     fechaVencimiento: DateTime.Now.AddMinutes(value: 10), tipo: Tipo2FA.Sms,
                     creationUser: SetupConfig.UserId);
@@ -82,6 +84,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 nombreEstado: nombreEstado,
                 fechaNacimiento: fechaNacimientoDateOnly,
                 genero: genero,
+                concurrencyToken: concurrencyToken,
                 modificationUser: SetupConfig.UserId);
             // Assert user created
             Assert.NotNull(cliente);

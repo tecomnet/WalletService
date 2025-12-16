@@ -32,6 +32,7 @@ builder.Services.AddControllers(options =>
 		// Registro de filtros globales para la aplicación.
 		options.Filters.Add<ObsoleteMethodFilter>(); // Filtro para manejar métodos obsoletos.
 		options.Filters.Add<ServiceExceptionFilter>(); // Filtro para capturar y manejar excepciones de servicio.
+		options.Filters.Add<ConcurrencyExceptionFilter>(); // Filtro para manejar conflictos de concurrencia.
 	})
 	// Configura Newtonsoft.Json como el serializador principal.
 	.AddNewtonsoftJson(opts =>

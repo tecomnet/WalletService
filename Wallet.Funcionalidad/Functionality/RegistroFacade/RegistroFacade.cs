@@ -1,4 +1,4 @@
-
+using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
@@ -74,6 +74,7 @@ public class RegistroFacade(
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.NumeroConfirmado);
 
         // Actualizamos datos usando el facade de cliente
+        var tokenBytes = usuario.ConcurrencyToken; // Use current token from DB
         await clienteFacade.ActualizarClienteDatosPersonalesAsync(
             idUsuario: usuario.Id,
             nombre: nombre,
@@ -82,7 +83,9 @@ public class RegistroFacade(
             nombreEstado: nombreEstado,
             fechaNacimiento: fechaNacimiento,
             genero: genero,
-            modificationUser: usuario.CreationUser);
+            concurrencyToken: tokenBytes,
+            modificationUser: usuario.CreationUser,
+            enforceClientConcurrency: false);
 
         // Actualiza el estado del registro a DatosClienteCompletado
         await ActualizarEstatusAsync(usuario, EstatusRegistroEnum.DatosClienteCompletado, usuario.CreationUser);
@@ -98,10 +101,13 @@ public class RegistroFacade(
     public async Task<Usuario> RegistrarCorreoAsync(int idUsuario, string correo)
     {
         // Valida que el usuario esté en el estado esperado (DatosClienteCompletado o CorreoRegistrado si es reenvío)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: [EstatusRegistroEnum.DatosClienteCompletado, EstatusRegistroEnum.CorreoRegistrado]);
+        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
+            estatusEsperados: [EstatusRegistroEnum.DatosClienteCompletado, EstatusRegistroEnum.CorreoRegistrado]);
 
         // Actualiza el correo electrónico del usuario a través del facade de usuario
-        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo, usuario.CreationUser);
+        // Nota: Pasamos usuario.ConcurrencyToken (el actual de DB) para ignorar OCC estricto en el flujo de registro
+        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo, usuario.ConcurrencyToken,
+            usuario.CreationUser);
 
         // Actualiza el estado del registro a CorreoRegistrado
         await ActualizarEstatusAsync(usuario, EstatusRegistroEnum.CorreoRegistrado, usuario.CreationUser);
@@ -140,10 +146,12 @@ public class RegistroFacade(
     /// <param name="token">Token de autenticación/registro del dispositivo.</param>
     /// <returns>El objeto <see cref="Usuario"/> con el dispositivo móvil autorizado registrado.</returns>
     public async Task<Usuario> RegistrarDatosBiometricosAsync(int idUsuario, string idDispositivo, string token,
-        string nombre, string caracteristicas)
+        string nombre,
+        string caracteristicas)
     {
         // Valida que el usuario esté en el estado esperado (CorreoVerificado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.CorreoVerificado);
+
 
         // Crea una nueva instancia de DispositivoMovilAutorizado
         var dispositivo = new DispositivoMovilAutorizado(
@@ -176,6 +184,7 @@ public class RegistroFacade(
     {
         // Valida que el usuario esté en el estado esperado (DatosBiometricosRegistrado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.DatosBiometricosRegistrado);
+
 
         // Valida que se hayan aceptado todos los términos requeridos
         if (!aceptoTerminos || !aceptoPrivacidad || !aceptoPld)
@@ -211,6 +220,7 @@ public class RegistroFacade(
         // Valida que el usuario esté en el estado esperado (TerminosCondicionesAceptado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.TerminosCondicionesAceptado);
 
+
         // Verifica que la contraseña y su confirmación coincidan
         if (contrasena != confirmacionContrasena)
         {
@@ -238,6 +248,11 @@ public class RegistroFacade(
     {
         // Obtiene el usuario por su ID
         var usuario = await usuarioFacade.ObtenerUsuarioPorIdAsync(idUsuario);
+        if (usuario != null)
+        {
+            // Console.WriteLine($"[DEBUG] ValidarEstadoAsync ID: {idUsuario}, Status: {usuario.Estatus}");
+        }
+
         if (usuario == null)
         {
             // Lanza una excepción si el usuario no es encontrado
@@ -270,7 +285,21 @@ public class RegistroFacade(
     {
         // Actualiza el estatus del usuario
         usuario.ActualizarEstatus(nuevoEstatus, modificationUser);
+
+        Console.WriteLine(
+            $"[DEBUG] Updating Status: {nuevoEstatus} for ID: {usuario.Id}. Current State: {context.Entry(usuario).State}");
+
+        // Ensure the entity is tracked and the property is marked as modified
+        if (context.Entry(usuario).State == EntityState.Detached)
+        {
+            context.Attach(usuario);
+            Console.WriteLine($"[DEBUG] Re-Attached User ID: {usuario.Id}");
+        }
+
+        context.Entry(usuario).Property(u => u.Estatus).IsModified = true;
+
         // Guarda los cambios en la base de datos
-        await context.SaveChangesAsync();
+        var rows = await context.SaveChangesAsync();
+        Console.WriteLine($"[DEBUG] Saved Status. Rows Affected: {rows}");
     }
 }

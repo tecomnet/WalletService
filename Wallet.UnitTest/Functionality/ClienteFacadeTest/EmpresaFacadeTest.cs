@@ -57,7 +57,8 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
     public async Task ObtenerPorNombreAsync_NoExistente_LanzaEmpresaNoEncontrada(string nombre)
     {
         // Act & Assert
-        await Assert.ThrowsAsync<EMGeneralAggregateException>(testCode: () => Facade.ObtenerPorNombreAsync(nombre: nombre));
+        await Assert.ThrowsAsync<EMGeneralAggregateException>(testCode: () =>
+            Facade.ObtenerPorNombreAsync(nombre: nombre));
     }
 
     // =============================
@@ -107,7 +108,9 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         const string nuevoNombre = "TecomnetActualizada";
 
         // Act
+        var empresaValida = await Context.Empresa.AsNoTracking().FirstAsync(e => e.Id == idAActualizar);
         var result = await Facade.ActualizaEmpresaAsync(idEmpresa: idAActualizar, nombre: nuevoNombre,
+            concurrencyToken: Convert.ToBase64String(empresaValida.ConcurrencyToken),
             modificationUser: SetupConfig.UserId);
 
         // Assert
@@ -125,9 +128,12 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         const int idAActualizar = 1; // Tecomnet
         const string nombreDuplicado = "EmpresaInactiva"; // Ya existe
 
+        var empresaValida = await Context.Empresa.AsNoTracking().FirstAsync(e => e.Id == idAActualizar);
+
         // Act & Assert
         await Assert.ThrowsAsync<EMGeneralAggregateException>(testCode: () =>
             Facade.ActualizaEmpresaAsync(idEmpresa: idAActualizar, nombre: nombreDuplicado,
+                concurrencyToken: Convert.ToBase64String(empresaValida.ConcurrencyToken),
                 modificationUser: SetupConfig.UserId));
     }
 
@@ -140,11 +146,13 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         // Inactivar la entidad en la DB antes de la prueba (Simulación)
         var empresaToDeactivate = await Context.Empresa.FindAsync(keyValues: idInactiva);
         empresaToDeactivate!.Deactivate(modificationUser: SetupConfig.UserId);
+        var token = empresaToDeactivate.ConcurrencyToken;
         await Context.SaveChangesAsync();
 
         // Act & Assert
         await Assert.ThrowsAsync<EMGeneralAggregateException>(testCode: () =>
             Facade.ActualizaEmpresaAsync(idEmpresa: idInactiva, nombre: "NombreNoImporta",
+                concurrencyToken: Convert.ToBase64String(token),
                 modificationUser: SetupConfig.UserId));
     }
 

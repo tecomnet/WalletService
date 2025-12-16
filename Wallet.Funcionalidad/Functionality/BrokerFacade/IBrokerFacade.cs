@@ -33,9 +33,10 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         /// </summary>
         /// <param name="idBroker">ID del broker</param>
         /// <param name="nombre">Nuevo nombre del broker</param>
+        /// <param name="concurrencyToken">Token de concurrencia</param>
         /// <param name="modificationUser">Usuario que modifica</param>
         /// <returns>El broker actualizado</returns>
-        Task<Broker> ActualizarBrokerAsync(int idBroker, string nombre, Guid modificationUser);
+        Task<Broker> ActualizarBrokerAsync(int idBroker, string nombre, string concurrencyToken, Guid modificationUser);
 
         /// <summary>
         /// Elimina (lógicamente) un broker.
@@ -44,7 +45,7 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         /// <param name="modificationUser">Usuario que elimina</param>
         /// <returns>El broker eliminado</returns>
         Task<Broker> EliminarBrokerAsync(int idBroker, Guid modificationUser);
-        
+
         /// <summary>
         /// Elimina (lógicamente) un broker.
         /// </summary>

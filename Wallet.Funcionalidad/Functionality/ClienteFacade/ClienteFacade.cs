@@ -65,7 +65,9 @@ public class ClienteFacade(
         string nombreEstado,
         DateOnly fechaNacimiento,
         Genero genero,
+        byte[] concurrencyToken,
         Guid modificationUser,
+        bool enforceClientConcurrency = true,
         string? testCase = null)
     {
         try
@@ -106,6 +108,14 @@ public class ClienteFacade(
                 cliente = new Cliente(usuario, creationUser: usuario.CreationUser, empresa: empresa);
                 await context.Cliente.AddAsync(cliente);
             }
+            else
+            {
+                if (enforceClientConcurrency)
+                {
+                    // Establece el token original para la validación de concurrencia optimista
+                    context.Entry(cliente).Property(x => x.ConcurrencyToken).OriginalValue = concurrencyToken;
+                }
+            }
 
             // Actualizar datos personales
             cliente.AgregarDatosPersonales(
@@ -139,7 +149,8 @@ public class ClienteFacade(
             // Retornar cliente
             return cliente;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -237,6 +248,47 @@ public class ClienteFacade(
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
             // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Cliente> ActualizarClienteAsync(
+        int idCliente,
+        string nombre,
+        string primerApellido,
+        string segundoApellido,
+        string nombreEstado,
+        DateOnly fechaNacimiento,
+        Genero genero,
+        byte[] concurrencyToken,
+        Guid modificationUser,
+        string? testCase = null)
+    {
+        try
+        {
+            // Obtener cliente para asegurar existencia y obtener UsuarioId
+            var cliente = await ObtenerClientePorIdAsync(idCliente);
+
+            // Llamar a la logica central de actualización
+            return await ActualizarClienteDatosPersonalesAsync(
+                idUsuario: cliente.UsuarioId,
+                nombre: nombre,
+                primerApellido: primerApellido,
+                segundoApellido: segundoApellido,
+                nombreEstado: nombreEstado,
+                fechaNacimiento: fechaNacimiento,
+                genero: genero,
+                concurrencyToken: concurrencyToken,
+                modificationUser: modificationUser,
+                testCase: testCase);
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
                 module: this.GetType().Name,

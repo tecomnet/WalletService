@@ -28,21 +28,23 @@ public interface IUsuarioFacade
     /// <param name="contrasenaActual">La contraseña actual del usuario.</param>
     /// <param name="contrasenaNueva">La nueva contraseña a establecer.</param>
     /// <param name="confirmacionContrasenaNueva">La confirmación de la nueva contraseña (debe coincidir con contrasenaNueva).</param>
+    /// <param name="concurrencyToken">El token de concurrencia para validación optimista.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> actualizado.</returns>
     Task<Usuario> ActualizarContrasenaAsync(int idUsuario, string contrasenaActual, string contrasenaNueva,
-        string confirmacionContrasenaNueva, Guid modificationUser);
+        string confirmacionContrasenaNueva, byte[] concurrencyToken, Guid modificationUser);
 
     /// <summary>
     /// Actualiza el correo electrónico de un usuario.
     /// </summary>
     /// <param name="idUsuario">El identificador del usuario.</param>
     /// <param name="correoElectronico">El nuevo correo electrónico.</param>
+    /// <param name="concurrencyToken">El token de concurrencia para validación optimista.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> actualizado.</returns>
     Task<Usuario> ActualizarCorreoElectronicoAsync(int idUsuario, string correoElectronico,
-        Guid modificationUser, string? testCase = null);
+        byte[] concurrencyToken, Guid modificationUser, string? testCase = null);
 
     /// <summary>
     /// Actualiza el número de teléfono de un usuario.
@@ -50,11 +52,12 @@ public interface IUsuarioFacade
     /// <param name="idUsuario">El identificador del usuario.</param>
     /// <param name="codigoPais">El código de país del nuevo número de teléfono.</param>
     /// <param name="telefono">El nuevo número de teléfono.</param>
+    /// <param name="concurrencyToken">El token de concurrencia para validación optimista.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> actualizado.</returns>
     Task<Usuario> ActualizarTelefonoAsync(int idUsuario, string codigoPais, string telefono,
-        Guid modificationUser, string? testCase = null);
+        byte[] concurrencyToken, Guid modificationUser, string? testCase = null);
 
     /// <summary>
     /// Confirma un código de verificación de doble factor (2FA).

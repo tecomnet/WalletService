@@ -40,7 +40,8 @@ public interface IEmpresaFacade
     /// <param name="nombre">El nuevo nombre de la empresa.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Empresa"/> actualizado.</returns>
-    public Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, Guid modificationUser);
+    public Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, string concurrencyToken,
+        Guid modificationUser);
 
     /// <summary>
     /// Elimina (desactiva lógicamente) una empresa por su identificador.

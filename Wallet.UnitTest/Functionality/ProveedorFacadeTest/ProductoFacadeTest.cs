@@ -140,6 +140,10 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                 await Context.SaveChangesAsync();
             }
 
+            // Get existing token
+            var existingProducto = await Context.Producto.AsNoTracking().FirstOrDefaultAsync(p => p.Id == idProducto);
+            var token = Convert.ToBase64String(existingProducto?.ConcurrencyToken ?? new byte[] { });
+
             var producto = await Facade.ActualizarProductoAsync(
                 idProducto: idProducto,
                 sku: sku,
@@ -147,6 +151,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                 precio: (decimal)precio,
                 icono: icono,
                 categoria: categoria,
+                concurrencyToken: token,
                 modificationUser: SetupConfig.UserId);
             Assert.NotNull(producto);
             Assert.True(condition: producto.Sku == sku &&

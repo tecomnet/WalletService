@@ -10,9 +10,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Wallet.RestAPI.Attributes;
 using Wallet.RestAPI.Controllers.Base;
@@ -49,9 +47,10 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetUsuarioAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] int? idUsuario);
-
+        
         /// <summary>
         /// Actualiza contraseña
         /// </summary>
@@ -75,9 +74,10 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutUsuarioContrasenaAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] int? idUsuario, [FromBody] ContrasenaUpdateRequest body);
-
+        
         /// <summary>
         /// Actualiza email
         /// </summary>
@@ -101,7 +101,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutUsuarioEmailAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] int? idUsuario, [FromBody] EmailUpdateRequest body);
 
         /// <summary>
@@ -127,7 +128,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutUsuarioTelefonoAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] int? idUsuario, [FromBody] TelefonoUpdateRequest body);
     }
 }

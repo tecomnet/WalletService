@@ -36,10 +36,12 @@ public interface IKeyValueConfigFacade
     /// </summary>
     /// <param name="key">La clave de la configuración a actualizar.</param>
     /// <param name="value">El nuevo valor de la configuración.</param>
+    /// <param name="concurrencyToken">Opcional. Token de concurrencia para control de versiones.</param>
     /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
     /// <param name="testCase">Opcional. Identificador para casos de prueba.</param>
     /// <returns>La entidad KeyValueConfig actualizada.</returns>
-    Task<KeyValueConfig> ActualizarKeyValueConfigAsync(string key, string value, Guid modificationUser,
+    Task<KeyValueConfig> ActualizarKeyValueConfigAsync(string key, string value, string? concurrencyToken,
+        Guid modificationUser,
         string? testCase = null);
 
     /// <summary>

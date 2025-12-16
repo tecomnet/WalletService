@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -72,6 +73,29 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         var response = mapper.Map<ClienteResult>(source: cliente);
         // Return OK response
         return Ok(value: response);
+    }
+
+    public override async Task<IActionResult> UpdateClienteAsync(DatosClienteUpdateRequest body, string version, int? idCliente)
+    {
+        if (!idCliente.HasValue)
+            return BadRequest("IdCliente is required");
+
+        if (body.FechaNacimiento == null)
+            return BadRequest("FechaNacimiento is required");
+
+        var cliente = await clienteFacade.ActualizarClienteAsync(
+            idCliente: idCliente.Value,
+            nombre: body.Nombre,
+            primerApellido: body.ApellidoPaterno,
+            segundoApellido: body.ApellidoMaterno,
+            nombreEstado: body.NombreEstado,
+            fechaNacimiento: DateOnly.FromDateTime(body.FechaNacimiento.Value),
+            genero: (DOM.Enums.Genero)body.Genero,
+            concurrencyToken: body.ConcurrencyToken,
+            modificationUser: this.GetAuthenticatedUserGuid());
+
+        var response = mapper.Map<ClienteResult>(cliente);
+        return Ok(response);
     }
 }
 

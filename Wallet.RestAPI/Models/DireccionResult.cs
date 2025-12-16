@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,95 +21,92 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class DireccionResult : IEquatable<DireccionResult>
-    { 
+    {
         /// <summary>
         /// Gets or Sets CodigoPostal
         /// </summary>
         [Required]
-
-        [StringLength(5, MinimumLength=5)]
-        [DataMember(Name="codigoPostal")]
+        [StringLength(5, MinimumLength = 5)]
+        [DataMember(Name = "codigoPostal")]
         public string CodigoPostal { get; set; }
 
         /// <summary>
         /// Gets or Sets Pais
         /// </summary>
         [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="pais")]
+        [StringLength(100, MinimumLength = 1)]
+        [DataMember(Name = "pais")]
         public string Pais { get; set; }
 
         /// <summary>
         /// Gets or Sets Estado
         /// </summary>
         [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="estado")]
+        [StringLength(100, MinimumLength = 1)]
+        [DataMember(Name = "estado")]
         public string Estado { get; set; }
 
         /// <summary>
         /// Gets or Sets Municipio
         /// </summary>
         [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="municipio")]
+        [StringLength(100, MinimumLength = 1)]
+        [DataMember(Name = "municipio")]
         public string Municipio { get; set; }
 
         /// <summary>
         /// Gets or Sets Colonia
         /// </summary>
         [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="colonia")]
+        [StringLength(100, MinimumLength = 1)]
+        [DataMember(Name = "colonia")]
         public string Colonia { get; set; }
 
         /// <summary>
         /// Gets or Sets Calle
         /// </summary>
         [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="calle")]
+        [StringLength(100, MinimumLength = 1)]
+        [DataMember(Name = "calle")]
         public string Calle { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroExterior
         /// </summary>
         [Required]
-
-        [StringLength(50, MinimumLength=1)]
-        [DataMember(Name="numeroExterior")]
+        [StringLength(50, MinimumLength = 1)]
+        [DataMember(Name = "numeroExterior")]
         public string NumeroExterior { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroInterior
         /// </summary>
         [Required]
-
-        [StringLength(6, MinimumLength=1)]
-        [DataMember(Name="numeroInterior")]
+        [StringLength(6, MinimumLength = 1)]
+        [DataMember(Name = "numeroInterior")]
         public string NumeroInterior { get; set; }
 
         /// <summary>
         /// Gets or Sets Referencia
         /// </summary>
         [Required]
-
-        [StringLength(250, MinimumLength=1)]
-        [DataMember(Name="referencia")]
+        [StringLength(250, MinimumLength = 1)]
+        [DataMember(Name = "referencia")]
         public string Referencia { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ConcurrencyToken
+        /// </summary>
+        [Required]
+        [DataMember(Name = "concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Guid of the key-value configuration
         /// </summary>
         /// <value>Guid of the key-value configuration</value>
         [Required]
-
-        [DataMember(Name="guid")]
+        [DataMember(Name = "guid")]
         public Guid? Guid { get; set; }
 
         /// <summary>
@@ -117,8 +114,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Creation timestamp</value>
         [Required]
-
-        [DataMember(Name="creationTimestamp")]
+        [DataMember(Name = "creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
@@ -126,8 +122,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Modification timestamp</value>
         [Required]
-
-        [DataMember(Name="modificationTimestamp")]
+        [DataMember(Name = "modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
 
         /// <summary>
@@ -135,8 +130,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Guid of the creation user</value>
         [Required]
-
-        [DataMember(Name="creationUser")]
+        [DataMember(Name = "creationUser")]
         public Guid? CreationUser { get; set; }
 
         /// <summary>
@@ -144,8 +138,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Guid of the modification user</value>
         [Required]
-
-        [DataMember(Name="modificationUser")]
+        [DataMember(Name = "modificationUser")]
         public Guid? ModificationUser { get; set; }
 
         /// <summary>
@@ -153,8 +146,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Guid of the modification user</value>
         [Required]
-
-        [DataMember(Name="isActive")]
+        [DataMember(Name = "isActive")]
         public bool? IsActive { get; set; }
 
         /// <summary>
@@ -174,6 +166,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  NumeroExterior: ").Append(NumeroExterior).Append("\n");
             sb.Append("  NumeroInterior: ").Append(NumeroInterior).Append("\n");
             sb.Append("  Referencia: ").Append(Referencia).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("  Guid: ").Append(Guid).Append("\n");
             sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
             sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
@@ -215,77 +208,82 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     CodigoPostal == other.CodigoPostal ||
                     CodigoPostal != null &&
                     CodigoPostal.Equals(other.CodigoPostal)
-                ) && 
+                ) &&
                 (
                     Pais == other.Pais ||
                     Pais != null &&
                     Pais.Equals(other.Pais)
-                ) && 
+                ) &&
                 (
                     Estado == other.Estado ||
                     Estado != null &&
                     Estado.Equals(other.Estado)
-                ) && 
+                ) &&
                 (
                     Municipio == other.Municipio ||
                     Municipio != null &&
                     Municipio.Equals(other.Municipio)
-                ) && 
+                ) &&
                 (
                     Colonia == other.Colonia ||
                     Colonia != null &&
                     Colonia.Equals(other.Colonia)
-                ) && 
+                ) &&
                 (
                     Calle == other.Calle ||
                     Calle != null &&
                     Calle.Equals(other.Calle)
-                ) && 
+                ) &&
                 (
                     NumeroExterior == other.NumeroExterior ||
                     NumeroExterior != null &&
                     NumeroExterior.Equals(other.NumeroExterior)
-                ) && 
+                ) &&
                 (
                     NumeroInterior == other.NumeroInterior ||
                     NumeroInterior != null &&
                     NumeroInterior.Equals(other.NumeroInterior)
-                ) && 
+                ) &&
                 (
                     Referencia == other.Referencia ||
                     Referencia != null &&
                     Referencia.Equals(other.Referencia)
-                ) && 
+                ) &&
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
+                ) &&
                 (
                     Guid == other.Guid ||
                     Guid != null &&
                     Guid.Equals(other.Guid)
-                ) && 
+                ) &&
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
                     CreationTimestamp.Equals(other.CreationTimestamp)
-                ) && 
+                ) &&
                 (
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
                     ModificationTimestamp.Equals(other.ModificationTimestamp)
-                ) && 
+                ) &&
                 (
                     CreationUser == other.CreationUser ||
                     CreationUser != null &&
                     CreationUser.Equals(other.CreationUser)
-                ) && 
+                ) &&
                 (
                     ModificationUser == other.ModificationUser ||
                     ModificationUser != null &&
                     ModificationUser.Equals(other.ModificationUser)
-                ) && 
+                ) &&
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
@@ -303,42 +301,45 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (CodigoPostal != null)
+                if (CodigoPostal != null)
                     hashCode = hashCode * 59 + CodigoPostal.GetHashCode();
-                    if (Pais != null)
+                if (Pais != null)
                     hashCode = hashCode * 59 + Pais.GetHashCode();
-                    if (Estado != null)
+                if (Estado != null)
                     hashCode = hashCode * 59 + Estado.GetHashCode();
-                    if (Municipio != null)
+                if (Municipio != null)
                     hashCode = hashCode * 59 + Municipio.GetHashCode();
-                    if (Colonia != null)
+                if (Colonia != null)
                     hashCode = hashCode * 59 + Colonia.GetHashCode();
-                    if (Calle != null)
+                if (Calle != null)
                     hashCode = hashCode * 59 + Calle.GetHashCode();
-                    if (NumeroExterior != null)
+                if (NumeroExterior != null)
                     hashCode = hashCode * 59 + NumeroExterior.GetHashCode();
-                    if (NumeroInterior != null)
+                if (NumeroInterior != null)
                     hashCode = hashCode * 59 + NumeroInterior.GetHashCode();
-                    if (Referencia != null)
+                if (Referencia != null)
                     hashCode = hashCode * 59 + Referencia.GetHashCode();
-                    if (Guid != null)
+                if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
+                if (Guid != null)
                     hashCode = hashCode * 59 + Guid.GetHashCode();
-                    if (CreationTimestamp != null)
+                if (CreationTimestamp != null)
                     hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                    if (ModificationTimestamp != null)
+                if (ModificationTimestamp != null)
                     hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
-                    if (CreationUser != null)
+                if (CreationUser != null)
                     hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                    if (ModificationUser != null)
+                if (ModificationUser != null)
                     hashCode = hashCode * 59 + ModificationUser.GetHashCode();
-                    if (IsActive != null)
+                if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(DireccionResult left, DireccionResult right)
         {
@@ -350,7 +351,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

@@ -93,13 +93,13 @@ public class ProductoApiTest : DatabaseTestFixture
         var provider = await CreateProveedor(client: client);
         var product = await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
 
-        var updateRequest = new ProductoRequest
+        var updateRequest = new ProductoUpdateRequest
         {
             Sku = "NETFLIX-STD",
             Nombre = "Netflix Standard",
             Precio = 10.99m,
             UrlIcono = "https://netflix.com/icon.png",
-            Categoria = CategoriaEnum.SERVICIOSEnum
+            ConcurrencyToken = Convert.ToBase64String(product.ConcurrencyToken)
         };
 
         // Act
@@ -218,7 +218,7 @@ public class ProductoApiTest : DatabaseTestFixture
             BrokerId = 1, // Assuming Seeded Broker Id 1 exists or I need to fetch it? SetupDataConfig seeds brokers? Yes CommonSettings creates brokers.
             UrlIcono = "https://icon.png",
         };
-     
+
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}",
             content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode,

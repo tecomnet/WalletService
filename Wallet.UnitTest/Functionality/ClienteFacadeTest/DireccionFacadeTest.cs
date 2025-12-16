@@ -53,6 +53,7 @@ public class DireccionFacadeTest(SetupDataConfig setupConfig)
                 numeroExterior: numeroExterior,
                 numeroInterior: numeroInterior,
                 referencia: referencia,
+                concurrencyToken: null,
                 modificationUser: SetupConfig.UserId);
             // Assert user created
             Assert.NotNull(direccion);

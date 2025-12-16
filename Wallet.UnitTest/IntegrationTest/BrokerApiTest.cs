@@ -115,7 +115,11 @@ public class BrokerApiTest : DatabaseTestFixture
                 _jsonSettings);
 
         // 3. Update Broker
-        var updateRequest = new BrokerRequest { Nombre = "Broker Update Test Updated" };
+        var updateRequest = new BrokerUpdateRequest
+        {
+            Nombre = "Broker Update Test Updated",
+            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken)
+        };
         var response = await client.PutAsync($"/{ApiVersion}/broker/{createResult.Id}", CreateContent(updateRequest));
         var content = await response.Content.ReadAsStringAsync();
 
@@ -149,7 +153,7 @@ public class BrokerApiTest : DatabaseTestFixture
 
         // 4. Verify Not Found (or deleted)
         var getResponse = await client.GetAsync($"/{ApiVersion}/broker/{createResult.Id}");
-        
+
         var getContent = await getResponse.Content.ReadAsStringAsync();
         var getResult = JsonConvert.DeserializeObject<BrokerResult>(getContent, _jsonSettings);
         // If API returns logically deleted object, verify IsActive is false

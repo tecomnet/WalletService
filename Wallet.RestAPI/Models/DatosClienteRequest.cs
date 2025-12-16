@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,54 +21,49 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class DatosClienteRequest : IEquatable<DatosClienteRequest>
-    { 
+    {
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-
-        [DataMember(Name="nombre")]
+        [DataMember(Name = "nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
         /// Gets or Sets ApellidoPaterno
         /// </summary>
         [Required]
-
-        [DataMember(Name="apellidoPaterno")]
+        [DataMember(Name = "apellidoPaterno")]
         public string ApellidoPaterno { get; set; }
 
         /// <summary>
         /// Gets or Sets ApellidoMaterno
         /// </summary>
         [Required]
-
-        [DataMember(Name="apellidoMaterno")]
+        [DataMember(Name = "apellidoMaterno")]
         public string ApellidoMaterno { get; set; }
 
         /// <summary>
         /// Gets or Sets FechaNacimiento
         /// </summary>
         [Required]
-
-        [DataMember(Name="fechaNacimiento")]
+        [DataMember(Name = "fechaNacimiento")]
         public DateTime? FechaNacimiento { get; set; }
 
         /// <summary>
         /// Gets or Sets NombreEstado
         /// </summary>
         [Required]
-
-        [DataMember(Name="nombreEstado")]
+        [DataMember(Name = "nombreEstado")]
         public string NombreEstado { get; set; }
 
         /// <summary>
         /// Gets or Sets Genero
         /// </summary>
         [Required]
-
-        [DataMember(Name="genero")]
+        [DataMember(Name = "genero")]
         public GeneroEnum Genero { get; set; }
+
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -119,32 +114,32 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(other.Nombre)
-                ) && 
+                ) &&
                 (
                     ApellidoPaterno == other.ApellidoPaterno ||
                     ApellidoPaterno != null &&
                     ApellidoPaterno.Equals(other.ApellidoPaterno)
-                ) && 
+                ) &&
                 (
                     ApellidoMaterno == other.ApellidoMaterno ||
                     ApellidoMaterno != null &&
                     ApellidoMaterno.Equals(other.ApellidoMaterno)
-                ) && 
+                ) &&
                 (
                     FechaNacimiento == other.FechaNacimiento ||
                     FechaNacimiento != null &&
                     FechaNacimiento.Equals(other.FechaNacimiento)
-                ) && 
+                ) &&
                 (
                     NombreEstado == other.NombreEstado ||
                     NombreEstado != null &&
                     NombreEstado.Equals(other.NombreEstado)
-                ) && 
+                ) &&
                 (
                     Genero == other.Genero ||
                     Genero != null &&
@@ -162,24 +157,25 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Nombre != null)
+                if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                    if (ApellidoPaterno != null)
+                if (ApellidoPaterno != null)
                     hashCode = hashCode * 59 + ApellidoPaterno.GetHashCode();
-                    if (ApellidoMaterno != null)
+                if (ApellidoMaterno != null)
                     hashCode = hashCode * 59 + ApellidoMaterno.GetHashCode();
-                    if (FechaNacimiento != null)
+                if (FechaNacimiento != null)
                     hashCode = hashCode * 59 + FechaNacimiento.GetHashCode();
-                    if (NombreEstado != null)
+                if (NombreEstado != null)
                     hashCode = hashCode * 59 + NombreEstado.GetHashCode();
-                    if (Genero != null)
+                if (Genero != null)
                     hashCode = hashCode * 59 + Genero.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(DatosClienteRequest left, DatosClienteRequest right)
         {
@@ -191,7 +187,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

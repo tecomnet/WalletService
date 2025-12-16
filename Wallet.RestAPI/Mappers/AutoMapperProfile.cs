@@ -33,16 +33,28 @@ public class AutoMapperProfile : Profile
                 memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.CorreoElectronico));
         CreateMap<UbicacionesGeolocalizacion, UbicacionResult>();
         CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>();
-        CreateMap<Direccion, DireccionResult>();
+        CreateMap<Direccion, DireccionResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Empresa, EmpresaResult>();
-        CreateMap<Estado, EstadoResult>();
-        CreateMap<ServicioFavorito, ServicioFavoritoResult>();
+        CreateMap<Estado, EstadoResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<ServicioFavorito, ServicioFavoritoResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Proveedor, ProveedorResult>();
         CreateMap<Producto, ProductoResult>();
         CreateMap<Usuario, UsuarioResult>();
         CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();
         CreateMap<Wallet.DOM.Modelos.Broker, BrokerResult>();
         CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>();
-        CreateMap<KeyValueConfig, KeyValueConfigResult>();
+        CreateMap<KeyValueConfig, KeyValueConfigResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
     }
 }

@@ -79,10 +79,16 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
     {
         try
         {
+            // Get existing token
+            var existingProveedor =
+                await Context.Proveedor.AsNoTracking().FirstOrDefaultAsync(p => p.Id == idProveedor);
+            var token = Convert.ToBase64String(existingProveedor?.ConcurrencyToken ?? new byte[] { });
+
             var proveedor = await Facade.ActualizarProveedorAsync(
                 idProveedor: idProveedor,
                 nombre: nombre,
                 urlIcono: "https://example.com/icon.png",
+                concurrencyToken: token,
                 modificationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 

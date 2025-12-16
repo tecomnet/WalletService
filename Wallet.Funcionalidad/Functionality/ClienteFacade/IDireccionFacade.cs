@@ -29,6 +29,7 @@ public interface IDireccionFacade
         string numeroExterior,
         string numeroInterior,
         string referencia,
+        string? concurrencyToken,
         Guid modificationUser);
 
     /// <summary>

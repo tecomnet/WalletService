@@ -44,10 +44,12 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutEmpresaAsync(
         string version,
-        int? idEmpresa, EmpresaRequest body)
+        int? idEmpresa, EmpresaUpdateRequest body)
     {
         // Call facade method
+        // Call facade method
         var empresa = await empresaFacade.ActualizaEmpresaAsync(idEmpresa: idEmpresa.Value, nombre: body.Nombre,
+            concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<EmpresaResult>(source: empresa);
@@ -83,13 +85,12 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
 
     /// <inheritdoc/>
     public override async Task<IActionResult> AsignarProductosAsync(
-        string version,
-        [FromRoute] int idEmpresa,
-        [FromBody] AsignarProductosRequest body)
+        AsignarProductosRequest body,
+        string version,int? idEmpresa)
     {
         // Call facade method
         var empresa = await empresaFacade.AsignarProductosAsync(
-            idEmpresa: idEmpresa,
+            idEmpresa: idEmpresa.Value,
             idsProductos: body.ProductoIds,
             modificationUser: this.GetAuthenticatedUserGuid());
 
@@ -102,13 +103,13 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
 
     /// <inheritdoc/>
     public override async Task<IActionResult> DesasignarProductosAsync(
+        AsignarProductosRequest body,
         string version,
-        [FromRoute] int idEmpresa,
-        [FromBody] AsignarProductosRequest body)
+        int? idEmpresa)
     {
         // Call facade method
         var empresa = await empresaFacade.DesasignarProductosAsync(
-            idEmpresa: idEmpresa,
+            idEmpresa: idEmpresa.Value,
             idsProductos: body.ProductoIds,
             modificationUser: this.GetAuthenticatedUserGuid());
 
@@ -120,10 +121,10 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> GetEmpresaAsync(string version, int idEmpresa)
+    public override async Task<IActionResult> GetEmpresaAsync(string version, int? idEmpresa)
     {
         // Call facade method
-        var empresa = await empresaFacade.ObtenerPorIdAsync(idEmpresa: idEmpresa);
+        var empresa = await empresaFacade.ObtenerPorIdAsync(idEmpresa: idEmpresa.Value);
         // Map to response model
         var response = mapper.Map<EmpresaResult>(source: empresa);
         // Return OK response

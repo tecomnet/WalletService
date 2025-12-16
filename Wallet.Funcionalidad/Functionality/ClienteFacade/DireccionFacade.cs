@@ -2,6 +2,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Microsoft.EntityFrameworkCore;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
@@ -27,7 +28,7 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
     /// <exception cref="EMGeneralAggregateException">Se lanza si el cliente no existe, la dirección no está configurada o si ocurre un error durante la actualización.</exception>
     public async Task<Direccion> ActualizarDireccionCliente(int idCliente, string codigoPostal, string municipio,
         string colonia, string calle, string numeroExterior, string numeroInterior, string referencia,
-        Guid modificationUser)
+        string? concurrencyToken, Guid modificationUser)
     {
         try
         {
@@ -43,6 +44,13 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                     errorCode: ServiceErrorsBuilder.DireccionNoConfigurada,
                     dynamicContent: []));
+            }
+
+            // Manejo de ConcurrencyToken
+            if (!string.IsNullOrEmpty(concurrencyToken))
+            {
+                context.Entry(direccion).Property(x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(concurrencyToken);
             }
 
             // Actualiza los datos de la dirección con los valores proporcionados.
@@ -61,6 +69,12 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
 
             // Retorna la entidad de dirección actualizada.
             return direccion;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ConcurrencyError,
+                dynamicContent: []));
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

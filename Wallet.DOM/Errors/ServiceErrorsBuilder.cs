@@ -99,7 +99,17 @@ public class ServiceErrorsBuilder
             errorCode: ApiErrorNoManejado, // Usa la constante pública
             message: "Error Interno del Servidor",
             description: "Ocurrió un error inesperado que ha sido registrado. Inténtelo de nuevo más tarde.");
+
+        // Error de concurrencia optimista
+        AddServiceError(
+            errorCode: ConcurrencyError,
+            message: "El registro ha sido modificado por otro usuario.",
+            description:
+            "El registro que intenta actualizar ha sido modificado por otro usuario. Por favor, recargue los datos e intente nuevamente.");
     }
+
+    /// <summary>Error: El registro fue modificado por otro usuario.</summary>
+    public const string ConcurrencyError = "ERROR-CONCURRENCIA-OPTIMISTA";
 
     /// <summary>Error: El tipo de autorización es incorrecto.</summary>
     public const string EmIncorrectAuthorizationType = "EM-TIPO-AUTORIZACION-INCORRECTO";

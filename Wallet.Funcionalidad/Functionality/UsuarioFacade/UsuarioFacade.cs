@@ -95,12 +95,14 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarContrasenaAsync(int idUsuario, string contrasenaActual, string contrasenaNueva,
-        string confirmacionContrasenaNueva, Guid modificationUser)
+        string confirmacionContrasenaNueva, byte[] concurrencyToken, Guid modificationUser)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue = concurrencyToken;
             // Actualiza la contraseña, validando la actual.
             usuario.ActualizarContrasena(
                 contrasenaActual: contrasenaActual,
@@ -122,12 +124,14 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarCorreoElectronicoAsync(int idUsuario, string correoElectronico,
-        Guid modificationUser, string? testCase = null)
+        byte[] concurrencyToken, Guid modificationUser, string? testCase = null)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue = concurrencyToken;
             // Actualiza el correo electrónico en la entidad.
             usuario.ActualizarCorreoElectronico(correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
@@ -149,7 +153,8 @@ public class UsuarioFacade(
             await context.SaveChangesAsync();
             return usuario;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
@@ -160,12 +165,14 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarTelefonoAsync(int idUsuario, string codigoPais, string telefono,
-        Guid modificationUser, string? testCase = null)
+        byte[] concurrencyToken, Guid modificationUser, string? testCase = null)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue = concurrencyToken;
             // Actualiza el teléfono en la entidad.
             usuario.ActualizarTelefono(codigoPais: codigoPais, telefono: telefono,
                 modificationUser: modificationUser);
@@ -186,7 +193,8 @@ public class UsuarioFacade(
             await context.SaveChangesAsync();
             return usuario;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,

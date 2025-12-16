@@ -128,11 +128,12 @@ public class ProveedorApiTest : DatabaseTestFixture
         Assert.NotNull(createResult);
 
         // Act
-        var updateRequest = new ProveedorRequest
+        var updateRequest = new ProveedorUpdateRequest
         {
             Nombre = "Amazon Prime",
             UrlIcono = "https://amazon.com/icon.png",
-            BrokerId = 2
+            BrokerId = 2,
+            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken)
         };
         var response =
             await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{createResult.Id}",

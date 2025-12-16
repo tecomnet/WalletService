@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,14 +21,20 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class EmailUpdateRequest : IEquatable<EmailUpdateRequest>
-    { 
+    {
         /// <summary>
         /// Gets or Sets CorreoElectronico
         /// </summary>
         [Required]
-
-        [DataMember(Name="correoElectronico")]
+        [DataMember(Name = "correoElectronico")]
         public string CorreoElectronico { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ConcurrencyToken
+        /// </summary>
+        [Required]
+        [DataMember(Name = "concurrencyToken")]
+        public byte[] ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -74,12 +80,12 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
-                (
-                    CorreoElectronico == other.CorreoElectronico ||
-                    CorreoElectronico != null &&
-                    CorreoElectronico.Equals(other.CorreoElectronico)
-                );
+            return
+            (
+                CorreoElectronico == other.CorreoElectronico ||
+                CorreoElectronico != null &&
+                CorreoElectronico.Equals(other.CorreoElectronico)
+            );
         }
 
         /// <summary>
@@ -92,14 +98,15 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (CorreoElectronico != null)
+                if (CorreoElectronico != null)
                     hashCode = hashCode * 59 + CorreoElectronico.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(EmailUpdateRequest left, EmailUpdateRequest right)
         {
@@ -111,7 +118,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }
