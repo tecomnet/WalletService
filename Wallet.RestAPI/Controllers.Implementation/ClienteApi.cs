@@ -13,7 +13,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the Cliente API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     : ClienteApiControllerBase
 {

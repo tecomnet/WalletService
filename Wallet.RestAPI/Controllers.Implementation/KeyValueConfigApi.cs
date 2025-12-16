@@ -13,7 +13,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the KeyValueConfig API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class KeyValueConfigApiController(IKeyValueConfigFacade keyValueConfigFacade, IMapper mapper)
     : KeyValueConfigApiControllerBase
 {
