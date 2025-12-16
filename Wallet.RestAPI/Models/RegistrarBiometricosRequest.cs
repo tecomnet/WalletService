@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,40 +21,38 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class RegistrarBiometricosRequest : IEquatable<RegistrarBiometricosRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets IdDispositivo
         /// </summary>
         [Required]
-        [DataMember(Name = "idDispositivo")]
+
+        [DataMember(Name="idDispositivo")]
         public string IdDispositivo { get; set; }
 
         /// <summary>
         /// Gets or Sets Token
         /// </summary>
         [Required]
-        [DataMember(Name = "token")]
+
+        [DataMember(Name="token")]
         public string Token { get; set; }
 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-        [DataMember(Name = "nombre")]
+
+        [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
         /// Gets or Sets Caracteristicas
         /// </summary>
         [Required]
-        [DataMember(Name = "caracteristicas")]
-        public string Caracteristicas { get; set; }
 
-        /// <summary>
-        /// Gets or Sets ConcurrencyToken
-        /// </summary>
-        [DataMember(Name = "concurrencyToken")]
-        public byte[] ConcurrencyToken { get; set; }
+        [DataMember(Name="caracteristicas")]
+        public string Caracteristicas { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -103,22 +101,22 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     IdDispositivo == other.IdDispositivo ||
                     IdDispositivo != null &&
                     IdDispositivo.Equals(other.IdDispositivo)
-                ) &&
+                ) && 
                 (
                     Token == other.Token ||
                     Token != null &&
                     Token.Equals(other.Token)
-                ) &&
+                ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(other.Nombre)
-                ) &&
+                ) && 
                 (
                     Caracteristicas == other.Caracteristicas ||
                     Caracteristicas != null &&
@@ -136,21 +134,20 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (IdDispositivo != null)
+                    if (IdDispositivo != null)
                     hashCode = hashCode * 59 + IdDispositivo.GetHashCode();
-                if (Token != null)
+                    if (Token != null)
                     hashCode = hashCode * 59 + Token.GetHashCode();
-                if (Nombre != null)
+                    if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                if (Caracteristicas != null)
+                    if (Caracteristicas != null)
                     hashCode = hashCode * 59 + Caracteristicas.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(RegistrarBiometricosRequest left, RegistrarBiometricosRequest right)
         {
@@ -162,8 +159,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

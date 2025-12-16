@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,37 +21,42 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class ContrasenaUpdateRequest : IEquatable<ContrasenaUpdateRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets ContrasenaActual
         /// </summary>
         [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [DataMember(Name = "contrasenaActual")]
+
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="contrasenaActual")]
         public string ContrasenaActual { get; set; }
 
         /// <summary>
         /// Gets or Sets ContrasenaNueva
         /// </summary>
         [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [DataMember(Name = "contrasenaNueva")]
+
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="contrasenaNueva")]
         public string ContrasenaNueva { get; set; }
 
         /// <summary>
         /// Gets or Sets ContrasenaNuevaConfrimacion
         /// </summary>
         [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [DataMember(Name = "contrasenaNuevaConfrimacion")]
+
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="contrasenaNuevaConfrimacion")]
         public string ContrasenaNuevaConfrimacion { get; set; }
 
         /// <summary>
-        /// Gets or Sets ConcurrencyToken
+        /// Token de concurrencia
         /// </summary>
+        /// <value>Token de concurrencia</value>
         [Required]
-        [DataMember(Name = "concurrencyToken")]
-        public byte[] ConcurrencyToken { get; set; }
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,6 +69,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  ContrasenaActual: ").Append(ContrasenaActual).Append("\n");
             sb.Append("  ContrasenaNueva: ").Append(ContrasenaNueva).Append("\n");
             sb.Append("  ContrasenaNuevaConfrimacion: ").Append(ContrasenaNuevaConfrimacion).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -99,21 +105,26 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     ContrasenaActual == other.ContrasenaActual ||
                     ContrasenaActual != null &&
                     ContrasenaActual.Equals(other.ContrasenaActual)
-                ) &&
+                ) && 
                 (
                     ContrasenaNueva == other.ContrasenaNueva ||
                     ContrasenaNueva != null &&
                     ContrasenaNueva.Equals(other.ContrasenaNueva)
-                ) &&
+                ) && 
                 (
                     ContrasenaNuevaConfrimacion == other.ContrasenaNuevaConfrimacion ||
                     ContrasenaNuevaConfrimacion != null &&
                     ContrasenaNuevaConfrimacion.Equals(other.ContrasenaNuevaConfrimacion)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -127,19 +138,20 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (ContrasenaActual != null)
+                    if (ContrasenaActual != null)
                     hashCode = hashCode * 59 + ContrasenaActual.GetHashCode();
-                if (ContrasenaNueva != null)
+                    if (ContrasenaNueva != null)
                     hashCode = hashCode * 59 + ContrasenaNueva.GetHashCode();
-                if (ContrasenaNuevaConfrimacion != null)
+                    if (ContrasenaNuevaConfrimacion != null)
                     hashCode = hashCode * 59 + ContrasenaNuevaConfrimacion.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ContrasenaUpdateRequest left, ContrasenaUpdateRequest right)
         {
@@ -151,8 +163,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,29 +21,33 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class TelefonoUpdateRequest : IEquatable<TelefonoUpdateRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets CodigoPais
         /// </summary>
         [Required]
-        [StringLength(3, MinimumLength = 3)]
-        [DataMember(Name = "codigoPais")]
+
+        [StringLength(3, MinimumLength=3)]
+        [DataMember(Name="codigoPais")]
         public string CodigoPais { get; set; }
 
         /// <summary>
         /// Gets or Sets Telefono
         /// </summary>
         [Required]
-        [StringLength(10, MinimumLength = 9)]
-        [DataMember(Name = "telefono")]
+
+        [StringLength(10, MinimumLength=9)]
+        [DataMember(Name="telefono")]
         public string Telefono { get; set; }
 
         /// <summary>
-        /// Gets or Sets ConcurrencyToken
+        /// Token de concurrencia
         /// </summary>
+        /// <value>Token de concurrencia</value>
         [Required]
-        [DataMember(Name = "concurrencyToken")]
-        public byte[] ConcurrencyToken { get; set; }
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -55,6 +59,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("class TelefonoUpdateRequest {\n");
             sb.Append("  CodigoPais: ").Append(CodigoPais).Append("\n");
             sb.Append("  Telefono: ").Append(Telefono).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -90,16 +95,21 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     CodigoPais == other.CodigoPais ||
                     CodigoPais != null &&
                     CodigoPais.Equals(other.CodigoPais)
-                ) &&
+                ) && 
                 (
                     Telefono == other.Telefono ||
                     Telefono != null &&
                     Telefono.Equals(other.Telefono)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -113,17 +123,18 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (CodigoPais != null)
+                    if (CodigoPais != null)
                     hashCode = hashCode * 59 + CodigoPais.GetHashCode();
-                if (Telefono != null)
+                    if (Telefono != null)
                     hashCode = hashCode * 59 + Telefono.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(TelefonoUpdateRequest left, TelefonoUpdateRequest right)
         {
@@ -135,8 +146,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

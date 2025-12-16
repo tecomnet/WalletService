@@ -83,7 +83,7 @@ public class RegistroFacade(
             nombreEstado: nombreEstado,
             fechaNacimiento: fechaNacimiento,
             genero: genero,
-            concurrencyToken: tokenBytes,
+            concurrencyToken: Convert.ToBase64String(tokenBytes),
             modificationUser: usuario.CreationUser,
             enforceClientConcurrency: false);
 
@@ -106,7 +106,8 @@ public class RegistroFacade(
 
         // Actualiza el correo electrónico del usuario a través del facade de usuario
         // Nota: Pasamos usuario.ConcurrencyToken (el actual de DB) para ignorar OCC estricto en el flujo de registro
-        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo, usuario.ConcurrencyToken,
+        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo,
+            Convert.ToBase64String(usuario.ConcurrencyToken ?? []),
             usuario.CreationUser);
 
         // Actualiza el estado del registro a CorreoRegistrado

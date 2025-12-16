@@ -78,7 +78,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Nombre = "Juan",
             ApellidoPaterno = "Perez",
             ApellidoMaterno = "Lopez",
-            Genero = GeneroEnum.MasculinoEnum,
+            Genero = (int)GeneroEnum.MasculinoEnum,
             NombreEstado = "Campeche",
             FechaNacimiento = new DateTime(1990, 1, 1),
         };
@@ -108,8 +108,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 4. RegistrarCorreo
         var registrarCorreoRequest = new RegistrarCorreoRequest
         {
-            Correo = "juan.perez@example.com",
-            ConcurrencyToken = token
+            Correo = "juan.perez@example.com"
         };
         var responseCorreo = await client.PutAsync($"/{version}/registro/{usuarioId}/correo",
             new StringContent(JsonConvert.SerializeObject(registrarCorreoRequest), Encoding.UTF8, "application/json"));
@@ -142,7 +141,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // Fetch fresh token after verify (status likely changed to CorreoConfirmado?)
         var userAfterConfirm = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
-        token = userAfterConfirm.ConcurrencyToken;
+        token = Convert.ToBase64String(userAfterConfirm.ConcurrencyToken);
 
         // 6. RegistrarBiometricos
         var biometricosRequest = new RegistrarBiometricosRequest
@@ -150,8 +149,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             IdDispositivo = "device123",
             Token = "token123",
             Nombre = "Dispositivo Test",
-            Caracteristicas = "Unit Test Specs",
-            ConcurrencyToken = token
+            Caracteristicas = "Unit Test Specs"
         };
         var responseBiometricos = await client.PostAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(biometricosRequest), Encoding.UTF8, "application/json"));
@@ -169,8 +167,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Version = "1.0",
             AceptoTerminos = true,
             AceptoPrivacidad = true,
-            AceptoPld = true,
-            ConcurrencyToken = token
+            AceptoPld = true
         };
         var responseTerminos = await client.PostAsync($"/{version}/registro/{usuarioId}/terminos",
             new StringContent(JsonConvert.SerializeObject(terminosRequest), Encoding.UTF8, "application/json"));
@@ -186,8 +183,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         var completarRequest = new CompletarRegistroRequest
         {
             Contrasena = "Password123!",
-            ConfirmacionContrasena = "Password123!",
-            ConcurrencyToken = token
+            ConfirmacionContrasena = "Password123!"
         };
         var responseCompletar = await client.PutAsync($"/{version}/registro/{usuarioId}/completar",
             new StringContent(JsonConvert.SerializeObject(completarRequest), Encoding.UTF8, "application/json"));
@@ -237,7 +233,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // Fetch fresh
         var userDb = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
-        token = userDb.ConcurrencyToken;
+        token = Convert.ToBase64String(userDb.ConcurrencyToken);
 
         // 3. DatosCliente
         var datosClienteRequest = new DatosClienteRequest
@@ -245,7 +241,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Nombre = "Test",
             ApellidoPaterno = "User",
             ApellidoMaterno = "Resume",
-            Genero = GeneroEnum.MasculinoEnum,
+            Genero = (int)GeneroEnum.MasculinoEnum,
             NombreEstado = "Campeche",
             FechaNacimiento = new DateTime(1990, 1, 1),
         };
@@ -282,7 +278,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // Fetch fresh
         userDb = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
-        token = userDb.ConcurrencyToken;
+        token = Convert.ToBase64String(userDb.ConcurrencyToken);
 
         // 6. DatosCliente (Again)
 
@@ -300,7 +296,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         token = resultDatos2.ConcurrencyToken;
 
         // 7. RegistrarCorreo
-        var correoRequest = new RegistrarCorreoRequest { Correo = "resume@test.com", ConcurrencyToken = token };
+        var correoRequest = new RegistrarCorreoRequest { Correo = "resume@test.com" };
         var responseCorreo = await client.PutAsync($"/{version}/registro/{usuarioId}/correo",
             new StringContent(JsonConvert.SerializeObject(correoRequest), Encoding.UTF8, "application/json"));
         var resultCorreo =
@@ -315,7 +311,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // Fetch fresh
         userDb = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
-        token = userDb.ConcurrencyToken;
+        token = Convert.ToBase64String(userDb.ConcurrencyToken);
 
         // 9. RegistrarBiometricos
         var bioRequest = new RegistrarBiometricosRequest
@@ -323,8 +319,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             IdDispositivo = "deviceResume",
             Token = "tokenResume",
             Nombre = "Dispositivo Resume",
-            Caracteristicas = "Unit Test Resume",
-            ConcurrencyToken = token
+            Caracteristicas = "Unit Test Resume"
         };
         var responseBio = await client.PostAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(bioRequest), Encoding.UTF8, "application/json"));
@@ -334,7 +329,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 10. Terminos
         var terminosRequest = new AceptarTerminosRequest
         {
-            Version = "1", AceptoTerminos = true, AceptoPrivacidad = true, AceptoPld = true, ConcurrencyToken = token
+            Version = "1", AceptoTerminos = true, AceptoPrivacidad = true, AceptoPld = true
         };
         var responseTerminos = await client.PostAsync($"/{version}/registro/{usuarioId}/terminos",
             new StringContent(JsonConvert.SerializeObject(terminosRequest), Encoding.UTF8, "application/json"));
@@ -345,7 +340,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // 11. Completar
         var completarRequest = new CompletarRegistroRequest
-            { Contrasena = "Pass123!", ConfirmacionContrasena = "Pass123!", ConcurrencyToken = token };
+            { Contrasena = "Pass123!", ConfirmacionContrasena = "Pass123!" };
         var responseFinal = await client.PutAsync($"/{version}/registro/{usuarioId}/completar",
             new StringContent(JsonConvert.SerializeObject(completarRequest), Encoding.UTF8, "application/json"));
 

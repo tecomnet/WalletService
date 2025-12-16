@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,19 +21,14 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class RegistrarCorreoRequest : IEquatable<RegistrarCorreoRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Correo
         /// </summary>
         [Required]
-        [DataMember(Name = "correo")]
-        public string Correo { get; set; }
 
-        /// <summary>
-        /// Gets or Sets ConcurrencyToken
-        /// </summary>
-        [DataMember(Name = "concurrencyToken")]
-        public byte[] ConcurrencyToken { get; set; }
+        [DataMember(Name="correo")]
+        public string Correo { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -79,12 +74,12 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
-            (
-                Correo == other.Correo ||
-                Correo != null &&
-                Correo.Equals(other.Correo)
-            );
+            return 
+                (
+                    Correo == other.Correo ||
+                    Correo != null &&
+                    Correo.Equals(other.Correo)
+                );
         }
 
         /// <summary>
@@ -97,15 +92,14 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Correo != null)
+                    if (Correo != null)
                     hashCode = hashCode * 59 + Correo.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(RegistrarCorreoRequest left, RegistrarCorreoRequest right)
         {
@@ -117,8 +111,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

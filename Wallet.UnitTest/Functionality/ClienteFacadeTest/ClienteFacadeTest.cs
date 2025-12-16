@@ -84,7 +84,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 nombreEstado: nombreEstado,
                 fechaNacimiento: fechaNacimientoDateOnly,
                 genero: genero,
-                concurrencyToken: concurrencyToken,
+                concurrencyToken: Convert.ToBase64String(concurrencyToken),
                 modificationUser: SetupConfig.UserId);
             // Assert user created
             Assert.NotNull(cliente);

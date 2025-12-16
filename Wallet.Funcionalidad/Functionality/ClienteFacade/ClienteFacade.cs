@@ -65,7 +65,7 @@ public class ClienteFacade(
         string nombreEstado,
         DateOnly fechaNacimiento,
         Genero genero,
-        byte[] concurrencyToken,
+        string concurrencyToken,
         Guid modificationUser,
         bool enforceClientConcurrency = true,
         string? testCase = null)
@@ -113,7 +113,8 @@ public class ClienteFacade(
                 if (enforceClientConcurrency)
                 {
                     // Establece el token original para la validación de concurrencia optimista
-                    context.Entry(cliente).Property(x => x.ConcurrencyToken).OriginalValue = concurrencyToken;
+                    context.Entry(cliente).Property(x => x.ConcurrencyToken).OriginalValue =
+                        Convert.FromBase64String(concurrencyToken);
                 }
             }
 
@@ -264,7 +265,7 @@ public class ClienteFacade(
         string nombreEstado,
         DateOnly fechaNacimiento,
         Genero genero,
-        byte[] concurrencyToken,
+        string concurrencyToken,
         Guid modificationUser,
         string? testCase = null)
     {

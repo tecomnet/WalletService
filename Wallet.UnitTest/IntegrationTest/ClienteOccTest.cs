@@ -90,7 +90,7 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
             ApellidoMaterno = "Updated Mat",
             FechaNacimiento = new DateTime(1991, 2, 2),
             NombreEstado = estado.Nombre,
-            Genero = GeneroEnum.FemeninoEnum, // Changed
+            Genero = (int)GeneroEnum.FemeninoEnum, // Changed
             ConcurrencyToken = originalToken
         };
 
@@ -115,7 +115,7 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
             ApellidoMaterno = "Conflict Mat",
             FechaNacimiento = new DateTime(1991, 2, 2),
             NombreEstado = estado.Nombre,
-            Genero = GeneroEnum.FemeninoEnum,
+            Genero = (int)GeneroEnum.FemeninoEnum,
             ConcurrencyToken = originalToken // Using OLD token
         };
 

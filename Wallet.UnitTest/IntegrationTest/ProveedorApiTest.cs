@@ -133,7 +133,7 @@ public class ProveedorApiTest : DatabaseTestFixture
             Nombre = "Amazon Prime",
             UrlIcono = "https://amazon.com/icon.png",
             BrokerId = 2,
-            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken)
+            ConcurrencyToken = createResult.ConcurrencyToken
         };
         var response =
             await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{createResult.Id}",

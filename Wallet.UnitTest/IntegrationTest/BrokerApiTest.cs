@@ -118,7 +118,7 @@ public class BrokerApiTest : DatabaseTestFixture
         var updateRequest = new BrokerUpdateRequest
         {
             Nombre = "Broker Update Test Updated",
-            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken)
+            ConcurrencyToken = createResult.ConcurrencyToken
         };
         var response = await client.PutAsync($"/{ApiVersion}/broker/{createResult.Id}", CreateContent(updateRequest));
         var content = await response.Content.ReadAsStringAsync();

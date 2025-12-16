@@ -123,7 +123,7 @@ public class EmpresaApiTest : DatabaseTestFixture
         var updateRequest = new EmpresaUpdateRequest
         {
             Nombre = "Empresa Update Test Updated",
-            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken)
+            ConcurrencyToken = createResult.ConcurrencyToken
         };
         var response = await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest));
         var content = await response.Content.ReadAsStringAsync();
@@ -329,7 +329,7 @@ public class EmpresaApiTest : DatabaseTestFixture
         Assert.NotNull(prod1.Id);
         Assert.NotNull(prod2);
         Assert.NotNull(prod2.Id);
-        var assignIds = new AsignarProductosRequest { ProductoIds = new List<int> { prod1.Id.Value, prod2.Id.Value } };
+        var assignIds = new AsignarProductosRequest { ProductoIds = new List<int?> { prod1.Id.Value, prod2.Id.Value } };
         var assignRes =
             await client.PostAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos", CreateContent(assignIds));
         Assert.Equal(HttpStatusCode.OK, assignRes.StatusCode);
@@ -355,7 +355,7 @@ public class EmpresaApiTest : DatabaseTestFixture
         Assert.Equal(2, productsDup.Count); // Should still be 2
 
         // 6. Remove One Product
-        var removeIds = new AsignarProductosRequest { ProductoIds = new List<int> { prod1.Id.Value } };
+        var removeIds = new AsignarProductosRequest { ProductoIds = new List<int?> { prod1.Id.Value } };
         var removeRes = await client.PostAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos/remover",
             CreateContent(removeIds));
         Assert.Equal(HttpStatusCode.OK, removeRes.StatusCode);
@@ -390,7 +390,7 @@ public class EmpresaApiTest : DatabaseTestFixture
         var updateRequest1 = new EmpresaUpdateRequest
         {
             Nombre = "Empresa Conflict Test Updated 1",
-            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken)
+            ConcurrencyToken = createResult.ConcurrencyToken
         };
         var response1 =
             await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest1));
@@ -400,7 +400,7 @@ public class EmpresaApiTest : DatabaseTestFixture
         var updateRequest2 = new EmpresaUpdateRequest
         {
             Nombre = "Empresa Conflict Test Updated 2",
-            ConcurrencyToken = Convert.ToBase64String(createResult.ConcurrencyToken) // Stale token
+            ConcurrencyToken = createResult.ConcurrencyToken // Stale token
         };
         var response2 =
             await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest2));

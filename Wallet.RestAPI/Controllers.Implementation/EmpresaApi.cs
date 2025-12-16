@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -86,12 +87,12 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     /// <inheritdoc/>
     public override async Task<IActionResult> AsignarProductosAsync(
         AsignarProductosRequest body,
-        string version,int? idEmpresa)
+        string version, int? idEmpresa)
     {
         // Call facade method
         var empresa = await empresaFacade.AsignarProductosAsync(
             idEmpresa: idEmpresa.Value,
-            idsProductos: body.ProductoIds,
+            idsProductos: body.ProductoIds?.Where(x => x.HasValue).Select(x => x.Value).ToList() ?? new List<int>(),
             modificationUser: this.GetAuthenticatedUserGuid());
 
         // Map to response model
@@ -110,7 +111,7 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         // Call facade method
         var empresa = await empresaFacade.DesasignarProductosAsync(
             idEmpresa: idEmpresa.Value,
-            idsProductos: body.ProductoIds,
+            idsProductos: body.ProductoIds?.Where(x => x.HasValue).Select(x => x.Value).ToList() ?? new List<int>(),
             modificationUser: this.GetAuthenticatedUserGuid());
 
         // Map to response model

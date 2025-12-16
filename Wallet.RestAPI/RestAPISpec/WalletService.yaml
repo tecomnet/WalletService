@@ -2033,7 +2033,7 @@ components:
           type: integer
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - nombre
@@ -2129,7 +2129,7 @@ components:
           type: boolean
         concurrencyToken:
           type: string
-          format: byte
+
       required:
         - id
         - codigoPais
@@ -2172,7 +2172,7 @@ components:
           $ref: "#/components/schemas/CategoriaEnum"
         concurrencyToken:
           type: string
-          format: byte
+
       required:
         - sku
         - nombre
@@ -2206,7 +2206,7 @@ components:
           maxLength: 100
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - contrasenaActual
@@ -2229,7 +2229,7 @@ components:
           format: email
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - correoElectronico
@@ -2255,7 +2255,7 @@ components:
           minLength: 9
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - codigoPais
@@ -2292,7 +2292,7 @@ components:
           type: boolean
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
 
           x-stoplight:
@@ -2443,6 +2443,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: kyb43t959rajb
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - latitud
@@ -2547,6 +2550,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: 2x51kh083gl38
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - codigoPostal
         - pais
@@ -2628,7 +2634,7 @@ components:
           maxLength: 250
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - codigoPostal
@@ -2746,6 +2752,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: a2uhbk4e5rhfy
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - token
@@ -2821,7 +2830,7 @@ components:
           minLength: 1
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - nombre
@@ -2852,7 +2861,7 @@ components:
           minLength: 1
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - nombre
@@ -2911,6 +2920,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: 9fssiboo4dz6v
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - nombre
@@ -2963,6 +2975,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: 2oa3t6cskgc2f
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - nombre
@@ -2994,7 +3009,7 @@ components:
           maxLength: 100
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - nombre
@@ -3027,6 +3042,9 @@ components:
           format: uuid
         isActive:
           type: boolean
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - nombre
@@ -3069,6 +3087,9 @@ components:
           format: uuid
         isActive:
           type: boolean
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - nombre
@@ -3111,7 +3132,7 @@ components:
           maxLength: 500
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - brokerId
@@ -3151,6 +3172,9 @@ components:
           format: uuid
         isActive:
           type: boolean
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - clienteId
@@ -3196,7 +3220,7 @@ components:
           maxLength: 50
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - alias
@@ -3244,6 +3268,9 @@ components:
           format: uuid
         isActive:
           type: boolean
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - proveedorId
@@ -3379,7 +3406,7 @@ components:
           description: Valor de la configuracion
         concurrencyToken:
           type: string
-          format: byte
+
           description: Token de concurrencia
       required:
         - value
@@ -3393,6 +3420,9 @@ components:
           type: string
         value:
           type: string
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - key
         - value

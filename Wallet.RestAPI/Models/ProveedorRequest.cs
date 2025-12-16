@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,20 +21,22 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class ProveedorRequest : IEquatable<ProveedorRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets BrokerId
         /// </summary>
         [Required]
-        [DataMember(Name = "brokerId")]
+
+        [DataMember(Name="brokerId")]
         public int? BrokerId { get; set; }
 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [DataMember(Name = "nombre")]
+
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
 
         [MaxLength(500)]
-        [DataMember(Name = "urlIcono")]
+        [DataMember(Name="urlIcono")]
         public string UrlIcono { get; set; }
 
         /// <summary>
@@ -91,17 +93,17 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     BrokerId == other.BrokerId ||
                     BrokerId != null &&
                     BrokerId.Equals(other.BrokerId)
-                ) &&
+                ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(other.Nombre)
-                ) &&
+                ) && 
                 (
                     UrlIcono == other.UrlIcono ||
                     UrlIcono != null &&
@@ -119,19 +121,18 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (BrokerId != null)
+                    if (BrokerId != null)
                     hashCode = hashCode * 59 + BrokerId.GetHashCode();
-                if (Nombre != null)
+                    if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                if (UrlIcono != null)
+                    if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ProveedorRequest left, ProveedorRequest right)
         {
@@ -143,8 +144,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

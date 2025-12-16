@@ -73,7 +73,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             proveedorId: idProveedor.Value,
             sku: body.Sku,
             nombre: body.Nombre,
-            precio: body.Precio,
+            precio: (decimal?)body.Precio,
             icono: body.UrlIcono,
             categoria: body.Categoria.ToString(),
             creationUser: this.GetAuthenticatedUserGuid());
@@ -130,7 +130,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             idProducto: idProducto.Value,
             sku: body.Sku,
             nombre: body.Nombre,
-            precio: body.Precio,
+            precio: (decimal?)body.Precio,
             icono: body.UrlIcono,
             categoria: body.Categoria.ToString(),
             concurrencyToken: body.ConcurrencyToken,

@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,37 +21,40 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class ServicioFavoritoRequest : IEquatable<ServicioFavoritoRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets ClienteId
         /// </summary>
         [Required]
-        [DataMember(Name = "clienteId")]
+
+        [DataMember(Name="clienteId")]
         public int? ClienteId { get; set; }
 
         /// <summary>
         /// Gets or Sets ProveedorId
         /// </summary>
         [Required]
-        [DataMember(Name = "proveedorId")]
+
+        [DataMember(Name="proveedorId")]
         public int? ProveedorId { get; set; }
 
         /// <summary>
         /// Gets or Sets Alias
         /// </summary>
         [Required]
+
         [MaxLength(100)]
-        [DataMember(Name = "alias")]
+        [DataMember(Name="alias")]
         public string Alias { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroReferencia
         /// </summary>
         [Required]
-        [MaxLength(50)]
-        [DataMember(Name = "numeroReferencia")]
-        public string NumeroReferencia { get; set; }
 
+        [MaxLength(50)]
+        [DataMember(Name="numeroReferencia")]
+        public string NumeroReferencia { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -65,7 +68,6 @@ namespace Wallet.RestAPI.Models
             sb.Append("  ProveedorId: ").Append(ProveedorId).Append("\n");
             sb.Append("  Alias: ").Append(Alias).Append("\n");
             sb.Append("  NumeroReferencia: ").Append(NumeroReferencia).Append("\n");
-
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -101,22 +103,22 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     ClienteId == other.ClienteId ||
                     ClienteId != null &&
                     ClienteId.Equals(other.ClienteId)
-                ) &&
+                ) && 
                 (
                     ProveedorId == other.ProveedorId ||
                     ProveedorId != null &&
                     ProveedorId.Equals(other.ProveedorId)
-                ) &&
+                ) && 
                 (
                     Alias == other.Alias ||
                     Alias != null &&
                     Alias.Equals(other.Alias)
-                ) &&
+                ) && 
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
@@ -134,21 +136,20 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (ClienteId != null)
+                    if (ClienteId != null)
                     hashCode = hashCode * 59 + ClienteId.GetHashCode();
-                if (ProveedorId != null)
+                    if (ProveedorId != null)
                     hashCode = hashCode * 59 + ProveedorId.GetHashCode();
-                if (Alias != null)
+                    if (Alias != null)
                     hashCode = hashCode * 59 + Alias.GetHashCode();
-                if (NumeroReferencia != null)
+                    if (NumeroReferencia != null)
                     hashCode = hashCode * 59 + NumeroReferencia.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ServicioFavoritoRequest left, ServicioFavoritoRequest right)
         {
@@ -160,8 +161,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

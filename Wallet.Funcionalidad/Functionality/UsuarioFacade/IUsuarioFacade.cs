@@ -32,7 +32,7 @@ public interface IUsuarioFacade
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> actualizado.</returns>
     Task<Usuario> ActualizarContrasenaAsync(int idUsuario, string contrasenaActual, string contrasenaNueva,
-        string confirmacionContrasenaNueva, byte[] concurrencyToken, Guid modificationUser);
+        string confirmacionContrasenaNueva, string concurrencyToken, Guid modificationUser);
 
     /// <summary>
     /// Actualiza el correo electrónico de un usuario.
@@ -44,7 +44,7 @@ public interface IUsuarioFacade
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> actualizado.</returns>
     Task<Usuario> ActualizarCorreoElectronicoAsync(int idUsuario, string correoElectronico,
-        byte[] concurrencyToken, Guid modificationUser, string? testCase = null);
+        string concurrencyToken, Guid modificationUser, string? testCase = null);
 
     /// <summary>
     /// Actualiza el número de teléfono de un usuario.
@@ -57,7 +57,7 @@ public interface IUsuarioFacade
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> actualizado.</returns>
     Task<Usuario> ActualizarTelefonoAsync(int idUsuario, string codigoPais, string telefono,
-        byte[] concurrencyToken, Guid modificationUser, string? testCase = null);
+        string concurrencyToken, Guid modificationUser, string? testCase = null);
 
     /// <summary>
     /// Confirma un código de verificación de doble factor (2FA).

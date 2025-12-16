@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -17,32 +17,36 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Estructura para actualizar servicio favorito con concurrencia
+    /// Estructura para actualizar servicio favorito
     /// </summary>
     [DataContract]
     public partial class ServicioFavoritoUpdateRequest : IEquatable<ServicioFavoritoUpdateRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Alias
         /// </summary>
         [Required]
+
         [MaxLength(100)]
-        [DataMember(Name = "alias")]
+        [DataMember(Name="alias")]
         public string Alias { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroReferencia
         /// </summary>
         [Required]
+
         [MaxLength(50)]
-        [DataMember(Name = "numeroReferencia")]
+        [DataMember(Name="numeroReferencia")]
         public string NumeroReferencia { get; set; }
 
         /// <summary>
-        /// Gets or Sets ConcurrencyToken
+        /// Token de concurrencia
         /// </summary>
+        /// <value>Token de concurrencia</value>
         [Required]
-        [DataMember(Name = "concurrencyToken")]
+
+        [DataMember(Name="concurrencyToken")]
         public string ConcurrencyToken { get; set; }
 
         /// <summary>
@@ -91,17 +95,17 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Alias == other.Alias ||
                     Alias != null &&
                     Alias.Equals(other.Alias)
-                ) &&
+                ) && 
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
                     NumeroReferencia.Equals(other.NumeroReferencia)
-                ) &&
+                ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
@@ -118,19 +122,19 @@ namespace Wallet.RestAPI.Models
             unchecked // Overflow is fine, just wrap
             {
                 var hashCode = 41;
-                if (Alias != null)
+                // Suitable nullity checks etc, of course :)
+                    if (Alias != null)
                     hashCode = hashCode * 59 + Alias.GetHashCode();
-                if (NumeroReferencia != null)
+                    if (NumeroReferencia != null)
                     hashCode = hashCode * 59 + NumeroReferencia.GetHashCode();
-                if (ConcurrencyToken != null)
+                    if (ConcurrencyToken != null)
                     hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ServicioFavoritoUpdateRequest left, ServicioFavoritoUpdateRequest right)
         {
@@ -142,8 +146,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

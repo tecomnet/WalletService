@@ -30,14 +30,26 @@ public class AutoMapperProfile : Profile
             .ForMember(destinationMember: dest => dest.Telefono,
                 memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.Telefono))
             .ForMember(destinationMember: dest => dest.CorreoElectronico,
-                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.CorreoElectronico));
-        CreateMap<UbicacionesGeolocalizacion, UbicacionResult>();
-        CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>();
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.CorreoElectronico))
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<UbicacionesGeolocalizacion, UbicacionResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Direccion, DireccionResult>()
             .ForMember(dest => dest.ConcurrencyToken,
                 opt => opt.MapFrom(src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
-        CreateMap<Empresa, EmpresaResult>();
+        CreateMap<Empresa, EmpresaResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Estado, EstadoResult>()
             .ForMember(dest => dest.ConcurrencyToken,
                 opt => opt.MapFrom(src =>
@@ -46,11 +58,23 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ConcurrencyToken,
                 opt => opt.MapFrom(src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
-        CreateMap<Proveedor, ProveedorResult>();
-        CreateMap<Producto, ProductoResult>();
-        CreateMap<Usuario, UsuarioResult>();
+        CreateMap<Proveedor, ProveedorResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<Producto, ProductoResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<Usuario, UsuarioResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();
-        CreateMap<Wallet.DOM.Modelos.Broker, BrokerResult>();
+        CreateMap<Wallet.DOM.Modelos.Broker, BrokerResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>();
         CreateMap<KeyValueConfig, KeyValueConfigResult>()
             .ForMember(dest => dest.ConcurrencyToken,

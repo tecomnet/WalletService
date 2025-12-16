@@ -78,7 +78,7 @@ public class UserApiTest : DatabaseTestFixture
         {
             CodigoPais = "+52",
             Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
-            ConcurrencyToken = user.ConcurrencyToken
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
 
         // Act
@@ -105,7 +105,7 @@ public class UserApiTest : DatabaseTestFixture
         var request = new EmailUpdateRequest
         {
             CorreoElectronico = $"newemail{Guid.NewGuid()}@test.com",
-            ConcurrencyToken = user.ConcurrencyToken
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
 
         // Act
@@ -181,7 +181,7 @@ public class UserApiTest : DatabaseTestFixture
         var request = new EmailUpdateRequest
         {
             CorreoElectronico = $"updated{Guid.NewGuid()}@test.com",
-            ConcurrencyToken = userToken
+            ConcurrencyToken = Convert.ToBase64String(userToken)
         };
 
         // Act
@@ -219,7 +219,7 @@ public class UserApiTest : DatabaseTestFixture
         {
             CodigoPais = "+52",
             Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
-            ConcurrencyToken = user.ConcurrencyToken
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
 
         // Act
@@ -293,7 +293,7 @@ public class UserApiTest : DatabaseTestFixture
         {
             CodigoPais = "+52",
             Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
-            ConcurrencyToken = userToken
+            ConcurrencyToken = Convert.ToBase64String(userToken)
         };
 
         // Act
@@ -331,7 +331,7 @@ public class UserApiTest : DatabaseTestFixture
             ContrasenaActual = "Password123!", // Matches default in fixture
             ContrasenaNueva = "NewPassword123!",
             ContrasenaNuevaConfrimacion = "NewPassword123!",
-            ConcurrencyToken = user.ConcurrencyToken
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
 
         // Act
@@ -408,7 +408,6 @@ public class UserApiTest : DatabaseTestFixture
         {
             Contrasena = "Password123!",
             ConfirmacionContrasena = "Password123!",
-            ConcurrencyToken = user.ConcurrencyToken
         };
 
         // Act

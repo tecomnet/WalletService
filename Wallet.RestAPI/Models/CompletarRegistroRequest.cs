@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,26 +21,22 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class CompletarRegistroRequest : IEquatable<CompletarRegistroRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Contrasena
         /// </summary>
         [Required]
-        [DataMember(Name = "contrasena")]
+
+        [DataMember(Name="contrasena")]
         public string Contrasena { get; set; }
 
         /// <summary>
         /// Gets or Sets ConfirmacionContrasena
         /// </summary>
         [Required]
-        [DataMember(Name = "confirmacionContrasena")]
-        public string ConfirmacionContrasena { get; set; }
 
-        /// <summary>
-        /// Gets or Sets ConcurrencyToken
-        /// </summary>
-        [DataMember(Name = "concurrencyToken")]
-        public byte[] ConcurrencyToken { get; set; }
+        [DataMember(Name="confirmacionContrasena")]
+        public string ConfirmacionContrasena { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -87,12 +83,12 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Contrasena == other.Contrasena ||
                     Contrasena != null &&
                     Contrasena.Equals(other.Contrasena)
-                ) &&
+                ) && 
                 (
                     ConfirmacionContrasena == other.ConfirmacionContrasena ||
                     ConfirmacionContrasena != null &&
@@ -110,17 +106,16 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Contrasena != null)
+                    if (Contrasena != null)
                     hashCode = hashCode * 59 + Contrasena.GetHashCode();
-                if (ConfirmacionContrasena != null)
+                    if (ConfirmacionContrasena != null)
                     hashCode = hashCode * 59 + ConfirmacionContrasena.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(CompletarRegistroRequest left, CompletarRegistroRequest right)
         {
@@ -132,8 +127,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

@@ -27,7 +27,7 @@ public interface IClienteFacade
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Cliente"/> actualizado.</returns>
     public Task<Cliente> ActualizarClienteDatosPersonalesAsync(int idUsuario, string nombre, string primerApellido,
-        string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, byte[] concurrencyToken,
+        string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, string concurrencyToken,
         Guid modificationUser, bool enforceClientConcurrency = true, string? testCase = null);
 
 
@@ -75,7 +75,7 @@ public interface IClienteFacade
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Cliente"/> actualizado.</returns>
     public Task<Cliente> ActualizarClienteAsync(int idCliente, string nombre, string primerApellido,
-        string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, byte[] concurrencyToken,
+        string segundoApellido, string nombreEstado, DateOnly fechaNacimiento, Genero genero, string concurrencyToken,
         Guid modificationUser, string? testCase = null);
 }
     

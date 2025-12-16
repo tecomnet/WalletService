@@ -102,7 +102,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
             var usuario = await Facade.ActualizarCorreoElectronicoAsync(
                 idUsuario: idUsuario,
                 correoElectronico: correoElectronico,
-                concurrencyToken: token,
+                concurrencyToken: Convert.ToBase64String(token),
                 modificationUser: SetupConfig.UserId);
 
             // Assert user updated

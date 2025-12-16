@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,40 +21,38 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class AceptarTerminosRequest : IEquatable<AceptarTerminosRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Version
         /// </summary>
         [Required]
-        [DataMember(Name = "version")]
+
+        [DataMember(Name="version")]
         public string Version { get; set; }
 
         /// <summary>
         /// Gets or Sets AceptoTerminos
         /// </summary>
         [Required]
-        [DataMember(Name = "aceptoTerminos")]
+
+        [DataMember(Name="aceptoTerminos")]
         public bool? AceptoTerminos { get; set; }
 
         /// <summary>
         /// Gets or Sets AceptoPrivacidad
         /// </summary>
         [Required]
-        [DataMember(Name = "aceptoPrivacidad")]
+
+        [DataMember(Name="aceptoPrivacidad")]
         public bool? AceptoPrivacidad { get; set; }
 
         /// <summary>
         /// Gets or Sets AceptoPld
         /// </summary>
         [Required]
-        [DataMember(Name = "aceptoPld")]
-        public bool? AceptoPld { get; set; }
 
-        /// <summary>
-        /// Gets or Sets ConcurrencyToken
-        /// </summary>
-        [DataMember(Name = "concurrencyToken")]
-        public byte[] ConcurrencyToken { get; set; }
+        [DataMember(Name="aceptoPld")]
+        public bool? AceptoPld { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -103,22 +101,22 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Version == other.Version ||
                     Version != null &&
                     Version.Equals(other.Version)
-                ) &&
+                ) && 
                 (
                     AceptoTerminos == other.AceptoTerminos ||
                     AceptoTerminos != null &&
                     AceptoTerminos.Equals(other.AceptoTerminos)
-                ) &&
+                ) && 
                 (
                     AceptoPrivacidad == other.AceptoPrivacidad ||
                     AceptoPrivacidad != null &&
                     AceptoPrivacidad.Equals(other.AceptoPrivacidad)
-                ) &&
+                ) && 
                 (
                     AceptoPld == other.AceptoPld ||
                     AceptoPld != null &&
@@ -136,21 +134,20 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Version != null)
+                    if (Version != null)
                     hashCode = hashCode * 59 + Version.GetHashCode();
-                if (AceptoTerminos != null)
+                    if (AceptoTerminos != null)
                     hashCode = hashCode * 59 + AceptoTerminos.GetHashCode();
-                if (AceptoPrivacidad != null)
+                    if (AceptoPrivacidad != null)
                     hashCode = hashCode * 59 + AceptoPrivacidad.GetHashCode();
-                if (AceptoPld != null)
+                    if (AceptoPld != null)
                     hashCode = hashCode * 59 + AceptoPld.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(AceptarTerminosRequest left, AceptarTerminosRequest right)
         {
@@ -162,8 +159,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

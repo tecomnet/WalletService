@@ -111,7 +111,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             "Campeche",
             new DateOnly(1990, 1, 1),
             Genero.Masculino,
-            It.IsAny<byte[]>(),
+            It.IsAny<string>(),
             It.IsAny<Guid>(),
             false,
             null), Times.Once);

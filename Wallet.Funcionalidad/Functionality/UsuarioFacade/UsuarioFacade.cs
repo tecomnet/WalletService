@@ -95,14 +95,16 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarContrasenaAsync(int idUsuario, string contrasenaActual, string contrasenaNueva,
-        string confirmacionContrasenaNueva, byte[] concurrencyToken, Guid modificationUser)
+        string confirmacionContrasenaNueva, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue = concurrencyToken;
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Actualiza la contraseña, validando la actual.
             usuario.ActualizarContrasena(
                 contrasenaActual: contrasenaActual,
@@ -124,14 +126,15 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarCorreoElectronicoAsync(int idUsuario, string correoElectronico,
-        byte[] concurrencyToken, Guid modificationUser, string? testCase = null)
+        string concurrencyToken, Guid modificationUser, string? testCase = null)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue = concurrencyToken;
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Actualiza el correo electrónico en la entidad.
             usuario.ActualizarCorreoElectronico(correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
@@ -165,14 +168,15 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarTelefonoAsync(int idUsuario, string codigoPais, string telefono,
-        byte[] concurrencyToken, Guid modificationUser, string? testCase = null)
+        string concurrencyToken, Guid modificationUser, string? testCase = null)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue = concurrencyToken;
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Actualiza el teléfono en la entidad.
             usuario.ActualizarTelefono(codigoPais: codigoPais, telefono: telefono,
                 modificationUser: modificationUser);

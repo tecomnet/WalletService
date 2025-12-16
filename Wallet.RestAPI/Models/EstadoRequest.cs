@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,15 +21,15 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class EstadoRequest : IEquatable<EstadoRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-        [StringLength(100, MinimumLength = 1)]
-        [DataMember(Name = "nombre")]
-        public string Nombre { get; set; }
 
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="nombre")]
+        public string Nombre { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -40,7 +40,6 @@ namespace Wallet.RestAPI.Models
             var sb = new StringBuilder();
             sb.Append("class EstadoRequest {\n");
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
-
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -76,12 +75,12 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return
-            (
-                Nombre == other.Nombre ||
-                Nombre != null &&
-                Nombre.Equals(other.Nombre)
-            );
+            return 
+                (
+                    Nombre == other.Nombre ||
+                    Nombre != null &&
+                    Nombre.Equals(other.Nombre)
+                );
         }
 
         /// <summary>
@@ -94,15 +93,14 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Nombre != null)
+                    if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(EstadoRequest left, EstadoRequest right)
         {
@@ -114,8 +112,7 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

@@ -97,9 +97,9 @@ public class ProductoApiTest : DatabaseTestFixture
         {
             Sku = "NETFLIX-STD",
             Nombre = "Netflix Standard",
-            Precio = 10.99m,
+            Precio = 10.99,
             UrlIcono = "https://netflix.com/icon.png",
-            ConcurrencyToken = Convert.ToBase64String(product.ConcurrencyToken)
+            ConcurrencyToken = product.ConcurrencyToken
         };
 
         // Act
@@ -113,7 +113,7 @@ public class ProductoApiTest : DatabaseTestFixture
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Equal(expected: updateRequest.Sku, actual: result.Sku);
-        Assert.Equal(expected: updateRequest.Precio, actual: result.Precio);
+        Assert.Equal(expected: (decimal?)updateRequest.Precio, actual: result.Precio);
     }
 
     [Fact]
