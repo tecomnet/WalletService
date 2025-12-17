@@ -1,4 +1,6 @@
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos
+namespace Wallet.DOM.Modelos.GestionEmpresa
 {
     /// <summary>
     /// Representa un producto ofrecido por un proveedor.

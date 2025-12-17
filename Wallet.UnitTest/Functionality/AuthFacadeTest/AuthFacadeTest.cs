@@ -4,6 +4,9 @@ using Moq;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.AuthFacade;
 using Wallet.Funcionalidad.Services.TokenService;
 

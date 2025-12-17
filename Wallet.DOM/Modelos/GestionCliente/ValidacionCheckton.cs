@@ -3,7 +3,7 @@ using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionCliente;
 
 /// <summary>
 /// Representa una validación de tipo "Checkton", que encapsula el tipo de checkton y su resultado.

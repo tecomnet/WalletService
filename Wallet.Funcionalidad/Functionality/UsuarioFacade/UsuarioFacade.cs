@@ -5,6 +5,7 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.Funcionalidad.ServiceClient;
 using Wallet.Funcionalidad.Services.TokenService;

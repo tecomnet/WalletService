@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 

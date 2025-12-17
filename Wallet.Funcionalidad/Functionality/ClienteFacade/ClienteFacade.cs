@@ -4,6 +4,7 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.Funcionalidad.ServiceClient;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;

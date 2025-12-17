@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionCliente;
 
 public class Cliente : ValidatablePersistentObjectLogicalDelete
 {

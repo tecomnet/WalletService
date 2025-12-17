@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionCliente;
 
 /// <summary>
 /// Representa la documentación adjunta a un documento, como archivos subidos a AWS.

@@ -4,7 +4,7 @@ using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionUsuario;
 
 /// <summary>
 /// Representa una ubicación geolocalizada de un evento o dispositivo.

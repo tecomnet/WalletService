@@ -3,6 +3,7 @@ using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.UnitTest.Functionality.Configuration;

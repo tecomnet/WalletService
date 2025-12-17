@@ -6,6 +6,9 @@ using Newtonsoft.Json.Serialization;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 using Xunit.Abstractions;
@@ -48,7 +51,7 @@ public class ClienteApiTest : DatabaseTestFixture
             
             // Create required dependencies
             var empresa = new Empresa("Tecomnet " + guid, guid);
-            var broker = new Wallet.DOM.Modelos.Broker("Broker " + guid, guid);
+            var broker = new Broker("Broker " + guid, guid);
             
             context.Empresa.Add(empresa);
             context.Broker.Add(broker);

@@ -1,6 +1,9 @@
 using System;
 using AutoMapper;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Mappers;
@@ -16,7 +19,7 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         //src.FechaNacimiento es DateOnly? (anulable) y dest.FechaNacimiento es DateTime? (anulable)
-        CreateMap<Wallet.DOM.Modelos.Cliente, ClienteResult>()
+        CreateMap<Cliente, ClienteResult>()
             .ForMember(destinationMember: dest => dest.FechaNacimiento,
                 memberOptions: opt => opt.MapFrom(mapExpression: src => src.FechaNacimiento.HasValue
                     ? src.FechaNacimiento.Value.ToDateTime(TimeOnly.MinValue)
@@ -71,7 +74,7 @@ public class AutoMapperProfile : Profile
                 opt => opt.MapFrom(src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();
-        CreateMap<Wallet.DOM.Modelos.Broker, BrokerResult>()
+        CreateMap<Broker, BrokerResult>()
             .ForMember(dest => dest.ConcurrencyToken,
                 opt => opt.MapFrom(src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));

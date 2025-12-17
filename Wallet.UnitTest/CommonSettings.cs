@@ -1,5 +1,8 @@
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 
 namespace Wallet.UnitTest;
 

@@ -4,7 +4,7 @@ using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionUsuario;
 
 /// <summary>
 /// Representa los consentimientos de un usuario en el sistema.

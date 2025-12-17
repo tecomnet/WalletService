@@ -2,6 +2,9 @@ using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Xunit.Sdk;
 
 namespace Wallet.UnitTest.DOM.Modelos;

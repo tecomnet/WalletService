@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionCliente;
 
 /// <summary>
 /// Representa el tipo de documento de una persona, como DNI, Pasaporte, CUIT, etc.

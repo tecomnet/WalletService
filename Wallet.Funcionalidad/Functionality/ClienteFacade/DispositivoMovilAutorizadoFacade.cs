@@ -2,6 +2,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 

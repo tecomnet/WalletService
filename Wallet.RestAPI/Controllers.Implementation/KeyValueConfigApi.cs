@@ -68,4 +68,13 @@ public class KeyValueConfigApiController(IKeyValueConfigFacade keyValueConfigFac
         var response = mapper.Map<KeyValueConfigResult>(source: result);
         return Ok(value: response);
     }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> ActivateKeyValueConfigAsync(string version, string key)
+    {
+        var result = await keyValueConfigFacade.ActivarKeyValueConfigAsync(key: key,
+            modificationUser: this.GetAuthenticatedUserGuid());
+        var response = mapper.Map<KeyValueConfigResult>(source: result);
+        return Ok(value: response);
+    }
 }

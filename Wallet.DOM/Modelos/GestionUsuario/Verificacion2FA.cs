@@ -3,7 +3,7 @@ using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionUsuario;
 
 /// <summary>
 /// Representa una verificación de doble factor (2FA) en el sistema.

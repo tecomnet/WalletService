@@ -2,8 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
-namespace Wallet.DOM.Modelos
+namespace Wallet.DOM.Modelos.GestionCliente
 {
     /// <summary>
     /// Representa un servicio guardado como favorito por un cliente.

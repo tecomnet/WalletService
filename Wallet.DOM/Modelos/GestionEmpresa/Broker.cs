@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos
+namespace Wallet.DOM.Modelos.GestionEmpresa
 {
     /// <summary>
     /// Representa un intermediario o broker en el sistema.

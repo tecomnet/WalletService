@@ -2,8 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
+using Wallet.DOM.Modelos.GestionCliente;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionUsuario;
 
 /// <summary>
 /// Representa un usuario dentro del sistema Wallet.

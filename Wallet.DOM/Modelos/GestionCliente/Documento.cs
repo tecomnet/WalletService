@@ -3,7 +3,7 @@ using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionCliente;
 
 /// <summary>
 /// Representa un documento de identificación, como un DNI, pasaporte, etc.

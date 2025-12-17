@@ -164,6 +164,35 @@ paths:
         - jwsToken: []
       tags:
         - KeyValueConfig
+  "/{version}/configurations/{key}/activate":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Clave de la configuracion
+    put:
+      summary: Activa una configuracion
+      operationId: ActivateKeyValueConfig
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KeyValueConfigResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
 
   "/{version}/cliente":
     parameters:
@@ -3416,16 +3445,49 @@ components:
       type: object
       description: Estructura de resultado de configuracion key-value
       properties:
+        id:
+          type: integer
+          format: int32
         key:
           type: string
         value:
           type: string
+        guid:
+          type: string
+          format: uuid
+          description: Guid of the key-value configuration
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          format: date-time
+          description: Modification timestamp
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+        isActive:
+          type: boolean
+          description: Guid of the modification user
         concurrencyToken:
           type: string
           description: Token de concurrencia
       required:
+        - id
         - key
         - value
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
   securitySchemes:
     jwsToken:
       type: http

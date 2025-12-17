@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionCliente;
 
 /// <summary>
 /// Representa una dirección física con sus detalles y reglas de validación.

@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 
@@ -16,8 +17,8 @@ public class ProveedorApiTest : DatabaseTestFixture
     {
         SetupDataAsync(setupDataAction: async context =>
         {
-            var broker1 = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test 1", creationUser: Guid.NewGuid());
-            var broker2 = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test 2", creationUser: Guid.NewGuid());
+            var broker1 = new Broker(nombre: "Broker Test 1", creationUser: Guid.NewGuid());
+            var broker2 = new Broker(nombre: "Broker Test 2", creationUser: Guid.NewGuid());
             await context.Broker.AddRangeAsync(broker1, broker2);
             await context.SaveChangesAsync();
         }).GetAwaiter().GetResult();

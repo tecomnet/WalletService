@@ -3,6 +3,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 

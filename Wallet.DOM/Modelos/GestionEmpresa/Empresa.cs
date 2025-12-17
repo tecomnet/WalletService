@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
+using Wallet.DOM.Modelos.GestionCliente;
 
-namespace Wallet.DOM.Modelos;
+namespace Wallet.DOM.Modelos.GestionEmpresa;
 
 /// <summary>
 /// Representa una entidad de Empresa dentro del dominio.

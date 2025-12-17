@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 
@@ -37,7 +40,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
 
             if (!await context.Broker.AnyAsync(b => b.Nombre == "Broker Test"))
             {
-                var broker = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
+                var broker = new Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
                 await context.Broker.AddAsync(entity: broker);
             }
 

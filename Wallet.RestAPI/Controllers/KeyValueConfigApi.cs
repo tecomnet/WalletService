@@ -45,7 +45,7 @@ namespace Wallet.RestAPI.Controllers
         public abstract Task<IActionResult> CreateKeyValueConfigAsync([FromBody] KeyValueConfigRequest body,
             [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version);
-        
+
         /// <summary>
         /// Elimina una configuracion por su clave
         /// </summary>
@@ -67,7 +67,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> DeleteKeyValueConfigAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] string key);
 
         /// <summary>
@@ -87,7 +88,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetConfigurationsAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version);
 
         /// <summary>
         /// Obtiene una configuracion por su clave
@@ -110,7 +112,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetKeyValueConfigByKeyAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] string key);
 
         /// <summary>
@@ -135,7 +138,33 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> UpdateKeyValueConfigAsync([FromBody] KeyValueConfigUpdateRequest body,
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
+            [FromRoute] [Required] string key);
+
+        /// <summary>
+        /// Activa una configuracion
+        /// </summary>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="key">Clave de la configuracion</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpPut]
+        [Route("/{version:apiVersion}/configurations/{key}/activate")]
+        [ValidateModelState]
+        [SwaggerOperation("ActivateKeyValueConfig")]
+        [SwaggerResponse(statusCode: 200, type: typeof(KeyValueConfigResult), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> ActivateKeyValueConfigAsync(
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] string key);
     }
 }

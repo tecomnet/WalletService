@@ -3,6 +3,7 @@ using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
 using Wallet.UnitTest.Functionality.Configuration;

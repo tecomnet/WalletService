@@ -1,4 +1,5 @@
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.BrokerFacade
 {

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 using Xunit.Abstractions;

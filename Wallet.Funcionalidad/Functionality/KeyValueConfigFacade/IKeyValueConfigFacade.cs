@@ -51,4 +51,12 @@ public interface IKeyValueConfigFacade
     /// <param name="modificationUser">El GUID del usuario que realiza la eliminación.</param>
     /// <returns>La entidad KeyValueConfig eliminada.</returns>
     Task<KeyValueConfig> EliminarKeyValueConfigAsync(string key, Guid modificationUser);
+
+    /// <summary>
+    /// Activa una configuración por su clave.
+    /// </summary>
+    /// <param name="key">La clave de la configuración a activar.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la activación.</param>
+    /// <returns>La entidad KeyValueConfig activada.</returns>
+    Task<KeyValueConfig> ActivarKeyValueConfigAsync(string key, Guid modificationUser);
 }

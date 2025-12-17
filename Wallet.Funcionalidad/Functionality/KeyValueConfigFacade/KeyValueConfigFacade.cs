@@ -146,4 +146,26 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
                 exception: exception);
         }
     }
+
+    /// <inheritdoc />
+    public async Task<KeyValueConfig> ActivarKeyValueConfigAsync(string key, Guid modificationUser)
+    {
+        try
+        {
+            var config = await ObtenerKeyValueConfigPorKeyAsync(key);
+
+            config.Activate(modificationUser: modificationUser);
+
+            await context.SaveChangesAsync();
+
+            return config;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
 }
