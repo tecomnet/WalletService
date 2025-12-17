@@ -1391,6 +1391,29 @@ paths:
       description: Elimina un servicio favorito
       tags:
         - ServicioFavorito
+  "/{version}/servicioFavorito/{idServicioFavorito}/activar":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idServicioFavorito"
+    put:
+      summary: Activa un servicio favorito
+      operationId: putActivarServicioFavorito
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServicioFavoritoResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Activa un servicio favorito
+      tags:
+        - ServicioFavorito
   "/{version}/registro/preRegistro":
     parameters:
       - $ref: "#/components/parameters/version"

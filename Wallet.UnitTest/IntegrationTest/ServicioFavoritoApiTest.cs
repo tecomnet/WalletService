@@ -105,6 +105,28 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         Assert.Contains(collection: result, filter: s => s.Id == servicioFavorito.Id);
     }
 
+    [Fact]
+    public async Task Put_ActivarServicioFavorito_Ok()
+    {
+        // Arrange
+        var client = Factory.CreateAuthenticatedClient();
+        var cliente = await CreateCliente(client: client);
+        var servicioFavorito = await CreateServicioFavorito(client: client, clienteId: cliente.Id.GetValueOrDefault());
+
+        // Act
+        var response =
+            await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{servicioFavorito.Id}/activar", content: null);
+
+        // Assert
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+        var result =
+            JsonConvert.DeserializeObject<ServicioFavoritoResult>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(result);
+        Assert.Equal(expected: servicioFavorito.Id, actual: result.Id);
+        Assert.True(condition: result.IsActive);
+    }
+
     private async Task<ProveedorResult> CreateProveedor(HttpClient client)
     {
         var request = new ProveedorRequest

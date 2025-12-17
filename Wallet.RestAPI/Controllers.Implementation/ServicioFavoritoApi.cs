@@ -75,4 +75,17 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
         // Return OK response
         return Ok(value: response);
     }
+
+    /// <inheritdoc />
+    public override async Task<IActionResult> PutActivarServicioFavoritoAsync(string version, int? idServicioFavorito)
+    {
+        // Call facade method
+        var servicio = await servicioFavoritoFacade.ActivarServicioFavoritoAsync(
+            idServicioFavorito: idServicioFavorito.Value,
+            modificationUser: this.GetAuthenticatedUserGuid());
+        // Map to response model
+        var response = mapper.Map<ServicioFavoritoResult>(source: servicio);
+        // Return OK response
+        return Ok(value: response);
+    }
 }

@@ -129,5 +129,31 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int? idServicioFavorito, [FromBody] ServicioFavoritoUpdateRequest body);
+
+        /// <summary>
+        /// Activa un servicio favorito
+        /// </summary>
+        /// <remarks>Activa un servicio favorito</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idServicioFavorito">Id del servicio favorito</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpPut]
+        [Route("/{version:apiVersion}/servicioFavorito/{idServicioFavorito}/activar")]
+        [ValidateModelState]
+        [SwaggerOperation("PutActivarServicioFavorito")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ServicioFavoritoResult), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> PutActivarServicioFavoritoAsync(
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
+            [FromRoute] [Required] int? idServicioFavorito);
     }
 }
