@@ -247,8 +247,8 @@ public class RegistroFacade(
                 module: this.GetType().Name));
         }
 
-        // Verifica si el estado actual del usuario coincide con alguno de los estados esperados
-        if (!estatusEsperados.Contains(usuario.Estatus) || estatusEsperados.Contains(EstatusRegistroEnum.DatosBiometricosRegistrado))
+        // Verifica si el estado actual del usuario coincide con alguno de los estados esperados, se omite paso datos biometricos registrado
+        if (!estatusEsperados.Contains(usuario.Estatus) && !estatusEsperados.Contains(EstatusRegistroEnum.DatosBiometricosRegistrado))
         {
             // Lanza una excepción si el estado no coincide
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
