@@ -8,22 +8,27 @@ using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
 using Wallet.Funcionalidad.Functionality.RegistroFacade;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
+using Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
 using Wallet.UnitTest.Functionality.Configuration;
 
 namespace Wallet.UnitTest.Functionality;
+
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionCliente;
 
 public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
 {
     private readonly Mock<IUsuarioFacade> _usuarioFacadeMock = new();
     private readonly Mock<IClienteFacade> _clienteFacadeMock = new();
     private readonly Mock<IConsentimientosUsuarioFacade> _consentimientosFacadeMock = new();
+    private readonly Mock<ICuentaWalletFacade> _cuentaWalletFacadeMock = new();
     private readonly IRegistroFacade _registroFacade;
     private readonly Guid _userId = Guid.NewGuid();
 
     public RegistroFacadeTest() : base(new SetupDataConfig())
     {
         _registroFacade = new RegistroFacade(Context, _usuarioFacadeMock.Object, _clienteFacadeMock.Object,
-            _consentimientosFacadeMock.Object);
+            _consentimientosFacadeMock.Object, _cuentaWalletFacadeMock.Object);
     }
 
     public void Dispose()
@@ -116,5 +121,36 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
             It.IsAny<Guid>(),
             false,
             null), Times.Once);
+    }
+
+    [Fact]
+    public async Task CompletarRegistroAsync_ShouldCreateWallet_WhenSuccessful()
+    {
+        // Arrange
+        var usuario = new Usuario("+52", "5512345678", null, null, EstatusRegistroEnum.TerminosCondicionesAceptado,
+            _userId);
+        Context.Usuario.Add(usuario);
+        await Context.SaveChangesAsync();
+
+        var empresa = new Empresa("Tecomnet", _userId);
+        Context.Empresa.Add(empresa);
+
+        var cliente = new Cliente(usuario, empresa, _userId);
+        Context.Cliente.Add(cliente);
+        await Context.SaveChangesAsync();
+
+        _usuarioFacadeMock.Setup(x => x.ObtenerUsuarioPorIdAsync(usuario.Id))
+            .ReturnsAsync(usuario);
+
+        // Act
+        var result = await _registroFacade.CompletarRegistroAsync(usuario.Id, "Password123", "Password123");
+
+        // Assert
+        Assert.NotNull(result);
+        var updatedUser = await Context.Usuario.FindAsync(usuario.Id);
+        Assert.Equal(EstatusRegistroEnum.RegistroCompletado, updatedUser!.Estatus);
+
+        _cuentaWalletFacadeMock.Verify(x => x.CrearCuentaWalletAsync(cliente.Guid, usuario.CreationUser, "MXN"),
+            Times.Once);
     }
 }

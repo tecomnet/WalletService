@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wallet.DOM.ApplicationDbContext;
 
@@ -11,9 +12,11 @@ using Wallet.DOM.ApplicationDbContext;
 namespace Wallet.DOM.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    partial class ServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251217210305_AddWalletModels")]
+    partial class AddWalletModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1079,22 +1082,11 @@ namespace Wallet.DOM.Migrations
 
             modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.BitacoraTransaccion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte[]>("ConcurrencyToken")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.Property<DateTime>("CreationTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreationUser")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Direccion")
                         .IsRequired()
@@ -1106,29 +1098,16 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("IdBilletera")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModificationTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ModificationUser")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Monto")
                         .HasColumnType("decimal(19,2)");
 
                     b.Property<string>("RefExternaId")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("TestCaseID")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -1204,51 +1183,24 @@ namespace Wallet.DOM.Migrations
 
             modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.DetallesPagoServicio", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CodigoAutorizacion")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<byte[]>("ConcurrencyToken")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.Property<DateTime>("CreationTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreationUser")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("IdProveedor")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdTransaccion")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModificationTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ModificationUser")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("IdTransaccion")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("NumeroReferencia")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("TestCaseID")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 

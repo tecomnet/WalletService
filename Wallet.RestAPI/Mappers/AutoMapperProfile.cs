@@ -4,6 +4,7 @@ using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.DOM.Modelos.GestionUsuario;
+using Wallet.DOM.Modelos.GestionWallet;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Mappers;
@@ -83,5 +84,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ConcurrencyToken,
                 opt => opt.MapFrom(src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<CuentaWallet, CuentaWalletResult>();
+        CreateMap<BitacoraTransaccion, BitacoraTransaccionResult>();
+        CreateMap<DetallesPagoServicio, DetallesPagoServicioResult>();
     }
 }

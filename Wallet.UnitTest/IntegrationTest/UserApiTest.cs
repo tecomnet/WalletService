@@ -374,6 +374,14 @@ public class UserApiTest : DatabaseTestFixture
                 testCase: "IntegrationTest_FirstPassword");
 
             await setupContext.Usuario.AddAsync(incompleteUser);
+
+            // Add required Empresa and Cliente for Wallet creation
+            var empresa = new Wallet.DOM.Modelos.GestionEmpresa.Empresa("Tecomnet", Guid.NewGuid());
+            await setupContext.Empresa.AddAsync(empresa);
+
+            var cliente = new Wallet.DOM.Modelos.GestionCliente.Cliente(incompleteUser, empresa, Guid.NewGuid());
+            await setupContext.Cliente.AddAsync(cliente);
+
             await setupContext.SaveChangesAsync();
         }
 

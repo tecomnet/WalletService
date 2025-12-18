@@ -7,6 +7,7 @@ using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
+using Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 
 namespace Wallet.Funcionalidad.Functionality.RegistroFacade;
@@ -18,7 +19,8 @@ public class RegistroFacade(
     ServiceDbContext context,
     IUsuarioFacade usuarioFacade,
     IClienteFacade clienteFacade,
-    IConsentimientosUsuarioFacade consentimientosUsuarioFacade)
+    IConsentimientosUsuarioFacade consentimientosUsuarioFacade,
+    ICuentaWalletFacade cuentaWalletFacade)
     : IRegistroFacade
 {
     /// <summary>
@@ -234,6 +236,19 @@ public class RegistroFacade(
         // Guarda la contraseña del usuario a través del facade de usuario
         await usuarioFacade.GuardarContrasenaAsync(idUsuario, contrasena, usuario.CreationUser);
 
+        // Obtener el cliente asociado para vincular la wallet
+        var cliente = await context.Cliente.FirstOrDefaultAsync(c => c.UsuarioId == idUsuario);
+        if (cliente == null)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ClienteNoEncontrado,
+                dynamicContent: [idUsuario],
+                module: this.GetType().Name));
+        }
+
+        // Crear la Billetera para el usuario usando el Guid del Cliente
+        await cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Guid, usuario.CreationUser);
+
         // Actualiza el estado del registro a RegistroCompletado
         await ActualizarEstatusAsync(usuario, EstatusRegistroEnum.RegistroCompletado, usuario.CreationUser);
         return usuario;
@@ -250,10 +265,6 @@ public class RegistroFacade(
     {
         // Obtiene el usuario por su ID
         var usuario = await usuarioFacade.ObtenerUsuarioPorIdAsync(idUsuario);
-        if (usuario != null)
-        {
-            // Console.WriteLine($"[DEBUG] ValidarEstadoAsync ID: {idUsuario}, Status: {usuario.Estatus}");
-        }
 
         if (usuario == null)
         {
@@ -283,25 +294,22 @@ public class RegistroFacade(
     /// <param name="usuario">El objeto <see cref="Usuario"/> cuyo estatus será actualizado.</param>
     /// <param name="nuevoEstatus">El nuevo estatus de registro a establecer.</param>
     /// <param name="modificationUser">ID del usuario que realiza la modificación.</param>
-    private async Task ActualizarEstatusAsync(Usuario usuario, EstatusRegistroEnum nuevoEstatus, Guid modificationUser)
+    private async Task ActualizarEstatusAsync(Usuario usuario, EstatusRegistroEnum nuevoEstatus,
+        Guid modificationUser)
     {
         // Actualiza el estatus del usuario
         usuario.ActualizarEstatus(nuevoEstatus, modificationUser);
 
-        Console.WriteLine(
-            $"[DEBUG] Updating Status: {nuevoEstatus} for ID: {usuario.Id}. Current State: {context.Entry(usuario).State}");
 
         // Ensure the entity is tracked and the property is marked as modified
         if (context.Entry(usuario).State == EntityState.Detached)
         {
             context.Attach(usuario);
-            Console.WriteLine($"[DEBUG] Re-Attached User ID: {usuario.Id}");
         }
 
         context.Entry(usuario).Property(u => u.Estatus).IsModified = true;
 
         // Guarda los cambios en la base de datos
         var rows = await context.SaveChangesAsync();
-        Console.WriteLine($"[DEBUG] Saved Status. Rows Affected: {rows}");
     }
 }

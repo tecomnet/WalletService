@@ -478,6 +478,35 @@ paths:
           description: token autorizacion del dispositivo
       tags:
         - DispositivoMovilAutorizado
+  "/{version}/pago-servicios":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Registra un nuevo pago de servicio
+      operationId: RegistrarPagoServicio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegistrarPagoServicioRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DetallesPagoServicioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "500":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Registra un pago de servicio y su transaccion asociada
+      tags:
+        - DetallesPagoServicio
+
   "/{version}/estado":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -1898,8 +1927,283 @@ paths:
               $ref: "#/components/schemas/RevokeTokenRequest"
       tags:
         - Auth
+  "/{version}/cuenta-wallet":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Crea una nueva cuenta wallet
+      operationId: CreateCuentaWallet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrearCuentaWalletRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CuentaWalletResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - CuentaWallet
+  "/{version}/cliente/{idCliente}/cuenta-wallet":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene la cuenta wallet de un cliente
+      operationId: GetCuentaWalletPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CuentaWalletResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - CuentaWallet
+  "/{version}/cliente/{idCliente}/transacciones":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene las transacciones de un cliente
+      operationId: GetTransaccionesPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BitacoraTransaccionResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - BitacoraTransaccion
+  "/{version}/cliente/{idCliente}/pago-servicios":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene el historial de pagos de servicios de un cliente
+      operationId: GetDetallesPagoServicioPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DetallesPagoServicioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - DetallesPagoServicio
+  "/{version}/transacciones/{idTransaccion}/detalles":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idTransaccion
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+        description: Id de la transaccion
+    get:
+      summary: Obtiene los detalles de pago de servicio por transacción
+      operationId: GetDetallesPorTransaccion
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DetallesPagoServicioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - DetallesPagoServicio
+
 components:
   schemas:
+    CrearCuentaWalletRequest:
+      type: object
+      properties:
+        idCliente:
+          type: string
+          format: uuid
+        moneda:
+          type: string
+          minLength: 3
+          maxLength: 3
+      required:
+        - idCliente
+        - moneda
+    CuentaWalletResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        idCliente:
+          type: string
+          format: uuid
+        saldoActual:
+          type: number
+          format: double
+        cuentaCLABE:
+          type: string
+        moneda:
+          type: string
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+      required:
+        - id
+        - idCliente
+        - saldoActual
+        - cuentaCLABE
+        - moneda
+        - guid
+        - creationTimestamp
+        - isActive
+    BitacoraTransaccionResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        idBilletera:
+          type: integer
+          format: int32
+        monto:
+          type: number
+          format: double
+        tipo:
+          type: string
+        direccion:
+          type: string
+        estatus:
+          type: string
+        refExternaId:
+          type: string
+          nullable: true
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+      required:
+        - id
+        - idBilletera
+        - monto
+        - tipo
+        - direccion
+        - estatus
+        - guid
+        - creationTimestamp
+    DetallesPagoServicioResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        idTransaccion:
+          type: integer
+          format: int32
+        idProveedor:
+          type: integer
+          format: int32
+        numeroReferencia:
+          type: string
+        codigoAutorizacion:
+          type: string
+          nullable: true
+        guid:
+          type: string
+          format: uuid
+      required:
+        - id
+        - idTransaccion
+        - idProveedor
+        - numeroReferencia
+        - guid
+    RegistrarPagoServicioRequest:
+      type: object
+      properties:
+        idBilletera:
+          type: integer
+          format: int32
+        monto:
+          type: number
+          format: double
+        nombreServicio:
+          type: string
+        direccion:
+          type: string
+        refExternaId:
+          type: string
+          nullable: true
+        idProveedor:
+          type: integer
+          format: int32
+        numeroReferencia:
+          type: string
+        codigoAutorizacion:
+          type: string
+          nullable: true
+      required:
+        - idBilletera
+        - monto
+        - nombreServicio
+        - direccion
+        - idProveedor
+        - numeroReferencia
     TipoDocumentoConsentimientoEnum:
       type: string
       x-stoplight:
@@ -3664,6 +3968,9 @@ tags:
   - name: ServicioFavorito
   - name: UbicacionGeolocalizacion
   - name: Usuario
+  - name: CuentaWallet
+  - name: BitacoraTransaccion
+  - name: DetallesPagoServicio
 security:
   - jwsToken: []
   - X-API-Key: []

@@ -3,6 +3,7 @@ using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.DOM.Modelos.GestionUsuario;
+using Wallet.DOM.Modelos.GestionWallet;
 
 namespace Wallet.DOM.ApplicationDbContext;
 
@@ -26,6 +27,11 @@ public class ServiceDbContext : DbContext
     public DbSet<ServicioFavorito> ServicioFavorito { get; set; }
     public DbSet<ConsentimientosUsuario> ConsentimientosUsuario { get; set; } = null!;
     public DbSet<KeyValueConfig> KeyValueConfig { get; set; } = null!;
+
+    // Wallet Management
+    public DbSet<CuentaWallet> CuentaWallet { get; set; }
+    public DbSet<BitacoraTransaccion> BitacoraTransaccion { get; set; }
+    public DbSet<DetallesPagoServicio> DetallesPagoServicio { get; set; }
 
 
     // Sobrescribimos este método para configurar el modelo y agregar los datos iniciales
@@ -114,6 +120,31 @@ public class ServiceDbContext : DbContext
             new Estado { Id = 31, Nombre = "Yucatán", CreationUser = Guid.Empty, TestCaseID = "Seeding", IsActive = true },
             new Estado { Id = 32, Nombre = "Zacatecas", CreationUser = Guid.Empty, TestCaseID = "Seeding", IsActive = true }
         );*/
+        // Wallet Management Configuration
+        modelBuilder.Entity<CuentaWallet>()
+            .HasKey(c => c.Id);
+
+        modelBuilder.Entity<CuentaWallet>()
+            .HasOne(c => c.Cliente)
+            .WithMany()
+            .HasForeignKey(c => c.IdCliente)
+            .HasPrincipalKey(c => c.Guid);
+
+        modelBuilder.Entity<BitacoraTransaccion>()
+            .HasKey(b => b.Id);
+
+        modelBuilder.Entity<BitacoraTransaccion>()
+            .HasOne(b => b.CuentaWallet)
+            .WithMany(w => w.BitacoraTransacciones)
+            .HasForeignKey(b => b.IdBilletera);
+
+        modelBuilder.Entity<DetallesPagoServicio>()
+            .HasKey(d => d.Id);
+
+        modelBuilder.Entity<DetallesPagoServicio>()
+            .HasOne(d => d.Transaccion)
+            .WithMany() // Assuming 1:Many or 1:1? Let's assume 1 transaction has optional details, details belongs to transaction. Modulo details points to transaction.
+            .HasForeignKey(d => d.IdTransaccion);
     }
 }
     
