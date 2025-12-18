@@ -45,7 +45,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Unauthorized")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Not Found")]
         public abstract Task<IActionResult> GetTransaccionesPorClienteAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-            [FromRoute] [Required] Guid idCliente);
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
+            [FromRoute] [Required] int idCliente);
     }
 }

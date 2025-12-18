@@ -150,7 +150,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
         var updatedUser = await Context.Usuario.FindAsync(usuario.Id);
         Assert.Equal(EstatusRegistroEnum.RegistroCompletado, updatedUser!.Estatus);
 
-        _cuentaWalletFacadeMock.Verify(x => x.CrearCuentaWalletAsync(cliente.Guid, usuario.CreationUser, "MXN"),
+        _cuentaWalletFacadeMock.Verify(x => x.CrearCuentaWalletAsync(cliente.Id, usuario.CreationUser, "MXN"),
             Times.Once);
     }
 }

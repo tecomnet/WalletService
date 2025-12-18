@@ -9,7 +9,7 @@ public class GestionWalletModelosTest
     public void CuentaWallet_Initialization_ShouldWork()
     {
         // Arrange
-        var idCliente = Guid.NewGuid();
+        var idCliente = 123;
         var moneda = "MXN";
         var clabe = "123456789012345678";
         var creationUser = Guid.NewGuid();
@@ -30,7 +30,7 @@ public class GestionWalletModelosTest
     public void CuentaWallet_ActualizarSaldo_ShouldUpdateSaldo()
     {
         // Arrange
-        var cuenta = new CuentaWallet(Guid.NewGuid(), "MXN", "123456789012345678", Guid.NewGuid());
+        var cuenta = new CuentaWallet(123, "MXN", "123456789012345678", Guid.NewGuid());
         var nuevoSaldo = 100.50m;
         var modUser = Guid.NewGuid();
 

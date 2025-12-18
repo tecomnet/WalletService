@@ -19,7 +19,7 @@ public class BitacoraTransaccionApiController(
     : BitacoraTransaccionApiControllerBase
 {
     /// <inheritdoc />
-    public override async Task<IActionResult> GetTransaccionesPorClienteAsync(string version, Guid idCliente)
+    public override async Task<IActionResult> GetTransaccionesPorClienteAsync(string version, int idCliente)
     {
         // Call facade method
         var transacciones = await bitacoraTransaccionFacade.ObtenerPorClienteAsync(idCliente);

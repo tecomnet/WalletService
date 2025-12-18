@@ -35,7 +35,7 @@ public class BitacoraTransaccionFacade(ServiceDbContext context) : IBitacoraTran
                throw new KeyNotFoundException($"Transaccion con ID {id} no encontrada.");
     }
 
-    public async Task<List<BitacoraTransaccion>> ObtenerPorClienteAsync(Guid idCliente)
+    public async Task<List<BitacoraTransaccion>> ObtenerPorClienteAsync(int idCliente)
     {
         return await context.BitacoraTransaccion
             .Include(b => b.CuentaWallet)

@@ -9,5 +9,5 @@ public interface IBitacoraTransaccionFacade
 
     Task<List<BitacoraTransaccion>> ObtenerTodasAsync();
     Task<BitacoraTransaccion> ObtenerPorIdAsync(int id);
-    Task<List<BitacoraTransaccion>> ObtenerPorClienteAsync(Guid idCliente);
+    Task<List<BitacoraTransaccion>> ObtenerPorClienteAsync(int idCliente);
 }

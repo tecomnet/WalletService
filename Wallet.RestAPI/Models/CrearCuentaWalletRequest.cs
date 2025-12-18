@@ -26,14 +26,14 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets IdCliente
         /// </summary>
         [Required]
-        [DataMember(Name="idCliente")]
-        public Guid? IdCliente { get; set; }
+        [DataMember(Name = "idCliente")]
+        public int? IdCliente { get; set; }
 
         /// <summary>
         /// Gets or Sets Moneda
         /// </summary>
         [Required]
-        [DataMember(Name="moneda")]
+        [DataMember(Name = "moneda")]
         public string Moneda { get; set; }
 
         /// <summary>
@@ -81,12 +81,12 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     IdCliente == other.IdCliente ||
                     IdCliente != null &&
                     IdCliente.Equals(other.IdCliente)
-                ) && 
+                ) &&
                 (
                     Moneda == other.Moneda ||
                     Moneda != null &&
@@ -112,7 +112,8 @@ namespace Wallet.RestAPI.Models
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(CrearCuentaWalletRequest left, CrearCuentaWalletRequest right)
         {
@@ -124,7 +125,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

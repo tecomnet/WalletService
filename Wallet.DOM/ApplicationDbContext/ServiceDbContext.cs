@@ -127,8 +127,7 @@ public class ServiceDbContext : DbContext
         modelBuilder.Entity<CuentaWallet>()
             .HasOne(c => c.Cliente)
             .WithMany()
-            .HasForeignKey(c => c.IdCliente)
-            .HasPrincipalKey(c => c.Guid);
+            .HasForeignKey(c => c.IdCliente);
 
         modelBuilder.Entity<BitacoraTransaccion>()
             .HasKey(b => b.Id);

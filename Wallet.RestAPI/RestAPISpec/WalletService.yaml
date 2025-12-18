@@ -2069,8 +2069,8 @@ components:
       type: object
       properties:
         idCliente:
-          type: string
-          format: uuid
+          type: integer
+          format: int32
         moneda:
           type: string
           minLength: 3
@@ -2085,8 +2085,8 @@ components:
           type: integer
           format: int32
         idCliente:
-          type: string
-          format: uuid
+          type: integer
+          format: int32
         saldoActual:
           type: number
           format: double

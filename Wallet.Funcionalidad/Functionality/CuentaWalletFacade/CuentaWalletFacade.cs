@@ -6,7 +6,7 @@ namespace Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
 
 public class CuentaWalletFacade(ServiceDbContext context) : ICuentaWalletFacade
 {
-    public async Task<CuentaWallet> CrearCuentaWalletAsync(Guid idCliente, Guid creationUser, string moneda = "MXN")
+    public async Task<CuentaWallet> CrearCuentaWalletAsync(int idCliente, Guid creationUser, string moneda = "MXN")
     {
         // Verificar si ya existe una wallet para evitar duplicados
         var existingWallet = await context.CuentaWallet.FirstOrDefaultAsync(w => w.IdCliente == idCliente);
@@ -25,7 +25,7 @@ public class CuentaWalletFacade(ServiceDbContext context) : ICuentaWalletFacade
         return wallet;
     }
 
-    public async Task<CuentaWallet> ObtenerPorClienteAsync(Guid idCliente)
+    public async Task<CuentaWallet> ObtenerPorClienteAsync(int idCliente)
     {
         return await context.CuentaWallet
                    .Include(w => w.BitacoraTransacciones)

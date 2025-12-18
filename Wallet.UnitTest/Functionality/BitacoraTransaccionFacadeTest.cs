@@ -41,7 +41,7 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
 
         // Use facade or manual creation? Manual is safer for unit test isolation vs dependencies loop.
         // But implementation requires valid IDs.
-        var wallet = new CuentaWallet(cliente.Guid, "MXN", "123456789012345678", _userId);
+        var wallet = new CuentaWallet(cliente.Id, "MXN", "123456789012345678", _userId);
         Context.CuentaWallet.Add(wallet);
         await Context.SaveChangesAsync();
 

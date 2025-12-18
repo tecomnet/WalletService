@@ -26,29 +26,29 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Id
         /// </summary>
         [Required]
-        [DataMember(Name="id")]
+        [DataMember(Name = "id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets IdCliente (Guid)
         /// </summary>
         [Required]
-        [DataMember(Name="idCliente")]
-        public Guid? IdCliente { get; set; }
+        [DataMember(Name = "idCliente")]
+        public int? IdCliente { get; set; }
 
         /// <summary>
         /// Gets or Sets SaldoActual
         /// </summary>
         [Required]
-        [DataMember(Name="saldoActual")]
+        [DataMember(Name = "saldoActual")]
         public decimal? SaldoActual { get; set; }
 
         /// <summary>
         /// Gets or Sets CuentaCLABE
         /// </summary>
         [Required]
-        [StringLength(18, MinimumLength=18)]
-        [DataMember(Name="cuentaCLABE")]
+        [StringLength(18, MinimumLength = 18)]
+        [DataMember(Name = "cuentaCLABE")]
         public string CuentaCLABE { get; set; }
 
         /// <summary>
@@ -56,28 +56,28 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
         [StringLength(3)]
-        [DataMember(Name="moneda")]
+        [DataMember(Name = "moneda")]
         public string Moneda { get; set; }
 
         /// <summary>
         /// Gets or Sets Guid
         /// </summary>
         [Required]
-        [DataMember(Name="guid")]
+        [DataMember(Name = "guid")]
         public Guid? Guid { get; set; }
 
         /// <summary>
         /// Gets or Sets CreationTimestamp
         /// </summary>
         [Required]
-        [DataMember(Name="creationTimestamp")]
+        [DataMember(Name = "creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
         /// Gets or Sets IsActive
         /// </summary>
         [Required]
-        [DataMember(Name="isActive")]
+        [DataMember(Name = "isActive")]
         public bool? IsActive { get; set; }
 
         /// <summary>
@@ -131,42 +131,42 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
                 (
                     IdCliente == other.IdCliente ||
                     IdCliente != null &&
                     IdCliente.Equals(other.IdCliente)
-                ) && 
+                ) &&
                 (
                     SaldoActual == other.SaldoActual ||
                     SaldoActual != null &&
                     SaldoActual.Equals(other.SaldoActual)
-                ) && 
+                ) &&
                 (
                     CuentaCLABE == other.CuentaCLABE ||
                     CuentaCLABE != null &&
                     CuentaCLABE.Equals(other.CuentaCLABE)
-                ) && 
+                ) &&
                 (
                     Moneda == other.Moneda ||
                     Moneda != null &&
                     Moneda.Equals(other.Moneda)
-                ) && 
+                ) &&
                 (
                     Guid == other.Guid ||
                     Guid != null &&
                     Guid.Equals(other.Guid)
-                ) && 
+                ) &&
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
                     CreationTimestamp.Equals(other.CreationTimestamp)
-                ) && 
+                ) &&
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
@@ -204,7 +204,8 @@ namespace Wallet.RestAPI.Models
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(CuentaWalletResult left, CuentaWalletResult right)
         {
@@ -216,7 +217,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(left, right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

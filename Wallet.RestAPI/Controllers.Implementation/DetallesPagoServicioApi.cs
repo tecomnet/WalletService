@@ -33,7 +33,7 @@ public class DetallesPagoServicioApiController(
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> GetDetallesPagoServicioPorClienteAsync(string version, Guid idCliente)
+    public override async Task<IActionResult> GetDetallesPagoServicioPorClienteAsync(string version, int idCliente)
     {
         // Call facade method
         var detalles = await detallesPagoServicioFacade.ObtenerPorClienteAsync(idCliente);

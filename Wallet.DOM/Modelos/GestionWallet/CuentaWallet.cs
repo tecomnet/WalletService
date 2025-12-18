@@ -20,8 +20,11 @@ public class CuentaWallet : ValidatablePersistentObjectLogicalDelete
     /// <summary>
     /// Identificador del cliente propietario de la cuenta.
     /// </summary>
+    /// <summary>
+    /// Identificador del cliente propietario de la cuenta.
+    /// </summary>
     [Required]
-    public Guid IdCliente { get; private set; }
+    public int IdCliente { get; private set; }
 
     /// <summary>
     /// Moneda de la cuenta (MXN, USD).
@@ -53,12 +56,15 @@ public class CuentaWallet : ValidatablePersistentObjectLogicalDelete
     /// <summary>
     /// Bitácora de transacciones asociadas a esta cuenta.
     /// </summary>
-    public virtual ICollection<BitacoraTransaccion> BitacoraTransacciones { get; set; } = new List<BitacoraTransaccion>();
+    public virtual ICollection<BitacoraTransaccion> BitacoraTransacciones { get; set; } =
+        new List<BitacoraTransaccion>();
 
     // Constructor requerido por EF Core
-    protected CuentaWallet() { }
+    protected CuentaWallet()
+    {
+    }
 
-    public CuentaWallet(Guid idCliente, string moneda, string cuentaCLABE, Guid creationUser, string? testCase = null) 
+    public CuentaWallet(int idCliente, string moneda, string cuentaCLABE, Guid creationUser, string? testCase = null)
         : base(creationUser, testCase)
     {
         List<EMGeneralException> exceptions = new();

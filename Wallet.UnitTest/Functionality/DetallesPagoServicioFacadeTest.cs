@@ -43,7 +43,7 @@ public class DetallesPagoServicioFacadeTest : BaseFacadeTest<IDetallesPagoServic
         Context.Cliente.Add(cliente);
         await Context.SaveChangesAsync();
 
-        var wallet = new CuentaWallet(cliente.Guid, "MXN", "876543210987654321", _userId);
+        var wallet = new CuentaWallet(cliente.Id, "MXN", "876543210987654321", _userId);
         Context.CuentaWallet.Add(wallet);
         await Context.SaveChangesAsync();
 

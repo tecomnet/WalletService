@@ -70,7 +70,7 @@ namespace Wallet.RestAPI.Controllers
         public abstract Task<IActionResult> GetDetallesPagoServicioPorClienteAsync(
             [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
-            [FromRoute] [Required] Guid idCliente);
+            [FromRoute] [Required] int idCliente);
 
         /// <summary>
         /// Registra un nuevo pago de servicio

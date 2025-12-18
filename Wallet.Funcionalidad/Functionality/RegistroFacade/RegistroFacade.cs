@@ -247,7 +247,7 @@ public class RegistroFacade(
         }
 
         // Crear la Billetera para el usuario usando el Guid del Cliente
-        await cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Guid, usuario.CreationUser);
+        await cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Id, usuario.CreationUser);
 
         // Actualiza el estado del registro a RegistroCompletado
         await ActualizarEstatusAsync(usuario, EstatusRegistroEnum.RegistroCompletado, usuario.CreationUser);

@@ -51,11 +51,11 @@ public class CuentaWalletFacadeTest : BaseFacadeTest<ICuentaWalletFacade>, IDisp
         await Context.SaveChangesAsync();
 
         // Act
-        var wallet = await _cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Guid, _userId);
+        var wallet = await _cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Id, _userId);
 
         // Assert
         Assert.NotNull(wallet);
-        Assert.Equal(cliente.Guid, wallet.IdCliente);
+        Assert.Equal(cliente.Id, wallet.IdCliente);
         Assert.Equal("MXN", wallet.Moneda);
         Assert.NotNull(wallet.CuentaCLABE);
         Assert.Equal(18, wallet.CuentaCLABE.Length);
@@ -79,10 +79,10 @@ public class CuentaWalletFacadeTest : BaseFacadeTest<ICuentaWalletFacade>, IDisp
         Context.Cliente.Add(cliente);
         await Context.SaveChangesAsync();
 
-        var wallet = await _cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Guid, _userId);
+        var wallet = await _cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Id, _userId);
 
         // Act
-        var retrievedWallet = await _cuentaWalletFacade.ObtenerPorClienteAsync(cliente.Guid);
+        var retrievedWallet = await _cuentaWalletFacade.ObtenerPorClienteAsync(cliente.Id);
 
         // Assert
         Assert.NotNull(retrievedWallet);
@@ -106,11 +106,11 @@ public class CuentaWalletFacadeTest : BaseFacadeTest<ICuentaWalletFacade>, IDisp
         Context.Cliente.Add(cliente);
         await Context.SaveChangesAsync();
 
-        var wallet = await _cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Guid, _userId);
+        var wallet = await _cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Id, _userId);
 
         // Act
         await _cuentaWalletFacade.ActualizarSaldoAsync(wallet.Id, 500.00m, _userId);
-        var updatedWallet = await _cuentaWalletFacade.ObtenerPorClienteAsync(cliente.Guid);
+        var updatedWallet = await _cuentaWalletFacade.ObtenerPorClienteAsync(cliente.Id);
 
         // Assert
         Assert.NotNull(updatedWallet);

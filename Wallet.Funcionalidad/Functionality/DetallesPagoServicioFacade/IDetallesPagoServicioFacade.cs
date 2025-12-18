@@ -8,7 +8,7 @@ public interface IDetallesPagoServicioFacade
         Guid creationUser, string? codigoAutorizacion);
 
     Task<DetallesPagoServicio> ObtenerPorIdAsync(int id);
-    Task<List<DetallesPagoServicio>> ObtenerPorClienteAsync(Guid idCliente);
+    Task<List<DetallesPagoServicio>> ObtenerPorClienteAsync(int idCliente);
     Task<List<DetallesPagoServicio>> ObtenerTodosAsync();
     Task<List<DetallesPagoServicio>> ObtenerPorTransaccionAsync(int idTransaccion);
 

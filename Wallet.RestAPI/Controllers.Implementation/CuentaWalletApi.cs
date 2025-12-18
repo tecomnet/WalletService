@@ -17,7 +17,7 @@ public class CuentaWalletApiController(ICuentaWalletFacade cuentaWalletFacade, I
     : CuentaWalletApiControllerBase
 {
     /// <inheritdoc />
-    public override async Task<IActionResult> GetCuentaWalletPorClienteAsync(string version, Guid idCliente)
+    public override async Task<IActionResult> GetCuentaWalletPorClienteAsync(string version, int idCliente)
     {
         // Call facade method
         var wallet = await cuentaWalletFacade.ObtenerPorClienteAsync(idCliente);

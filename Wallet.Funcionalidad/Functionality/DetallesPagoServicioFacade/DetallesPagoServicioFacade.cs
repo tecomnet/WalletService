@@ -30,7 +30,7 @@ public class DetallesPagoServicioFacade(
                ?? throw new KeyNotFoundException($"Detalle de pago {id} no encontrado.");
     }
 
-    public async Task<List<DetallesPagoServicio>> ObtenerPorClienteAsync(Guid idCliente)
+    public async Task<List<DetallesPagoServicio>> ObtenerPorClienteAsync(int idCliente)
     {
         return await context.DetallesPagoServicio
             .Include(d => d.Transaccion)
