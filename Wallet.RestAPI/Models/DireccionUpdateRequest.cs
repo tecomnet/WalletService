@@ -32,24 +32,6 @@ namespace Wallet.RestAPI.Models
         public string CodigoPostal { get; set; }
 
         /// <summary>
-        /// Gets or Sets Pais
-        /// </summary>
-        [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="pais")]
-        public string Pais { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Estado
-        /// </summary>
-        [Required]
-
-        [StringLength(100, MinimumLength=1)]
-        [DataMember(Name="estado")]
-        public string Estado { get; set; }
-
-        /// <summary>
         /// Gets or Sets Municipio
         /// </summary>
         [Required]
@@ -112,8 +94,6 @@ namespace Wallet.RestAPI.Models
             var sb = new StringBuilder();
             sb.Append("class DireccionUpdateRequest {\n");
             sb.Append("  CodigoPostal: ").Append(CodigoPostal).Append("\n");
-            sb.Append("  Pais: ").Append(Pais).Append("\n");
-            sb.Append("  Estado: ").Append(Estado).Append("\n");
             sb.Append("  Municipio: ").Append(Municipio).Append("\n");
             sb.Append("  Colonia: ").Append(Colonia).Append("\n");
             sb.Append("  Calle: ").Append(Calle).Append("\n");
@@ -162,16 +142,6 @@ namespace Wallet.RestAPI.Models
                     CodigoPostal.Equals(other.CodigoPostal)
                 ) && 
                 (
-                    Pais == other.Pais ||
-                    Pais != null &&
-                    Pais.Equals(other.Pais)
-                ) && 
-                (
-                    Estado == other.Estado ||
-                    Estado != null &&
-                    Estado.Equals(other.Estado)
-                ) && 
-                (
                     Municipio == other.Municipio ||
                     Municipio != null &&
                     Municipio.Equals(other.Municipio)
@@ -215,10 +185,6 @@ namespace Wallet.RestAPI.Models
                 // Suitable nullity checks etc, of course :)
                     if (CodigoPostal != null)
                     hashCode = hashCode * 59 + CodigoPostal.GetHashCode();
-                    if (Pais != null)
-                    hashCode = hashCode * 59 + Pais.GetHashCode();
-                    if (Estado != null)
-                    hashCode = hashCode * 59 + Estado.GetHashCode();
                     if (Municipio != null)
                     hashCode = hashCode * 59 + Municipio.GetHashCode();
                     if (Colonia != null)
