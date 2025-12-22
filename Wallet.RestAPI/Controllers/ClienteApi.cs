@@ -49,7 +49,8 @@ namespace Wallet.RestAPI.Controllers
         public abstract Task<IActionResult> DeleteClienteAsync(
             [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
-            [FromRoute] [Required] int? idCliente);
+            [FromRoute] [Required] int? idCliente,
+            [FromQuery] [Required] string concurrencyToken);
 
         /// <summary>
         /// Obtiene un cliente por id
@@ -122,7 +123,7 @@ namespace Wallet.RestAPI.Controllers
             description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
-            public abstract Task<IActionResult> GetServiciosFavoritosPorClienteAsync(
+        public abstract Task<IActionResult> GetServiciosFavoritosPorClienteAsync(
             [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int? idCliente);
@@ -149,8 +150,10 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutActivarClienteAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-            [FromRoute] [Required] int? idCliente);
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
+            [FromRoute] [Required] int? idCliente,
+            [FromBody] StatusChangeRequest body);
 
         /// <summary>
         /// Actualiza un cliente por id
@@ -178,7 +181,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 409, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> UpdateClienteAsync([FromBody] DatosClienteUpdateRequest body,
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] int? idCliente);
     }
 }

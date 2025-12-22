@@ -19,11 +19,15 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     : ClienteApiControllerBase
 {
     // TODO EMD: PENDIENTE IMPLEMENTAR JWT PARA EL USUSARIO QUE REALIZA LA OPERACION
-    public override async Task<IActionResult> DeleteClienteAsync(string version, int? idCliente)
+    public override async Task<IActionResult> DeleteClienteAsync(string version, int? idCliente,
+        string concurrencyToken)
     {
+        if (!idCliente.HasValue)
+            return BadRequest("IdCliente is required");
+
         // Call facade method
         var cliente =
-            await clienteFacade.EliminarClienteAsync(idCliente: idCliente.Value,
+            await clienteFacade.EliminarClienteAsync(idCliente: idCliente.Value, concurrencyToken: concurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<ClienteResult>(source: cliente);
@@ -33,6 +37,9 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
 
     public override async Task<IActionResult> GetClienteAsync(string version, int? idCliente)
     {
+        if (!idCliente.HasValue)
+            return BadRequest("IdCliente is required");
+
         // Call facade method
         var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente.Value);
         // Map to response model
@@ -56,6 +63,9 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
 
     public override async Task<IActionResult> GetServiciosFavoritosPorClienteAsync(string version, int? idCliente)
     {
+        if (!idCliente.HasValue)
+            return BadRequest("IdCliente is required");
+
         // Call facade method
         var serviciosFavoritos = await clienteFacade.ObtenerServiciosFavoritosAsync(idCliente: idCliente.Value);
         // Map to response model
@@ -64,10 +74,15 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         return Ok(value: response);
     }
 
-    public override async Task<IActionResult> PutActivarClienteAsync(string version, int? idCliente)
+    public override async Task<IActionResult> PutActivarClienteAsync(string version, int? idCliente,
+        StatusChangeRequest body)
     {
+        if (!idCliente.HasValue)
+            return BadRequest("IdCliente is required");
+
         // Call facade method
         var cliente = await clienteFacade.ActivarClienteAsync(idCliente: idCliente.Value,
+            concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<ClienteResult>(source: cliente);
@@ -75,7 +90,8 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         return Ok(value: response);
     }
 
-    public override async Task<IActionResult> UpdateClienteAsync(DatosClienteUpdateRequest body, string version, int? idCliente)
+    public override async Task<IActionResult> UpdateClienteAsync(DatosClienteUpdateRequest body, string version,
+        int? idCliente)
     {
         if (!idCliente.HasValue)
             return BadRequest("IdCliente is required");

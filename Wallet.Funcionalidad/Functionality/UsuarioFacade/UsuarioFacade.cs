@@ -27,12 +27,10 @@ public class UsuarioFacade(
         try
         {
             // Busca el usuario por su ID, incluyendo todas las relaciones necesarias.
+            // Busca el usuario por su ID, incluyendo todas las relaciones necesarias.
             var usuario = await context.Usuario
                 .Include(navigationPropertyPath: u => u.Cliente)
                 .ThenInclude(c => c.Empresa)
-                .Include(navigationPropertyPath: u => u.Verificaciones2Fa)
-                .Include(navigationPropertyPath: u => u.DispositivoMovilAutorizados)
-                .Include(navigationPropertyPath: u => u.UbicacionesGeolocalizacion)
                 .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
 
             // Si no se encuentra, lanza una excepción.
@@ -140,6 +138,13 @@ public class UsuarioFacade(
             usuario.ActualizarCorreoElectronico(correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
 
+            // Carga explícitamente las verificaciones 2FA activas de Email.
+            await context.Entry(entity: usuario)
+                .Collection(propertyExpression: u => u.Verificaciones2Fa)
+                .Query()
+                .Where(predicate: v => v.Tipo == Tipo2FA.Email && v.IsActive && !v.Verificado)
+                .LoadAsync();
+
             // Valida que el nuevo correo no esté duplicado.
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idUsuario);
 
@@ -182,6 +187,13 @@ public class UsuarioFacade(
             usuario.ActualizarTelefono(codigoPais: codigoPais, telefono: telefono,
                 modificationUser: modificationUser);
 
+            // Carga explícitamente las verificaciones 2FA activas de SMS.
+            await context.Entry(entity: usuario)
+                .Collection(propertyExpression: u => u.Verificaciones2Fa)
+                .Query()
+                .Where(predicate: v => v.Tipo == Tipo2FA.Sms && v.IsActive && !v.Verificado)
+                .LoadAsync();
+
             // Valida que el nuevo teléfono no esté duplicado.
             await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono, id: idUsuario);
 
@@ -216,7 +228,15 @@ public class UsuarioFacade(
         {
             bool confirmado = false;
             // Obtiene el usuario.
-            var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+            var usuario = await context.Usuario.FindAsync(idUsuario);
+
+            if (usuario == null)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.UsuarioNoEncontrado,
+                    dynamicContent: [idUsuario],
+                    module: this.GetType().Name));
+            }
 
             // Carga explícitamente las verificaciones 2FA activas del tipo solicitado.
             await context.Entry(entity: usuario)

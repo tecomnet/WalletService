@@ -168,7 +168,9 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         const int idAEliminar = 1;
 
         // Act
-        var result = await Facade.EliminaEmpresaAsync(idEmpresa: idAEliminar, modificationUser: SetupConfig.UserId);
+        var empresa = await Facade.ObtenerPorIdAsync(idEmpresa: idAEliminar);
+        var result = await Facade.EliminaEmpresaAsync(idEmpresa: idAEliminar,
+            concurrencyToken: Convert.ToBase64String(empresa.ConcurrencyToken), modificationUser: SetupConfig.UserId);
 
         // Assert
         Assert.False(condition: result.IsActive);
@@ -190,7 +192,9 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         await Context.SaveChangesAsync();
 
         // Act
-        var result = await Facade.ActivaEmpresaAsync(idEmpresa: idAActivar, modificationUser: SetupConfig.UserId);
+        var result = await Facade.ActivaEmpresaAsync(idEmpresa: idAActivar,
+            concurrencyToken: Convert.ToBase64String(empresaToDeactivate!.ConcurrencyToken),
+            modificationUser: SetupConfig.UserId);
 
         // Assert
         Assert.True(condition: result.IsActive);

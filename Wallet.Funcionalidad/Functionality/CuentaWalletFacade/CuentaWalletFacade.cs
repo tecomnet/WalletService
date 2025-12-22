@@ -28,7 +28,6 @@ public class CuentaWalletFacade(ServiceDbContext context) : ICuentaWalletFacade
     public async Task<CuentaWallet> ObtenerPorClienteAsync(int idCliente)
     {
         return await context.CuentaWallet
-                   .Include(w => w.BitacoraTransacciones)
                    .FirstOrDefaultAsync(w => w.IdCliente == idCliente)
                ?? throw new KeyNotFoundException($"No se encontró wallet para el cliente {idCliente}");
     }

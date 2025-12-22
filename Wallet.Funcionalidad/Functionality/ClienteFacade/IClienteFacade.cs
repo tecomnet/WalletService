@@ -36,17 +36,19 @@ public interface IClienteFacade
     /// Elimina (desactiva lógicamente) un cliente por su identificador.
     /// </summary>
     /// <param name="idCliente">El identificador único del cliente a eliminar.</param>
+    /// <param name="concurrencyToken">El token de concurrencia para validar que la entidad no haya sido modificada.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la eliminación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Cliente"/> eliminado.</returns>
-    public Task<Cliente> EliminarClienteAsync(int idCliente, Guid modificationUser);
+    public Task<Cliente> EliminarClienteAsync(int idCliente, string concurrencyToken, Guid modificationUser);
 
     /// <summary>
     /// Activa un cliente previamente desactivado por su identificador.
     /// </summary>
     /// <param name="idCliente">El identificador único del cliente a activar.</param>
+    /// <param name="concurrencyToken">El token de concurrencia para validar que la entidad no haya sido modificada.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la activación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Cliente"/> activado.</returns>
-    public Task<Cliente> ActivarClienteAsync(int idCliente, Guid modificationUser);
+    public Task<Cliente> ActivarClienteAsync(int idCliente, string concurrencyToken, Guid modificationUser);
 
     /// <summary>
     /// Obtiene una lista de todos los clientes registrados en el sistema.

@@ -147,8 +147,21 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
         try
         {
             // Call facade method
+            // Get concurrency token first (assuming client exists for successful case, else passing empty/dummy for fail case 2)
+            string token = string.Empty;
+            if (success)
+            {
+                var existingCliente = await Facade.ObtenerClientePorIdAsync(idCliente);
+                token = Convert.ToBase64String(existingCliente.ConcurrencyToken);
+            }
+            else
+            {
+                token = Convert.ToBase64String(new byte[8]); // Dummy token for fail case
+            }
+
             var cliente =
-                await Facade.EliminarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
+                await Facade.EliminarClienteAsync(idCliente: idCliente, concurrencyToken: token,
+                    modificationUser: SetupConfig.UserId);
             // Assert cliente returned
             Assert.NotNull(cliente);
             // Assert cliente properties
@@ -199,8 +212,23 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
         try
         {
             // Call facade method
+            string token = string.Empty;
+            if (success)
+            {
+                // For test case 1, client is active, but we can still try to activate it or check token logic.
+                // Actually ActivarClienteAsync assumes it's inactive? The test case "1. Successfully case, activa cliente" implies it works.
+                // We need to fetch it to get the token regardless.
+                var existingCliente = await Facade.ObtenerClientePorIdAsync(idCliente);
+                token = Convert.ToBase64String(existingCliente.ConcurrencyToken);
+            }
+            else
+            {
+                token = Convert.ToBase64String(new byte[8]);
+            }
+
             var cliente =
-                await Facade.ActivarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
+                await Facade.ActivarClienteAsync(idCliente: idCliente, concurrencyToken: token,
+                    modificationUser: SetupConfig.UserId);
             // Assert cliente returned
             Assert.NotNull(cliente);
             // Assert cliente properties

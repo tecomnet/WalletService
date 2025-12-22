@@ -277,6 +277,13 @@ paths:
     delete:
       summary: Elimina un cliente por id
       operationId: DeleteCliente
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: concurrencyToken
+          description: Token de concurrencia
+          required: true
       responses:
         "200":
           description: OK
@@ -302,6 +309,12 @@ paths:
     put:
       summary: Activa un cliente por id
       operationId: PutActivarCliente
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StatusChangeRequest"
+        required: true
       responses:
         "200":
           description: OK
@@ -678,6 +691,70 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/EmpresaUpdateRequest"
+      tags:
+        - Empresa
+    delete:
+      summary: Elimina una empresa por id
+      operationId: DeleteEmpresa
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: concurrencyToken
+          description: Token de concurrencia
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmpresaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "409":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Elimina una empresa por id
+      security:
+        - jwsToken: []
+      tags:
+        - Empresa
+
+  "/{version}/empresa/{idEmpresa}/activar":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idEmpresa"
+    put:
+      summary: Activa una empresa por id
+      operationId: PutActivarEmpresa
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StatusChangeRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmpresaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "409":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Activa una empresa por id
+      security:
+        - jwsToken: []
       tags:
         - Empresa
 
@@ -3815,6 +3892,17 @@ components:
         - creationUser
         - modificationUser
         - isActive
+    StatusChangeRequest:
+      title: StatusChangeRequest
+      type: object
+      description: Estructura para cambiar el estatus de una entidad
+      properties:
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
+      required:
+        - concurrencyToken
+
   securitySchemes:
     jwsToken:
       type: http

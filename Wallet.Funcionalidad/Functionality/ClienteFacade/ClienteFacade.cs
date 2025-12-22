@@ -27,12 +27,8 @@ public class ClienteFacade(
             // Obtener cliente
             var cliente = await context.Cliente.Include(navigationPropertyPath: x => x.Direccion)
                 .Include(navigationPropertyPath: x => x.Usuario)
-                .ThenInclude(navigationPropertyPath: u => u.DispositivoMovilAutorizados)
-                .Include(navigationPropertyPath: x => x.Usuario)
-                .ThenInclude(navigationPropertyPath: u => u.Verificaciones2Fa)
                 .Include(navigationPropertyPath: x => x.Estado)
-                .Include(navigationPropertyPath: x => x.Usuario)
-                .Include(navigationPropertyPath: u => u.Empresa)
+                .Include(navigationPropertyPath: x => x.Empresa)
                 .FirstOrDefaultAsync(predicate: x => x.Id == idCliente);
             // Validar cliente
             if (cliente == null)
@@ -164,17 +160,21 @@ public class ClienteFacade(
 
 
     /// <inheritdoc />
-    public async Task<Cliente> EliminarClienteAsync(int idCliente, Guid modificationUser)
+    public async Task<Cliente> EliminarClienteAsync(int idCliente, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(cliente).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             cliente.Deactivate(modificationUser: modificationUser);
             cliente.Usuario.Deactivate(modificationUser: modificationUser); // Also deactivate Usuario? Maybe.
             await context.SaveChangesAsync();
             return cliente;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -185,17 +185,21 @@ public class ClienteFacade(
     }
 
     /// <inheritdoc />
-    public async Task<Cliente> ActivarClienteAsync(int idCliente, Guid modificationUser)
+    public async Task<Cliente> ActivarClienteAsync(int idCliente, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(cliente).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             cliente.Activate(modificationUser: modificationUser);
             cliente.Usuario.Activate(modificationUser: modificationUser); // Also activate Usuario? Maybe.
             await context.SaveChangesAsync();
             return cliente;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
