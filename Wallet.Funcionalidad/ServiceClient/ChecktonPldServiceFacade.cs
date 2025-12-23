@@ -94,7 +94,7 @@ public class ChecktonPldServiceFacade(
     protected override EMGeneralAggregateException? ExtractEMGeneralAggregateException(Exception exception)
     {
         // Si la excepción no es del tipo esperado (ApiException<Response>), retorna null.
-        if (exception is not ApiException<Response> exception1) return null;
+        if (exception is not DOM.Comun.ApiException<Response> exception1) return null;
         // Obtiene los errores de la respuesta.
         var errors = exception1.Result.Errors;
         // Inicializa una lista de excepciones.

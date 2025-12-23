@@ -32,10 +32,9 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             // Crea una nueva instancia de Proveedor.
             var proveedor = new Proveedor(nombre: nombre, urlIcono: urlIcono, broker: broker,
                 creationUser: creationUser);
-            ValidarDuplicidad(nombre: nombre);
+            ValidarProveedorDuplicado(nombre: nombre);
             // Agrega el proveedor al contexto.
             await context.Proveedor.AddAsync(entity: proveedor);
-
             // Guarda los cambios en la base de datos.
             await context.SaveChangesAsync();
             return proveedor;
@@ -92,8 +91,8 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(proveedor).Property(x => x.ConcurrencyToken).OriginalValue =
                 Convert.FromBase64String(concurrencyToken);
-            ValidarIsActive(proveedor: proveedor);
-            ValidarDuplicidad(nombre: nombre, id: idProveedor);
+            ValidarProveedorIsActive(proveedor: proveedor);
+            ValidarProveedorDuplicado(nombre: nombre, id: idProveedor);
             // Actualiza los datos del proveedor.
             proveedor.Update(nombre: nombre, urlIcono: urlIcono, modificationUser: modificationUser);
 
