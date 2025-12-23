@@ -30,7 +30,7 @@ namespace Wallet.RestAPI.Models
         [StringLength(5, MinimumLength=5)]
         [DataMember(Name="codigoPostal")]
         public string CodigoPostal { get; set; }
-
+        
         /// <summary>
         /// Gets or Sets Municipio
         /// </summary>
