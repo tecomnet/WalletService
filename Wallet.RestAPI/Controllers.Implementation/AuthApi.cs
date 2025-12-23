@@ -28,7 +28,7 @@ public class AuthApi(IAuthFacade authFacade, IMapper mapper) : AuthApiController
         return Ok(value: mapper.Map<AuthResult>(source: result));
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc />F
     public override async Task<IActionResult> RefreshAsync(
         [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
         string version,

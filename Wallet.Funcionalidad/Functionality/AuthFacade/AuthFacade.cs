@@ -57,12 +57,13 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
 
         // Guarda los cambios en la base de datos.
         await context.SaveChangesAsync();
-
+        
         return new AuthResultDto
         {
             Success = true,
             AccessToken = accessToken,
-            RefreshToken = refreshToken
+            RefreshToken = refreshToken,
+            IdCliente = usuario.Cliente?.Id ?? 0
         };
     }
 

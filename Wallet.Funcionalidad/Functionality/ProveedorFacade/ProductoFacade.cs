@@ -202,6 +202,7 @@ public partial class ProveedorFacade : IProveedorFacade
 
             // Obtiene el nuevo proveedor.
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
+            ValidarProveedorIsActive(proveedor: proveedor);
             // Valida duplicidad en el nuevo proveedor
             ValidarProductoDuplicidad(nombre: producto.Nombre, sku: producto.Sku, idProveedor: idProveedor,
                 id: idProducto);

@@ -22,6 +22,12 @@ public class AuthResultDto
     /// Obtiene o establece un valor que indica si la operación de autenticación fue exitosa.
     /// </summary>
     public bool Success { get; set; }
+    
+    /// <summary>
+    /// Obtiene o establece el usuario autenticado.
+    /// </summary>
+    public int IdCliente { get; set; } // Temporal
+    
 
     /// <summary>
     /// Obtiene o establece una lista de mensajes de error si la operación de autenticación falló.

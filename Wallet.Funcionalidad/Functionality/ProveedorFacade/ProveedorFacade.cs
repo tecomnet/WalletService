@@ -179,7 +179,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     /// <param name="nombre">Nombre de el proveedor a validar.</param>
     /// <param name="id">ID de el proveedor (opcional, para excluir en actualizaciones).</param>
     /// <exception cref="EMGeneralAggregateException">Si ya existe un proveedor con ese nombre.</exception>
-    private void ValidarDuplicidad(string nombre, int id = 0)
+    private void ValidarProveedorDuplicado(string nombre, int id = 0)
     {
         // Obtiene estado existente
         var existe = context.Proveedor.FirstOrDefault(predicate: x => x.Nombre == nombre && x.Id != id);
@@ -198,7 +198,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     /// </summary>
     /// <param name="proveedor">La proveedor a validar.</param>
     /// <exception cref="EMGeneralAggregateException">Si el proveedor está inactiva.</exception>
-    private void ValidarIsActive(Proveedor proveedor)
+    private void ValidarProveedorIsActive(Proveedor proveedor)
     {
         if (!proveedor.IsActive)
         {
