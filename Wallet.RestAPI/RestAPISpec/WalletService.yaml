@@ -2376,7 +2376,6 @@ components:
         - username
     AuthResult:
       type: object
-      description: Estructura para resultado de autenticacion
       properties:
         accessToken:
           type: string
