@@ -17,18 +17,32 @@ public class AutoMapperProfile : Profile
     {
         //src.FechaNacimiento es DateOnly? (anulable) y dest.FechaNacimiento es DateTime? (anulable)
         CreateMap<Wallet.DOM.Modelos.Cliente, ClienteResult>()
-            .ForMember(dest => dest.FechaNacimiento,
-                       opt => opt.MapFrom(src => src.FechaNacimiento.HasValue
-                               ? src.FechaNacimiento.Value.ToDateTime(TimeOnly.MinValue)
-                               : (DateTime?)null))
-            .ForMember(dest => dest.Estado,
-                       opt => opt.MapFrom(src => src.Estado.Nombre))
-            .ForMember(dest => dest.Empresa,
-            opt => opt.MapFrom(src => src.Empresa.Nombre));
+            .ForMember(destinationMember: dest => dest.FechaNacimiento,
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.FechaNacimiento.HasValue
+                    ? src.FechaNacimiento.Value.ToDateTime(TimeOnly.MinValue)
+                    : (DateTime?)null))
+            .ForMember(destinationMember: dest => dest.Estado,
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Estado.Nombre))
+            .ForMember(destinationMember: dest => dest.Empresa,
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Empresa.Nombre))
+            .ForMember(destinationMember: dest => dest.CodigoPais,
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.CodigoPais))
+            .ForMember(destinationMember: dest => dest.Telefono,
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.Telefono))
+            .ForMember(destinationMember: dest => dest.CorreoElectronico,
+                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.CorreoElectronico));
         CreateMap<UbicacionesGeolocalizacion, UbicacionResult>();
         CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>();
         CreateMap<Direccion, DireccionResult>();
         CreateMap<Empresa, EmpresaResult>();
         CreateMap<Estado, EstadoResult>();
+        CreateMap<ServicioFavorito, ServicioFavoritoResult>();
+        CreateMap<Proveedor, ProveedorResult>();
+        CreateMap<Producto, ProductoResult>();
+        CreateMap<Usuario, UsuarioResult>();
+        CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();
+        CreateMap<Wallet.DOM.Modelos.Broker, BrokerResult>();
+        CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>();
+        CreateMap<KeyValueConfig, KeyValueConfigResult>();
     }
 }

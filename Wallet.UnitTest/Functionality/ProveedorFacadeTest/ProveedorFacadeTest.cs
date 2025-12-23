@@ -1,0 +1,185 @@
+using Microsoft.EntityFrameworkCore;
+using Wallet.DOM.Errors;
+using Wallet.Funcionalidad.Functionality.ProveedorFacade;
+using Wallet.UnitTest.Functionality.Configuration;
+using Xunit.Sdk;
+
+namespace Wallet.UnitTest.Functionality.ProveedorFacadeTest;
+
+public class ProveedorFacadeTest(SetupDataConfig setupConfig)
+    : BaseFacadeTest<IProveedorFacade>(setupConfig: setupConfig)
+{
+    [Theory]
+    // Successfully case
+    [InlineData(data: ["1. Successfully case, create proveedor", "Netflix", 1, true, new string[] { }])]
+    // Wrong cases
+    [InlineData(data:
+    [
+        "2. Wrong case, empty name", "", 1, false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
+    ])]
+    public async Task GuardarProveedorAsyncTest(
+        string caseName,
+        string nombre,
+        int brokerId,
+        bool success,
+        string[] expectedErrors)
+    {
+        try
+        {
+            // Call facade method
+            var proveedor = await Facade.GuardarProveedorAsync(
+                nombre: nombre,
+                urlIcono: "https://example.com/icon.png",
+                brokerId: brokerId,
+                creationUser: SetupConfig.UserId,
+                testCase: SetupConfig.TestCaseId);
+
+            // Assert proveedor created
+            Assert.NotNull(proveedor);
+            // Assert properties
+            Assert.True(condition: proveedor.Nombre == nombre &&
+                                   proveedor.BrokerId == brokerId &&
+                                   proveedor.CreationUser == SetupConfig.UserId);
+
+            // Get from context
+            var proveedorContext = await Context.Proveedor.AsNoTracking()
+                .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
+            Assert.NotNull(proveedorContext);
+            Assert.True(condition: proveedorContext.Nombre == nombre &&
+                                   proveedorContext.BrokerId == brokerId &&
+                                   proveedorContext.CreationUser == SetupConfig.UserId);
+
+            Assert.True(condition: success);
+        }
+        catch (EMGeneralAggregateException exception)
+        {
+            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not TrueException && exception is not FalseException)
+        {
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
+        }
+    }
+
+    [Theory]
+    // Successfully case
+    [InlineData(data: ["1. Successfully case, update proveedor", 1, "CFE Updated", true, new string[] { }])]
+    // Wrong cases
+    [InlineData(data:
+    [
+        "2. Wrong case, not found", 99, "Name", false, new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
+    ])] // CHECK ERROR CODE
+    public async Task ActualizarProveedorAsyncTest(
+        string caseName,
+        int idProveedor,
+        string nombre,
+        bool success,
+        string[] expectedErrors)
+    {
+        try
+        {
+            var proveedor = await Facade.ActualizarProveedorAsync(
+                idProveedor: idProveedor,
+                nombre: nombre,
+                urlIcono: "https://example.com/icon.png",
+                modificationUser: SetupConfig.UserId,
+                testCase: SetupConfig.TestCaseId);
+
+            Assert.NotNull(proveedor);
+            Assert.True(condition: proveedor.Nombre == nombre &&
+                                   proveedor.ModificationUser == SetupConfig.UserId);
+
+            var proveedorContext = await Context.Proveedor.AsNoTracking()
+                .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
+            Assert.NotNull(proveedorContext);
+            Assert.True(condition: proveedorContext.Nombre == nombre &&
+                                   proveedorContext.ModificationUser == SetupConfig.UserId);
+
+            Assert.True(condition: success);
+        }
+        catch (EMGeneralAggregateException exception)
+        {
+            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not TrueException && exception is not FalseException)
+        {
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
+        }
+    }
+
+    [Theory]
+    [InlineData(data: ["1. Successfully case, delete proveedor", 1, true, new string[] { }])]
+    [InlineData(data:
+    [
+        "2. Wrong case, not found", 99, false, new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
+    ])] // CHECK ERROR CODE
+    public async Task EliminarProveedorAsyncTest(
+        string caseName,
+        int idProveedor,
+        bool success,
+        string[] expectedErrors)
+    {
+        try
+        {
+            var proveedor =
+                await Facade.EliminarProveedorAsync(idProveedor: idProveedor, modificationUser: SetupConfig.UserId);
+            Assert.NotNull(proveedor);
+            Assert.False(condition: proveedor.IsActive);
+
+            var proveedorContext = await Context.Proveedor.AsNoTracking()
+                .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
+            Assert.NotNull(proveedorContext);
+            Assert.False(condition: proveedorContext.IsActive);
+
+            Assert.True(condition: success);
+        }
+        catch (EMGeneralAggregateException exception)
+        {
+            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not TrueException && exception is not FalseException)
+        {
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
+        }
+    }
+
+    [Theory]
+    [InlineData(data: ["1. Successfully case, activate proveedor", 1, true, new string[] { }])]
+    [InlineData(data:
+    [
+        "2. Wrong case, not found", 99, false, new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
+    ])] // CHECK ERROR CODE
+    public async Task ActivarProveedorAsyncTest(
+        string caseName,
+        int idProveedor,
+        bool success,
+        string[] expectedErrors)
+    {
+        try
+        {
+            var proveedor =
+                await Facade.ActivarProveedorAsync(idProveedor: idProveedor, modificationUser: SetupConfig.UserId);
+            Assert.NotNull(proveedor);
+            Assert.True(condition: proveedor.IsActive);
+
+            var proveedorContext = await Context.Proveedor.AsNoTracking()
+                .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
+            Assert.NotNull(proveedorContext);
+            Assert.True(condition: proveedorContext.IsActive);
+
+            Assert.True(condition: success);
+        }
+        catch (EMGeneralAggregateException exception)
+        {
+            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not TrueException && exception is not FalseException)
+        {
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
+        }
+    }
+}

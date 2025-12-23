@@ -11,17 +11,29 @@ public class SetupDataConfig : DatabaseTestFixture
 	public readonly Guid UserId = new(g: "00000000-0000-0000-0000-000000000000");
 
 	private readonly CommonSettings _commonSettings = new();
-	
+
 	/// <summary>
 	/// Initialize data for test
 	/// </summary>
 	public SetupDataConfig()
 	{
-		SetupDataAsync(async context =>
+		SetupDataAsync(setupDataAction: async context =>
 		{
-			await context.AddRangeAsync(_commonSettings.Empresas);
-			await context.AddRangeAsync(_commonSettings.Estados);			
-			await context.AddRangeAsync(_commonSettings.Clientes);
+			await context.AddRangeAsync(entities: _commonSettings.Empresas);
+			await context.AddRangeAsync(entities: _commonSettings.Estados);
+			await context.AddRangeAsync(entities: _commonSettings.Usuarios);
+			await context.AddRangeAsync(entities: _commonSettings.Clientes);
+			await context.AddRangeAsync(entities: _commonSettings.Brokers);
+			await context.AddRangeAsync(entities: _commonSettings.Proveedores);
+			await context.AddRangeAsync(entities: _commonSettings.Productos);
+			await context.SaveChangesAsync();
+
+			// After SaveChangesAsync, IDs are assigned to Clientes and Proveedores
+			var primerCliente = _commonSettings.Clientes.First();
+			var primerProveedor = _commonSettings.Proveedores.First();
+			_commonSettings.CrearServiciosFavoritos(primerCliente: primerCliente, primerProveedor: primerProveedor);
+
+			await context.AddRangeAsync(entities: _commonSettings.ServiciosFavoritos);
 			await context.SaveChangesAsync();
 		}).GetAwaiter().GetResult();
 	}

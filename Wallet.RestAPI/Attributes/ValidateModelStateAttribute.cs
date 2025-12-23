@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+#nullable enable
+
 namespace Wallet.RestAPI.Attributes
 {
     /// <summary>
@@ -24,18 +26,18 @@ namespace Wallet.RestAPI.Attributes
                 foreach (var parameter in descriptor.MethodInfo.GetParameters())
                 {
                     object? args = null;
-                    if (parameter.Name != null && context.ActionArguments.ContainsKey(parameter.Name))
+                    if (parameter.Name != null && context.ActionArguments.ContainsKey(key: parameter.Name))
                     {
-                        args = context.ActionArguments[parameter.Name];
+                        args = context.ActionArguments[key: parameter.Name];
                     }
 
-                    ValidateAttributes(parameter, args, context.ModelState);
+                    ValidateAttributes(parameter: parameter, args: args, modelState: context.ModelState);
                 }
             }
 
             if (!context.ModelState.IsValid)
             {
-                context.Result = new BadRequestObjectResult(context.ModelState);
+                context.Result = new BadRequestObjectResult(modelState: context.ModelState);
             }
         }
 
@@ -43,7 +45,7 @@ namespace Wallet.RestAPI.Attributes
         {
             foreach (var attributeData in parameter.CustomAttributes)
             {
-                var attributeInstance = parameter.GetCustomAttribute(attributeData.AttributeType);
+                var attributeInstance = parameter.GetCustomAttribute(attributeType: attributeData.AttributeType);
 
                 var validationAttribute = attributeInstance as ValidationAttribute;
                 if (validationAttribute == null)
@@ -51,7 +53,7 @@ namespace Wallet.RestAPI.Attributes
                     continue;
                 }
 
-                var isValid = validationAttribute.IsValid(args);
+                var isValid = validationAttribute.IsValid(value: args);
                 if (isValid)
                 {
                     continue;
@@ -59,8 +61,8 @@ namespace Wallet.RestAPI.Attributes
 
                 if (parameter.Name != null)
                 {
-                    modelState.AddModelError(parameter.Name,
-                        validationAttribute.FormatErrorMessage(parameter.Name));
+                    modelState.AddModelError(key: parameter.Name,
+                        errorMessage: validationAttribute.FormatErrorMessage(name: parameter.Name));
                 }
             }
         }

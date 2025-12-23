@@ -22,6 +22,21 @@ namespace Wallet.DOM.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("EmpresaProducto", b =>
+                {
+                    b.Property<int>("EmpresasId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductosId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EmpresasId", "ProductosId");
+
+                    b.HasIndex("ProductosId");
+
+                    b.ToTable("EmpresaProducto");
+                });
+
             modelBuilder.Entity("Wallet.DOM.Modelos.ActividadEconomica", b =>
                 {
                     b.Property<int>("Id")
@@ -85,6 +100,51 @@ namespace Wallet.DOM.Migrations
                     b.ToTable("ActividadEconomica");
                 });
 
+            modelBuilder.Entity("Wallet.DOM.Modelos.Broker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Broker");
+                });
+
             modelBuilder.Entity("Wallet.DOM.Modelos.Cliente", b =>
                 {
                     b.Property<int>("Id")
@@ -93,23 +153,10 @@ namespace Wallet.DOM.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CodigoPais")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
                     b.Property<byte[]>("ConcurrencyToken")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
-
-                    b.Property<string>("Contrasena")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CorreoElectronico")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
 
                     b.Property<DateTime>("CreationTimestamp")
                         .HasColumnType("datetime2");
@@ -121,7 +168,7 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(18)
                         .HasColumnType("nvarchar(18)");
 
-                    b.Property<int?>("EmpresaId")
+                    b.Property<int>("EmpresaId")
                         .HasColumnType("int");
 
                     b.Property<int?>("EstadoId")
@@ -165,16 +212,14 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<string>("TestCaseID")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("TipoPersona")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -183,7 +228,66 @@ namespace Wallet.DOM.Migrations
 
                     b.HasIndex("EstadoId");
 
+                    b.HasIndex("UsuarioId")
+                        .IsUnique();
+
                     b.ToTable("Cliente");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.ConsentimientosUsuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("FechaAceptacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TipoDocumento")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("ConsentimientosUsuario");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Direccion", b =>
@@ -286,9 +390,6 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("ClienteId")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("ConcurrencyToken")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -331,9 +432,12 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("DispositivoMovilAutorizado");
                 });
@@ -531,6 +635,239 @@ namespace Wallet.DOM.Migrations
                     b.ToTable("Estado");
                 });
 
+            modelBuilder.Entity("Wallet.DOM.Modelos.KeyValueConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("KeyValueConfig");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.Producto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal?>("Precio")
+                        .HasColumnType("decimal(19, 2)");
+
+                    b.Property<int>("ProveedorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UrlIcono")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProveedorId");
+
+                    b.ToTable("Producto");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.Proveedor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BrokerId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UrlIcono")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrokerId");
+
+                    b.ToTable("Proveedor");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.ServicioFavorito", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Alias")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NumeroReferencia")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("ProveedorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("ProveedorId");
+
+                    b.ToTable("ServicioFavorito");
+                });
+
             modelBuilder.Entity("Wallet.DOM.Modelos.UbicacionesGeolocalizacion", b =>
                 {
                     b.Property<int>("Id")
@@ -543,9 +880,6 @@ namespace Wallet.DOM.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("ConcurrencyToken")
                         .IsConcurrencyToken()
@@ -598,11 +932,85 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("UbicacionGeolocalizacion");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CodigoPais")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("Contrasena")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CorreoElectronico")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Estatus")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RefreshToken")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Telefono")
+                        .IsUnique();
+
+                    b.ToTable("Usuario");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.ValidacionCheckton", b =>
@@ -664,9 +1072,6 @@ namespace Wallet.DOM.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Codigo")
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
@@ -709,14 +1114,32 @@ namespace Wallet.DOM.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Verificado")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("UsuarioId");
 
-                    b.ToTable("Verificacion2FA");
+                    b.ToTable("Verificacion2Fa");
+                });
+
+            modelBuilder.Entity("EmpresaProducto", b =>
+                {
+                    b.HasOne("Wallet.DOM.Modelos.Empresa", null)
+                        .WithMany()
+                        .HasForeignKey("EmpresasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Wallet.DOM.Modelos.Producto", null)
+                        .WithMany()
+                        .HasForeignKey("ProductosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.ActividadEconomica", b =>
@@ -730,15 +1153,36 @@ namespace Wallet.DOM.Migrations
                 {
                     b.HasOne("Wallet.DOM.Modelos.Empresa", "Empresa")
                         .WithMany("Clientes")
-                        .HasForeignKey("EmpresaId");
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Wallet.DOM.Modelos.Estado", "Estado")
                         .WithMany("Clientes")
                         .HasForeignKey("EstadoId");
 
+                    b.HasOne("Wallet.DOM.Modelos.Usuario", "Usuario")
+                        .WithOne("Cliente")
+                        .HasForeignKey("Wallet.DOM.Modelos.Cliente", "UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Empresa");
 
                     b.Navigation("Estado");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.ConsentimientosUsuario", b =>
+                {
+                    b.HasOne("Wallet.DOM.Modelos.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Direccion", b =>
@@ -754,9 +1198,13 @@ namespace Wallet.DOM.Migrations
 
             modelBuilder.Entity("Wallet.DOM.Modelos.DispositivoMovilAutorizado", b =>
                 {
-                    b.HasOne("Wallet.DOM.Modelos.Cliente", null)
+                    b.HasOne("Wallet.DOM.Modelos.Usuario", "Usuario")
                         .WithMany("DispositivoMovilAutorizados")
-                        .HasForeignKey("ClienteId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.DocumentacionAdjunta", b =>
@@ -774,15 +1222,56 @@ namespace Wallet.DOM.Migrations
                     b.Navigation("Documento");
                 });
 
-            modelBuilder.Entity("Wallet.DOM.Modelos.UbicacionesGeolocalizacion", b =>
+            modelBuilder.Entity("Wallet.DOM.Modelos.Producto", b =>
+                {
+                    b.HasOne("Wallet.DOM.Modelos.Proveedor", "Proveedor")
+                        .WithMany("Productos")
+                        .HasForeignKey("ProveedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proveedor");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.Proveedor", b =>
+                {
+                    b.HasOne("Wallet.DOM.Modelos.Broker", "Broker")
+                        .WithMany()
+                        .HasForeignKey("BrokerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Broker");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.ServicioFavorito", b =>
                 {
                     b.HasOne("Wallet.DOM.Modelos.Cliente", "Cliente")
-                        .WithMany("UbicacionesGeolocalizacion")
+                        .WithMany("ServiciosFavoritos")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Wallet.DOM.Modelos.Proveedor", "Proveedor")
+                        .WithMany()
+                        .HasForeignKey("ProveedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Cliente");
+
+                    b.Navigation("Proveedor");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.UbicacionesGeolocalizacion", b =>
+                {
+                    b.HasOne("Wallet.DOM.Modelos.Usuario", "Usuario")
+                        .WithMany("UbicacionesGeolocalizacion")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.ValidacionCheckton", b =>
@@ -794,13 +1283,13 @@ namespace Wallet.DOM.Migrations
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Verificacion2FA", b =>
                 {
-                    b.HasOne("Wallet.DOM.Modelos.Cliente", "Cliente")
-                        .WithMany("Verificaciones2FA")
-                        .HasForeignKey("ClienteId")
+                    b.HasOne("Wallet.DOM.Modelos.Usuario", "Usuario")
+                        .WithMany("Verificaciones2Fa")
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cliente");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Cliente", b =>
@@ -809,15 +1298,11 @@ namespace Wallet.DOM.Migrations
 
                     b.Navigation("Direccion");
 
-                    b.Navigation("DispositivoMovilAutorizados");
-
                     b.Navigation("DocumentacionAdjuntas");
 
-                    b.Navigation("UbicacionesGeolocalizacion");
+                    b.Navigation("ServiciosFavoritos");
 
                     b.Navigation("ValidacionesChecktons");
-
-                    b.Navigation("Verificaciones2FA");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.Empresa", b =>
@@ -828,6 +1313,22 @@ namespace Wallet.DOM.Migrations
             modelBuilder.Entity("Wallet.DOM.Modelos.Estado", b =>
                 {
                     b.Navigation("Clientes");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.Proveedor", b =>
+                {
+                    b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.Usuario", b =>
+                {
+                    b.Navigation("Cliente");
+
+                    b.Navigation("DispositivoMovilAutorizados");
+
+                    b.Navigation("UbicacionesGeolocalizacion");
+
+                    b.Navigation("Verificaciones2Fa");
                 });
 #pragma warning restore 612, 618
         }

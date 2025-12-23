@@ -1,22 +1,37 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
-/// <inheritdoc/>
+
+/// <summary>
+/// Implementation of the Direccion API controller.
+/// </summary>
+//[Authorize]
 public class DireccionApiController(IDireccionFacade direccionFacade, IMapper mapper) : DireccionApiControllerBase
 {
+    /// <inheritdoc />
+    public override async Task<IActionResult> GetDireccionAsync(string version, int? idCliente)
+    {
+        // Call facade method
+        var direccion = await direccionFacade.ObtenerDireccionPorClienteIdAsync(idCliente: idCliente.Value);
+        // Map to response model
+        var response = mapper.Map<DireccionResult>(source: direccion);
+        // Return OK response
+        return Ok(value: response);
+    }
 
-    /// <inheritdoc/>
-    public override async Task<IActionResult> PutDireccionAsync([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] DireccionUpdateRequest body)
+    /// <inheritdoc />
+    public override async Task<IActionResult> PutDireccionAsync(string version, int? idCliente,
+        DireccionUpdateRequest body)
     {
         // Call facade method
         var direccion = await direccionFacade.ActualizarDireccionCliente(
-            idCliente: idCliente,
+            idCliente: idCliente.Value,
             codigoPostal: body.CodigoPostal,
             municipio: body.Municipio,
             colonia: body.Colonia,
@@ -24,11 +39,10 @@ public class DireccionApiController(IDireccionFacade direccionFacade, IMapper ma
             numeroExterior: body.NumeroExterior,
             numeroInterior: body.NumeroInterior,
             referencia: body.Referencia,
-            modificationUser: Guid.Empty);
+            modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
-        var response = mapper.Map<DireccionResult>(direccion);
+        var response = mapper.Map<DireccionResult>(source: direccion);
         // Return OK response
-        return Ok(response);
+        return Ok(value: response);
     }
-
 }

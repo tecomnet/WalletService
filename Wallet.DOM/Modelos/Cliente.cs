@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
@@ -9,20 +8,11 @@ namespace Wallet.DOM.Modelos;
 
 public class Cliente : ValidatablePersistentObjectLogicalDelete
 {
+    /// <summary>
+    /// Define las restricciones de validación para las propiedades de la entidad Cliente.
+    /// </summary>
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
-        PropertyConstraint.StringPropertyConstraint(
-            propertyName: nameof(CodigoPais),
-            isRequired: true,
-            minimumLength: 3,
-            maximumLength: 3),
-
-        PropertyConstraint.StringPropertyConstraint(
-            propertyName: nameof(Telefono),
-            isRequired: true,
-            minimumLength: 9,
-            maximumLength: 10),
-
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Nombre),
             isRequired: true,
@@ -49,19 +39,6 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
             propertyName: nameof(Genero),
             isRequired: true),
 
-        PropertyConstraint.StringPropertyConstraint(
-            propertyName: nameof(CorreoElectronico),
-            isRequired: true,
-            minimumLength: 1,
-            maximumLength: 150,
-            regex: @"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$"),
-
-        PropertyConstraint.StringPropertyConstraint(
-            propertyName: nameof(Contrasena),
-            isRequired: true,
-            minimumLength: 1,
-            maximumLength: 100),
-
         PropertyConstraint.ObjectPropertyConstraint(
             propertyName: nameof(TipoPersona),
             isRequired: true),
@@ -70,7 +47,7 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
             propertyName: nameof(Curp),
             isRequired: true,
             minimumLength: 18,
-            maximumLength:18),
+            maximumLength: 18),
 
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(Rfc),
@@ -80,133 +57,173 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
 
         PropertyConstraint.StringPropertyConstraint(
             propertyName: nameof(FotoAWS),
-            isRequired: true,
+            isRequired: true, // TODO EMD: La foto AWS es opcional, revisar esta restricción.
             minimumLength: 1,
             maximumLength: 500),
     ];
 
-
-    [Key]
-    public int Id { get; private set; }
-    [Required]
-    [MaxLength(3)]
-    public string CodigoPais { get; private set; }
-
-    [Required]
-    [MaxLength(10)]
-    public string Telefono { get; private set; }
-
-    //[Required]
-    [MaxLength(100)]
+    /// <summary>
+    /// Obtiene o establece el nombre del cliente.
+    /// </summary>
+    [MaxLength(length: 100)]
     public string? Nombre { get; private set; }
 
-    //[Required]
-    [MaxLength(100)]
+    /// <summary>
+    /// Obtiene o establece el primer apellido del cliente.
+    /// </summary>
+    [MaxLength(length: 100)]
     public string? PrimerApellido { get; private set; }
 
-    //[Required]
-    [MaxLength(100)]
+    /// <summary>
+    /// Obtiene o establece el segundo apellido del cliente.
+    /// </summary>
+    [MaxLength(length: 100)]
     public string? SegundoApellido { get; private set; }
+
+    /// <summary>
+    /// Obtiene el nombre completo del cliente, concatenando Nombre, PrimerApellido y SegundoApellido.
+    /// </summary>
     [NotMapped]
     public string? NombreCompleto => $"{this.Nombre} {this.PrimerApellido} {this.SegundoApellido}";
 
-    //[Required]
+    /// <summary>
+    /// Obtiene o establece la fecha de nacimiento del cliente.
+    /// </summary>
     public DateOnly? FechaNacimiento { get; private set; }
-    //[Required]
+
+    /// <summary>
+    /// Obtiene o establece el género del cliente.
+    /// </summary>
     public Genero? Genero { get; private set; }
 
-    //[Required]
-    [EmailAddress]
-    [MaxLength(150)]
-    public string? CorreoElectronico { get; private set; }
-
-    //[Required]
-    [MaxLength(100)]
-    public string? Contrasena { get; private set; }
-
-    //[Required]
+    /// <summary>
+    /// Obtiene o establece el tipo de persona del cliente (Física o Moral).
+    /// </summary>
     public TipoPersona? TipoPersona { get; private set; }
 
-    //[Required]
-    [MaxLength(18)]
+    /// <summary>
+    /// Obtiene o establece la CURP (Clave Única de Registro de Población) del cliente.
+    /// </summary>
+    [MaxLength(length: 18)]
     public string? Curp { get; private set; }
 
-    //[Required]
-    [MaxLength(13)]
+    /// <summary>
+    /// Obtiene o establece el RFC (Registro Federal de Contribuyentes) del cliente.
+    /// </summary>
+    [MaxLength(length: 13)]
     public string? Rfc { get; private set; }
 
-    // TODO EMD: FOTO OPCIONAL, AQUI SE GUARDARA EL GUID O TOKEN QUE RETORNE AWS
-    //[Required]
-    [MaxLength(500)]
+    /// <summary>
+    /// Obtiene o establece la URL o identificador de la foto del cliente almacenada en AWS.
+    /// </summary>
+    [MaxLength(length: 500)]
     public string? FotoAWS { get; private set; }
 
+    /// <summary>
+    /// Obtiene o establece el identificador del estado asociado al cliente.
+    /// </summary>
     public int? EstadoId { get; private set; }
 
+    /// <summary>
+    /// Obtiene o establece el objeto Estado asociado al cliente.
+    /// </summary>
     public Estado? Estado { get; private set; }
 
-    public int? EmpresaId { get; private set; }
-
-    public Empresa? Empresa { get; private set; }
-
+    /// <summary>
+    /// Obtiene o establece la dirección del cliente.
+    /// </summary>
     public Direccion? Direccion { get; private set; }
 
-    public List<Verificacion2FA> Verificaciones2FA { get; private set; } = new();
-    public List<UbicacionesGeolocalizacion> UbicacionesGeolocalizacion { get; private set; } = new();
-    public List<DispositivoMovilAutorizado> DispositivoMovilAutorizados { get; private set; } = new();
+    /// <summary>
+    /// Obtiene o establece el identificador del usuario asociado a este cliente.
+    /// </summary>
+    public int UsuarioId { get; private set; }
+
+    /// <summary>
+    /// Obtiene o establece el objeto Usuario asociado a este cliente.
+    /// </summary>
+    public Usuario Usuario { get; private set; }
+
+    /// <summary>
+    /// Identificador de la empresa asociada al cliente.
+    /// </summary>
+    [Required]
+    public int EmpresaId { get; private set; }
+
+    /// <summary>
+    /// Objeto de navegación para la empresa.
+    /// </summary>
+    [ForeignKey(name: "EmpresaId")]
+    public Empresa Empresa { get; private set; }
+
+    /// <summary>
+    /// Obtiene la lista de documentos adjuntos del cliente.
+    /// </summary>
     public List<DocumentacionAdjunta> DocumentacionAdjuntas { get; private set; } = new();
+
+    /// <summary>
+    /// Obtiene la lista de actividades económicas del cliente.
+    /// </summary>
     public List<ActividadEconomica> ActividadEconomicas { get; private set; } = new();
+
+    /// <summary>
+    /// Obtiene la lista de validaciones Checkton realizadas para el cliente.
+    /// </summary>
     public List<ValidacionCheckton> ValidacionesChecktons { get; private set; } = new();
 
+    /// <summary>
+    /// Obtiene la lista de servicios favoritos del cliente.
+    /// </summary>
+    public List<ServicioFavorito> ServiciosFavoritos { get; private set; } = new();
 
+
+    /// <summary>
+    /// Constructor por defecto de la clase Cliente.
+    /// </summary>
     public Cliente() : base()
     {
-
     }
 
     /// <summary>
-    /// Nuevo cliente, para generar code 4 digitos por sms
+    /// Inicializa una nueva instancia de la clase Cliente con un usuario, empresa y un usuario de creación.
     /// </summary>
-    /// <param name="codigoPais"></param>
-    /// <param name="telefono"></param>
-    /// <param name="creationUser"></param>
-    /// <param name="testCase"></param>
-    /// <exception cref="EMGeneralAggregateException"></exception>
+    /// <param name="usuario">El objeto Usuario asociado a este cliente.</param>
+    /// <param name="empresa">La empresa a la que pertenece el cliente.</param>
+    /// <param name="creationUser">El GUID del usuario que crea el cliente.</param>
+    /// <param name="testCase">Parámetro opcional para casos de prueba.</param>
+    /// <exception cref="ArgumentNullException">Se lanza si el usuario o la empresa son nulos.</exception>
     public Cliente(
-        string codigoPais,
-        string telefono,
+        Usuario usuario,
+        Empresa empresa,
         Guid creationUser,
-        string? testCase = null) : base(creationUser, testCase)
+        string? testCase = null) : base(creationUser: creationUser, testCase: testCase)
     {
-        // Initialize the list of exceptions
-        List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Telefono), value: telefono, ref exceptions);
-        // If there are exceptions, throw them
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Assign properties
-        this.CodigoPais = codigoPais;
-        this.Telefono = telefono;
-        // Inicializa las listas
-        this.Verificaciones2FA = new List<Verificacion2FA>();
-        this.UbicacionesGeolocalizacion = new List<UbicacionesGeolocalizacion>();
-        this.DispositivoMovilAutorizados = new List<DispositivoMovilAutorizado>();
+        // Verifica que el usuario no sea nulo.
+        if (usuario == null) throw new ArgumentNullException(paramName: nameof(usuario));
+        if (empresa == null) throw new ArgumentNullException(paramName: nameof(empresa));
+
+        this.Usuario = usuario;
+        this.UsuarioId = usuario.Id;
+        this.Empresa = empresa;
+        this.EmpresaId = empresa.Id;
+
+        // Inicializa las listas de colecciones.
         this.DocumentacionAdjuntas = new List<DocumentacionAdjunta>();
         this.ActividadEconomicas = new List<ActividadEconomica>();
         this.ValidacionesChecktons = new List<ValidacionCheckton>();
+        this.ServiciosFavoritos = new List<ServicioFavorito>();
     }
 
     /// <summary>
-    /// Completa datos del cliente, genera code 4 digitos por correo electronico
+    /// Completa o actualiza los datos personales del cliente.
     /// </summary>
-    /// <param name="nombre"></param>
-    /// <param name="primerApellido"></param>
-    /// <param name="segundoApellido"></param>
-    /// <param name="fechaNacimiento"></param>
-    /// <param name="genero"></param>
-    /// <param name="modificationUser"></param>
-    /// <returns></returns>
-    /// <exception cref="EMGeneralAggregateException"></exception>
+    /// <param name="nombre">El nombre del cliente.</param>
+    /// <param name="primerApellido">El primer apellido del cliente.</param>
+    /// <param name="segundoApellido">El segundo apellido del cliente.</param>
+    /// <param name="fechaNacimiento">La fecha de nacimiento del cliente.</param>
+    /// <param name="genero">El género del cliente.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Se lanza si alguna validación de propiedad falla.</exception>
     public void AgregarDatosPersonales(
         string? nombre,
         string? primerApellido,
@@ -216,348 +233,214 @@ public class Cliente : ValidatablePersistentObjectLogicalDelete
         Guid modificationUser
     )
     {
-        // Initialize the list of exceptions
         List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, ref exceptions);
-        IsPropertyValid(propertyName: nameof(PrimerApellido), value: primerApellido, ref exceptions);
-        IsPropertyValid(propertyName: nameof(SegundoApellido), value: segundoApellido, ref exceptions);
-        IsPropertyValid(propertyName: nameof(FechaNacimiento), value: fechaNacimiento, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Genero), value: genero, ref exceptions);
-        // If there are exceptions, throw them
+
+        IsPropertyValid(propertyName: nameof(Nombre), value: nombre, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(PrimerApellido), value: primerApellido, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(SegundoApellido), value: segundoApellido, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(FechaNacimiento), value: fechaNacimiento, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(Genero), value: genero, exceptions: ref exceptions);
+
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        this.Nombre = nombre;
-        this.PrimerApellido = primerApellido;
-        this.SegundoApellido = segundoApellido;
-        this.FechaNacimiento = fechaNacimiento;
-        this.Genero = genero;
-        base.Update(modificationUser: modificationUser);
+
+        bool hasChanges = false;
+
+        if (this.Nombre != nombre)
+        {
+            this.Nombre = nombre;
+            hasChanges = true;
+        }
+
+        if (this.PrimerApellido != primerApellido)
+        {
+            this.PrimerApellido = primerApellido;
+            hasChanges = true;
+        }
+
+        if (this.SegundoApellido != segundoApellido)
+        {
+            this.SegundoApellido = segundoApellido;
+            hasChanges = true;
+        }
+
+        if (this.FechaNacimiento != fechaNacimiento)
+        {
+            this.FechaNacimiento = fechaNacimiento;
+            hasChanges = true;
+        }
+
+        if (this.Genero != genero)
+        {
+            this.Genero = genero;
+            hasChanges = true;
+        }
+
+        if (hasChanges)
+        {
+            base.Update(modificationUser: modificationUser);
+        }
     }
 
-    public void CrearContrasena(string contrasena, Guid modificationUser)
-    {
-        // Si ya existe la contrasena, debe actualizar
-        if (!string.IsNullOrWhiteSpace(this.Contrasena))
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.ContrasenaYaExiste,
-                dynamicContent: []));
-        }
-        // Initialize the list of exceptions
-        List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(Contrasena), value: contrasena, ref exceptions);
-        // If there are exceptions, throw them
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        //  TODO EMD: ENCRIPTAR EN EL FUTURO O USA HASH
-        // Set contrasena
-        this.Contrasena = contrasena;
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public void ActualizarContrasena(string contrasenaNueva, string confirmacionContrasenaNueva, string contrasenaActual, Guid modificationUser)
-    {
-        if (contrasenaNueva != confirmacionContrasenaNueva)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.ContrasenasNoCoinciden,
-                dynamicContent: []));
-        }
-        if (this.Contrasena != contrasenaActual)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.ContrasenaActualIncorrecta,
-                    dynamicContent: []));
-        }
-        // Initialize the list of exceptions
-        List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(Contrasena), value: contrasenaNueva, ref exceptions);
-        // If there are exceptions, throw them
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Set new contrasena
-        //  TODO EMD: ENCRIPTAR EN EL FUTURO O USA HASH
-        this.Contrasena = contrasenaNueva;
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public void ActualizarTelefono(string codigoPais, string telefono, Guid modificationUser)
-    {
-        // Initialize the list of exceptions
-        List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(CodigoPais), value: codigoPais, ref exceptions);
-        IsPropertyValid(propertyName: nameof(Telefono), value: telefono, ref exceptions);
-        // If there are exceptions, throw them
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        this.CodigoPais = codigoPais;
-        this.Telefono = telefono;
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public void ActualizarCorreoElectronico(string correoElectronico, Guid modificationUser)
-    {
-        // Initialize the list of exceptions
-        List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(CorreoElectronico), value: correoElectronico, ref exceptions);
-        // If there are exceptions, throw them
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        this.CorreoElectronico = correoElectronico;
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public void AgregarVerificacion2FA(Verificacion2FA verificacion, Guid modificationUser)
-    {
-        // Verifica que el objeto a agregar no sea nulo 
-        if (verificacion == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                            errorCode: ServiceErrorsBuilder.Verificacion2FARequerida,
-                            dynamicContent: []));
-        }
-        // Si el codigo ya existe, retronamos, solo faltara confirmarlo
-        // IDENTIFICA y DESACTIVA todos los códigos activos y no verificados del MISMO TIPO
-        var verificacionesViejas = this.Verificaciones2FA
-            // Filtramos por las que NO SE VERIFICADAS Y DEL MISMO TIPO
-            .Where(x => 
-                        x.Tipo == verificacion.Tipo &&
-                        x is { Verificado: false, IsActive: true })
-            // Convertir a lista para iterar sin problemas con el Where
-            .ToList();
-        // 4. Desactiva cada código de verificación viejo/pendiente
-        foreach (var oldVerification in verificacionesViejas)
-        {
-            // Desactivamos codigo viejo
-            oldVerification.Deactivate(modificationUser: modificationUser);
-        }
-        // 5. Agrega la nueva verificación (la más reciente)
-        this.Verificaciones2FA.Add(verificacion);
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public bool ConfirmarVerificacion2FA(Tipo2FA tipo, string codigo, Guid modificationUser)
-    {
-        // Busca la verificación 2FA activa y no verificada del tipo y código proporcionados
-        var verificacion = this.Verificaciones2FA?
-            .Where(v => v.Tipo == tipo) // 1. Filtrar por tipo.
-            .OrderByDescending(v => v.CreationTimestamp) // 2. Ordenar de más nuevo a más viejo.
-            .FirstOrDefault();
-        // Verifica si se encontró la verificación
-        if (verificacion == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.CodigoVerificacionNoEncontrado,
-                dynamicContent: [tipo.ToString()]));
-        }
-
-        // Verifica si el código está activo
-        if (!verificacion.IsActive)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.CodigoVerificacionInactivo,
-                dynamicContent: []));
-        }
-
-        // Verifica si el código ya ha sido verificado
-        if (verificacion.Verificado)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.CodigoVerificacionConfirmado,
-                dynamicContent: []));
-        }
-
-        // Verifica si el código ha vencido
-        if (DateTime.Now >= verificacion.FechaVencimiento)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.CodigoVerificacionVencido,
-                dynamicContent: []));
-        }
-        // Marca la verificación como verificada
-        verificacion.MarcarComoVerificado(codigo: codigo, modificationUser: modificationUser);
-        base.Update(modificationUser: modificationUser);
-        return verificacion.Verificado;
-    }
-
-
-
-    public void AgregarEmpresa(Empresa empresa, Guid modificationUser)
-    {
-        if (empresa == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.EmpresaRequerida,
-                    dynamicContent: []));
-        }
-        this.Empresa = empresa;
-        base.Update(modificationUser: modificationUser);
-    }
+    /// <summary>
+    /// Agrega o actualiza la dirección del cliente.
+    /// </summary>
+    /// <param name="direccion">El objeto Direccion a agregar.</param>
+    /// <param name="creationUser">El GUID del usuario que realiza la creación/modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Se lanza si la dirección proporcionada es nula.</exception>
     public void AgregarDireccion(Direccion direccion, Guid creationUser)
     {
-        // Se agrega la direccion solo con estado y pais
-        this.Direccion = direccion ?? throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-            errorCode: ServiceErrorsBuilder.DireccionRequerida,
-            dynamicContent: []));
-        // Actualizamos el cliente con la direccion
-        this.Direccion = direccion;
-        // Actualizamos el cliente
+        // Asigna la dirección, lanzando una excepción si es nula.
+        this.Direccion = direccion ?? throw new EMGeneralAggregateException(
+            exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.DireccionRequerida,
+                dynamicContent: []));
+        // Actualizamos el cliente (la línea anterior ya asigna, esta es redundante pero se mantiene por el original).
+        // this.Direccion = direccion;
+        // Actualiza los metadatos de la entidad base.
         base.Update(modificationUser: creationUser);
     }
 
+    /// <summary>
+    /// Agrega o actualiza el estado asociado al cliente.
+    /// </summary>
+    /// <param name="estado">El objeto Estado a agregar.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Se lanza si el estado proporcionado es nulo.</exception>
     public void AgregarEstado(Estado estado, Guid modificationUser)
     {
-        if (estado == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.EstadoRequerido,
-                    dynamicContent: []));
-        }
-        this.Estado = estado;
-        base.Update(modificationUser: modificationUser);
-    }
 
-    public void AgregarFotoAWS(string fotoAWS, Guid modificationUser)
-    {
-        // Initialize the list of exceptions
-        List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(FotoAWS), value: fotoAWS, ref exceptions);
-        // If there are exceptions, throw them
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Set fotoAWS
-        this.FotoAWS = fotoAWS;
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public void AgregarTipoPersona(TipoPersona tipoPersona, Guid modificationUser)
-    {
-        this.TipoPersona = tipoPersona;
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public void AgregarRfc( string rfc, Guid modificationUser)
-    {
-        // Initialize the list of exceptions
-        List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(Rfc), value: rfc, ref exceptions);
-        // If there are exceptions, throw them
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Set rfc
-        this.Rfc = rfc;
-        base.Update(modificationUser: modificationUser);
-    }
-    public void AgregarCurp(string curp, Guid modificationUser)
-    {
-        // Initialize the list of exceptions
-        List<EMGeneralException> exceptions = new();
-        // Validate the properties
-        IsPropertyValid(propertyName: nameof(Curp), value: curp, ref exceptions);
-        // If there are exceptions, throw them
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
-        // Set curp 
-        this.Curp = curp;
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public void AgregarUbicacionGeolocalizacion(UbicacionesGeolocalizacion ubicacion, Guid modificationUser)
-    {
-        // Verifica que la ubicacion no sea nula
-        if (ubicacion == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.UbicacionGeolocalizacionRequerido,
-                    dynamicContent: []));
-        }
-        // Agrega la nueva ubicacion a la lista
-        this.UbicacionesGeolocalizacion.Add(ubicacion);
-        base.Update(modificationUser: modificationUser);
-    }
-
-    public void AgregarDispositivoMovilAutorizado(DispositivoMovilAutorizado dispositivo, Guid modificationUser)
-    {
-        // Verifica que el dispositivo no sea nulo
-        if (dispositivo == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.DispositivoMovilAutorizadoRequerido,
-                    dynamicContent: []));
-        }
-        // Valida dispoitivo duplicado por IdDispositivo y Token
-        if (this.DispositivoMovilAutorizados.Any(x => x.IdDispositivo == dispositivo.IdDispositivo && x.Token == dispositivo.Token))
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.DispositivoMovilAutorizadoDuplicado,
-                    dynamicContent: []));
-        }
-        // Encuentra el dispositivo actual en la lista
-        var dispositivoActual = this.DispositivoMovilAutorizados.FirstOrDefault(x => x.Actual);
-        // Si existe un dispositivo actual, marcarlo como no actual
-        if (dispositivoActual != null)
-        {
-            dispositivoActual.MarcarComoNoActual();
-        }
-        // Agrega el nuevo dispositivo a la lista y este quedara como el actual
-        this.DispositivoMovilAutorizados.Add(dispositivo);
+        // Asigna el estado al cliente.
+        this.Estado = estado ?? throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.EstadoRequerido,
+                dynamicContent: []));
+        // Actualiza los metadatos de la entidad base.
         base.Update(modificationUser: modificationUser);
     }
 
     /// <summary>
-    /// Agrega un documento adjunto
+    /// Agrega o actualiza la foto del cliente almacenada en AWS.
     /// </summary>
-    /// <param name="documentacion"></param>
-    /// <param name="modificationUser"></param>
-    /// <exception cref="EMGeneralAggregateException"></exception>
-    private void AgregarDocumentacionAdjunta(DocumentacionAdjunta documentacion, Guid modificationUser)
+    /// <param name="fotoAWS">La URL o identificador de la foto en AWS.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Se lanza si la validación de la propiedad FotoAWS falla.</exception>
+    public void AgregarFotoAWS(string fotoAWS, Guid modificationUser)
     {
-        // Verifica que el tipo de persona esté configurado
-        if (this.TipoPersona == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.TipoPersonaNoConfigurada,
-                    dynamicContent: []));
-        }
-        // Verifica que el documento no sea nulo
-        if (documentacion == null)
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.DocumentacionAdjuntaRequerida,
-                    dynamicContent: []));
-        }
-        // Valida si el documento ya existe (por NombreDocumento)
-        if (this.DocumentacionAdjuntas.Any(d => d.Documento.Nombre == documentacion.Documento.Nombre &&
-         d.Documento.TipoPersona == this.TipoPersona))
-        {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                   errorCode: ServiceErrorsBuilder.DocumentacionAdjuntaYaExiste,
-                   dynamicContent: [documentacion.Documento.Nombre, this.TipoPersona]));
-        }
-        // Agrega el nuevo documento a la lista
-        this.DocumentacionAdjuntas.Add(documentacion);
+        List<EMGeneralException> exceptions = new();
+        IsPropertyValid(propertyName: nameof(FotoAWS), value: fotoAWS, exceptions: ref exceptions);
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
+        if (this.FotoAWS == fotoAWS) return;
+
+        this.FotoAWS = fotoAWS;
         base.Update(modificationUser: modificationUser);
     }
 
-
-    public bool EsDispositivoAutorizado(string idDispositivo, string token)
+    /// <summary>
+    /// Agrega o actualiza el tipo de persona del cliente.
+    /// </summary>
+    /// <param name="tipoPersona">El objeto TipoPersona a asignar.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
+    public void AgregarTipoPersona(TipoPersona tipoPersona, Guid modificationUser)
     {
-        var dispositivo = this.DispositivoMovilAutorizados.FirstOrDefault(x => x.IdDispositivo == idDispositivo && x.Token == token);
-        return dispositivo != null;
+        if (this.TipoPersona == tipoPersona) return;
+        this.TipoPersona = tipoPersona;
+        base.Update(modificationUser: modificationUser);
     }
-    
+
+    /// <summary>
+    /// Agrega o actualiza el RFC del cliente.
+    /// </summary>
+    /// <param name="rfc">El RFC del cliente.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Se lanza si la validación de la propiedad Rfc falla.</exception>
+    public void AgregarRfc(string rfc, Guid modificationUser)
+    {
+        List<EMGeneralException> exceptions = new();
+        IsPropertyValid(propertyName: nameof(Rfc), value: rfc, exceptions: ref exceptions);
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
+        if (this.Rfc == rfc) return;
+
+        this.Rfc = rfc;
+        base.Update(modificationUser: modificationUser);
+    }
+
+    /// <summary>
+    /// Agrega o actualiza el CURP del cliente.
+    /// </summary>
+    /// <param name="curp">El CURP del cliente.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Se lanza si la validación de la propiedad Curp falla.</exception>
+    public void AgregarCurp(string curp, Guid modificationUser)
+    {
+        List<EMGeneralException> exceptions = new();
+        IsPropertyValid(propertyName: nameof(Curp), value: curp, exceptions: ref exceptions);
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
+        if (this.Curp == curp) return;
+
+        this.Curp = curp;
+        base.Update(modificationUser: modificationUser);
+    }
+
+    /// <summary>
+    /// Agrega o actualiza un documento adjunto al cliente.
+    /// </summary>
+    /// <param name="documentacion">El objeto DocumentacionAdjunta a agregar.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Se lanza si el tipo de persona del cliente no está configurado o si el documento es nulo.</exception>
+    private void AgregarDocumentacionAdjunta(DocumentacionAdjunta documentacion, Guid modificationUser)
+    {
+        // Verifica que el tipo de persona esté configurado.
+        if (this.TipoPersona == null)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.TipoPersonaNoConfigurada,
+                dynamicContent: []));
+        }
+
+        // Verifica que el documento no sea nulo.
+        if (documentacion == null)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.DocumentacionAdjuntaRequerida,
+                dynamicContent: []));
+        }
+
+        // Valida si el documento ya existe (por NombreDocumento).
+        if (this.DocumentacionAdjuntas.Any(predicate: d => d.Documento.Nombre == documentacion.Documento.Nombre &&
+                                                           d.Documento.TipoPersona == this.TipoPersona))
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.DocumentacionAdjuntaYaExiste,
+                dynamicContent: [documentacion.Documento.Nombre, this.TipoPersona]));
+        }
+
+        // Agrega el nuevo documento a la lista.
+        this.DocumentacionAdjuntas.Add(item: documentacion);
+        // Actualiza los metadatos de la entidad base.
+        base.Update(modificationUser: modificationUser);
+    }
+
+    /// <summary>
+    /// Agrega o actualiza una validación Checkton para el cliente.
+    /// </summary>
+    /// <param name="validacion">El objeto ValidacionCheckton a agregar.</param>
+    /// <param name="modificationUser">El GUID del usuario que realiza la modificación.</param>
+    /// <exception cref="EMGeneralAggregateException">Se lanza si el validacion es nulo.</exception>
     public void AgregarValidacionCheckton(ValidacionCheckton validacion, Guid modificationUser)
     {
-        // Verifica que el validacion no sea nulo
+        // Verifica que el validacion no sea nulo.
         if (validacion == null)
         {
-            throw new EMGeneralAggregateException(DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.ValidacionChecktonRequerida,
-                    dynamicContent: []));
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ValidacionChecktonRequerida,
+                dynamicContent: []));
         }
-        // Agrega el nuevo validacion a la lista
-        this.ValidacionesChecktons.Add(validacion);
+
+        // Agrega el nuevo validacion a la lista.
+        this.ValidacionesChecktons.Add(item: validacion);
+        // Actualiza los metadatos de la entidad base.
         base.Update(modificationUser: modificationUser);
     }
 }
-
-

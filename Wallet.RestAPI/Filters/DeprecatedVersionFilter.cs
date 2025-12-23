@@ -16,7 +16,7 @@ public class DeprecatedVersionFilter : IOperationFilter
 	/// <param name="context">Context of the operation</param>
 	public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var obsoleteOperation = context.MethodInfo.CustomAttributes.Any(type => type.AttributeType.Name == "ObsoleteAttribute");
+        var obsoleteOperation = context.MethodInfo.CustomAttributes.Any(predicate: type => type.AttributeType.Name == "ObsoleteAttribute");
         if (obsoleteOperation)
         {
             operation.Deprecated = true;

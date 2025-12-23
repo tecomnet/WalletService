@@ -1,98 +1,81 @@
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
+using Wallet.DOM.Modelos;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
+using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
 using Wallet.UnitTest.Functionality.Configuration;
 using Xunit.Sdk;
 
 namespace Wallet.UnitTest.Functionality.ClienteFacadeTest;
 
 public class ClienteFacadeTest(SetupDataConfig setupConfig)
-    : BaseFacadeTest<IClienteFacade>(setupConfig)
+    : BaseFacadeTest<IClienteFacade>(setupConfig: setupConfig)
 {
     [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, create cliente", "+52", "5525212560", true, new string[] { })]
-    [InlineData("1. Successfully case, create cliente", "+52", "9818523698", true, new string[] { })]
+    [InlineData(data:
+    [
+        "1. Successfully case, se actualiza el cliente", 1, "Edilberto", "Martinez", "Diaz", "Campeche", "1991-01-01",
+        Genero.Masculino, true, new string[] { }
+    ])]
     // Wrong cases
-    [InlineData("2. Wrong case, cliente already exists", "+52", "9812078573", false, new string[] { ServiceErrorsBuilder.ClienteDuplicado })]
-    public async Task GuardarPreRegistroClienteTest(
+    [InlineData(data:
+    [
+        "2. Caso de error, el usuario no existe por id", 25, "Nombre", "Apellido", "Apellido", "Aguascalientes",
+        "2000-01-01", Genero.Masculino, false, new string[] { ServiceErrorsBuilder.UsuarioNoEncontrado }
+    ])]
+    [InlineData(data:
+    [
+        "3. Caso de error, el estado no existe", 1, "Nombre", "Apellido", "Apellido", "Merida", "2000-01-01",
+        Genero.Masculino, false, new string[] { ServiceErrorsBuilder.EstadoNoEncontrado }
+    ])]
+    public async Task ActualizarDatosPersonalesTest(
         string caseName,
-        string codigoPais,
-        string telefono,
+        int idUsuario,
+        string nombre,
+        string primerApellido,
+        string segundoApellido,
+        string nombreEstado,
+        string fechaNacimiento,
+        Genero genero,
         bool success,
         string[] expectedErrors)
     {
         try
         {
-            // Call facade method
-            var cliente = await Facade.GuardarClientePreRegistroAsync(
-                creationUser: SetupConfig.UserId,
-                codigoPais: codigoPais,
-                telefono: telefono,
-                testCase: SetupConfig.TestCaseId);
-            // Assert user created
-            Assert.NotNull(cliente);
-            // Assert user properties
-            Assert.True(cliente.CodigoPais == codigoPais &&
-                        cliente.Telefono == telefono &&
-                        cliente.CreationUser == SetupConfig.UserId);
-            // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
-            // Confirm user created in context
-            Assert.NotNull(clienteContext);
-            // Assert user properties
-            Assert.True(clienteContext.CodigoPais == codigoPais &&
-                        clienteContext.Telefono == telefono &&
-                        clienteContext.CreationUser == SetupConfig.UserId);
-            // Assert successful test
-            Assert.True(success);
-        }
-        // Catch the managed errors and check them with the expected ones in the case of failures
-        catch (EMGeneralAggregateException exception)
-        {
-            // Treat the raised error
-            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
-        }
-        // Catch any non managed errors and display them to understand the root cause
-        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
-                                          exception is not TrueException && exception is not FalseException)
-        {
-            // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
-        }
-    }
+            // Setup mocks
+            ChecktonPldServiceFacadeMock.Setup(expression: x => x.ValidarChecktonPld(
+                    It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<Genero>(), It.IsAny<DateTime>(), It.IsAny<string>()))
+                .ReturnsAsync(value: new ValidacionCurpResult { Success = true, CurpGenerada = "AAAA000000HDFXXX00" });
 
-    [Theory]
-    // Successfully case
-    [InlineData("1. Successfully case, se actualiza el cliente", 1, "Edilberto", "Martinez", "Diaz", "Campeche", "1991-01-01", Genero.Masculino,
-        true, new string[] { })]
-    // Wrong cases
-    [InlineData("2. Caso de error, el cliente no existe por id", 25, "Nombre", "Apellido", "Apellido", "Aguascalientes", "2000-01-01", Genero.Masculino,
-        false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
-    [InlineData("3. Caso de error, el correo electronico ya lo tiene otro cliente", 1, "Nombre", "Apellido", "Apellido", "Aguascalientes", "2000-01-01", Genero.Masculino,
-         false, new string[] { ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico })]
-    [InlineData("3. Caso de error, el estado no existe", 1, "Nombre", "Apellido", "Apellido", "Merida", "2000-01-01", Genero.Masculino,
-         false, new string[] { ServiceErrorsBuilder.EstadoNoEncontrado })]
-    public async Task ActualizarDatosPersonalesTest(
-         string caseName,
-         int idCliente,
-         string nombre,
-         string primerApellido,
-         string segundoApellido,
-         string nombreEstado,
-         string fechaNacimiento,
-         Genero genero,
-         bool success,
-         string[] expectedErrors)
-    {
-        try
-        {
+            // Pre-requisite: Client must have verified SMS for this test
+            // We find the client associated with the user to set up 2FA, assuming idUsuario links to a user that has a client in the setup (Test Case 1)
+            var clientToUpdate =
+                await Context.Cliente.Include(navigationPropertyPath: x => x.Usuario)
+                    .FirstOrDefaultAsync(predicate: x => x.UsuarioId == idUsuario);
+
+            if (clientToUpdate != null)
+            {
+                var verificacion = new Verificacion2FA(twilioSid: "SID_PRE_VERIFIED",
+                    fechaVencimiento: DateTime.Now.AddMinutes(value: 10), tipo: Tipo2FA.Sms,
+                    creationUser: SetupConfig.UserId);
+                clientToUpdate.Usuario.AgregarVerificacion2Fa(verificacion: verificacion,
+                    modificationUser: SetupConfig.UserId);
+                clientToUpdate.Usuario.ConfirmarVerificacion2Fa(tipo: Tipo2FA.Sms, codigo: "0000",
+                    modificationUser: SetupConfig.UserId);
+                await Context.SaveChangesAsync();
+                // Detach to ensure Facade fetches fresh data if needed, though same context should track changes.
+                Context.Entry(entity: clientToUpdate).State = EntityState.Detached;
+            }
+
             // Convierte la fecha nacimiento a date only
-            DateOnly fechaNacimientoDateOnly = DateOnly.Parse(fechaNacimiento);
+            DateOnly fechaNacimientoDateOnly = DateOnly.Parse(s: fechaNacimiento);
             // Call facade method
             var cliente = await Facade.ActualizarClienteDatosPersonalesAsync(
-                idCliente: idCliente,
+                idUsuario: idUsuario,
                 nombre: nombre,
                 primerApellido: primerApellido,
                 segundoApellido: segundoApellido,
@@ -103,27 +86,28 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             // Assert user created
             Assert.NotNull(cliente);
             // Assert user properties
-            Assert.True(cliente.Nombre == nombre &&
-                        cliente.PrimerApellido == primerApellido &&
-                        cliente.SegundoApellido == segundoApellido &&
-                        cliente.Estado.Nombre == nombreEstado &&
-                        cliente.FechaNacimiento == fechaNacimientoDateOnly &&
-                        cliente.Genero == genero &&
-                        cliente.ModificationUser == SetupConfig.UserId);
+            Assert.True(condition: cliente.Nombre == nombre &&
+                                   cliente.PrimerApellido == primerApellido &&
+                                   cliente.SegundoApellido == segundoApellido &&
+                                   cliente.Estado!.Nombre == nombreEstado &&
+                                   cliente.FechaNacimiento == fechaNacimientoDateOnly &&
+                                   cliente.Genero == genero &&
+                                   cliente.ModificationUser == SetupConfig.UserId);
             // Get the user from context
-            var clienteContext = await Context.Cliente.Include(x => x.Estado).AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext = await Context.Cliente.Include(navigationPropertyPath: x => x.Estado).AsNoTracking()
+                .FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm user created in context
             Assert.NotNull(clienteContext);
             // Assert user properties
-            Assert.True(clienteContext.Nombre == nombre &&
-                        clienteContext.PrimerApellido == primerApellido &&
-                        clienteContext.SegundoApellido == segundoApellido &&
-                        clienteContext.Estado.Nombre == nombreEstado &&
-                        clienteContext.FechaNacimiento == fechaNacimientoDateOnly &&
-                        clienteContext.Genero == genero &&
-                        clienteContext.ModificationUser == SetupConfig.UserId);
+            Assert.True(condition: clienteContext.Nombre == nombre &&
+                                   clienteContext.PrimerApellido == primerApellido &&
+                                   clienteContext.SegundoApellido == segundoApellido &&
+                                   clienteContext.Estado!.Nombre == nombreEstado &&
+                                   clienteContext.FechaNacimiento == fechaNacimientoDateOnly &&
+                                   clienteContext.Genero == genero &&
+                                   clienteContext.ModificationUser == SetupConfig.UserId);
             // Assert successful test
-            Assert.True(success);
+            Assert.True(condition: success);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures
         catch (EMGeneralAggregateException exception)
@@ -136,202 +120,20 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                                           exception is not TrueException && exception is not FalseException)
         {
             // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 
 
     [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, guarda contrasena cliente", 1, "micontrasena", false, "nuevacontrasena", "nuevacontrasena",
-       true, new string[] { })]
-    [InlineData("1.1. Successfully case, guarda y actualiza contrasena cliente", 1, "micontrasena", true, "nuevacontrasena", "nuevacontrasena",
-       true, new string[] { })]
+    [InlineData(data: ["1. Successfully case, elimina cliente", 1, true, new string[] { }])]
     // Wrong cases
-    [InlineData("2. Caso error, cliente no encontrado", 25, "micontrasena", false, "nuevacontrasena", "nuevacontrasena",
-       false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
-    [InlineData("3. Caso error, la nueva contrasena con coincide con la confirmacion", 2, "micontrasena", true, "nuevacontrasena", "nocoincide",
-       false, new string[] { ServiceErrorsBuilder.ContrasenasNoCoinciden })]
-    public async Task GuardarYActualizarContrasenaClienteTest(
-       string caseName,
-       int idCliente,
-       string contrasena,
-       bool aplicaActualizacion,
-       string contrasenaNueva,
-       string contrasenaConfirmacion,
-       bool success,
-       string[] expectedErrors)
-    {
-        try
-        {
-            // Call facade method
-            var cliente = await Facade.GuardarContrasenaAsync(
-                idCliente: idCliente,
-                contrasena: contrasena,
-                modificationUser: SetupConfig.UserId);
-            // Assert user created
-            Assert.NotNull(cliente);
-            // Assert user properties
-            Assert.True(cliente.Id == idCliente &&
-                        cliente.Contrasena == contrasena &&
-                        cliente.ModificationUser == SetupConfig.UserId);
-            // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
-            // Confirm user created in context
-            Assert.NotNull(clienteContext);
-            // Assert user properties
-            Assert.True(clienteContext.Id == idCliente &&
-                        clienteContext.Contrasena == contrasena &&
-                        clienteContext.ModificationUser == SetupConfig.UserId);
-
-            if (aplicaActualizacion)
-            {
-                // Call facade method
-                cliente = await Facade.ActualizarContrasenaAsync(
-                    idCliente: idCliente,
-                    contrasenaActual: cliente.Contrasena,
-                    contrasenaNueva: contrasenaNueva,
-                    confirmacionContrasenaNueva: contrasenaConfirmacion,
-                    modificationUser: SetupConfig.UserId);
-                // Assert user created
-                Assert.NotNull(cliente);
-                // Assert user properties
-                Assert.True(cliente.Id == idCliente &&
-                            cliente.Contrasena == contrasenaNueva &&
-                            cliente.ModificationUser == SetupConfig.UserId);
-                // Get the user from context
-                clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
-                // Confirm user created in context
-                Assert.NotNull(clienteContext);
-                // Assert user properties
-                Assert.True(clienteContext.Id == idCliente &&
-                            clienteContext.Contrasena == contrasenaNueva &&
-                            clienteContext.ModificationUser == SetupConfig.UserId);
-            }
-            // Assert successful test
-            Assert.True(success);
-        }
-        // Catch the managed errors and check them with the expected ones in the case of failures
-        catch (EMGeneralAggregateException exception)
-        {
-            // Treat the raised error
-            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
-        }
-        // Catch any non managed errors and display them to understand the root cause
-        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
-                                          exception is not TrueException && exception is not FalseException)
-        {
-            // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
-        }
-    }
-
-
-    [Theory]
-    // Successfully case
-    [InlineData("1. Successfully case, actualiza telefono cliente", 1, "+55", "5528631488",
-       true, new string[] { })]
-    // Wrong cases
-    [InlineData("2. Wrong case, otro cliente con el mismo telefono", 2, "+52", "9812078573",
-       false, new string[] { ServiceErrorsBuilder.ClienteDuplicado })]
-    public async Task ActualizaTelefonoClienteTest(
-       string caseName,
-       int idCliente,
-       string codigoPais,
-       string telefono,
-       bool success,
-       string[] expectedErrors)
-    {
-        try
-        {
-            // Call facade method
-            var cliente = await Facade.ActualizarTelefonoAsync(idCliente: idCliente, codigoPais: codigoPais, telefono: telefono, modificationUser: SetupConfig.UserId);
-            // Assert user created
-            Assert.NotNull(cliente);
-            // Assert user properties
-            Assert.True(cliente.CodigoPais == codigoPais &&
-                        cliente.Telefono == telefono &&
-                        cliente.ModificationUser == SetupConfig.UserId);
-            // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
-            // Confirm user created in context
-            Assert.NotNull(clienteContext);
-            // Assert user properties
-            Assert.True(clienteContext.CodigoPais == codigoPais &&
-                        clienteContext.Telefono == telefono &&
-                        clienteContext.ModificationUser == SetupConfig.UserId);
-            // Assert successful test
-            Assert.True(success);
-        }
-        // Catch the managed errors and check them with the expected ones in the case of failures
-        catch (EMGeneralAggregateException exception)
-        {
-            // Treat the raised error
-            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
-        }
-        // Catch any non managed errors and display them to understand the root cause
-        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
-                                          exception is not TrueException && exception is not FalseException)
-        {
-            // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
-        }
-    }
-    [Theory]
-    // Successfully case
-    [InlineData("1. Successfully case, actualiza correo electronico cliente", 2, "hola@hotmail.com",
-           true, new string[] { })]
-    [InlineData("2. Caso ok, actualiza correo electronico cliente de cliente pre registro", 1, "hola@hotmail.com",
-           true, new string[] { })]
-    // Wrong cases
-    [InlineData("3. Wrong case, otro cliente con el mismo correo electronico", 1, "cliente@cliente.com",
-           false, new string[] { ServiceErrorsBuilder.ClienteDuplicadoPorCorreoElectronico })]
-    public async Task ActualizaCorreoElectronicoClienteTest(
-           string caseName,
-           int idCliente,
-           string correoElectronico,
-           bool success,
-           string[] expectedErrors)
-    {
-        try
-        {
-            // Call facade method
-            var cliente = await Facade.ActualizarCorreoElectronicoAsync(idCliente: idCliente, correoElectronico: correoElectronico, modificationUser: SetupConfig.UserId);
-            // Assert user created
-            Assert.NotNull(cliente);
-            // Assert user properties
-            Assert.True(cliente.CorreoElectronico == correoElectronico &&
-                        cliente.ModificationUser == SetupConfig.UserId);
-            // Get the user from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
-            // Confirm user created in context
-            Assert.NotNull(clienteContext);
-            // Assert user properties
-            Assert.True(clienteContext.CorreoElectronico == correoElectronico &&
-                        clienteContext.ModificationUser == SetupConfig.UserId);
-            // Assert successful test
-            Assert.True(success);
-        }
-        // Catch the managed errors and check them with the expected ones in the case of failures
-        catch (EMGeneralAggregateException exception)
-        {
-            // Treat the raised error
-            CatchErrors(caseName: caseName, success: success, expectedErrors: expectedErrors, exception: exception);
-        }
-        // Catch any non managed errors and display them to understand the root cause
-        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
-                                          exception is not TrueException && exception is not FalseException)
-        {
-            // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
-        }
-    }
-
-    [Theory]
-    // Successfully case
-    [InlineData("1. Successfully case, elimina cliente", 1, true, new string[] { })]
-    // Wrong cases
-    [InlineData("2. Caso error, el cliente no existe por id", 25, false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
+    [InlineData(data:
+    [
+        "2. Caso error, el cliente no existe por id", 25, false,
+        new string[] { ServiceErrorsBuilder.ClienteNoEncontrado }
+    ])]
     public async Task EliminarClienteTest(
         string caseName,
         int idCliente,
@@ -341,21 +143,23 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
         try
         {
             // Call facade method
-            var cliente = await Facade.EliminarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
+            var cliente =
+                await Facade.EliminarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
             // Assert cliente returned
             Assert.NotNull(cliente);
             // Assert cliente properties
-            Assert.False(cliente.IsActive);
-            Assert.True(cliente.ModificationUser == SetupConfig.UserId);
+            Assert.False(condition: cliente.IsActive);
+            Assert.True(condition: cliente.ModificationUser == SetupConfig.UserId);
             // Get the cliente from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext =
+                await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm cliente updated in context
             Assert.NotNull(clienteContext);
             // Assert cliente persisted as deactivated
-            Assert.False(clienteContext.IsActive);
-            Assert.True(clienteContext.ModificationUser == SetupConfig.UserId);
+            Assert.False(condition: clienteContext.IsActive);
+            Assert.True(condition: clienteContext.ModificationUser == SetupConfig.UserId);
             // Assert successful test
-            Assert.True(success);
+            Assert.True(condition: success);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures
         catch (EMGeneralAggregateException exception)
@@ -368,40 +172,46 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                                           exception is not TrueException && exception is not FalseException)
         {
             // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 
 
     [Theory]
     // Successfully case
-    [InlineData("1. Successfully case, activa cliente", 1, true, new string[] { })]
+    [InlineData(data: ["1. Successfully case, activa cliente", 1, true, new string[] { }])]
     // Wrong cases
-    [InlineData("2. Caso error, el cliente no existe por id", 25, false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
+    [InlineData(data:
+    [
+        "2. Caso error, el cliente no existe por id", 25, false,
+        new string[] { ServiceErrorsBuilder.ClienteNoEncontrado }
+    ])]
     public async Task ActivarClienteTest(
-    string caseName,
-    int idCliente,
-    bool success,
-    string[] expectedErrors)
+        string caseName,
+        int idCliente,
+        bool success,
+        string[] expectedErrors)
     {
         try
         {
             // Call facade method
-            var cliente = await Facade.ActivarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
+            var cliente =
+                await Facade.ActivarClienteAsync(idCliente: idCliente, modificationUser: SetupConfig.UserId);
             // Assert cliente returned
             Assert.NotNull(cliente);
             // Assert cliente properties
-            Assert.True(cliente.IsActive);
-            Assert.True(cliente.ModificationUser == SetupConfig.UserId);
+            Assert.True(condition: cliente.IsActive);
+            Assert.True(condition: cliente.ModificationUser == SetupConfig.UserId);
             // Get the cliente from context
-            var clienteContext = await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(x => x.Id == cliente.Id);
+            var clienteContext =
+                await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm cliente updated in context
             Assert.NotNull(clienteContext);
             // Assert cliente persisted as activated
-            Assert.True(clienteContext.IsActive);
-            Assert.True(clienteContext.ModificationUser == SetupConfig.UserId);
+            Assert.True(condition: clienteContext.IsActive);
+            Assert.True(condition: clienteContext.ModificationUser == SetupConfig.UserId);
             // Assert successful test
-            Assert.True(success);
+            Assert.True(condition: success);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures
         catch (EMGeneralAggregateException exception)
@@ -414,7 +224,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                                           exception is not TrueException && exception is not FalseException)
         {
             // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 }

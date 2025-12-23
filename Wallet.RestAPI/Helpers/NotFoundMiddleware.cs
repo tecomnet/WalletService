@@ -4,24 +4,34 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Errors;
 
 namespace Wallet.RestAPI.Helpers
 {
     /// <summary>
-    /// 
+    /// Middleware to handle 404 Not Found responses and check for API versioning issues.
     /// </summary>
     public class NotFoundMiddleware
     {
         private readonly RequestDelegate _next;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NotFoundMiddleware"/> class.
+        /// </summary>
+        /// <param name="next">The next middleware in the pipeline.</param>
         public NotFoundMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
+        /// <summary>
+        /// Invokes the middleware.
+        /// </summary>
+        /// <param name="context">The HTTP context.</param>
+        /// <returns>A task that represents the completion of request processing.</returns>
         public async Task InvokeAsync(HttpContext context)
         {
-            await _next(context);
+            await _next(context: context);
 
             if (context.Response.StatusCode == 404)
             {
@@ -35,9 +45,26 @@ namespace Wallet.RestAPI.Helpers
                 if (context.Request.Path != null)
                 {
                     var segments = context.Request.Path.ToString().Split('/');
-                    if (segments.Length > 1 && allowedVersions.Contains(segments[1]))
+                    if (segments.Length > 1)
                     {
-                        return;
+                        var segment = segments[1];
+                        // Si es una versión permitida, retornamos (es un 404 real dentro de la versión)
+                        if (allowedVersions.Contains(segment))
+                        {
+                            await WriteNotFoundResponse(context);
+                            return;
+                        }
+
+                        // Si NO parece una versión (ej. "swagger", "health", "favicon.ico"), retornamos (es un 404 real)
+                        // Esto evita que endpoints sin versión o recursos estáticos den error de versión.
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(segment, @"^\d+\.\d+$"))
+                        {
+                            await WriteNotFoundResponse(context);
+                            return;
+                        }
+
+                        // Si llegamos aquí, es porque parece una versión (ej. "0.2") pero no está en allowedVersions.
+                        // Dejamos que continúe para devolver el error de versión no soportada.
                     }
                 }
 
@@ -45,14 +72,44 @@ namespace Wallet.RestAPI.Helpers
                 var problemDetails = new ProblemDetails();
                 problemDetails.Detail = "The API version provided is not supported or it wasn't specified.";
                 problemDetails.Type = "EM-CustomProblemDetails";
-                problemDetails.Extensions.Add("RestAPIErrors", new
+                problemDetails.Extensions.Add(key: "RestAPIErrors", value: new
                 {
                     // Las propiedades se serializarán directamente en el JSON
-                    ErrorCode = "REST-API-BAD-VERSION",
+                    ErrorCode = RestAPIErrors.RestApiBadVersion,
                     Messages = new[] { "The API version provided is not supported or it wasn't specified." }
                 });
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(problemDetails));
+                await context.Response.WriteAsync(text: JsonConvert.SerializeObject(value: problemDetails));
             }
+            else if (context.Response.StatusCode == (int)HttpStatusCode.BadRequest &&
+                     context.Items.ContainsKey("BadVersion"))
+            {
+                context.Response.ContentType = "application/json";
+                var problemDetails = new ProblemDetails();
+                problemDetails.Detail = "Versión incorrecta utilizada para la API REST";
+                problemDetails.Type = "EM-CustomProblemDetails";
+                problemDetails.Extensions.Add(key: "RestAPIErrors", value: new
+                {
+                    // Las propiedades se serializarán directamente en el JSON
+                    ErrorCode = RestAPIErrors.RestApiBadVersion,
+                    Messages = new[] { "La versión de API proporcionada no es compatible o no se especificó." }
+                });
+                await context.Response.WriteAsync(text: JsonConvert.SerializeObject(value: problemDetails));
+            }
+        }
+
+        private async Task WriteNotFoundResponse(HttpContext context)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            context.Response.ContentType = "application/json";
+            var problemDetails = new ProblemDetails();
+            problemDetails.Detail = "El recurso solicitado no fue encontrado.";
+            problemDetails.Type = "EM-CustomProblemDetails";
+            problemDetails.Extensions.Add(key: "RestAPIErrors", value: new
+            {
+                ErrorCode = RestAPIErrors.ResourceNotFound,
+                Messages = new[] { "El recurso solicitado no fue encontrado." }
+            });
+            await context.Response.WriteAsync(text: JsonConvert.SerializeObject(value: problemDetails));
         }
     }
 }

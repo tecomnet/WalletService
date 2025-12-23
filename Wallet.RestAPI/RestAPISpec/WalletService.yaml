@@ -42,6 +42,127 @@ paths:
       operationId: GetReady
       description: Readiness check for the service
       security: []
+  '/{version}/configurations':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    get:
+      summary: Obtiene todas las configuraciones
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KeyValueConfigResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+    post:
+      summary: Crea una nueva configuracion
+      operationId: CreateKeyValueConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyValueConfigRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyValueConfigResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+  '/{version}/configurations/{key}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Clave de la configuracion
+    get:
+      summary: Obtiene una configuracion por su clave
+      operationId: GetKeyValueConfigByKey
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyValueConfigResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+    put:
+      summary: Actualiza una configuracion existente
+      operationId: UpdateKeyValueConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyValueConfigUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyValueConfigResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
+    delete:
+      summary: Elimina una configuracion por su clave
+      operationId: DeleteKeyValueConfig
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KeyValueConfigResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
   '/{version}/cliente':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -68,37 +189,6 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
-    post:
-      summary: Crea un cliente
-      operationId: PostCliente
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClienteResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-        '500':
-          description: Internal Server Error
-      description: Crea un cliente
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClienteRequest'
-        description: ''
-      tags:
-        - Cliente
   '/{version}/cliente/{idCliente}':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -122,32 +212,6 @@ paths:
       description: Obtiene un cliente por id
       security:
         - jwsToken: []
-      tags:
-        - Cliente
-    put:
-      summary: Actualiza un cliente por id
-      operationId: PutCliente
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClienteResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Actualiza un cliente por id
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClienteUpdateRequest'
       tags:
         - Cliente
     delete:
@@ -196,155 +260,54 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
-  '/{version}/cliente/{idCliente}/confirmaVerificacion':
+  '/{version}/cliente/{idCliente}/servicios-favoritos':
     parameters:
       - $ref: '#/components/parameters/version'
       - $ref: '#/components/parameters/idCliente'
-    put:
-      summary: Confirma codigo de verificacion
-      operationId: PutConfirmaVerificacion
+    get:
+      summary: Obtiene los servicios favoritos de un cliente
+      operationId: getServiciosFavoritosPorCliente
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: boolean
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServicioFavoritoResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      description: Confirma codigo de verificacion de 4 digitos
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Verificacion2FARequest'
-      tags:
-        - Cliente
-  '/{version}/cliente/{idCliente}/contrasena':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
-    put:
-      summary: Actualiza contraseña
-      operationId: PutContrasena
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: 'Actualiza la contraseña '
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContrasenaUpdateRequest'
-      tags:
-        - Cliente
-    post:
-      summary: Guarda contraseña
-      operationId: postContrasena
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: 'Agrega contraseña '
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContrasenaRequest'
-      tags:
-        - Cliente
-  '/{version}/cliente/{idCliente}/actualizaTelefono':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
-    put:
-      summary: Actualiza telefono
-      operationId: PutTelefono
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClienteResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Actualiza el telefono
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TelefonoUpdateRequest'
-        description: ''
-      tags:
-        - Cliente
-  '/{version}/cliente/{idCliente}/actualizaEmail':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
-    put:
-      summary: Actualiza email
-      operationId: PutEmail
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClienteResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Actualiza el email
-      security:
-        - jwsToken: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmailUpdateRequest'
+      description: Obtiene los servicios favoritos asignados a un cliente
       tags:
         - Cliente
   '/{version}/direccion/{idCliente}':
     parameters:
       - $ref: '#/components/parameters/version'
       - $ref: '#/components/parameters/idCliente'
+    get:
+      summary: Obtiene la direccion de un cliente
+      operationId: getDireccion
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DireccionResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene la direccion del cliente
+      tags:
+        - Direccion
     put:
       summary: Actualiza direccion cliente
       operationId: putDireccion
@@ -585,6 +548,25 @@ paths:
     parameters:
       - $ref: '#/components/parameters/version'
       - $ref: '#/components/parameters/idEmpresa'
+    get:
+      summary: Obtiene una empresa por id
+      operationId: getEmpresa
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene una empresa por id
+      tags:
+        - Empresa
     put:
       summary: Actualiza una empresa
       operationId: putEmpresa
@@ -609,8 +591,1340 @@ paths:
               $ref: '#/components/schemas/EmpresaRequest'
       tags:
         - Empresa
+  '/{version}/empresa/{idEmpresa}/clientes':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idEmpresa'
+    get:
+      summary: Obtiene los clientes de una empresa
+      operationId: getClientesPorEmpresa
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los clientes asignados a una empresa
+      tags:
+        - Empresa
+  '/{version}/empresa/{idEmpresa}/productos':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idEmpresa'
+    get:
+      summary: Obtiene los productos de una empresa
+      operationId: getProductosPorEmpresa
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los productos asignados a una empresa
+      tags:
+        - Empresa
+    post:
+      summary: Asigna productos a una empresa
+      operationId: AsignarProductos
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsignarProductosRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Asigna una lista de productos a una empresa
+      tags:
+        - Empresa
+  '/{version}/empresa/{idEmpresa}/productos/remover':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idEmpresa'
+    post:
+      summary: Remueve productos de una empresa
+      operationId: DesasignarProductos
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsignarProductosRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Remueve una lista de productos de una empresa
+      tags:
+        - Empresa
+  '/{version}/broker':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Guarda un broker
+      operationId: postBroker
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrokerResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda un broker
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrokerRequest'
+      tags:
+        - Broker
+    get:
+      summary: Obtiene todos los brokers
+      operationId: getBrokers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BrokerResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene todos los brokers
+      parameters: []
+      tags:
+        - Broker
+  '/{version}/broker/{idBroker}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idBroker'
+    get:
+      summary: Obtiene un broker por id
+      operationId: getBroker
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrokerResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene un broker por id
+      tags:
+        - Broker
+    put:
+      summary: Actualiza un broker
+      operationId: putBroker
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrokerResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza un broker
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrokerRequest'
+      tags:
+        - Broker
+    delete:
+      summary: Elimina un broker
+      operationId: deleteBroker
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrokerResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Elimina un broker
+      tags:
+        - Broker
+  '/{version}/broker/{idBroker}/proveedores':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idBroker'
+    get:
+      summary: Obtiene los proveedores de un broker
+      operationId: getProveedoresPorBroker
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los proveedores asociados a un broker
+      tags:
+        - Broker
+  '/{version}/broker/{idBroker}/activar':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - name: idBroker
+        in: path
+        schema:
+          type: integer
+        description: Id del broker
+        required: true
+    put:
+      summary: Activar un broker
+      operationId: putActivarBroker
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrokerResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Activa un broker
+      tags:
+        - Broker
+  '/{version}/proveedor/{idProveedor}/producto':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idProveedor'
+    post:
+      summary: Guarda un producto
+      operationId: postProducto
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda un producto asociado a un proveedor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequest'
+      tags:
+        - Producto
+  '/{version}/producto/{idProducto}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idProducto
+        in: path
+        schema:
+          type: integer
+        description: Id del producto
+        required: true
+    get:
+      summary: Obtiene un producto por id
+      operationId: getProducto
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene un producto por id
+      tags:
+        - Producto
+    put:
+      summary: Actualiza un producto
+      operationId: putProducto
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza un producto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequest'
+      tags:
+        - Producto
+    delete:
+      summary: Elimina un producto
+      operationId: deleteProducto
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Elimina un producto
+      tags:
+        - Producto
+  '/{version}/producto':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+    get:
+      summary: Obtiene todos los productos
+      operationId: getProductos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene todos los productos
+      tags:
+        - Producto
+  '/{version}/producto/{idProducto}/activar':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idProducto
+        in: path
+        schema:
+          type: integer
+        description: Id del producto
+        required: true
+    put:
+      summary: Activa un producto
+      operationId: putActivarProducto
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Activa un producto
+      tags:
+        - Producto
+  '/{version}/producto/{idProducto}/actualizarProveedor':
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - name: idProducto
+        in: path
+        schema:
+          type: integer
+        description: Id del producto
+        required: true
+    put:
+      summary: Actualizar el proveedor de un producto
+      operationId: putActualizarProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza el proveedor de un producto
+      tags:
+        - Producto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+        description: Id del proveedor
+  '/{version}/proveedor/{idProveedor}/productos':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idProveedor'
+    get:
+      summary: Obtiene los productos de un proveedor
+      operationId: getProductosPorProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los productos de un proveedor
+      tags:
+        - Producto
+  '/{version}/proveedor':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Guarda un proveedor de servicio
+      operationId: postProveedor
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda un proveedor de servicio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProveedorRequest'
+      tags:
+        - Proveedor
+    get:
+      summary: Obtiene todos los proveedores de servicio
+      operationId: getProveedoresServicio
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene todos los proveedores de servicio
+      parameters: []
+      tags:
+        - Proveedor
+  '/{version}/proveedor/{idProveedor}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idProveedor'
+    get:
+      summary: Obtiene un proveedor de servicio por id
+      operationId: getProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene un proveedor de servicio por id
+      tags:
+        - Proveedor
+    put:
+      summary: Actualiza un proveedor de servicio
+      operationId: putProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza un proveedor de servicio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProveedorRequest'
+      tags:
+        - Proveedor
+    delete:
+      summary: Elimina un proveedor de servicio
+      operationId: deleteProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Elimina un proveedor de servicio
+      tags:
+        - Proveedor
+  '/{version}/proveedor/{idProveedor}/activar':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idProveedor'
+    put:
+      summary: Activa un proveedor de servicio
+      operationId: putActivarProveedor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProveedorResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Activa un proveedor de servicio
+      tags:
+        - Proveedor
+  '/{version}/servicioFavorito':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Guarda un servicio favorito
+      operationId: postServicioFavorito
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicioFavoritoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda un servicio favorito
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicioFavoritoRequest'
+      tags:
+        - ServicioFavorito
+  '/{version}/servicioFavorito/cliente/{idCliente}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
+    get:
+      summary: Obtiene los servicios favoritos de un cliente
+      operationId: getServiciosFavoritos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServicioFavoritoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los servicios favoritos de un cliente
+      tags:
+        - ServicioFavorito
+  '/{version}/servicioFavorito/{idServicioFavorito}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idServicioFavorito'
+    put:
+      summary: Actualiza un servicio favorito
+      operationId: putServicioFavorito
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicioFavoritoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza un servicio favorito
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicioFavoritoRequest'
+      tags:
+        - ServicioFavorito
+    delete:
+      summary: Elimina un servicio favorito
+      operationId: deleteServicioFavorito
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicioFavoritoResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Elimina un servicio favorito
+      tags:
+        - ServicioFavorito
+  '/{version}/registro/preRegistro':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Pre-registro de usuario
+      operationId: PostPreRegistro
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Crea un usuario y cliente en estado de pre-registro
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreRegistroRequest'
+      tags:
+        - Registro
+  '/{version}/registro/{idUsuario}/confirmar':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
+      summary: Confirmar
+      description: Confirma el número de teléfono o correo electrónico
+      operationId: PutConfirmar
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmacionRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      tags:
+        - Registro
+  '/{version}/registro/{idUsuario}/datosCliente':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    post:
+      summary: Completa los datos del cliente
+      operationId: PostDatosCliente
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Completa los datos personales del cliente
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatosClienteRequest'
+      tags:
+        - Registro
+  '/{version}/registro/{idUsuario}/correo':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
+      summary: Registra el correo electronico
+      operationId: PutRegistrarCorreo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Registra el correo electronico del usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarCorreoRequest'
+      tags:
+        - Registro
+  '/{version}/registro/{idUsuario}/biometricos':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    post:
+      summary: Registra datos biometricos
+      operationId: PostRegistrarBiometricos
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Registra los datos biometricos del usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarBiometricosRequest'
+      tags:
+        - Registro
+  '/{version}/registro/{idUsuario}/terminos':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    post:
+      summary: Acepta terminos y condiciones
+      operationId: PostAceptarTerminos
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Registra la aceptacion de terminos y condiciones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AceptarTerminosRequest'
+      tags:
+        - Registro
+  '/{version}/registro/{idUsuario}/completar':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        description: ID del usuario
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
+      summary: Completa el registro
+      operationId: PutCompletarRegistro
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Finaliza el proceso de registro estableciendo la contraseña
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompletarRegistroRequest'
+      tags:
+        - Registro
+  '/{version}/usuario/{idUsuario}':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Obtiene un usuario por id
+      operationId: GetUsuario
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene un usuario por id
+      security:
+        - jwsToken: []
+      tags:
+        - Usuario
+  '/{version}/usuario/{idUsuario}/contrasena':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Actualiza contraseña
+      operationId: PutUsuarioContrasena
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza la contraseña
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContrasenaUpdateRequest'
+      tags:
+        - Usuario
+  '/{version}/usuario/{idUsuario}/actualizaEmail':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Actualiza email
+      operationId: PutUsuarioEmail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza el email
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailUpdateRequest'
+      tags:
+        - Usuario
+  '/{version}/usuario/{idUsuario}/actualizaTelefono':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Actualiza telefono
+      operationId: PutUsuarioTelefono
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Actualiza el telefono
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelefonoUpdateRequest'
+      tags:
+        - Usuario
+  '/{version}/usuario/{idUsuario}/consentimiento':
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - name: idUsuario
+        in: path
+        schema:
+          type: integer
+        required: true
+        description: Id del usuario
+    post:
+      summary: Guarda un consentimiento de usuario
+      operationId: postConsentimientoUsuario
+      tags:
+        - ConsentimientoUsuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentimientoUsuarioRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentimientoUsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Guarda una nueva aceptacion de version de los terminos y condiciones
+    get:
+      summary: Obtiene los últimos consentimientos del usuario
+      operationId: getConsentimientosUsuario
+      tags:
+        - ConsentimientoUsuario
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConsentimientoUsuarioResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene los ultimos consentimientos del usuario
+  '/{version}/auth/login':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Login with credentials
+      operationId: Login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Login with credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      tags:
+        - Auth
+  '/{version}/auth/refresh':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Refresh access token
+      operationId: Refresh
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '400':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Refresh access token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      tags:
+        - Auth
+  '/{version}/auth/revoke':
+    parameters:
+      - $ref: '#/components/parameters/version'
+    post:
+      summary: Revoke refresh token
+      operationId: Revoke
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Revoke refresh token
+      security:
+        - jwsToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevokeTokenRequest'
+      tags:
+        - Auth
 components:
   schemas:
+    TipoDocumentoConsentimientoEnum:
+      type: string
+      x-stoplight:
+        id: 94d48ef2c5166
+      enum:
+        - Terminos
+        - Privacidad
+        - PLD
+      description: Tipo de documento de consentimiento
+    ConsentimientoUsuarioRequest:
+      title: ConsentimientoUsuarioRequest
+      type: object
+      properties:
+        tipoDocumento:
+          $ref: '#/components/schemas/TipoDocumentoConsentimientoEnum'
+        version:
+          type: string
+          minLength: 1
+          maxLength: 20
+      required:
+        - tipoDocumento
+        - version
+    ConsentimientoUsuarioResult:
+      title: ConsentimientoUsuarioResult
+      type: object
+      properties:
+        id:
+          type: integer
+        idUsuario:
+          type: integer
+        tipoDocumento:
+          type: string
+        version:
+          type: string
+        fechaAceptacion:
+          type: string
+          format: date-time
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+      required:
+        - id
+        - idUsuario
+        - tipoDocumento
+        - version
+        - fechaAceptacion
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    LoginRequest:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+      required:
+        - login
+        - password
+    RefreshTokenRequest:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - accessToken
+        - refreshToken
+    RevokeTokenRequest:
+      type: object
+      properties:
+        username:
+          type: string
+      required:
+        - username
+    AuthResult:
+      type: object
+      description: Estructura para resultado de autenticacion
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+        idCliente:
+          type: integer
     ClienteResult:
       title: ClienteResult
       x-stoplight:
@@ -755,93 +2069,64 @@ components:
         - creationUser
         - modificationUser
         - isActive
-    ClienteRequest:
-      title: ClienteRequest
-      x-stoplight:
-        id: zdjtcdgwyvde7
+    UsuarioResult:
+      title: UsuarioResult
       type: object
-      description: Estructura para pre registrar un cliente
+      description: Estructura para consultar usuarios
+      properties:
+        id:
+          type: integer
+        codigoPais:
+          type: string
+        telefono:
+          type: string
+        correoElectronico:
+          type: string
+        estatus:
+          type: string
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+          format: date-time
+          x-stoplight:
+            id: 114v5cpxh0ldo
+      required:
+        - id
+        - codigoPais
+        - telefono
+        - estatus
+        - creationUser
+        - modificationUser
+        - creationTimestamp
+        - modificationTimestamp
+        - isActive
+    PreRegistroRequest:
+      title: PreRegistroRequest
+      type: object
+      description: Estructura para pre registrar un usuario
       properties:
         codigoPais:
           type: string
           minLength: 3
           maxLength: 3
-          x-stoplight:
-            id: neep14yhburn4
         telefono:
           type: string
-          x-stoplight:
-            id: neep14yhburn4
           minLength: 9
           maxLength: 10
       required:
         - codigoPais
         - telefono
-    ClienteUpdateRequest:
-      title: ClienteUpdateRequest
-      x-stoplight:
-        id: 0skzdo892adg6
-      type: object
-      description: Estructura para actualizar datos personales de clientes
-      properties:
-        nombre:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-        primerApellido:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-        segundoApellido:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-        fechaNacimiento:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 10
-          format: date
-          maxLength: 10
-        genero:
-          $ref: '#/components/schemas/GeneroEnum'
-        estado:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 500
-      required:
-        - nombre
-        - primerApellido
-        - segundoApellido
-        - fechaNacimiento
-        - genero
-        - estado
-    Verificacion2FARequest:
-      title: Verificacion2FARequest
-      x-stoplight:
-        id: i04swzrm0cwii
-      type: object
-      description: Estructura para confirmar un codigo de verificacion
-      properties:
-        Tipo:
-          $ref: '#/components/schemas/Tipo2FAEnum'
-        Codigo:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 4
-          maxLength: 4
-      required:
-        - Tipo
-        - Codigo
     UbicacionRequest:
       title: UbicacionRequest
       x-stoplight:
@@ -1095,20 +2380,6 @@ components:
             id: 3of979vs8a9k9
           minLength: 5
           maxLength: 5
-        pais:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          format: double
-          minLength: 1
-          maxLength: 100
-        estado:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          format: double
-          minLength: 1
-          maxLength: 100
         municipio:
           type: string
           x-stoplight:
@@ -1147,8 +2418,6 @@ components:
           maxLength: 250
       required:
         - codigoPostal
-        - pais
-        - estado
         - municipio
         - colonia
         - calle
@@ -1173,6 +2442,17 @@ components:
       enum:
         - SMS
         - EMAIL
+    CategoriaEnum:
+      title: Tipo2FAEnum
+      x-stoplight:
+        id: 0f8j5s3ilu4ci
+      type: string
+      description: Estructura enum para categoria de proveeedor y productos
+      enum:
+        - SERVICIOS
+        - RECARGAS
+        - MOVILIDAD
+        - OTROS
     GeneroEnum:
       title: GeneroEnum
       x-stoplight:
@@ -1298,21 +2578,6 @@ components:
         - idDispositivo
         - nombre
         - caracteristicas
-    ContrasenaRequest:
-      title: ContrasenaRequest
-      x-stoplight:
-        id: j2ftnp0wbf13n
-      type: object
-      description: Estructura para guardar la contraseña del cliente
-      properties:
-        contrasena:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-      required:
-        - contrasena
     ContrasenaUpdateRequest:
       title: ContrasenaUpdateRequest
       x-stoplight:
@@ -1410,6 +2675,17 @@ components:
           minLength: 1
       required:
         - nombre
+    AsignarProductosRequest:
+      title: AsignarProductosRequest
+      type: object
+      description: Estructura para asignar productos a una empresa
+      properties:
+        productoIds:
+          type: array
+          items:
+            type: integer
+      required:
+        - productoIds
     EstadoResult:
       title: EstadoResult
       x-stoplight:
@@ -1514,6 +2790,392 @@ components:
         - creationUser
         - modificationUser
         - isActive
+    BrokerRequest:
+      title: BrokerRequest
+      type: object
+      description: Estructura para crear/actualizar broker
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+      required:
+        - nombre
+    BrokerResult:
+      title: BrokerResult
+      type: object
+      description: Estructura para consultar broker
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+      required:
+        - id
+        - nombre
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    ProveedorResult:
+      title: ProveedorResult
+      type: object
+      description: Estructura para consultar proveedores de servicio
+      properties:
+        id:
+          type: integer
+        brokerId:
+          type: integer
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        urlIcono:
+          type: string
+          maxLength: 500
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+      required:
+        - id
+        - nombre
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    ProveedorRequest:
+      title: ProveedorRequest
+      type: object
+      description: Estructura para crear/actualizar proveedor de servicio
+      properties:
+        brokerId:
+          type: integer
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        urlIcono:
+          type: string
+          maxLength: 500
+      required:
+        - brokerId
+        - nombre
+    ServicioFavoritoResult:
+      title: ServicioFavoritoResult
+      type: object
+      description: Estructura para consultar servicios favoritos
+      properties:
+        id:
+          type: integer
+        clienteId:
+          type: integer
+        proveedorId:
+          type: integer
+        alias:
+          type: string
+          maxLength: 100
+        numeroReferencia:
+          type: string
+          maxLength: 50
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+      required:
+        - id
+        - clienteId
+        - proveedorId
+        - alias
+        - numeroReferencia
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    ServicioFavoritoRequest:
+      title: ServicioFavoritoRequest
+      type: object
+      description: Estructura para crear/actualizar servicio favorito
+      properties:
+        clienteId:
+          type: integer
+        proveedorId:
+          type: integer
+        alias:
+          type: string
+          maxLength: 100
+        numeroReferencia:
+          type: string
+          maxLength: 50
+      required:
+        - clienteId
+        - proveedorId
+        - alias
+        - numeroReferencia
+    ProductoResult:
+      title: ProductoResult
+      type: object
+      description: Estructura para consultar productos de proveedor
+      properties:
+        id:
+          type: integer
+        proveedorId:
+          type: integer
+        sku:
+          type: string
+          maxLength: 50
+        nombre:
+          type: string
+          maxLength: 100
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
+        precio:
+          type: number
+          x-stoplight:
+            id: kd6k5ve4v14ly
+        urlIcono:
+          type: string
+          x-stoplight:
+            id: e9qdswkg2xbi0
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        modificationTimestamp:
+          type: string
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+        modificationUser:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+      required:
+        - id
+        - proveedorId
+        - sku
+        - nombre
+        - categoria
+        - precio
+        - urlIcono
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    ProductoRequest:
+      title: ProductoRequest
+      type: object
+      description: Estructura para crear/actualizar producto de proveedor
+      properties:
+        sku:
+          type: string
+          maxLength: 50
+        nombre:
+          type: string
+          maxLength: 100
+        precio:
+          type: number
+          x-stoplight:
+            id: 4d54deghg8un9
+        urlIcono:
+          type: string
+          maxLength: 255
+          x-stoplight:
+            id: xjzu7h7g5gz5m
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
+      required:
+        - sku
+        - nombre
+        - urlIcono
+        - categoria
+    ConfirmacionRequest:
+      title: ConfirmacionRequest
+      type: object
+      description: Estructura para confirmar 2FA (SMS o Email)
+      properties:
+        Tipo:
+          $ref: '#/components/schemas/Tipo2FAEnum'
+        Codigo:
+          type: string
+      required:
+        - Tipo
+        - Codigo
+    DatosClienteRequest:
+      title: DatosClienteRequest
+      type: object
+      description: Estructura para datos del cliente
+      properties:
+        nombre:
+          type: string
+        apellidoPaterno:
+          type: string
+        apellidoMaterno:
+          type: string
+        fechaNacimiento:
+          type: string
+          format: date-time
+        nombreEstado:
+          type: string
+        genero:
+          $ref: '#/components/schemas/GeneroEnum'
+      required:
+        - nombre
+        - apellidoPaterno
+        - apellidoMaterno
+        - fechaNacimiento
+        - nombreEstado
+        - genero
+    RegistrarCorreoRequest:
+      title: RegistrarCorreoRequest
+      type: object
+      description: Estructura para registrar correo
+      properties:
+        correo:
+          type: string
+      required:
+        - correo
+    RegistrarBiometricosRequest:
+      title: RegistrarBiometricosRequest
+      type: object
+      description: Estructura para registrar biometricos
+      properties:
+        idDispositivo:
+          type: string
+        token:
+          type: string
+        nombre:
+          type: string
+        caracteristicas:
+          type: string
+      required:
+        - idDispositivo
+        - token
+        - nombre
+        - caracteristicas
+    AceptarTerminosRequest:
+      title: AceptarTerminosRequest
+      type: object
+      description: Estructura para aceptar terminos
+      properties:
+        version:
+          type: string
+        aceptoTerminos:
+          type: boolean
+        aceptoPrivacidad:
+          type: boolean
+        aceptoPld:
+          type: boolean
+      required:
+        - version
+        - aceptoTerminos
+        - aceptoPrivacidad
+        - aceptoPld
+    CompletarRegistroRequest:
+      title: CompletarRegistroRequest
+      type: object
+      description: Estructura para completar registro
+      properties:
+        contrasena:
+          type: string
+        confirmacionContrasena:
+          type: string
+      required:
+        - contrasena
+        - confirmacionContrasena
+    KeyValueConfigRequest:
+      title: KeyValueConfigRequest
+      type: object
+      description: Estructura para crear una configuracion
+      properties:
+        key:
+          type: string
+          description: Clave de la configuracion
+        value:
+          type: string
+          description: Valor de la configuracion
+      required:
+        - key
+        - value
+    KeyValueConfigUpdateRequest:
+      title: KeyValueConfigUpdateRequest
+      type: object
+      description: Estructura para actualizar una configuracion
+      properties:
+        value:
+          type: string
+          description: Valor de la configuracion
+      required:
+        - value
+    KeyValueConfigResult:
+      title: KeyValueConfigResult
+      type: object
+      description: Estructura de resultado de configuracion key-value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      required:
+        - key
+        - value
   securitySchemes:
     jwsToken:
       type: http
@@ -1548,10 +3210,31 @@ components:
     idEstado:
       name: idEstado
       in: path
-      required: true
       schema:
         type: integer
       description: Id del estado
+      required: true
+    idProveedor:
+      name: idProveedor
+      in: path
+      schema:
+        type: integer
+      description: Id del proveedor de servicio
+      required: true
+    idServicioFavorito:
+      name: idServicioFavorito
+      in: path
+      schema:
+        type: integer
+      description: Id del servicio favorito
+      required: true
+    idBroker:
+      name: idBroker
+      in: path
+      schema:
+        type: integer
+      description: Id del broker
+      required: true
   responses:
     HTTP_Error_400:
       description: Response to client error satus code
@@ -1645,13 +3328,22 @@ components:
                       serviceName: string
                       serviceLocation: string
 tags:
+  - name: Auth
+  - name: Broker
   - name: Cliente
+  - name: ConsentimientoUsuario
   - name: Direccion
   - name: DispositivoMovilAutorizado
   - name: Empresa
   - name: Estado
   - name: Health
+  - name: KeyValueConfig
+  - name: Producto
+  - name: Proveedor
+  - name: Registro
+  - name: ServicioFavorito
   - name: UbicacionGeolocalizacion
+  - name: Usuario
 security:
   - jwsToken: []
   - X-API-Key: []

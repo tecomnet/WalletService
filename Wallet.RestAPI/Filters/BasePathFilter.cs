@@ -32,18 +32,18 @@ namespace Wallet.RestAPI.Filters
         /// <param name="context">FilterContext</param>
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
-            swaggerDoc.Servers.Add(new OpenApiServer() { Url = this.BasePath });
-            var pathsToModify = swaggerDoc.Paths.Where(p => p.Key.StartsWith(this.BasePath)).ToList();
+            swaggerDoc.Servers.Add(item: new OpenApiServer() { Url = this.BasePath });
+            var pathsToModify = swaggerDoc.Paths.Where(predicate: p => p.Key.StartsWith(value: this.BasePath)).ToList();
             foreach (var path in pathsToModify)
             {
-                if (!path.Key.StartsWith(this.BasePath))
+                if (!path.Key.StartsWith(value: this.BasePath))
                 {
                     continue;
                 }
 
-                var newKey = Regex.Replace(path.Key, $"^{this.BasePath}", string.Empty);
-                swaggerDoc.Paths.Remove(path.Key);
-                swaggerDoc.Paths.Add(newKey, path.Value);
+                var newKey = Regex.Replace(input: path.Key, pattern: $"^{this.BasePath}", replacement: string.Empty);
+                swaggerDoc.Paths.Remove(key: path.Key);
+                swaggerDoc.Paths.Add(key: newKey, value: path.Value);
             }
         }
     }

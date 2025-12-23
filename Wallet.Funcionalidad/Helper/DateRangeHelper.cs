@@ -2,65 +2,56 @@
 {
     public static class DateRangeHelper
     {
-        private const int MaxDays = 365;
+        private const int MaxDays = 365; // Número máximo de días para considerar un rango como "un año".
 
         /// <summary>
-        /// Validate that date range is less that year
+        /// Valida que el rango de fechas sea menor o igual a un año.
         /// </summary>
-        /// <param name="fromDate">date to validate</param>
-        /// <param name="toDate">date to validate</param>
-        /// <returns></returns>
+        /// <param name="fromDate">Fecha de inicio del rango a validar.</param>
+        /// <param name="toDate">Fecha de fin del rango a validar.</param>
+        /// <returns>Verdadero si el rango de fechas es menor o igual a un año, falso en caso contrario.</returns>
         public static bool DateRangeIsYear(DateTime fromDate, DateTime toDate)
         {
-            //convert fromDate to date time
-            var startDate = DateTime.Parse(fromDate.ToShortDateString());
-            //convert toDate to date time
-            var endDate = DateTime.Parse(toDate.ToShortDateString());
-            //The date difference of the range is obtained 
+            // Normaliza las fechas a medianoche para asegurar que la diferencia se calcule solo en días completos,
+            // ignorando la parte de la hora.
+            var startDate = fromDate.Date;
+            var endDate = toDate.Date;
+
+            // Calcula la diferencia entre las fechas.
             var dateDifference = endDate - startDate;
-            //Get total days of dateDifference
+
+            // Obtiene el número total de días de la diferencia.
             var days = (int)dateDifference.TotalDays;
-            //If the total number of days is less than or equal to the number of days in a year
-            if (days <= MaxDays)
-                // return true
-                return true;
-            else
-                //return false
-                return false;
+
+            // Retorna verdadero si el número total de días es menor o igual al máximo permitido (un año).
+            return days <= MaxDays;
         }
 
         /// <summary>
-        /// Validate that date range is valid
+        /// Valida que la fecha de fin no sea anterior a la fecha de inicio.
         /// </summary>
-        /// <param name="fromDate">date to validate</param>
-        /// <param name="toDate">date to validate</param>
-        /// <returns></returns>
+        /// <param name="fromDate">Fecha de inicio del rango a validar.</param>
+        /// <param name="toDate">Fecha de fin del rango a validar.</param>
+        /// <returns>Verdadero si la fecha de fin es igual o posterior a la fecha de inicio, falso en caso contrario.</returns>
         public static bool DateRangeIsValid(DateTime fromDate, DateTime toDate)
         {
-            //if toDate is less than fromDate
-            if (toDate < fromDate)
-                //return false
-                return false;
-            else
-                //return true
-                return true;
+            // Retorna verdadero si la fecha de fin es mayor o igual que la fecha de inicio.
+            return toDate >= fromDate;
         }
 
         /// <summary>
-        /// Valid if two dates are the same
+        /// Valida si dos fechas y horas son exactamente iguales.
         /// </summary>
-        /// <param name="frontTimeStamp">First time stamp to validate</param>
-        /// <param name="backEndTimeStamp2">Second time stamp to validate</param>
-        /// <returns>True if both dates are the same, else false</returns>
+        /// <param name="frontTimeStamp">Primera marca de tiempo a comparar.</param>
+        /// <param name="backEndTimeStamp2">Segunda marca de tiempo a comparar.</param>
+        /// <returns>Verdadero si ambas marcas de tiempo son idénticas, falso en caso contrario.</returns>
         public static bool IsTheSameTimeStamp(
             DateTime frontTimeStamp,
             DateTime backEndTimeStamp2
         )
         {
-            if (frontTimeStamp == backEndTimeStamp2)
-                return true;
-            else
-                return false;
+            // Retorna verdadero si ambas fechas y horas son iguales.
+            return frontTimeStamp == backEndTimeStamp2;
         }
     }
 }

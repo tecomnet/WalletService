@@ -62,12 +62,12 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class InlineResponse400ExtraAttributes {\n");
-            sb.Append("  DesciptionDynamicContents: ").Append(DesciptionDynamicContents).Append("\n");
-            sb.Append("  Module: ").Append(Module).Append("\n");
-            sb.Append("  ServiceName: ").Append(ServiceName).Append("\n");
-            sb.Append("  ServiceLocation: ").Append(ServiceLocation).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class InlineResponse400ExtraAttributes {\n");
+            sb.Append(value: "  DesciptionDynamicContents: ").Append(value: DesciptionDynamicContents).Append(value: "\n");
+            sb.Append(value: "  Module: ").Append(value: Module).Append(value: "\n");
+            sb.Append(value: "  ServiceName: ").Append(value: ServiceName).Append(value: "\n");
+            sb.Append(value: "  ServiceLocation: ").Append(value: ServiceLocation).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -77,7 +77,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -87,9 +87,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((InlineResponse400ExtraAttributes)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (InlineResponse400ExtraAttributes)obj);
         }
 
         /// <summary>
@@ -99,29 +99,29 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(InlineResponse400ExtraAttributes other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     DesciptionDynamicContents == other.DesciptionDynamicContents ||
                     DesciptionDynamicContents != null &&
-                    DesciptionDynamicContents.SequenceEqual(other.DesciptionDynamicContents)
+                    DesciptionDynamicContents.SequenceEqual(second: other.DesciptionDynamicContents)
                 ) && 
                 (
                     Module == other.Module ||
                     Module != null &&
-                    Module.Equals(other.Module)
+                    Module.Equals(value: other.Module)
                 ) && 
                 (
                     ServiceName == other.ServiceName ||
                     ServiceName != null &&
-                    ServiceName.Equals(other.ServiceName)
+                    ServiceName.Equals(value: other.ServiceName)
                 ) && 
                 (
                     ServiceLocation == other.ServiceLocation ||
                     ServiceLocation != null &&
-                    ServiceLocation.Equals(other.ServiceLocation)
+                    ServiceLocation.Equals(value: other.ServiceLocation)
                 );
         }
 
@@ -152,12 +152,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(InlineResponse400ExtraAttributes left, InlineResponse400ExtraAttributes right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(InlineResponse400ExtraAttributes left, InlineResponse400ExtraAttributes right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

@@ -72,7 +72,7 @@ namespace Wallet.RestAPI.Models
                 status: status,
                 exception: exception);
             // Add the error the the list
-            Errors.Add(error);
+            Errors.Add(item: error);
         }
         /// <summary>
         /// Constrtuctor based on a list of exceptions
@@ -111,7 +111,7 @@ namespace Wallet.RestAPI.Models
         public void AddError(InlineResponse400Errors error)
         {
             // Add the provided error to the list
-            Errors.Add(error);
+            Errors.Add(item: error);
         }
         /// <summary>
         /// Empties the list of errors

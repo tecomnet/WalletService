@@ -1,28 +1,33 @@
 namespace Wallet.Funcionalidad.Helper
 {
 	/// <summary>
-	/// URL builder for the services
+	/// Constructor de URLs para los servicios
 	/// </summary>
 	public class UrlBuilder
 	{
 		/// <summary>
-		/// Build the URL for the service
+		/// Construye la URL para el servicio dado.
 		/// </summary>
-		/// <param name="serviceName">Name of the service</param>
-		/// <returns>URL of the service</returns>
+		/// <param name="serviceName">Nombre del servicio.</param>
+		/// <returns>URL completa del servicio.</returns>
 		public string BuildUrl(string serviceName)
 		{
-			var clusterNamespace = Environment.GetEnvironmentVariable("namespace");
-			if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable($"{serviceName}")))
+			// Obtiene el namespace del clúster desde las variables de entorno.
+			var clusterNamespace = Environment.GetEnvironmentVariable(variable: "namespace");
+
+			// Verifica si la URL del servicio está definida directamente en una variable de entorno.
+			if (string.IsNullOrEmpty(value: Environment.GetEnvironmentVariable(variable: $"{serviceName}")))
 			{
-				// Build the URL for the service, esto es para kubernates
+				// Si no está definida, construye la URL asumiendo un entorno de Kubernetes.
+				// Esto es para entornos de Kubernetes donde los servicios se descubren por nombre y namespace.
 				var serviceUrl = $"http://{serviceName}-service.{clusterNamespace}.svc.cluster.local:80";
 				return serviceUrl;
 			}
 			else
 			{
-				// Get the service URL from the environment variables
-				var serviceUrl = Environment.GetEnvironmentVariable($"{serviceName}");
+				// Si la URL del servicio está definida en una variable de entorno, la utiliza directamente.
+				// Esto permite sobrescribir la URL por defecto o usarla en entornos no-Kubernetes.
+				var serviceUrl = Environment.GetEnvironmentVariable(variable: $"{serviceName}");
 				return serviceUrl;
 			}
 		}

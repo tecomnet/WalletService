@@ -1,4 +1,3 @@
-using System;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
@@ -12,15 +11,9 @@ public class ValidacionChecktonTest : UnitTestTemplate
     // PARÁMETROS: CaseName, TipoCheckton (enum), Resultado (bool), Success, ExpectedErrors
     
     // === CASOS DE ÉXITO ===
-    [InlineData("1. OK: ListaNegra, Resultado True", 
-        TipoCheckton.ListaNegra, true, 
-        true, new string[] { })]
-    [InlineData("2. OK: ListaRestrictivaUSA, Resultado False", 
-        TipoCheckton.ListaRestrictivaUSA, false, 
-        true, new string[] { })]
-    [InlineData("3. OK: Curp, Resultado True", 
-        TipoCheckton.Curp, true, 
-        true, new string[] { })]
+    [InlineData(data: ["1. OK: ListaNegra, Resultado True", TipoCheckton.ListaNegra, true, true, new string[] { }])]
+    [InlineData(data: ["2. OK: ListaRestrictivaUSA, Resultado False", TipoCheckton.ListaRestrictivaUSA, false, true, new string[] { }])]
+    [InlineData(data: ["3. OK: Curp, Resultado True", TipoCheckton.Curp, true, true, new string[] { }])]
     // === CASO DE ERROR (Simulación de TipoCheckton null/requerido) ===
     /*[InlineData("4. ERROR: TipoCheckton null (Simulación)", 
         null, true, 
@@ -41,10 +34,10 @@ public class ValidacionChecktonTest : UnitTestTemplate
                 creationUser: Guid.NewGuid(),
                 testCase: caseName);            
             // Comprobar la asignación de propiedades (solo si hay éxito)
-            Assert.Equal(tipoCheckton, validacion.TipoCheckton);
-            Assert.Equal(resultado, validacion.Resultado);
+            Assert.Equal(expected: tipoCheckton, actual: validacion.TipoCheckton);
+            Assert.Equal(expected: resultado, actual: validacion.Resultado);
             // Assert Success
-            Assert.True(success, $"El caso '{caseName}' falló cuando se esperaba éxito.");
+            Assert.True(condition: success, userMessage: $"El caso '{caseName}' falló cuando se esperaba éxito.");
         }
         catch (EMGeneralAggregateException exception)
         {
@@ -52,7 +45,7 @@ public class ValidacionChecktonTest : UnitTestTemplate
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException && exception is not TrueException && exception is not FalseException)
         {
-            Assert.Fail($"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
+            Assert.Fail(message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
         }
     }
 }

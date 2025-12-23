@@ -9,7 +9,12 @@ namespace Wallet.RestAPI.Models
     {
         #region Constructors
 
-        public InlineResponse400Errors(){}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InlineResponse400Errors"/> class.
+        /// </summary>
+        public InlineResponse400Errors()
+        {
+        }
 #nullable enable
         /// <summary>
         /// Constructor for initializing a complete 400 error
@@ -31,7 +36,7 @@ namespace Wallet.RestAPI.Models
             string detail,
             string? instance
 #nullable disable
-            )
+        )
         {
             // Set the private members
             if (type is null)
@@ -42,6 +47,7 @@ namespace Wallet.RestAPI.Models
             {
                 Type = type;
             }
+
             Status = status;
             ErrorCode = errorCode;
             Title = title;
@@ -50,6 +56,7 @@ namespace Wallet.RestAPI.Models
             // Set the extra attributes to null since there is no information
             ExtraAttributes = null;
         }
+
         /// <summary>
         /// Constructor for initializing a complete 400 error with extra attributes
         /// </summary>
@@ -72,7 +79,7 @@ namespace Wallet.RestAPI.Models
             string? instance,
             global::Wallet.RestAPI.Models.InlineResponse400ExtraAttributes extraAttributes
 #nullable disable
-            )
+        )
         {
             // Set the private members
             if (type is null)
@@ -83,6 +90,7 @@ namespace Wallet.RestAPI.Models
             {
                 Type = type;
             }
+
             Status = status;
             ErrorCode = errorCode;
             Title = title;
@@ -91,6 +99,7 @@ namespace Wallet.RestAPI.Models
             // Set the extra attributes to null since there is no information
             ExtraAttributes = extraAttributes;
         }
+
         /// <summary>
         /// Constructor using an EMGeneralException as base data provider
         /// </summary>
@@ -104,7 +113,8 @@ namespace Wallet.RestAPI.Models
 #nullable disable
             int status,
             EMGeneralException exception) :
-            this(type, status, exception.Code, exception.Title, exception.Description, exception.ServiceInstance)
+            this(type: type, status: status, errorCode: exception.Code, title: exception.Title,
+                detail: exception.Description, instance: exception.ServiceInstance)
         {
             // Instantiate the ExtraAttributes
             global::Wallet.RestAPI.Models.InlineResponse400ExtraAttributes extraAttributes = new(
@@ -115,6 +125,7 @@ namespace Wallet.RestAPI.Models
             // Set the property
             ExtraAttributes = extraAttributes;
         }
+
         /// <summary>
         /// Constructor using a RestAPIError
         /// </summary>
@@ -126,7 +137,7 @@ namespace Wallet.RestAPI.Models
             Status = restAPIError.Status;
             ErrorCode = restAPIError.ErrorCode;
             Title = restAPIError.Title;
-            Instance = restAPIError.Instance;           
+            Instance = restAPIError.Instance;
             // Set the Detail and ExtraAttribures based on the type of RestAPIError
             if (restAPIError is RestAPIError error)
             {
@@ -148,9 +159,11 @@ namespace Wallet.RestAPI.Models
                 // Set the Detail using null as the argument since the detail has no dynamic content
                 Detail = restAPIError.Detail(args: null);
         }
+
         #endregion
 
         #region Factories
+
         /// <summary>
         /// Factory to create a list of errors based on a list of EMGeneralExceptions
         /// </summary>
@@ -168,7 +181,7 @@ namespace Wallet.RestAPI.Models
                 try
                 {
                     // Instantiate the error and add it to the list
-                    newErrors.Add(new InlineResponse400Errors(
+                    newErrors.Add(item: new InlineResponse400Errors(
                         type: null,
                         status: 400,
                         exception: exception));
@@ -176,18 +189,20 @@ namespace Wallet.RestAPI.Models
                 catch (Exception exc)
                 {
                     // Instantiate the error for creating the error
-                    newErrors.Add(new InlineResponse400Errors(
+                    newErrors.Add(item: new InlineResponse400Errors(
                         type: null,
                         status: 400,
-                        errorCode: "EM-GENERAL-ERROR-PROBLEM-PROCESSING-ERROR",
-                        title: "Error trying to process an error",
+                        errorCode: RestAPIErrors.EmGeneralErrorProblemProcessingError,
+                        title: "Error al intentar procesar un error",
                         detail: exc.Message,
                         instance: "DEFAULT"));
                 }
             }
+
             // Return the list of errors
             return newErrors;
         }
+
         /// <summary>
         /// Factory to create a list of errors based on a AggregatedExceptions
         /// </summary>
@@ -203,11 +218,13 @@ namespace Wallet.RestAPI.Models
             foreach (var exception in aggregateException.InnerExceptions)
             {
                 // Add the cast exception into the list
-                emGeneralExceptions.Add((EMGeneralException)exception);
+                emGeneralExceptions.Add(item: (EMGeneralException)exception);
             }
+
             // Use the basic factory passing the list of EMGeneralExceptions within the AggregatedException
             return CreateFromExceptionList(exceptions: emGeneralExceptions);
         }
+
         /// <summary>
         /// Creates a list of InlineResponse400Errors based on a list of RestAPIErrors
         /// </summary>
@@ -221,10 +238,11 @@ namespace Wallet.RestAPI.Models
             // Iterate the list of RestAPIErrors
             foreach (var restAPIError in restAPIErrors)
                 // Add the new instance of InlineResponse400Errors to the list
-                newErrors.Add(new InlineResponse400Errors(restAPIError: restAPIError));
+                newErrors.Add(item: new InlineResponse400Errors(restAPIError: restAPIError));
             // Return the list
             return newErrors;
         }
+
         #endregion
     }
 }

@@ -413,3 +413,4 @@ code-ql
 
 # Ignorar toda la carpeta de configuración de VS Code
 .vscode/
+.env
