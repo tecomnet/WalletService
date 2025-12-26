@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Helpers;
+using Wallet.DOM.Enums;
 
 namespace Wallet.RestAPI.Controllers.Implementation
 {
@@ -31,6 +32,16 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 contrasenaNueva: body.ContrasenaNueva, confirmacionContrasenaNueva: body.ContrasenaNuevaConfrimacion,
                 modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
+            return Ok(value: result);
+        }
+
+        /// <inheritdoc />
+        public override async Task<IActionResult> Confirmar2FAAsync(string version, int? idUsuario,
+            ConfirmacionRequest body)
+        {
+            var result = await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario.Value,
+                tipo2FA: (Tipo2FA)(int)body!.Tipo, codigoVerificacion: body.Codigo,
+                modificationUser: this.GetAuthenticatedUserGuid());
             return Ok(value: result);
         }
 

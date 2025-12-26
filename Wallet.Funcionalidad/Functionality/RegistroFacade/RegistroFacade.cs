@@ -46,7 +46,7 @@ public class RegistroFacade(
         // Confirma el código de verificación SMS a través del facade de usuario
         var verificado =
             await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario, Tipo2FA.Sms, codigo,
-                usuario.CreationUser);
+                usuario.CreationUser, validarEstatus: false);
         if (verificado)
         {
             // Si es verificado, actualiza el estado del registro a NumeroConfirmado
@@ -98,10 +98,12 @@ public class RegistroFacade(
     public async Task<Usuario> RegistrarCorreoAsync(int idUsuario, string correo)
     {
         // Valida que el usuario esté en el estado esperado (DatosClienteCompletado o CorreoRegistrado si es reenvío)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: [EstatusRegistroEnum.DatosClienteCompletado, EstatusRegistroEnum.CorreoRegistrado]);
+        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
+            estatusEsperados: [EstatusRegistroEnum.DatosClienteCompletado, EstatusRegistroEnum.CorreoRegistrado]);
 
         // Actualiza el correo electrónico del usuario a través del facade de usuario
-        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo, usuario.CreationUser);
+        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo, usuario.CreationUser,
+            validarEstatus: false);
 
         // Actualiza el estado del registro a CorreoRegistrado
         await ActualizarEstatusAsync(usuario, EstatusRegistroEnum.CorreoRegistrado, usuario.CreationUser);
@@ -122,7 +124,7 @@ public class RegistroFacade(
         // Confirma el código de verificación de Email a través del facade de usuario
         var verificado =
             await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario, Tipo2FA.Email, codigo,
-                usuario.CreationUser);
+                usuario.CreationUser, validarEstatus: false);
         if (verificado)
         {
             // Si es verificado, actualiza el estado del registro a CorreoVerificado
@@ -248,7 +250,8 @@ public class RegistroFacade(
         }
 
         // Verifica si el estado actual del usuario coincide con alguno de los estados esperados, se omite paso datos biometricos registrado
-        if (!estatusEsperados.Contains(usuario.Estatus) && !estatusEsperados.Contains(EstatusRegistroEnum.DatosBiometricosRegistrado))
+        if (!estatusEsperados.Contains(usuario.Estatus) &&
+            !estatusEsperados.Contains(EstatusRegistroEnum.DatosBiometricosRegistrado))
         {
             // Lanza una excepción si el estado no coincide
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(

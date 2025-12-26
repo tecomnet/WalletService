@@ -101,6 +101,10 @@ public class UsuarioFacade(
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+
+            // Valida que el usuario tenga el registro completado.
+            ValidarUsuarioRegistroCompletado(usuario);
+
             // Actualiza la contraseña, validando la actual.
             usuario.ActualizarContrasena(
                 contrasenaActual: contrasenaActual,
@@ -122,12 +126,19 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarCorreoElectronicoAsync(int idUsuario, string correoElectronico,
-        Guid modificationUser, string? testCase = null)
+        Guid modificationUser, string? testCase = null, bool validarEstatus = true)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+
+            // Valida que el usuario tenga el registro completado.
+            if (validarEstatus)
+            {
+                ValidarUsuarioRegistroCompletado(usuario);
+            }
+
             // Actualiza el correo electrónico en la entidad.
             usuario.ActualizarCorreoElectronico(correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
@@ -160,12 +171,19 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarTelefonoAsync(int idUsuario, string codigoPais, string telefono,
-        Guid modificationUser, string? testCase = null)
+        Guid modificationUser, string? testCase = null, bool validarEstatus = true)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+
+            // Valida que el usuario tenga el registro completado.
+            if (validarEstatus)
+            {
+                ValidarUsuarioRegistroCompletado(usuario);
+            }
+
             // Actualiza el teléfono en la entidad.
             usuario.ActualizarTelefono(codigoPais: codigoPais, telefono: telefono,
                 modificationUser: modificationUser);
@@ -197,13 +215,19 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<bool> ConfirmarCodigoVerificacion2FAAsync(int idUsuario, Tipo2FA tipo2FA,
-        string codigoVerificacion, Guid modificationUser)
+        string codigoVerificacion, Guid modificationUser, bool validarEstatus = true)
     {
         try
         {
             bool confirmado = false;
             // Obtiene el usuario.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+
+            // Valida que el usuario tenga el registro completado.
+            if (validarEstatus)
+            {
+                ValidarUsuarioRegistroCompletado(usuario);
+            }
 
             // Carga explícitamente las verificaciones 2FA activas del tipo solicitado.
             await context.Entry(entity: usuario)
@@ -439,6 +463,22 @@ public class UsuarioFacade(
                 serviceName: DomCommon.ServiceName,
                 module: this.GetType().Name,
                 exception: exception);
+        }
+    }
+
+
+    /// <summary>
+    /// Valida que el usuario tenga el estatus de registro completado.
+    /// </summary>
+    /// <param name="usuario">Usuario a validar.</param>
+    private void ValidarUsuarioRegistroCompletado(Usuario usuario)
+    {
+        if (usuario.Estatus != EstatusRegistroEnum.RegistroCompletado)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.InvalidRegistrationState,
+                dynamicContent: [usuario.Estatus.ToString(), EstatusRegistroEnum.RegistroCompletado.ToString()],
+                module: this.GetType().Name));
         }
     }
 

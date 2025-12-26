@@ -47,7 +47,7 @@ public class RegistroFacadeTest : BaseFacadeTest<IRegistroFacade>, IDisposable
 
         _usuarioFacadeMock.Setup(x =>
                 x.ConfirmarCodigoVerificacion2FAAsync(It.IsAny<int>(), It.IsAny<Tipo2FA>(), It.IsAny<string>(),
-                    It.IsAny<Guid>()))
+                    It.IsAny<Guid>(), It.IsAny<bool>()))
             .ReturnsAsync(true);
 
         // Act

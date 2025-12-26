@@ -42,7 +42,7 @@ public interface IUsuarioFacade
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> actualizado.</returns>
     Task<Usuario> ActualizarCorreoElectronicoAsync(int idUsuario, string correoElectronico,
-        Guid modificationUser, string? testCase = null);
+        Guid modificationUser, string? testCase = null, bool validarEstatus = true);
 
     /// <summary>
     /// Actualiza el número de teléfono de un usuario.
@@ -54,7 +54,7 @@ public interface IUsuarioFacade
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> actualizado.</returns>
     Task<Usuario> ActualizarTelefonoAsync(int idUsuario, string codigoPais, string telefono,
-        Guid modificationUser, string? testCase = null);
+        Guid modificationUser, string? testCase = null, bool validarEstatus = true);
 
     /// <summary>
     /// Confirma un código de verificación de doble factor (2FA).
@@ -65,7 +65,7 @@ public interface IUsuarioFacade
     /// <param name="modificationUser">El identificador del usuario que realiza la confirmación.</param>
     /// <returns>Una tarea que representa la operación asíncrona. Retorna true si la verificación es exitosa, false en caso contrario.</returns>
     Task<bool> ConfirmarCodigoVerificacion2FAAsync(int idUsuario, Tipo2FA tipo2FA,
-        string codigoVerificacion, Guid modificationUser);
+        string codigoVerificacion, Guid modificationUser, bool validarEstatus = true);
 
     /// <summary>
     /// Crea un usuario en estado de pre-registro con su número de teléfono.

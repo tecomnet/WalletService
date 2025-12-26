@@ -185,7 +185,7 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version}/broker/{idBroker}")]
+        [Route("/{version:apiVersion}/broker/{idBroker}")]
         [ValidateModelState]
         [SwaggerOperation("PutBroker")]
         [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]

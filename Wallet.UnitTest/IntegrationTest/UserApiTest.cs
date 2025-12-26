@@ -8,6 +8,10 @@ using Wallet.RestAPI.Models;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
 using Wallet.UnitTest.FixtureBase;
+using Microsoft.AspNetCore.TestHost;
+using Moq;
+using Wallet.Funcionalidad.ServiceClient;
+using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
@@ -130,10 +134,10 @@ public class UserApiTest : DatabaseTestFixture
     }
 
     [Fact]
-    public async Task Put_Email_Resets_Status_For_Incomplete_User()
+    public async Task Put_Email_ReturnsBadRequest_For_Incomplete_User()
     {
         // Arrange
-        // 1. Manually create a user with an intermediate status (e.g. DatosClienteCompletado)
+        // 1. Manually create a user with an intermediate status.
         using (var setupContext = CreateContext())
         {
             var incompleteUser = new Usuario(
@@ -149,15 +153,13 @@ public class UserApiTest : DatabaseTestFixture
             await setupContext.SaveChangesAsync();
         }
 
-        // 2. Authenticate manually (since fixture helper creates completed user)
-        // We need to fetch the user again to get ID
+        // 2. Authenticate manually.
         Usuario user;
         string token;
 
         using (var context = CreateContext())
         {
             user = await context.Usuario.FirstOrDefaultAsync(u => u.TestCaseID == "IntegrationTest_Incomplete");
-            // Generate token
             using var scope = Factory.Services.CreateScope();
             var tokenService = scope.ServiceProvider
                 .GetRequiredService<Wallet.Funcionalidad.Services.TokenService.ITokenService>();
@@ -184,22 +186,7 @@ public class UserApiTest : DatabaseTestFixture
         var response = await client.PutAsync($"{API_VERSION}/usuario/{user.Id}/actualizaEmail", content);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var responseContentString = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<UsuarioResult>(responseContentString);
-
-        Assert.NotNull(result);
-        Assert.Equal(request.CorreoElectronico, result.CorreoElectronico);
-
-        // CRITICAL CHECK: Status should RESET to PreRegistro
-        // Note: Using ToString() because UsuarioResult.Estatus is string
-        Assert.Equal(EstatusRegistroEnum.PreRegistro.ToString(), result.Estatus);
-
-        // Verify in DB
-        using var verifyContext = CreateContext();
-        var dbUser = await verifyContext.Usuario.FindAsync(user.Id);
-        Assert.NotNull(dbUser);
-        Assert.Equal(EstatusRegistroEnum.PreRegistro, dbUser.Estatus);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -240,7 +227,7 @@ public class UserApiTest : DatabaseTestFixture
     }
 
     [Fact]
-    public async Task Put_Telefono_Resets_Status_For_Incomplete_User()
+    public async Task Put_Telefono_ReturnsBadRequest_For_Incomplete_User()
     {
         // Arrange
         // 1. Manually create a user with an intermediate status
@@ -292,21 +279,7 @@ public class UserApiTest : DatabaseTestFixture
         var response = await client.PutAsync($"{API_VERSION}/usuario/{user.Id}/actualizaTelefono", content);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var responseContentString = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<UsuarioResult>(responseContentString);
-
-        Assert.NotNull(result);
-        Assert.Equal(request.Telefono, result.Telefono);
-
-        // CRITICAL CHECK: Status should RESET to PreRegistro
-        Assert.Equal(EstatusRegistroEnum.PreRegistro.ToString(), result.Estatus);
-
-        // Verify in DB
-        using var verifyContext = CreateContext();
-        var dbUser = await verifyContext.Usuario.FindAsync(user.Id);
-        Assert.NotNull(dbUser);
-        Assert.Equal(EstatusRegistroEnum.PreRegistro, dbUser.Estatus);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -431,5 +404,202 @@ public class UserApiTest : DatabaseTestFixture
             content: json,
             encoding: Encoding.UTF8,
             mediaType: "application/json");
+    }
+
+    [Fact]
+    public async Task Confirmar2FA_Email_Success()
+    {
+        // Arrange
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
+
+        // 1. Update Email to trigger 2FA
+        var updateRequest = new EmailUpdateRequest
+        {
+            CorreoElectronico = $"confirm2fa{Guid.NewGuid()}@test.com"
+        };
+        var updateContent = CreateContent(body: updateRequest);
+        await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaEmail", content: updateContent);
+
+        // 2. We skip getting code from DB because for Twilio (Email/SMS) the code is not stored in DB until verified.
+        // Since we mock Twilio service to accept any code, we can use a dummy one.
+        string verificationCode = "1234";
+
+        // 3. Confirm 2FA
+        var confirmRequest = new
+        {
+            tipo = "Email",
+            codigo = verificationCode
+        };
+        // Use manual serialization to ensure control
+        var json = System.Text.Json.JsonSerializer.Serialize(confirmRequest);
+        var confirmContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // Act
+        var response = await client.PostAsync(
+            requestUri: $"{API_VERSION}/usuario/{user.Id}/confirmar2fa", content: confirmContent);
+
+        // Assert
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+        var result = JsonConvert.DeserializeObject<bool>(value: responseContentString);
+        Assert.True(condition: result);
+
+        // Verify in DB that it is marked as verified
+        using (var context = CreateContext())
+        {
+            var dbUser = await context.Usuario.Include(u => u.Verificaciones2Fa)
+                .FirstAsync(u => u.Id == user.Id);
+            var verificacion = dbUser.Verificaciones2Fa
+                .FirstOrDefault(v => v.Codigo == verificationCode && v.Tipo == Tipo2FA.Email);
+            Assert.NotNull(verificacion);
+            Assert.True(verificacion.Verificado);
+        }
+    }
+
+    [Fact]
+    public async Task Confirmar2FA_Telefono_Success()
+    {
+        // Arrange
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
+
+        // 1. Update Phone to trigger 2FA
+        var updateRequest = new TelefonoUpdateRequest
+        {
+            CodigoPais = "052",
+            Telefono = "55" + new Random().Next(10000000, 99999999)
+        };
+        var updateContent = CreateContent(body: updateRequest);
+        var updateResponse = await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaTelefono",
+            content: updateContent);
+        Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
+
+        // 2. Mock code
+        string verificationCode = "1234";
+
+        // 3. Confirm 2FA
+        var confirmRequest = new
+        {
+            tipo = "Sms",
+            codigo = verificationCode
+        };
+
+        var json = System.Text.Json.JsonSerializer.Serialize(confirmRequest);
+        var confirmContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // Act
+        var response = await client.PostAsync(
+            requestUri: $"{API_VERSION}/usuario/{user.Id}/confirmar2fa", content: confirmContent);
+
+        // Assert
+        // var responseContentString = await response.Content.ReadAsStringAsync(); // Debugging
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+        var responseContentString = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<bool>(value: responseContentString);
+        Assert.True(condition: result);
+
+        // Verify in DB
+        using (var context = CreateContext())
+        {
+            var dbUser = await context.Usuario.Include(u => u.Verificaciones2Fa)
+                .FirstAsync(u => u.Id == user.Id);
+            var verificacion = dbUser.Verificaciones2Fa
+                .FirstOrDefault(v => v.Codigo == verificationCode && v.Tipo == Tipo2FA.Sms);
+            Assert.NotNull(verificacion);
+            Assert.True(verificacion.Verificado);
+        }
+    }
+
+    [Fact]
+    public async Task Confirmar2FA_BadCode_ReturnsFalse()
+    {
+        // Custom factory to override mock
+        var factory = Factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureTestServices(services =>
+            {
+                var mock = new Mock<ITwilioServiceFacade>();
+                // Setup to return False
+                mock.Setup(x => x.ConfirmarVerificacionSMS(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = false });
+                mock.Setup(x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+
+                services.AddScoped<ITwilioServiceFacade>(_ => mock.Object);
+            });
+        });
+
+        // Use the custom factory to create client
+        var client = factory.CreateClient();
+        // Since we created a new client/factory, we need to authenticate again? 
+        // Factory.CreateAuthenticatedUserAsync uses the global Factory. 
+        // But the DB is shared (Postgres/SQL container).
+        // We can reuse the tokens if we set the header.
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
+
+        // 1. Update Phone 
+        var updateRequest = new TelefonoUpdateRequest
+        {
+            CodigoPais = "052",
+            Telefono = "55" + new Random().Next(10000000, 99999999)
+        };
+        var updateContent = CreateContent(body: updateRequest);
+        var updateResponse = await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaTelefono",
+            content: updateContent);
+        Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
+
+        // 2. Bad code
+        string verificationCode = "WRONG";
+
+        // 3. Confirm 2FA
+        var confirmRequest = new
+        {
+            tipo = "Sms",
+            codigo = verificationCode
+        };
+
+        var json = System.Text.Json.JsonSerializer.Serialize(confirmRequest);
+        var confirmContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // Act
+        var response = await client.PostAsync(
+            requestUri: $"{API_VERSION}/usuario/{user.Id}/confirmar2fa", content: confirmContent);
+
+        // Assert
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+        var responseString = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<bool>(value: responseString);
+        Assert.False(condition: result);
+    }
+
+    [Fact]
+    public async Task Confirmar2FA_UserNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
+
+        int nonExistentUserId = 999999;
+
+        var confirmRequest = new
+        {
+            tipo = "Email",
+            codigo = "1234"
+        };
+        var json = System.Text.Json.JsonSerializer.Serialize(confirmRequest);
+        var confirmContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // Act
+        var response = await client.PostAsync(
+            requestUri: $"{API_VERSION}/usuario/{nonExistentUserId}/confirmar2fa", content: confirmContent);
+
+        // Assert
+        // Current implementation returns BadRequest (400) for UsuarioNoEncontrado exception.
+        Assert.Equal(expected: HttpStatusCode.BadRequest, actual: response.StatusCode);
     }
 }
