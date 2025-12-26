@@ -98,7 +98,8 @@ public class ProveedorApiController : ProveedorApiControllerBase
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> PutProveedorAsync(string version, int? idProveedor, ProveedorRequest body)
+    public override async Task<IActionResult> PutProveedorAsync(string version, int? idProveedor,
+        ProveedorUpdateRequest body)
     {
         if (idProveedor == null)
         {
@@ -109,6 +110,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
             idProveedor: idProveedor.Value,
             urlIcono: body.UrlIcono,
             nombre: body.Nombre,
+            concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
 
         var response = _mapper.Map<ProveedorResult>(source: proveedor);

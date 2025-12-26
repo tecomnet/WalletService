@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 
@@ -20,7 +21,7 @@ public class ProductoApiTest : DatabaseTestFixture
         {
             if (!await context.Broker.AnyAsync(b => b.Nombre == "Broker Test"))
             {
-                var broker = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
+                var broker = new Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
                 await context.Broker.AddAsync(entity: broker);
             }
 
@@ -93,13 +94,13 @@ public class ProductoApiTest : DatabaseTestFixture
         var provider = await CreateProveedor(client: client);
         var product = await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
 
-        var updateRequest = new ProductoRequest
+        var updateRequest = new ProductoUpdateRequest
         {
             Sku = "NETFLIX-STD",
             Nombre = "Netflix Standard",
-            Precio = 10.99m,
+            Precio = 10.99,
             UrlIcono = "https://netflix.com/icon.png",
-            Categoria = CategoriaEnum.SERVICIOSEnum
+            ConcurrencyToken = product.ConcurrencyToken
         };
 
         // Act
@@ -113,7 +114,7 @@ public class ProductoApiTest : DatabaseTestFixture
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Equal(expected: updateRequest.Sku, actual: result.Sku);
-        Assert.Equal(expected: updateRequest.Precio, actual: result.Precio);
+        Assert.Equal(expected: (decimal?)updateRequest.Precio, actual: result.Precio);
     }
 
     [Fact]
@@ -218,7 +219,7 @@ public class ProductoApiTest : DatabaseTestFixture
             BrokerId = 1, // Assuming Seeded Broker Id 1 exists or I need to fetch it? SetupDataConfig seeds brokers? Yes CommonSettings creates brokers.
             UrlIcono = "https://icon.png",
         };
-     
+
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}",
             content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode,

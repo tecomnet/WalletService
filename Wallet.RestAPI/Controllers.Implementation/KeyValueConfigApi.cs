@@ -18,7 +18,7 @@ public class KeyValueConfigApiController(IKeyValueConfigFacade keyValueConfigFac
     : KeyValueConfigApiControllerBase
 {
     /// <inheritdoc/>
-    public override async Task<IActionResult> GetAllKeyValueConfigsAsync(string version)
+    public override async Task<IActionResult> GetConfigurationsAsync(string version)
     {
         // Call facade method
         var configs = await keyValueConfigFacade.ObtenerTodasLasConfiguracionesAsync();
@@ -29,7 +29,7 @@ public class KeyValueConfigApiController(IKeyValueConfigFacade keyValueConfigFac
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> CreateKeyValueConfig(KeyValueConfigRequest body, string version)
+    public override async Task<IActionResult> CreateKeyValueConfigAsync(KeyValueConfigRequest body, string version)
     {
         var result =
             await keyValueConfigFacade.GuardarKeyValueConfigAsync(key: body.Key, value: body.Value,
@@ -39,7 +39,7 @@ public class KeyValueConfigApiController(IKeyValueConfigFacade keyValueConfigFac
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> DeleteKeyValueConfig(string key, string version)
+    public override async Task<IActionResult> DeleteKeyValueConfigAsync(string version, string key)
     {
         var result =
             await keyValueConfigFacade.EliminarKeyValueConfigAsync(key: key,
@@ -49,7 +49,7 @@ public class KeyValueConfigApiController(IKeyValueConfigFacade keyValueConfigFac
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> GetKeyValueConfigByKey(string key, string version)
+    public override async Task<IActionResult> GetKeyValueConfigByKeyAsync(string version, string key)
     {
         var result = await keyValueConfigFacade.ObtenerKeyValueConfigPorKeyAsync(key: key);
         var response = mapper.Map<KeyValueConfigResult>(source: result);
@@ -57,12 +57,23 @@ public class KeyValueConfigApiController(IKeyValueConfigFacade keyValueConfigFac
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> UpdateKeyValueConfig(KeyValueConfigUpdateRequest body, string key,
-        string version)
+    public override async Task<IActionResult> UpdateKeyValueConfigAsync(KeyValueConfigUpdateRequest body,
+        string version,
+        string key)
     {
         var result =
             await keyValueConfigFacade.ActualizarKeyValueConfigAsync(key: key, value: body.Value,
+                concurrencyToken: body.ConcurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
+        var response = mapper.Map<KeyValueConfigResult>(source: result);
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> ActivateKeyValueConfigAsync(string version, string key)
+    {
+        var result = await keyValueConfigFacade.ActivarKeyValueConfigAsync(key: key,
+            modificationUser: this.GetAuthenticatedUserGuid());
         var response = mapper.Map<KeyValueConfigResult>(source: result);
         return Ok(value: response);
     }

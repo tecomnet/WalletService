@@ -95,6 +95,7 @@ public class ServicioFavoritoFacadeTest(SetupDataConfig setupConfig)
                 idServicioFavorito: idServicio,
                 alias: alias,
                 numeroReferencia: numeroReferencia,
+                concurrencyToken: null,
                 modificationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 

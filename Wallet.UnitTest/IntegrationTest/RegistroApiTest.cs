@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 using Xunit.Abstractions;
@@ -78,14 +79,18 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Nombre = "Juan",
             ApellidoPaterno = "Perez",
             ApellidoMaterno = "Lopez",
-            Genero = GeneroEnum.MasculinoEnum,
+            Genero = (int)GeneroEnum.MasculinoEnum,
             NombreEstado = "Campeche",
-            FechaNacimiento = new DateTime(1990, 1, 1)
+            FechaNacimiento = new DateTime(1990, 1, 1),
         };
         var responseDatos = await client.PostAsync($"/{version}/registro/{usuarioId}/datosCliente",
             new StringContent(JsonConvert.SerializeObject(datosClienteRequest), Encoding.UTF8, "application/json"));
 
-        if (responseDatos.StatusCode != HttpStatusCode.OK)
+// ... (In ResumedRegistrationFlow) ...
+
+
+        // --- COMPLETE FLOW ---
+        if (responseDatos.StatusCode != HttpStatusCode.Created) // Changed from OK to CREATED to match assertion
         {
             var errorContent = await responseDatos.Content.ReadAsStringAsync();
             _output.WriteLine($"Error in CompletarDatosCliente: {errorContent}");
@@ -96,6 +101,11 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.NotNull(resultDatos);
         Assert.Equal(nameof(EstatusRegistroEnum.DatosClienteCompletado), resultDatos.Estatus);
 
+        var userAfterDatos = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
+        Assert.Equal(nameof(EstatusRegistroEnum.DatosClienteCompletado), userAfterDatos.Estatus.ToString());
+
+        var token = resultDatos.ConcurrencyToken;
+
         // 4. RegistrarCorreo
         var registrarCorreoRequest = new RegistrarCorreoRequest
         {
@@ -104,11 +114,17 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         var responseCorreo = await client.PutAsync($"/{version}/registro/{usuarioId}/correo",
             new StringContent(JsonConvert.SerializeObject(registrarCorreoRequest), Encoding.UTF8, "application/json"));
 
+        if (responseCorreo.StatusCode != HttpStatusCode.OK)
+        {
+            _output.WriteLine("RegistrarCorreo Failed: " + await responseCorreo.Content.ReadAsStringAsync());
+        }
+
         Assert.Equal(HttpStatusCode.OK, responseCorreo.StatusCode);
         var resultCorreo =
             JsonConvert.DeserializeObject<UsuarioResult>(await responseCorreo.Content.ReadAsStringAsync());
         Assert.NotNull(resultCorreo);
         Assert.Equal(nameof(EstatusRegistroEnum.CorreoRegistrado), resultCorreo.Estatus);
+        token = resultCorreo.ConcurrencyToken;
 
         // 5. VerificarCorreo (API Call)
         var verificarCorreoRequest = new ConfirmacionRequest
@@ -123,6 +139,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         var resultVerificarCorreo =
             JsonConvert.DeserializeObject<bool>(await responseVerificarCorreo.Content.ReadAsStringAsync());
         Assert.True(resultVerificarCorreo);
+
+        // Fetch fresh token after verify (status likely changed to CorreoConfirmado?)
+        var userAfterConfirm = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
+        token = Convert.ToBase64String(userAfterConfirm.ConcurrencyToken);
 
         // 6. RegistrarBiometricos
         var biometricosRequest = new RegistrarBiometricosRequest
@@ -140,6 +160,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             JsonConvert.DeserializeObject<UsuarioResult>(await responseBiometricos.Content.ReadAsStringAsync());
         Assert.NotNull(resultBiometricos);
         Assert.Equal(nameof(EstatusRegistroEnum.DatosBiometricosRegistrado), resultBiometricos.Estatus);
+        token = resultBiometricos.ConcurrencyToken;
 
         // 7. AceptarTerminos
         var terminosRequest = new AceptarTerminosRequest
@@ -157,6 +178,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             JsonConvert.DeserializeObject<UsuarioResult>(await responseTerminos.Content.ReadAsStringAsync());
         Assert.NotNull(resultTerminos);
         Assert.Equal(nameof(EstatusRegistroEnum.TerminosCondicionesAceptado), resultTerminos.Estatus);
+        token = resultTerminos.ConcurrencyToken;
 
         // 8. CompletarRegistro
         var completarRequest = new CompletarRegistroRequest
@@ -202,6 +224,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.NotNull(resultPre1);
         Assert.NotNull(resultPre1.Id);
         var usuarioId = resultPre1.Id.Value;
+        var token = resultPre1.ConcurrencyToken;
 
         // 2. ConfirmarNumero
         var confirmarRequest1 = new ConfirmacionRequest
@@ -209,22 +232,26 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         await client.PutAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(confirmarRequest1), Encoding.UTF8, "application/json"));
 
+        // Fetch fresh
+        var userDb = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
+        token = Convert.ToBase64String(userDb.ConcurrencyToken);
+
         // 3. DatosCliente
         var datosClienteRequest = new DatosClienteRequest
         {
             Nombre = "Test",
             ApellidoPaterno = "User",
             ApellidoMaterno = "Resume",
-            Genero = GeneroEnum.MasculinoEnum,
+            Genero = (int)GeneroEnum.MasculinoEnum,
             NombreEstado = "Campeche",
-            FechaNacimiento = new DateTime(1990, 1, 1)
+            FechaNacimiento = new DateTime(1990, 1, 1),
         };
         await client.PostAsync($"/{version}/registro/{usuarioId}/datosCliente",
             new StringContent(JsonConvert.SerializeObject(datosClienteRequest), Encoding.UTF8, "application/json"));
 
         // --- ROUND 2 (RESUME) ---
 
-        // 4. PreRegistro (Again)
+        // 4. PreRegistro (Again) - Resets status, updates user
         var responsePre2 = await client.PostAsync($"/{version}/registro/preRegistro",
             new StringContent(JsonConvert.SerializeObject(preRegistroRequest), Encoding.UTF8, "application/json"));
 
@@ -233,9 +260,10 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         Assert.NotNull(resultPre2);
         Assert.Equal(usuarioId, resultPre2.Id.Value); // Same ID
         Assert.Equal(nameof(EstatusRegistroEnum.PreRegistro), resultPre2.Estatus); // Status reset
+        token = resultPre2.ConcurrencyToken;
 
         // Verify DB side: Should have 2 SMS verifications
-        var userDb = await Context.Usuario.Include(u => u.Verificaciones2Fa)
+        userDb = await Context.Usuario.Include(u => u.Verificaciones2Fa)
             .FirstOrDefaultAsync(u => u.Id == usuarioId);
         Assert.NotNull(userDb);
         Assert.Equal(2, userDb.Verificaciones2Fa.Count(v => v.Tipo == Tipo2FA.Sms));
@@ -249,21 +277,42 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             new StringContent(JsonConvert.SerializeObject(confirmarRequest2), Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.OK, responseConf2.StatusCode);
 
+        // Fetch fresh
+        userDb = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
+        token = Convert.ToBase64String(userDb.ConcurrencyToken);
+
         // 6. DatosCliente (Again)
+
+
         var responseDatos2 = await client.PostAsync($"/{version}/registro/{usuarioId}/datosCliente",
             new StringContent(JsonConvert.SerializeObject(datosClienteRequest), Encoding.UTF8, "application/json"));
+        if (responseDatos2.StatusCode != HttpStatusCode.Created)
+        {
+            _output.WriteLine("Resumed DatosCliente Failed: " + await responseDatos2.Content.ReadAsStringAsync());
+        }
+
         Assert.Equal(HttpStatusCode.Created, responseDatos2.StatusCode);
+        var resultDatos2 =
+            JsonConvert.DeserializeObject<UsuarioResult>(await responseDatos2.Content.ReadAsStringAsync());
+        token = resultDatos2.ConcurrencyToken;
 
         // 7. RegistrarCorreo
         var correoRequest = new RegistrarCorreoRequest { Correo = "resume@test.com" };
-        await client.PutAsync($"/{version}/registro/{usuarioId}/correo",
+        var responseCorreo = await client.PutAsync($"/{version}/registro/{usuarioId}/correo",
             new StringContent(JsonConvert.SerializeObject(correoRequest), Encoding.UTF8, "application/json"));
+        var resultCorreo =
+            JsonConvert.DeserializeObject<UsuarioResult>(await responseCorreo.Content.ReadAsStringAsync());
+        token = resultCorreo.ConcurrencyToken;
 
         // 8. VerificarCorreo
         var verifCorreoRequest = new ConfirmacionRequest
             { Tipo = Tipo2FAEnum.EMAILEnum, Codigo = "1234" };
         await client.PutAsync($"/{version}/registro/{usuarioId}/confirmar",
             new StringContent(JsonConvert.SerializeObject(verifCorreoRequest), Encoding.UTF8, "application/json"));
+
+        // Fetch fresh
+        userDb = await Context.Usuario.AsNoTracking().FirstAsync(u => u.Id == usuarioId);
+        token = Convert.ToBase64String(userDb.ConcurrencyToken);
 
         // 9. RegistrarBiometricos
         var bioRequest = new RegistrarBiometricosRequest
@@ -275,13 +324,20 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         };
         var responseBio = await client.PostAsync($"/{version}/registro/{usuarioId}/biometricos",
             new StringContent(JsonConvert.SerializeObject(bioRequest), Encoding.UTF8, "application/json"));
+        var resultBio = JsonConvert.DeserializeObject<UsuarioResult>(await responseBio.Content.ReadAsStringAsync());
+        token = resultBio.ConcurrencyToken;
 
         // 10. Terminos
         var terminosRequest = new AceptarTerminosRequest
-            { Version = "1", AceptoTerminos = true, AceptoPrivacidad = true, AceptoPld = true };
+        {
+            Version = "1", AceptoTerminos = true, AceptoPrivacidad = true, AceptoPld = true
+        };
         var responseTerminos = await client.PostAsync($"/{version}/registro/{usuarioId}/terminos",
             new StringContent(JsonConvert.SerializeObject(terminosRequest), Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.Created, responseTerminos.StatusCode);
+        var resultTerm =
+            JsonConvert.DeserializeObject<UsuarioResult>(await responseTerminos.Content.ReadAsStringAsync());
+        token = resultTerm.ConcurrencyToken;
 
         // 11. Completar
         var completarRequest = new CompletarRegistroRequest

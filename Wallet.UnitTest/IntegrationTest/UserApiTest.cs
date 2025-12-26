@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Wallet.RestAPI.Models;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.UnitTest.FixtureBase;
 using Microsoft.AspNetCore.TestHost;
 using Moq;
@@ -81,7 +82,8 @@ public class UserApiTest : DatabaseTestFixture
         var request = new TelefonoUpdateRequest
         {
             CodigoPais = "+52",
-            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}"
+            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
 
         // Act
@@ -107,7 +109,8 @@ public class UserApiTest : DatabaseTestFixture
 
         var request = new EmailUpdateRequest
         {
-            CorreoElectronico = $"newemail{Guid.NewGuid()}@test.com"
+            CorreoElectronico = $"newemail{Guid.NewGuid()}@test.com",
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
 
         // Act
@@ -137,7 +140,8 @@ public class UserApiTest : DatabaseTestFixture
     public async Task Put_Email_ReturnsBadRequest_For_Incomplete_User()
     {
         // Arrange
-        // 1. Manually create a user with an intermediate status.
+        // 1. Manually create a user with an intermediate status (e.g. DatosClienteCompletado)
+        byte[] userToken;
         using (var setupContext = CreateContext())
         {
             var incompleteUser = new Usuario(
@@ -151,6 +155,7 @@ public class UserApiTest : DatabaseTestFixture
 
             await setupContext.Usuario.AddAsync(incompleteUser);
             await setupContext.SaveChangesAsync();
+            userToken = incompleteUser.ConcurrencyToken;
         }
 
         // 2. Authenticate manually.
@@ -178,7 +183,8 @@ public class UserApiTest : DatabaseTestFixture
 
         var request = new EmailUpdateRequest
         {
-            CorreoElectronico = $"updated{Guid.NewGuid()}@test.com"
+            CorreoElectronico = $"updated{Guid.NewGuid()}@test.com",
+            ConcurrencyToken = Convert.ToBase64String(userToken)
         };
 
         // Act
@@ -200,7 +206,8 @@ public class UserApiTest : DatabaseTestFixture
         var request = new TelefonoUpdateRequest
         {
             CodigoPais = "+52",
-            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}"
+            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
 
         // Act
@@ -231,6 +238,7 @@ public class UserApiTest : DatabaseTestFixture
     {
         // Arrange
         // 1. Manually create a user with an intermediate status
+        byte[] userToken;
         using (var setupContext = CreateContext())
         {
             var incompleteUser = new Usuario(
@@ -244,6 +252,7 @@ public class UserApiTest : DatabaseTestFixture
 
             await setupContext.Usuario.AddAsync(incompleteUser);
             await setupContext.SaveChangesAsync();
+            userToken = incompleteUser.ConcurrencyToken;
         }
 
         // 2. Authenticate
@@ -271,7 +280,8 @@ public class UserApiTest : DatabaseTestFixture
         var request = new TelefonoUpdateRequest
         {
             CodigoPais = "+52",
-            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}"
+            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
+            ConcurrencyToken = Convert.ToBase64String(userToken)
         };
 
         // Act
@@ -294,7 +304,8 @@ public class UserApiTest : DatabaseTestFixture
         {
             ContrasenaActual = "Password123!", // Matches default in fixture
             ContrasenaNueva = "NewPassword123!",
-            ContrasenaNuevaConfrimacion = "NewPassword123!"
+            ContrasenaNuevaConfrimacion = "NewPassword123!",
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
 
         // Act
@@ -336,6 +347,14 @@ public class UserApiTest : DatabaseTestFixture
                 testCase: "IntegrationTest_FirstPassword");
 
             await setupContext.Usuario.AddAsync(incompleteUser);
+
+            // Add required Empresa and Cliente for Wallet creation
+            var empresa = new Wallet.DOM.Modelos.GestionEmpresa.Empresa("Tecomnet", Guid.NewGuid());
+            await setupContext.Empresa.AddAsync(empresa);
+
+            var cliente = new Wallet.DOM.Modelos.GestionCliente.Cliente(incompleteUser, empresa, Guid.NewGuid());
+            await setupContext.Cliente.AddAsync(cliente);
+
             await setupContext.SaveChangesAsync();
         }
 
@@ -370,7 +389,7 @@ public class UserApiTest : DatabaseTestFixture
         var request = new CompletarRegistroRequest
         {
             Contrasena = "Password123!",
-            ConfirmacionContrasena = "Password123!"
+            ConfirmacionContrasena = "Password123!",
         };
 
         // Act

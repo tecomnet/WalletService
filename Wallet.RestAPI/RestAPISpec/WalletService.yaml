@@ -47,6 +47,7 @@ paths:
       - $ref: "#/components/parameters/version"
     get:
       summary: Obtiene todas las configuraciones
+      operationId: GetConfigurations
       responses:
         "200":
           description: OK
@@ -163,6 +164,35 @@ paths:
         - jwsToken: []
       tags:
         - KeyValueConfig
+  "/{version}/configurations/{key}/activate":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Clave de la configuracion
+    put:
+      summary: Activa una configuracion
+      operationId: ActivateKeyValueConfig
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KeyValueConfigResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - KeyValueConfig
   "/{version}/cliente":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -214,9 +244,45 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
+    put:
+      summary: Actualiza un cliente por id
+      operationId: UpdateCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClienteResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "409":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Actualiza un cliente por id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DatosClienteUpdateRequest"
+        required: true
+      security:
+        - jwsToken: []
+      tags:
+        - Cliente
     delete:
       summary: Elimina un cliente por id
       operationId: DeleteCliente
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: concurrencyToken
+          description: Token de concurrencia
+          required: true
       responses:
         "200":
           description: OK
@@ -242,6 +308,12 @@ paths:
     put:
       summary: Activa un cliente por id
       operationId: PutActivarCliente
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StatusChangeRequest"
+        required: true
       responses:
         "200":
           description: OK
@@ -418,6 +490,34 @@ paths:
           description: token autorizacion del dispositivo
       tags:
         - DispositivoMovilAutorizado
+  "/{version}/pago-servicios":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Registra un nuevo pago de servicio
+      operationId: RegistrarPagoServicio
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegistrarPagoServicioRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DetallesPagoServicioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "500":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Registra un pago de servicio y su transaccion asociada
+      tags:
+        - DetallesPagoServicio
   "/{version}/estado":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -492,7 +592,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EstadoRequest"
+              $ref: "#/components/schemas/EstadoUpdateRequest"
       tags:
         - Estado
   "/{version}/empresa":
@@ -588,7 +688,71 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EmpresaRequest"
+              $ref: "#/components/schemas/EmpresaUpdateRequest"
+      tags:
+        - Empresa
+    delete:
+      summary: Elimina una empresa por id
+      operationId: DeleteEmpresa
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: concurrencyToken
+          description: Token de concurrencia
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmpresaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "409":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Elimina una empresa por id
+      security:
+        - jwsToken: []
+      tags:
+        - Empresa
+
+  "/{version}/empresa/{idEmpresa}/activar":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idEmpresa"
+    put:
+      summary: Activa una empresa por id
+      operationId: PutActivarEmpresa
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StatusChangeRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmpresaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "409":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Activa una empresa por id
+      security:
+        - jwsToken: []
       tags:
         - Empresa
   "/{version}/empresa/{idEmpresa}/clientes":
@@ -790,7 +954,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BrokerRequest"
+              $ref: "#/components/schemas/BrokerUpdateRequest"
       tags:
         - Broker
     delete:
@@ -948,7 +1112,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProductoRequest"
+              $ref: "#/components/schemas/ProductoUpdateRequest"
       tags:
         - Producto
     delete:
@@ -1186,7 +1350,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProveedorRequest"
+              $ref: "#/components/schemas/ProveedorUpdateRequest"
       tags:
         - Proveedor
     delete:
@@ -1308,7 +1472,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ServicioFavoritoRequest"
+              $ref: "#/components/schemas/ServicioFavoritoUpdateRequest"
       tags:
         - ServicioFavorito
     delete:
@@ -1328,6 +1492,29 @@ paths:
         "404":
           $ref: "#/components/responses/HTTP_Error_400"
       description: Elimina un servicio favorito
+      tags:
+        - ServicioFavorito
+  "/{version}/servicioFavorito/{idServicioFavorito}/activar":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idServicioFavorito"
+    put:
+      summary: Activa un servicio favorito
+      operationId: putActivarServicioFavorito
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServicioFavoritoResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Activa un servicio favorito
       tags:
         - ServicioFavorito
   "/{version}/registro/preRegistro":
@@ -1849,9 +2036,284 @@ paths:
               $ref: "#/components/schemas/RevokeTokenRequest"
       tags:
         - Auth
+  "/{version}/cuenta-wallet":
+    parameters:
+      - $ref: "#/components/parameters/version"
+    post:
+      summary: Crea una nueva cuenta wallet
+      operationId: CreateCuentaWallet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrearCuentaWalletRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CuentaWalletResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - CuentaWallet
+  "/{version}/cliente/{idCliente}/cuenta-wallet":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene la cuenta wallet de un cliente
+      operationId: GetCuentaWalletPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CuentaWalletResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - CuentaWallet
+  "/{version}/cliente/{idCliente}/transacciones":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene las transacciones de un cliente
+      operationId: GetTransaccionesPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BitacoraTransaccionResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - BitacoraTransaccion
+  "/{version}/cliente/{idCliente}/pago-servicios":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene el historial de pagos de servicios de un cliente
+      operationId: GetDetallesPagoServicioPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DetallesPagoServicioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - DetallesPagoServicio
+  "/{version}/transacciones/{idTransaccion}/detalles":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idTransaccion
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+        description: Id de la transaccion
+    get:
+      summary: Obtiene los detalles de pago de servicio por transacción
+      operationId: GetDetallesPorTransaccion
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DetallesPagoServicioResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      security:
+        - jwsToken: []
+      tags:
+        - DetallesPagoServicio
+
 components:
   schemas:
-    TipoDocumentoConsentimiento:
+    CrearCuentaWalletRequest:
+      type: object
+      properties:
+        idCliente:
+          type: integer
+          format: int32
+        moneda:
+          type: string
+          minLength: 3
+          maxLength: 3
+      required:
+        - idCliente
+        - moneda
+    CuentaWalletResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        idCliente:
+          type: integer
+          format: int32
+        saldoActual:
+          type: number
+          format: double
+        cuentaCLABE:
+          type: string
+        moneda:
+          type: string
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+      required:
+        - id
+        - idCliente
+        - saldoActual
+        - cuentaCLABE
+        - moneda
+        - guid
+        - creationTimestamp
+        - isActive
+    BitacoraTransaccionResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        idBilletera:
+          type: integer
+          format: int32
+        monto:
+          type: number
+          format: double
+        tipo:
+          type: string
+        direccion:
+          type: string
+        estatus:
+          type: string
+        refExternaId:
+          type: string
+          nullable: true
+        guid:
+          type: string
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+      required:
+        - id
+        - idBilletera
+        - monto
+        - tipo
+        - direccion
+        - estatus
+        - guid
+        - creationTimestamp
+    DetallesPagoServicioResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        idTransaccion:
+          type: integer
+          format: int32
+        idProveedor:
+          type: integer
+          format: int32
+        numeroReferencia:
+          type: string
+        codigoAutorizacion:
+          type: string
+          nullable: true
+        guid:
+          type: string
+          format: uuid
+      required:
+        - id
+        - idTransaccion
+        - idProveedor
+        - numeroReferencia
+        - guid
+    RegistrarPagoServicioRequest:
+      type: object
+      properties:
+        idBilletera:
+          type: integer
+          format: int32
+        monto:
+          type: number
+          format: double
+        nombreServicio:
+          type: string
+        direccion:
+          type: string
+        refExternaId:
+          type: string
+          nullable: true
+        idProveedor:
+          type: integer
+          format: int32
+        numeroReferencia:
+          type: string
+        codigoAutorizacion:
+          type: string
+          nullable: true
+      required:
+        - idBilletera
+        - monto
+        - nombreServicio
+        - direccion
+        - idProveedor
+        - numeroReferencia
+    TipoDocumentoConsentimientoEnum:
       type: string
       x-stoplight:
         id: 94d48ef2c5166
@@ -1946,7 +2408,6 @@ components:
         - username
     AuthResult:
       type: object
-      description: Estructura para resultado de autenticacion
       properties:
         accessToken:
           type: string
@@ -1958,44 +2419,34 @@ components:
           type: array
           items:
             type: string
-        idCliente:
-          type: integer
-    ClienteResult:
-      title: ClienteResult
+      description: Estructura para resultado de autenticacion
+      title: ""
+    DatosClienteRequest:
+      title: DatosClienteRequest
       x-stoplight:
-        id: gu55vk4o2l8gt
+        id: a8h88f5567ienu
       type: object
-      description: Estructura para consultar clientes
+      description: Estructura para actualizar los datos del cliente
       properties:
-        id:
-          type: integer
-          x-stoplight:
-            id: 3of979vs8a9k9
-        codigoPais:
-          type: string
-          minLength: 3
-          maxLength: 3
-          x-stoplight:
-            id: neep14yhburn4
-        telefono:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 9
-          maxLength: 10
         nombre:
           type: string
           x-stoplight:
             id: neep14yhburn4
           minLength: 1
           maxLength: 100
-        primerApellido:
+        apellidoPaterno:
           type: string
           x-stoplight:
             id: neep14yhburn4
           minLength: 1
           maxLength: 100
-        segundoApellido:
+        apellidoMaterno:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        nombreEstado:
           type: string
           x-stoplight:
             id: neep14yhburn4
@@ -2005,83 +2456,145 @@ components:
           type: string
           x-stoplight:
             id: neep14yhburn4
-          minLength: 10
           format: date
-          maxLength: 10
         genero:
-          type: string
+          type: integer
           x-stoplight:
             id: neep14yhburn4
+
+      required:
+        - nombre
+        - apellidoPaterno
+        - apellidoMaterno
+        - nombreEstado
+        - fechaNacimiento
+        - genero
+
+    DatosClienteUpdateRequest:
+      title: DatosClienteUpdateRequest
+      type: object
+      description: Estructura para actualizar los datos del cliente
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        apellidoPaterno:
+          type: string
+          minLength: 1
+          maxLength: 100
+        apellidoMaterno:
+          type: string
+          minLength: 1
+          maxLength: 100
+        nombreEstado:
+          type: string
+          minLength: 1
+          maxLength: 100
+        fechaNacimiento:
+          type: string
+          format: date
+        genero:
+          type: integer
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - nombre
+        - apellidoPaterno
+        - apellidoMaterno
+        - nombreEstado
+        - fechaNacimiento
+        - genero
+        - concurrencyToken
+    ClienteResult:
+      title: ClienteResult
+      description: Result containing full client details
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        codigoPais:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: "MEX"
+        telefono:
+          type: string
+          minLength: 9
+          maxLength: 10
+          example: "5512345678"
+
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        primerApellido:
+          type: string
+          minLength: 1
+          maxLength: 100
+        segundoApellido:
+          type: string
+          minLength: 1
+          maxLength: 100
+        fechaNacimiento:
+          type: string
+          format: date-time
+        genero:
+          type: string
           minLength: 1
           maxLength: 50
         correoElectronico:
           type: string
-          x-stoplight:
-            id: neep14yhburn4
           minLength: 1
           maxLength: 150
         tipoPersona:
           type: string
-          x-stoplight:
-            id: neep14yhburn4
           minLength: 1
           maxLength: 50
         curp:
           type: string
-          x-stoplight:
-            id: neep14yhburn4
           minLength: 1
           maxLength: 18
         rfc:
           type: string
-          x-stoplight:
-            id: neep14yhburn4
           minLength: 1
           maxLength: 13
         foto:
           type: string
-          x-stoplight:
-            id: neep14yhburn4
           minLength: 1
           maxLength: 500
         estado:
           type: string
-          x-stoplight:
-            id: neep14yhburn4
           minLength: 1
           maxLength: 500
         empresa:
           type: string
-          x-stoplight:
-            id: neep14yhburn4
           minLength: 1
           maxLength: 13
         guid:
           type: string
-          description: Guid of the key-value configuration
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
-          description: Creation timestamp
         modificationTimestamp:
           type: string
-          description: Modification timestamp
           format: date-time
         creationUser:
           type: string
           format: uuid
-          description: Guid of the creation user
         modificationUser:
           type: string
           format: uuid
-          description: Guid of the modification user
         isActive:
           type: boolean
-          format: uuid
-          description: Guid of the modification user
-          x-stoplight:
-            id: gcbqu8fp7wxo0
+        concurrencyToken:
+          type: string
+
       required:
         - id
         - codigoPais
@@ -2104,6 +2617,115 @@ components:
         - creationUser
         - modificationUser
         - isActive
+    ProductoUpdateRequest:
+      title: ProductoUpdateRequest
+      type: object
+      properties:
+        sku:
+          type: string
+          maxLength: 50
+        nombre:
+          type: string
+          maxLength: 100
+        precio:
+          type: number
+          format: double
+        urlIcono:
+          type: string
+          maxLength: 255
+        categoria:
+          $ref: "#/components/schemas/CategoriaEnum"
+        concurrencyToken:
+          type: string
+
+      required:
+        - sku
+        - nombre
+        - urlIcono
+        - categoria
+        - concurrencyToken
+    ContrasenaUpdateRequest:
+      title: ContrasenaUpdateRequest
+      x-stoplight:
+        id: 1grn8pkquo5ay
+      type: object
+      description: Estructura para actualizar la contraseña del cliente
+      properties:
+        contrasenaActual:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        contrasenaNueva:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        contrasenaNuevaConfrimacion:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 100
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - contrasenaActual
+        - contrasenaNueva
+        - contrasenaNuevaConfrimacion
+        - concurrencyToken
+    EmailUpdateRequest:
+      title: EmailUpdateRequest
+      x-stoplight:
+        id: 0g2w4jmzjmlwz
+      type: object
+      description: Estructura para actualizar el correo electronico del cliente
+      properties:
+        correoElectronico:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 1
+          maxLength: 150
+          format: email
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - correoElectronico
+        - concurrencyToken
+    TelefonoUpdateRequest:
+      title: TelefonoUpdateRequest
+      x-stoplight:
+        id: tt9tgt4hvzh2s
+      type: object
+      description: Estructura para actualizar el telefono del cliente
+      properties:
+        codigoPais:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          minLength: 3
+          maxLength: 3
+        telefono:
+          type: string
+          x-stoplight:
+            id: neep14yhburn4
+          maxLength: 10
+          minLength: 9
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - codigoPais
+        - telefono
+        - concurrencyToken
     UsuarioResult:
       title: UsuarioResult
       type: object
@@ -2133,7 +2755,11 @@ components:
           format: date-time
         isActive:
           type: boolean
-          format: date-time
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+
           x-stoplight:
             id: 114v5cpxh0ldo
       required:
@@ -2282,6 +2908,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: kyb43t959rajb
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - latitud
@@ -2386,6 +3015,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: 2x51kh083gl38
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - codigoPostal
         - pais
@@ -2451,6 +3083,10 @@ components:
             id: neep14yhburn4
           minLength: 1
           maxLength: 250
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
       required:
         - codigoPostal
         - municipio
@@ -2459,8 +3095,9 @@ components:
         - numeroExterior
         - numeroInterior
         - referencia
-    Dispositivo:
-      title: Dispositivo
+        - concurrencyToken
+    DispositivoEnum:
+      title: DispositivoEnum
       x-stoplight:
         id: 0zx76o4y76jnu
       type: string
@@ -2564,6 +3201,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: a2uhbk4e5rhfy
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - token
@@ -2613,73 +3253,6 @@ components:
         - idDispositivo
         - nombre
         - caracteristicas
-    ContrasenaUpdateRequest:
-      title: ContrasenaUpdateRequest
-      x-stoplight:
-        id: 1grn8pkquo5ay
-      type: object
-      description: Estructura para actualizar la contraseña del cliente
-      properties:
-        contrasenaActual:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-        contrasenaNueva:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-        contrasenaNuevaConfrimacion:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 100
-      required:
-        - contrasenaActual
-        - contrasenaNueva
-        - contrasenaNuevaConfrimacion
-    EmailUpdateRequest:
-      title: EmailUpdateRequest
-      x-stoplight:
-        id: 0g2w4jmzjmlwz
-      type: object
-      description: Estructura para actualizar el correo electronico del cliente
-      properties:
-        correoElectronico:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 1
-          maxLength: 150
-          format: email
-      required:
-        - correoElectronico
-    TelefonoUpdateRequest:
-      title: TelefonoUpdateRequest
-      x-stoplight:
-        id: tt9tgt4hvzh2s
-      type: object
-      description: Estructura para actualizar el telefono del cliente
-      properties:
-        codigoPais:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          minLength: 3
-          maxLength: 3
-        telefono:
-          type: string
-          x-stoplight:
-            id: neep14yhburn4
-          maxLength: 10
-          minLength: 9
-      required:
-        - codigoPais
-        - telefono
     EstadoRequest:
       title: EstadoRequest
       x-stoplight:
@@ -2695,6 +3268,22 @@ components:
           minLength: 1
       required:
         - nombre
+    EstadoUpdateRequest:
+      title: EstadoUpdateRequest
+      type: object
+      description: Estructura para actualizar un estado
+      properties:
+        nombre:
+          type: string
+          maxLength: 100
+          minLength: 1
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - nombre
+        - concurrencyToken
     EmpresaRequest:
       title: EmpresaRequest
       x-stoplight:
@@ -2710,6 +3299,22 @@ components:
           minLength: 1
       required:
         - nombre
+    EmpresaUpdateRequest:
+      title: EmpresaUpdateRequest
+      type: object
+      description: Estructura para actualizar una empresa
+      properties:
+        nombre:
+          type: string
+          maxLength: 100
+          minLength: 1
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - nombre
+        - concurrencyToken
     AsignarProductosRequest:
       title: AsignarProductosRequest
       type: object
@@ -2764,6 +3369,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: 9fssiboo4dz6v
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - nombre
@@ -2816,6 +3424,9 @@ components:
           description: Guid of the modification user
           x-stoplight:
             id: 2oa3t6cskgc2f
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - nombre
@@ -2836,6 +3447,22 @@ components:
           maxLength: 100
       required:
         - nombre
+    BrokerUpdateRequest:
+      title: BrokerUpdateRequest
+      type: object
+      description: Estructura para actualizar broker
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - nombre
+        - concurrencyToken
     BrokerResult:
       title: BrokerResult
       type: object
@@ -2864,6 +3491,9 @@ components:
           format: uuid
         isActive:
           type: boolean
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - nombre
@@ -2907,6 +3537,9 @@ components:
           format: uuid
         isActive:
           type: boolean
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - nombre
@@ -2933,6 +3566,28 @@ components:
       required:
         - brokerId
         - nombre
+    ProveedorUpdateRequest:
+      title: ProveedorUpdateRequest
+      type: object
+      description: Estructura para actualizar proveedor de servicio
+      properties:
+        brokerId:
+          type: integer
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        urlIcono:
+          type: string
+          maxLength: 500
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - brokerId
+        - nombre
+        - concurrencyToken
     ServicioFavoritoResult:
       title: ServicioFavoritoResult
       type: object
@@ -2967,6 +3622,9 @@ components:
           format: uuid
         isActive:
           type: boolean
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - clienteId
@@ -2999,6 +3657,25 @@ components:
         - proveedorId
         - alias
         - numeroReferencia
+    ServicioFavoritoUpdateRequest:
+      title: ServicioFavoritoUpdateRequest
+      type: object
+      description: Estructura para actualizar servicio favorito
+      properties:
+        alias:
+          type: string
+          maxLength: 100
+        numeroReferencia:
+          type: string
+          maxLength: 50
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
+      required:
+        - alias
+        - numeroReferencia
+        - concurrencyToken
     ProductoResult:
       title: ProductoResult
       type: object
@@ -3041,6 +3718,9 @@ components:
           format: uuid
         isActive:
           type: boolean
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - proveedorId
@@ -3094,31 +3774,6 @@ components:
       required:
         - Tipo
         - Codigo
-    DatosClienteRequest:
-      title: DatosClienteRequest
-      type: object
-      description: Estructura para datos del cliente
-      properties:
-        nombre:
-          type: string
-        apellidoPaterno:
-          type: string
-        apellidoMaterno:
-          type: string
-        fechaNacimiento:
-          type: string
-          format: date-time
-        nombreEstado:
-          type: string
-        genero:
-          $ref: "#/components/schemas/Genero"
-      required:
-        - nombre
-        - apellidoPaterno
-        - apellidoMaterno
-        - fechaNacimiento
-        - nombreEstado
-        - genero
     RegistrarCorreoRequest:
       title: RegistrarCorreoRequest
       type: object
@@ -3198,20 +3853,72 @@ components:
         value:
           type: string
           description: Valor de la configuracion
+        concurrencyToken:
+          type: string
+
+          description: Token de concurrencia
       required:
         - value
+        - concurrencyToken
     KeyValueConfigResult:
       title: KeyValueConfigResult
       type: object
       description: Estructura de resultado de configuracion key-value
       properties:
+        id:
+          type: integer
+          format: int32
         key:
           type: string
         value:
           type: string
+        guid:
+          type: string
+          format: uuid
+          description: Guid of the key-value configuration
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          format: date-time
+          description: Modification timestamp
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+        isActive:
+          type: boolean
+          description: Guid of the modification user
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
+        - id
         - key
         - value
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+    StatusChangeRequest:
+      title: StatusChangeRequest
+      type: object
+      description: Estructura para cambiar el estatus de una entidad
+      properties:
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
+      required:
+        - concurrencyToken
+
   securitySchemes:
     jwsToken:
       type: http
@@ -3347,22 +4054,6 @@ components:
                     - instance
             required:
               - errors
-          examples:
-            Basic example:
-              value:
-                errors:
-                  - errorCode: string
-                    type: "http://example.com"
-                    title: string
-                    status: 1
-                    detail: stringstringstr
-                    instance: string
-                    extraAttributes:
-                      desciptionDynamicContents:
-                        - string
-                      module: string
-                      serviceName: string
-                      serviceLocation: string
 
 tags:
   - name: Auth
@@ -3381,6 +4072,9 @@ tags:
   - name: ServicioFavorito
   - name: UbicacionGeolocalizacion
   - name: Usuario
+  - name: CuentaWallet
+  - name: BitacoraTransaccion
+  - name: DetallesPagoServicio
 security:
   - jwsToken: []
   - X-API-Key: []

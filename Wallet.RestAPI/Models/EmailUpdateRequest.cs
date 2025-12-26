@@ -31,6 +31,15 @@ namespace Wallet.RestAPI.Models
         public string CorreoElectronico { get; set; }
 
         /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [Required]
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -39,6 +48,7 @@ namespace Wallet.RestAPI.Models
             var sb = new StringBuilder();
             sb.Append("class EmailUpdateRequest {\n");
             sb.Append("  CorreoElectronico: ").Append(CorreoElectronico).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -79,6 +89,11 @@ namespace Wallet.RestAPI.Models
                     CorreoElectronico == other.CorreoElectronico ||
                     CorreoElectronico != null &&
                     CorreoElectronico.Equals(other.CorreoElectronico)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -94,6 +109,8 @@ namespace Wallet.RestAPI.Models
                 // Suitable nullity checks etc, of course :)
                     if (CorreoElectronico != null)
                     hashCode = hashCode * 59 + CorreoElectronico.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }

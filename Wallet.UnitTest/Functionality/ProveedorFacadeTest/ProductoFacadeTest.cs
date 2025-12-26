@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM.Errors;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 using Wallet.UnitTest.Functionality.Configuration;
 using Xunit.Sdk;
@@ -49,7 +50,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
             // Setup duplicate product for validation test
             if (caseName.Contains("duplicate sku"))
             {
-                var duplicateProduct = new Wallet.DOM.Modelos.Producto(await Context.Proveedor.FindAsync(proveedorId),
+                var duplicateProduct = new Producto(await Context.Proveedor.FindAsync(proveedorId),
                     "SKU123-DUP", "Other Name", "icon", "Cat", 10, SetupConfig.UserId);
                 await Context.Producto.AddAsync(duplicateProduct);
                 await Context.SaveChangesAsync();
@@ -133,12 +134,16 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
             // Setup duplicate product for validation test
             if (caseName.Contains("duplicate sku"))
             {
-                var duplicateProduct = new Wallet.DOM.Modelos.Producto(await Context.Proveedor.FindAsync(1),
+                var duplicateProduct = new Producto(await Context.Proveedor.FindAsync(1),
                     "SKU-DUP-UPD",
                     "Conflict Name", "icon", "Cat", 10, SetupConfig.UserId);
                 await Context.Producto.AddAsync(duplicateProduct);
                 await Context.SaveChangesAsync();
             }
+
+            // Get existing token
+            var existingProducto = await Context.Producto.AsNoTracking().FirstOrDefaultAsync(p => p.Id == idProducto);
+            var token = Convert.ToBase64String(existingProducto?.ConcurrencyToken ?? new byte[] { });
 
             var producto = await Facade.ActualizarProductoAsync(
                 idProducto: idProducto,
@@ -147,6 +152,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                 precio: (decimal)precio,
                 icono: icono,
                 categoria: categoria,
+                concurrencyToken: token,
                 modificationUser: SetupConfig.UserId);
             Assert.NotNull(producto);
             Assert.True(condition: producto.Sku == sku &&

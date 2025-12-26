@@ -30,6 +30,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var usuario = await usuarioFacade.ActualizarContrasenaAsync(idUsuario: idUsuario.Value,
                 contrasenaActual: body.ContrasenaActual,
                 contrasenaNueva: body.ContrasenaNueva, confirmacionContrasenaNueva: body.ContrasenaNuevaConfrimacion,
+                concurrencyToken: body.ConcurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
@@ -51,6 +52,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
         {
             var usuario = await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario: idUsuario.Value,
                 correoElectronico: body.CorreoElectronico,
+                concurrencyToken: body.ConcurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
@@ -63,6 +65,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var usuario = await usuarioFacade.ActualizarTelefonoAsync(idUsuario: idUsuario.Value,
                 codigoPais: body.CodigoPais,
                 telefono: body.Telefono,
+                concurrencyToken: body.ConcurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);

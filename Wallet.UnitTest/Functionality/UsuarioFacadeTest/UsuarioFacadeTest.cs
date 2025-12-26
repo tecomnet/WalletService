@@ -3,6 +3,7 @@ using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.UnitTest.Functionality.Configuration;
@@ -94,10 +95,15 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                     x.VerificacionEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(value: new VerificacionResult { Sid = "SID123", IsVerified = true });
 
+            // Fetch real concurrency token
+            var userDb = await Context.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Id == idUsuario);
+            var token = userDb?.ConcurrencyToken ?? [];
+
             // Call facade method
             var usuario = await Facade.ActualizarCorreoElectronicoAsync(
                 idUsuario: idUsuario,
                 correoElectronico: correoElectronico,
+                concurrencyToken: Convert.ToBase64String(token),
                 modificationUser: SetupConfig.UserId);
 
             // Assert user updated

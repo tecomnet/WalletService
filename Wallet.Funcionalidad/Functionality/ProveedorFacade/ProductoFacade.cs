@@ -3,6 +3,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 
@@ -91,12 +92,19 @@ public partial class ProveedorFacade : IProveedorFacade
 
     /// <inheritdoc />
     public async Task<Producto> ActualizarProductoAsync(int idProducto, string sku, string nombre,
-        decimal? precio, string icono, string categoria, Guid modificationUser)
+        decimal? precio, string icono, string categoria, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             // Obtiene el producto existente.
             var producto = await ObtenerProductoPorIdAsync(idProducto: idProducto);
+            // Establece el token original para la validación de concurrencia optimista
+            if (!string.IsNullOrEmpty(concurrencyToken))
+            {
+                context.Entry(producto).Property(x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(concurrencyToken);
+            }
+
             // Valida que el producto no esté inactivo.
             ValidarProductoIsActive(producto: producto);
             // Valida duplicidad
@@ -109,7 +117,8 @@ public partial class ProveedorFacade : IProveedorFacade
             await context.SaveChangesAsync();
             return producto;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,

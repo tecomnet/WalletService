@@ -3,6 +3,8 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
@@ -99,11 +101,15 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     }
 
     /// <inheritdoc />
-    public async Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, Guid modificationUser)
+    public async Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, string concurrencyToken,
+        Guid modificationUser)
     {
         try
         {
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(empresa).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Validamos que la empresa este activa
             ValidarEmpresaActiva(empresa: empresa);
             // Validamos duplicidad
@@ -115,7 +121,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             await context.SaveChangesAsync();
             return empresa;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -126,11 +133,14 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     }
 
     /// <inheritdoc />
-    public async Task<Empresa> EliminaEmpresaAsync(int idEmpresa, Guid modificationUser)
+    public async Task<Empresa> EliminaEmpresaAsync(int idEmpresa, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(empresa).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Eliminamos la empresa
             empresa.Deactivate(modificationUser: modificationUser);
             // Guardamos cambios
@@ -138,7 +148,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             await context.SaveChangesAsync();
             return empresa;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -149,11 +160,14 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
     }
 
     /// <inheritdoc />
-    public async Task<Empresa> ActivaEmpresaAsync(int idEmpresa, Guid modificationUser)
+    public async Task<Empresa> ActivaEmpresaAsync(int idEmpresa, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(empresa).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Activamos la empresa
             empresa.Activate(modificationUser: modificationUser);
             // Guardamos cambios
@@ -161,7 +175,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             await context.SaveChangesAsync();
             return empresa;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -242,13 +257,17 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
                 .Where(p => idsProductos.Contains(p.Id))
                 .ToListAsync();
 
+            // Cargar solo IDs de productos existentes para chequeo eficiente en memoria
+            var existingProductIds = new HashSet<int>(empresa.Productos.Select(p => p.Id));
+
             foreach (var producto in productosEntidad)
             {
                 // Si la empresa no tiene asignado este producto, se agrega
-                if (empresa.Productos.All(p => p.Id != producto.Id))
+                if (!existingProductIds.Contains(producto.Id))
                 {
                     empresa.Productos.Add(producto);
-                    // Actualizamos usuario de modificación en la empresa si es necesario para trackear el cambio
+                    existingProductIds.Add(producto.Id); // Mantener set actualizado
+                    // Actualizamos usuario de modificación en la empresa
                     empresa.Actualizar(nombre: empresa.Nombre, modificationUser: modificationUser);
                 }
             }

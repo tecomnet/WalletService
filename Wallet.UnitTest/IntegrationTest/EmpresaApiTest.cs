@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 using Xunit.Abstractions;
@@ -118,7 +120,13 @@ public class EmpresaApiTest : DatabaseTestFixture
                 _jsonSettings);
 
         // 3. Update 
-        var updateRequest = new EmpresaRequest { Nombre = "Empresa Update Test Updated" };
+        // 3. Update 
+        // 3. Update 
+        var updateRequest = new EmpresaUpdateRequest
+        {
+            Nombre = "Empresa Update Test Updated",
+            ConcurrencyToken = createResult.ConcurrencyToken
+        };
         var response = await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest));
         var content = await response.Content.ReadAsStringAsync();
 
@@ -323,7 +331,7 @@ public class EmpresaApiTest : DatabaseTestFixture
         Assert.NotNull(prod1.Id);
         Assert.NotNull(prod2);
         Assert.NotNull(prod2.Id);
-        var assignIds = new AsignarProductosRequest { ProductoIds = new List<int> { prod1.Id.Value, prod2.Id.Value } };
+        var assignIds = new AsignarProductosRequest { ProductoIds = new List<int?> { prod1.Id.Value, prod2.Id.Value } };
         var assignRes =
             await client.PostAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos", CreateContent(assignIds));
         Assert.Equal(HttpStatusCode.OK, assignRes.StatusCode);
@@ -349,7 +357,7 @@ public class EmpresaApiTest : DatabaseTestFixture
         Assert.Equal(2, productsDup.Count); // Should still be 2
 
         // 6. Remove One Product
-        var removeIds = new AsignarProductosRequest { ProductoIds = new List<int> { prod1.Id.Value } };
+        var removeIds = new AsignarProductosRequest { ProductoIds = new List<int?> { prod1.Id.Value } };
         var removeRes = await client.PostAsync($"/{ApiVersion}/empresa/{empresa.Id}/productos/remover",
             CreateContent(removeIds));
         Assert.Equal(HttpStatusCode.OK, removeRes.StatusCode);
@@ -362,6 +370,119 @@ public class EmpresaApiTest : DatabaseTestFixture
         Assert.Single(productsFinal);
         Assert.Contains(productsFinal, p => p.Id == prod2.Id); // Only P2 remains
         Assert.DoesNotContain(productsFinal, p => p.Id == prod1.Id);
+    }
+
+    [Fact]
+    public async Task Test_Update_Empresa_Returns_Conflict_With_Stale_Token()
+    {
+        // 1. Auth
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        // 2. Create 
+        var createRequest = new EmpresaRequest { Nombre = "Empresa Conflict Test" };
+        var createResponse = await client.PostAsync($"/{ApiVersion}/empresa", CreateContent(createRequest));
+        var createResult =
+            JsonConvert.DeserializeObject<EmpresaResult>(await createResponse.Content.ReadAsStringAsync(),
+                _jsonSettings);
+
+        // 3. Update 1 (Success)
+        var updateRequest1 = new EmpresaUpdateRequest
+        {
+            Nombre = "Empresa Conflict Test Updated 1",
+            ConcurrencyToken = createResult.ConcurrencyToken
+        };
+        var response1 =
+            await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest1));
+        Assert.Equal(HttpStatusCode.OK, response1.StatusCode);
+
+        // 4. Update 2 (Stale Token - Should Fail)
+        var updateRequest2 = new EmpresaUpdateRequest
+        {
+            Nombre = "Empresa Conflict Test Updated 2",
+            ConcurrencyToken = createResult.ConcurrencyToken // Stale token
+        };
+        var response2 =
+            await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest2));
+
+        Assert.Equal(HttpStatusCode.Conflict, response2.StatusCode);
+    }
+
+    [Fact]
+    public async Task Test_Delete_Empresa_Returns_Conflict_With_Stale_Token()
+    {
+        // 1. Auth
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        // 2. Create 
+        var createRequest = new EmpresaRequest { Nombre = "Empresa Delete Conflict Test" };
+        var createResponse = await client.PostAsync($"/{ApiVersion}/empresa", CreateContent(createRequest));
+        var createResult =
+            JsonConvert.DeserializeObject<EmpresaResult>(await createResponse.Content.ReadAsStringAsync(),
+                _jsonSettings);
+
+        // 3. Update (to change ConcurrencyToken)
+        var updateRequest = new EmpresaUpdateRequest
+        {
+            Nombre = "Empresa Delete Conflict Test Updated",
+            ConcurrencyToken = createResult.ConcurrencyToken
+        };
+        await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest));
+
+        // 4. Delete with OLD Token (Should Fail)
+        var oldTokenUrlEncoded = System.Web.HttpUtility.UrlEncode(createResult.ConcurrencyToken);
+        var response =
+            await client.DeleteAsync($"/{ApiVersion}/empresa/{createResult.Id}?concurrencyToken={oldTokenUrlEncoded}");
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Test_Activate_Empresa_Returns_Conflict_With_Stale_Token()
+    {
+        // 1. Auth
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        // 2. Create (Created active by default)
+        var createRequest = new EmpresaRequest { Nombre = "Empresa Activate Conflict Test" };
+        var createResponse = await client.PostAsync($"/{ApiVersion}/empresa", CreateContent(createRequest));
+        var createResult =
+            JsonConvert.DeserializeObject<EmpresaResult>(await createResponse.Content.ReadAsStringAsync(),
+                _jsonSettings);
+
+        // 3. Update (to change ConcurrencyToken)
+        var updateRequest = new EmpresaUpdateRequest
+        {
+            Nombre = "Empresa Activate Conflict Test Updated",
+            ConcurrencyToken = createResult.ConcurrencyToken
+        };
+        var updateResponse =
+            await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}", CreateContent(updateRequest));
+        var updateResult =
+            JsonConvert.DeserializeObject<EmpresaResult>(await updateResponse.Content.ReadAsStringAsync(),
+                _jsonSettings);
+
+        // 4. Delete (Deactivate) to allow Activation attempts
+        var deactivateTokenEncoded = System.Web.HttpUtility.UrlEncode(updateResult.ConcurrencyToken);
+        var deleteResponse =
+            await client.DeleteAsync(
+                $"/{ApiVersion}/empresa/{createResult.Id}?concurrencyToken={deactivateTokenEncoded}");
+        Assert.Equal(HttpStatusCode.OK, deleteResponse.StatusCode);
+
+        // 5. Try Activate with OLD Token (from createResult) -> Should Fail
+        var activateRequest = new StatusChangeRequest { ConcurrencyToken = createResult.ConcurrencyToken };
+        var response = await client.PutAsync($"/{ApiVersion}/empresa/{createResult.Id}/activar",
+            CreateContent(activateRequest));
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
     }
 
     private StringContent CreateContent(object body)

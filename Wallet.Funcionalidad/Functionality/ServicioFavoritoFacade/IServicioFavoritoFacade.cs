@@ -1,4 +1,5 @@
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
 
 namespace Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
 
@@ -30,11 +31,12 @@ public interface IServicioFavoritoFacade
     /// <param name="idServicioFavorito">El identificador único del servicio favorito a actualizar.</param>
     /// <param name="alias">El nuevo alias para el servicio favorito.</param>
     /// <param name="numeroReferencia">El nuevo número de referencia.</param>
+    /// <param name="concurrencyToken">Token de concurrencia para control de versiones optimista.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <param name="testCase">Opcional. Un identificador para casos de prueba.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="ServicioFavorito"/> actualizado.</returns>
     Task<ServicioFavorito> ActualizarServicioFavoritoAsync(int idServicioFavorito, string alias,
-        string numeroReferencia, Guid modificationUser, string? testCase = null);
+        string numeroReferencia, string? concurrencyToken, Guid modificationUser, string? testCase = null);
 
     /// <summary>
     /// Elimina (desactiva lógicamente) un servicio favorito.

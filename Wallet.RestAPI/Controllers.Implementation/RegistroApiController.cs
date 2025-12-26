@@ -66,7 +66,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
         public override async Task<IActionResult> PutRegistrarCorreoAsync(string version, int? idUsuario,
             RegistrarCorreoRequest body)
         {
-            var usuario = await registroFacade.RegistrarCorreoAsync(idUsuario.Value, body.Correo);
+            var usuario =
+                await registroFacade.RegistrarCorreoAsync(idUsuario.Value, body.Correo);
             return Ok(mapper.Map<UsuarioResult>(usuario));
         }
 
@@ -91,6 +92,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 nombreEstado: body.NombreEstado,
                 fechaNacimiento: DateOnly.FromDateTime(body.FechaNacimiento.Value),
                 genero: (DOM.Enums.Genero)body.Genero);
+
             return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
         }
     }

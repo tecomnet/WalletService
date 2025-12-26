@@ -3,6 +3,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
@@ -25,9 +26,10 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             // Busca el estado por su ID.
             var estado = await context.Estado.FirstOrDefaultAsync(predicate: x => x.Id == idEstado);
             // Si el estado no se encuentra, lanza una excepción.
-            if (estado is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.EstadoNoEncontrado,
-                dynamicContent: [idEstado]));
+            if (estado is null)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EstadoNoEncontrado,
+                    dynamicContent: [idEstado]));
             return estado;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -53,9 +55,10 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             // Busca el estado por su nombre.
             var estado = await context.Estado.FirstOrDefaultAsync(predicate: x => x.Nombre == nombre);
             // Si el estado no se encuentra, lanza una excepción.
-            if (estado is null) throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.EstadoNoEncontrado,
-                dynamicContent: [nombre]));
+            if (estado is null)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.EstadoNoEncontrado,
+                    dynamicContent: [nombre]));
             return estado;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -91,6 +94,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
                 // Esto ignorará el filtro si 'activo' es null.
                 query = query.Where(predicate: x => x.IsActive == activo.Value);
             }
+
             // 3. Ejecutamos la consulta y devolvemos el resultado.
             // Si 'activo' fue null, devolverá todos los estados.
             // Si 'activo' fue true/false, devolverá los estados filtrados.
@@ -146,7 +150,8 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
     /// <exception cref="EMGeneralAggregateException">
     /// Se lanza si el estado no se encuentra, si está inactivo, si el nuevo nombre ya existe, o si ocurre un error general.
     /// </exception>
-    public async Task<Estado> ActualizaEstadoAsync(int idEstado, string nombre, Guid modificationUser)
+    public async Task<Estado> ActualizaEstadoAsync(int idEstado, string nombre, string? concurrencyToken,
+        Guid modificationUser)
     {
         try
         {
@@ -154,6 +159,14 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             var estado = await ObtenerEstadoPorIdAsync(idEstado: idEstado);
             // Valida que el estado esté activo antes de actualizarlo.
             ValidarEstadoActivo(estado: estado);
+
+            // Manejo de ConcurrencyToken
+            if (!string.IsNullOrEmpty(concurrencyToken))
+            {
+                context.Entry(estado).Property(x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(concurrencyToken);
+            }
+
             // Valida que el nuevo nombre no cause duplicidad con otros estados (excluyendo el actual).
             ValidarDuplicidad(nombre: nombre, id: idEstado);
             // Actualiza el estado utilizando el método de la entidad.
@@ -162,6 +175,12 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             context.Update(entity: estado);
             await context.SaveChangesAsync();
             return estado;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ConcurrencyError,
+                dynamicContent: []));
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
@@ -237,6 +256,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
     }
 
     #region Metodos privados
+
     /// <summary>
     /// Valida si ya existe un estado con el mismo nombre, excluyendo opcionalmente un ID específico.
     /// </summary>
@@ -272,5 +292,6 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
                 dynamicContent: [estado.Nombre]));
         }
     }
+
     #endregion
 }

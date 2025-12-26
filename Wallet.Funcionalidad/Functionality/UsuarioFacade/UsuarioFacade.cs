@@ -5,6 +5,7 @@ using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.Funcionalidad.ServiceClient;
 using Wallet.Funcionalidad.Services.TokenService;
@@ -26,12 +27,10 @@ public class UsuarioFacade(
         try
         {
             // Busca el usuario por su ID, incluyendo todas las relaciones necesarias.
+            // Busca el usuario por su ID, incluyendo todas las relaciones necesarias.
             var usuario = await context.Usuario
                 .Include(navigationPropertyPath: u => u.Cliente)
                 .ThenInclude(c => c.Empresa)
-                .Include(navigationPropertyPath: u => u.Verificaciones2Fa)
-                .Include(navigationPropertyPath: u => u.DispositivoMovilAutorizados)
-                .Include(navigationPropertyPath: u => u.UbicacionesGeolocalizacion)
                 .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
 
             // Si no se encuentra, lanza una excepción.
@@ -95,16 +94,18 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarContrasenaAsync(int idUsuario, string contrasenaActual, string contrasenaNueva,
-        string confirmacionContrasenaNueva, Guid modificationUser)
+        string confirmacionContrasenaNueva, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
-
             // Valida que el usuario tenga el registro completado.
             ValidarUsuarioRegistroCompletado(usuario);
 
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Actualiza la contraseña, validando la actual.
             usuario.ActualizarContrasena(
                 contrasenaActual: contrasenaActual,
@@ -126,7 +127,7 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarCorreoElectronicoAsync(int idUsuario, string correoElectronico,
-        Guid modificationUser, string? testCase = null, bool validarEstatus = true)
+        string concurrencyToken, Guid modificationUser, string? testCase = null, bool validarEstatus = true)
     {
         try
         {
@@ -139,9 +140,19 @@ public class UsuarioFacade(
                 ValidarUsuarioRegistroCompletado(usuario);
             }
 
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Actualiza el correo electrónico en la entidad.
             usuario.ActualizarCorreoElectronico(correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
+
+            // Carga explícitamente las verificaciones 2FA activas de Email.
+            await context.Entry(entity: usuario)
+                .Collection(propertyExpression: u => u.Verificaciones2Fa)
+                .Query()
+                .Where(predicate: v => v.Tipo == Tipo2FA.Email && v.IsActive && !v.Verificado)
+                .LoadAsync();
 
             // Valida que el nuevo correo no esté duplicado.
             await ValidarDuplicidad(correoElectronico: correoElectronico, id: idUsuario);
@@ -160,7 +171,8 @@ public class UsuarioFacade(
             await context.SaveChangesAsync();
             return usuario;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
@@ -171,7 +183,7 @@ public class UsuarioFacade(
 
     /// <inheritdoc />
     public async Task<Usuario> ActualizarTelefonoAsync(int idUsuario, string codigoPais, string telefono,
-        Guid modificationUser, string? testCase = null, bool validarEstatus = true)
+        string concurrencyToken, Guid modificationUser, string? testCase = null, bool validarEstatus = true)
     {
         try
         {
@@ -184,9 +196,19 @@ public class UsuarioFacade(
                 ValidarUsuarioRegistroCompletado(usuario);
             }
 
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(concurrencyToken);
             // Actualiza el teléfono en la entidad.
             usuario.ActualizarTelefono(codigoPais: codigoPais, telefono: telefono,
                 modificationUser: modificationUser);
+
+            // Carga explícitamente las verificaciones 2FA activas de SMS.
+            await context.Entry(entity: usuario)
+                .Collection(propertyExpression: u => u.Verificaciones2Fa)
+                .Query()
+                .Where(predicate: v => v.Tipo == Tipo2FA.Sms && v.IsActive && !v.Verificado)
+                .LoadAsync();
 
             // Valida que el nuevo teléfono no esté duplicado.
             await ValidarDuplicidad(codigoPais: codigoPais, telefono: telefono, id: idUsuario);
@@ -204,7 +226,8 @@ public class UsuarioFacade(
             await context.SaveChangesAsync();
             return usuario;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
@@ -221,7 +244,15 @@ public class UsuarioFacade(
         {
             bool confirmado = false;
             // Obtiene el usuario.
-            var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+            var usuario = await context.Usuario.FindAsync(idUsuario);
+
+            if (usuario == null)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.UsuarioNoEncontrado,
+                    dynamicContent: [idUsuario],
+                    module: this.GetType().Name));
+            }
 
             // Valida que el usuario tenga el registro completado.
             if (validarEstatus)

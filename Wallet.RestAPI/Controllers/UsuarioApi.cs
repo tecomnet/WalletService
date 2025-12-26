@@ -10,9 +10,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Wallet.RestAPI.Attributes;
 using Wallet.RestAPI.Controllers.Base;
@@ -52,7 +50,7 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int? idUsuario);
-
+        
         /// <summary>
         /// Actualiza contraseña
         /// </summary>
@@ -79,7 +77,7 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int? idUsuario, [FromBody] ContrasenaUpdateRequest body);
-
+        
         /// <summary>
         /// Confirma codigo de verificacion 2FA
         /// </summary>

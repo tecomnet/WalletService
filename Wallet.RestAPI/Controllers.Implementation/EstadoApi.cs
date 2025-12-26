@@ -38,9 +38,10 @@ public class EstadoApiController(IEstadoFacade estadoFacade, IMapper mapper) : E
     /// <inheritdoc/>
     public override async Task<IActionResult> PutEstadoAsync(
         string version,
-        int? idEstado, EstadoRequest body)
+        int? idEstado, EstadoUpdateRequest body)
     {
         var estado = await estadoFacade.ActualizaEstadoAsync(idEstado: idEstado.Value, nombre: body.Nombre,
+            concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
         var response = mapper.Map<EstadoResult>(source: estado);
         return Ok(value: response);

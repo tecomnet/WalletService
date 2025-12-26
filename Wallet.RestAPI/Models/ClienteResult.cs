@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Estructura para consultar clientes
+    /// Result containing full client details
     /// </summary>
     [DataContract]
     public partial class ClienteResult : IEquatable<ClienteResult>
@@ -156,58 +156,59 @@ namespace Wallet.RestAPI.Models
         public string Empresa { get; set; }
 
         /// <summary>
-        /// Guid of the key-value configuration
+        /// Gets or Sets Guid
         /// </summary>
-        /// <value>Guid of the key-value configuration</value>
         [Required]
 
         [DataMember(Name="guid")]
         public Guid? Guid { get; set; }
 
         /// <summary>
-        /// Creation timestamp
+        /// Gets or Sets CreationTimestamp
         /// </summary>
-        /// <value>Creation timestamp</value>
         [Required]
 
         [DataMember(Name="creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
-        /// Modification timestamp
+        /// Gets or Sets ModificationTimestamp
         /// </summary>
-        /// <value>Modification timestamp</value>
         [Required]
 
         [DataMember(Name="modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
 
         /// <summary>
-        /// Guid of the creation user
+        /// Gets or Sets CreationUser
         /// </summary>
-        /// <value>Guid of the creation user</value>
         [Required]
 
         [DataMember(Name="creationUser")]
         public Guid? CreationUser { get; set; }
 
         /// <summary>
-        /// Guid of the modification user
+        /// Gets or Sets ModificationUser
         /// </summary>
-        /// <value>Guid of the modification user</value>
         [Required]
 
         [DataMember(Name="modificationUser")]
         public Guid? ModificationUser { get; set; }
 
         /// <summary>
-        /// Guid of the modification user
+        /// Gets or Sets IsActive
         /// </summary>
-        /// <value>Guid of the modification user</value>
         [Required]
 
         [DataMember(Name="isActive")]
         public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ConcurrencyToken
+        /// </summary>
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -238,6 +239,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
             sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
             sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -378,6 +380,11 @@ namespace Wallet.RestAPI.Models
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other.IsActive)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -433,6 +440,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + ModificationUser.GetHashCode();
                     if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }

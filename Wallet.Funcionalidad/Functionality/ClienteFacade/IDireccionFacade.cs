@@ -1,4 +1,5 @@
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
@@ -29,6 +30,7 @@ public interface IDireccionFacade
         string numeroExterior,
         string numeroInterior,
         string referencia,
+        string? concurrencyToken,
         Guid modificationUser);
 
     /// <summary>

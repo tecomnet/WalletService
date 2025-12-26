@@ -61,13 +61,27 @@ public class ServicioFavoritoApiController(IServicioFavoritoFacade servicioFavor
 
     /// <inheritdoc />
     public override async Task<IActionResult> PutServicioFavoritoAsync(string version, int? idServicioFavorito,
-        ServicioFavoritoRequest body)
+        ServicioFavoritoUpdateRequest body)
     {
         // Call facade method
         var servicio = await servicioFavoritoFacade.ActualizarServicioFavoritoAsync(
             idServicioFavorito: idServicioFavorito.Value,
             alias: body.Alias,
             numeroReferencia: body.NumeroReferencia,
+            concurrencyToken: body.ConcurrencyToken,
+            modificationUser: this.GetAuthenticatedUserGuid());
+        // Map to response model
+        var response = mapper.Map<ServicioFavoritoResult>(source: servicio);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc />
+    public override async Task<IActionResult> PutActivarServicioFavoritoAsync(string version, int? idServicioFavorito)
+    {
+        // Call facade method
+        var servicio = await servicioFavoritoFacade.ActivarServicioFavoritoAsync(
+            idServicioFavorito: idServicioFavorito.Value,
             modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<ServicioFavoritoResult>(source: servicio);

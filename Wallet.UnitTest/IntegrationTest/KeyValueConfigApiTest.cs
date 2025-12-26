@@ -97,10 +97,15 @@ public class KeyValueConfigApiTest : DatabaseTestFixture
         var client = Factory.CreateAuthenticatedClient();
         var context = CreateContext();
         var key = "UpdateKey_" + System.Guid.NewGuid();
-        context.KeyValueConfig.Add(new KeyValueConfig(key, "OriginalValue", System.Guid.NewGuid()));
+        var entity = new KeyValueConfig(key, "OriginalValue", System.Guid.NewGuid());
+        context.KeyValueConfig.Add(entity);
         await context.SaveChangesAsync();
 
-        var payload = new KeyValueConfigUpdateRequest { Value = "UpdatedValue" };
+        var payload = new KeyValueConfigUpdateRequest
+        {
+            Value = "UpdatedValue",
+            ConcurrencyToken = Convert.ToBase64String(entity.ConcurrencyToken)
+        };
 
         // Act
         var response = await client.PutAsync($"{ApiVersion}/{ApiUri}/{key}",

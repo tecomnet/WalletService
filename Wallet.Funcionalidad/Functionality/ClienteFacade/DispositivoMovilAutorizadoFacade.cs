@@ -2,6 +2,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
@@ -36,6 +37,11 @@ public class DispositivoMovilAutorizadoFacadeFacade(ServiceDbContext context, IC
         {
             // Obtenemos el cliente por su ID.
             var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
+
+            // Carga explícita de dispositivos móviles autorizados
+            await context.Entry(cliente.Usuario)
+                .Collection(u => u.DispositivoMovilAutorizados)
+                .LoadAsync();
             // Creamos una nueva instancia de DispositivoMovilAutorizado con los datos proporcionados.
             var dispositivo = new DispositivoMovilAutorizado(
                 token: token,
@@ -78,6 +84,10 @@ public class DispositivoMovilAutorizadoFacadeFacade(ServiceDbContext context, IC
         {
             // Obtenemos el cliente por su ID.
             var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
+            // Carga explícita de dispositivos móviles autorizados
+            await context.Entry(cliente.Usuario)
+                .Collection(u => u.DispositivoMovilAutorizados)
+                .LoadAsync();
             // Verificamos si el dispositivo está autorizado para el usuario del cliente.
             return cliente.Usuario.EsDispositivoAutorizado(idDispositivo: idDispositivo, token: token);
         }

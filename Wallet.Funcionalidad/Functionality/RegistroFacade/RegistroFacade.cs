@@ -1,11 +1,13 @@
-
+using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
+using Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 
 namespace Wallet.Funcionalidad.Functionality.RegistroFacade;
@@ -17,7 +19,8 @@ public class RegistroFacade(
     ServiceDbContext context,
     IUsuarioFacade usuarioFacade,
     IClienteFacade clienteFacade,
-    IConsentimientosUsuarioFacade consentimientosUsuarioFacade)
+    IConsentimientosUsuarioFacade consentimientosUsuarioFacade,
+    ICuentaWalletFacade cuentaWalletFacade)
     : IRegistroFacade
 {
     /// <summary>
@@ -74,6 +77,7 @@ public class RegistroFacade(
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.NumeroConfirmado);
 
         // Actualizamos datos usando el facade de cliente
+        var tokenBytes = usuario.ConcurrencyToken; // Use current token from DB
         await clienteFacade.ActualizarClienteDatosPersonalesAsync(
             idUsuario: usuario.Id,
             nombre: nombre,
@@ -82,7 +86,9 @@ public class RegistroFacade(
             nombreEstado: nombreEstado,
             fechaNacimiento: fechaNacimiento,
             genero: genero,
-            modificationUser: usuario.CreationUser);
+            concurrencyToken: Convert.ToBase64String(tokenBytes),
+            modificationUser: usuario.CreationUser,
+            enforceClientConcurrency: false);
 
         // Actualiza el estado del registro a DatosClienteCompletado
         await ActualizarEstatusAsync(usuario, EstatusRegistroEnum.DatosClienteCompletado, usuario.CreationUser);
@@ -102,7 +108,10 @@ public class RegistroFacade(
             estatusEsperados: [EstatusRegistroEnum.DatosClienteCompletado, EstatusRegistroEnum.CorreoRegistrado]);
 
         // Actualiza el correo electrónico del usuario a través del facade de usuario
-        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo, usuario.CreationUser,
+        // Nota: Pasamos usuario.ConcurrencyToken (el actual de DB) para ignorar OCC estricto en el flujo de registro
+        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario, correo,
+            Convert.ToBase64String(usuario.ConcurrencyToken ?? []),
+            usuario.CreationUser,
             validarEstatus: false);
 
         // Actualiza el estado del registro a CorreoRegistrado
@@ -142,10 +151,12 @@ public class RegistroFacade(
     /// <param name="token">Token de autenticación/registro del dispositivo.</param>
     /// <returns>El objeto <see cref="Usuario"/> con el dispositivo móvil autorizado registrado.</returns>
     public async Task<Usuario> RegistrarDatosBiometricosAsync(int idUsuario, string idDispositivo, string token,
-        string nombre, string caracteristicas)
+        string nombre,
+        string caracteristicas)
     {
         // Valida que el usuario esté en el estado esperado (CorreoVerificado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.CorreoVerificado);
+
 
         // Crea una nueva instancia de DispositivoMovilAutorizado
         var dispositivo = new DispositivoMovilAutorizado(
@@ -178,6 +189,7 @@ public class RegistroFacade(
     {
         // Valida que el usuario esté en el estado esperado (DatosBiometricosRegistrado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.DatosBiometricosRegistrado);
+
 
         // Valida que se hayan aceptado todos los términos requeridos
         if (!aceptoTerminos || !aceptoPrivacidad || !aceptoPld)
@@ -213,6 +225,7 @@ public class RegistroFacade(
         // Valida que el usuario esté en el estado esperado (TerminosCondicionesAceptado)
         var usuario = await ValidarEstadoAsync(idUsuario, EstatusRegistroEnum.TerminosCondicionesAceptado);
 
+
         // Verifica que la contraseña y su confirmación coincidan
         if (contrasena != confirmacionContrasena)
         {
@@ -223,6 +236,19 @@ public class RegistroFacade(
 
         // Guarda la contraseña del usuario a través del facade de usuario
         await usuarioFacade.GuardarContrasenaAsync(idUsuario, contrasena, usuario.CreationUser);
+
+        // Obtener el cliente asociado para vincular la wallet
+        var cliente = await context.Cliente.FirstOrDefaultAsync(c => c.UsuarioId == idUsuario);
+        if (cliente == null)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ClienteNoEncontrado,
+                dynamicContent: [idUsuario],
+                module: this.GetType().Name));
+        }
+
+        // Crear la Billetera para el usuario usando el Guid del Cliente
+        await cuentaWalletFacade.CrearCuentaWalletAsync(cliente.Id, usuario.CreationUser);
 
         // Actualiza el estado del registro a RegistroCompletado
         await ActualizarEstatusAsync(usuario, EstatusRegistroEnum.RegistroCompletado, usuario.CreationUser);
@@ -240,6 +266,7 @@ public class RegistroFacade(
     {
         // Obtiene el usuario por su ID
         var usuario = await usuarioFacade.ObtenerUsuarioPorIdAsync(idUsuario);
+
         if (usuario == null)
         {
             // Lanza una excepción si el usuario no es encontrado
@@ -269,11 +296,22 @@ public class RegistroFacade(
     /// <param name="usuario">El objeto <see cref="Usuario"/> cuyo estatus será actualizado.</param>
     /// <param name="nuevoEstatus">El nuevo estatus de registro a establecer.</param>
     /// <param name="modificationUser">ID del usuario que realiza la modificación.</param>
-    private async Task ActualizarEstatusAsync(Usuario usuario, EstatusRegistroEnum nuevoEstatus, Guid modificationUser)
+    private async Task ActualizarEstatusAsync(Usuario usuario, EstatusRegistroEnum nuevoEstatus,
+        Guid modificationUser)
     {
         // Actualiza el estatus del usuario
         usuario.ActualizarEstatus(nuevoEstatus, modificationUser);
+
+
+        // Ensure the entity is tracked and the property is marked as modified
+        if (context.Entry(usuario).State == EntityState.Detached)
+        {
+            context.Attach(usuario);
+        }
+
+        context.Entry(usuario).Property(u => u.Estatus).IsModified = true;
+
         // Guarda los cambios en la base de datos
-        await context.SaveChangesAsync();
+        var rows = await context.SaveChangesAsync();
     }
 }

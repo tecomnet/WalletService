@@ -1,4 +1,5 @@
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 
@@ -32,7 +33,8 @@ public interface IProveedorFacade
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <param name="testCase">Caso de prueba (opcional).</param>
     /// <returns>El objeto <see cref="Proveedor"/> actualizado.</returns>
-    Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, string urlIcono, Guid modificationUser,
+    Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, string urlIcono, string concurrencyToken,
+        Guid modificationUser,
         string? testCase = null);
 
     /// <summary>
@@ -97,7 +99,7 @@ public interface IProveedorFacade
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <returns>El objeto <see cref="Producto"/> actualizado.</returns>
     Task<Producto> ActualizarProductoAsync(int idProducto, string sku, string nombre, decimal? precio, string icono,
-        string categoria, Guid modificationUser);
+        string categoria, string concurrencyToken, Guid modificationUser);
 
     /// <summary>
     /// Elimina (lógicamente) un producto del sistema.

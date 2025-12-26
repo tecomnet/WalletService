@@ -89,18 +89,32 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
     }
 
     /// <inheritdoc />
-    public async Task<KeyValueConfig> ActualizarKeyValueConfigAsync(string key, string value, Guid modificationUser,
+    public async Task<KeyValueConfig> ActualizarKeyValueConfigAsync(string key, string value, string? concurrencyToken,
+        Guid modificationUser,
         string? testCase = null)
     {
         try
         {
             var config = await ObtenerKeyValueConfigPorKeyAsync(key);
 
+            // Manejo de ConcurrencyToken
+            if (!string.IsNullOrEmpty(concurrencyToken))
+            {
+                context.Entry(config).Property(x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(concurrencyToken);
+            }
+
             config.Update(value: value, modificationUser: modificationUser);
 
             await context.SaveChangesAsync();
 
             return config;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ConcurrencyError,
+                dynamicContent: []));
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
@@ -119,6 +133,28 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
             var config = await ObtenerKeyValueConfigPorKeyAsync(key);
 
             config.Deactivate(modificationUser: modificationUser);
+
+            await context.SaveChangesAsync();
+
+            return config;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<KeyValueConfig> ActivarKeyValueConfigAsync(string key, Guid modificationUser)
+    {
+        try
+        {
+            var config = await ObtenerKeyValueConfigPorKeyAsync(key);
+
+            config.Activate(modificationUser: modificationUser);
 
             await context.SaveChangesAsync();
 

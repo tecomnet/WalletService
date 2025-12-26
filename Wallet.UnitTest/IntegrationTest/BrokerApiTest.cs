@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 using Xunit.Abstractions;
@@ -115,7 +116,11 @@ public class BrokerApiTest : DatabaseTestFixture
                 _jsonSettings);
 
         // 3. Update Broker
-        var updateRequest = new BrokerRequest { Nombre = "Broker Update Test Updated" };
+        var updateRequest = new BrokerUpdateRequest
+        {
+            Nombre = "Broker Update Test Updated",
+            ConcurrencyToken = createResult.ConcurrencyToken
+        };
         var response = await client.PutAsync($"/{ApiVersion}/broker/{createResult.Id}", CreateContent(updateRequest));
         var content = await response.Content.ReadAsStringAsync();
 
@@ -149,7 +154,7 @@ public class BrokerApiTest : DatabaseTestFixture
 
         // 4. Verify Not Found (or deleted)
         var getResponse = await client.GetAsync($"/{ApiVersion}/broker/{createResult.Id}");
-        
+
         var getContent = await getResponse.Content.ReadAsStringAsync();
         var getResult = JsonConvert.DeserializeObject<BrokerResult>(getContent, _jsonSettings);
         // If API returns logically deleted object, verify IsActive is false
@@ -171,13 +176,13 @@ public class BrokerApiTest : DatabaseTestFixture
 
         using (var context = CreateContext())
         {
-            var broker = new Wallet.DOM.Modelos.Broker("Broker with Providers " + Guid.NewGuid(), Guid.NewGuid());
+            var broker = new Broker("Broker with Providers " + Guid.NewGuid(), Guid.NewGuid());
             context.Broker.Add(broker);
             await context.SaveChangesAsync();
             brokerId = broker.Id;
 
             var proveedor =
-                new Wallet.DOM.Modelos.Proveedor(providerName, "https://example.com/icon.png", broker, Guid.NewGuid());
+                new Proveedor(providerName, "https://example.com/icon.png", broker, Guid.NewGuid());
             context.Proveedor.Add(proveedor);
             await context.SaveChangesAsync();
         }

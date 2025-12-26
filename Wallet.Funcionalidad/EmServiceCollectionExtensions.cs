@@ -14,6 +14,9 @@ using Wallet.Funcionalidad.Functionality.KeyValueConfigFacade;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.ServiceClient;
 using Wallet.Funcionalidad.Services.TokenService;
+using Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
+using Wallet.Funcionalidad.Functionality.BitacoraTransaccionFacade;
+using Wallet.Funcionalidad.Functionality.DetallesPagoServicioFacade;
 
 namespace Wallet.Funcionalidad
 {
@@ -120,6 +123,11 @@ namespace Wallet.Funcionalidad
 			services.AddScoped<IKeyValueConfigFacade, KeyValueConfigFacade>();
 			// Fachada de autenticación.
 			services.AddScoped<IAuthFacade, AuthFacade>();
+
+			// Wallet Facades
+			services.AddScoped<ICuentaWalletFacade, CuentaWalletFacade>();
+			services.AddScoped<IBitacoraTransaccionFacade, BitacoraTransaccionFacade>();
+			services.AddScoped<IDetallesPagoServicioFacade, DetallesPagoServicioFacade>();
 		}
 
 		/// <summary>

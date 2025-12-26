@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 
@@ -37,7 +40,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
 
             if (!await context.Broker.AnyAsync(b => b.Nombre == "Broker Test"))
             {
-                var broker = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
+                var broker = new Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
                 await context.Broker.AddAsync(entity: broker);
             }
 
@@ -100,6 +103,28 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
                 settings: _jsonSettings);
         Assert.NotNull(result);
         Assert.Contains(collection: result, filter: s => s.Id == servicioFavorito.Id);
+    }
+
+    [Fact]
+    public async Task Put_ActivarServicioFavorito_Ok()
+    {
+        // Arrange
+        var client = Factory.CreateAuthenticatedClient();
+        var cliente = await CreateCliente(client: client);
+        var servicioFavorito = await CreateServicioFavorito(client: client, clienteId: cliente.Id.GetValueOrDefault());
+
+        // Act
+        var response =
+            await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{servicioFavorito.Id}/activar", content: null);
+
+        // Assert
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+        var result =
+            JsonConvert.DeserializeObject<ServicioFavoritoResult>(value: await response.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
+        Assert.NotNull(result);
+        Assert.Equal(expected: servicioFavorito.Id, actual: result.Id);
+        Assert.True(condition: result.IsActive);
     }
 
     private async Task<ProveedorResult> CreateProveedor(HttpClient client)

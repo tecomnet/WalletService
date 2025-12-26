@@ -1,4 +1,6 @@
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
@@ -40,23 +42,26 @@ public interface IEmpresaFacade
     /// <param name="nombre">El nuevo nombre de la empresa.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Empresa"/> actualizado.</returns>
-    public Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, Guid modificationUser);
+    public Task<Empresa> ActualizaEmpresaAsync(int idEmpresa, string nombre, string concurrencyToken,
+        Guid modificationUser);
 
     /// <summary>
     /// Elimina (desactiva lógicamente) una empresa por su identificador.
     /// </summary>
     /// <param name="idEmpresa">El identificador único de la empresa a eliminar.</param>
+    /// <param name="concurrencyToken">El token de concurrencia para validar que la entidad no haya sido modificada.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la eliminación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Empresa"/> eliminado.</returns>
-    public Task<Empresa> EliminaEmpresaAsync(int idEmpresa, Guid modificationUser);
+    public Task<Empresa> EliminaEmpresaAsync(int idEmpresa, string concurrencyToken, Guid modificationUser);
 
     /// <summary>
     /// Activa una empresa previamente desactivada por su identificador.
     /// </summary>
     /// <param name="idEmpresa">El identificador único de la empresa a activar.</param>
+    /// <param name="concurrencyToken">El token de concurrencia para validar que la entidad no haya sido modificada.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la activación.</param>
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Empresa"/> activado.</returns>
-    public Task<Empresa> ActivaEmpresaAsync(int idEmpresa, Guid modificationUser);
+    public Task<Empresa> ActivaEmpresaAsync(int idEmpresa, string concurrencyToken, Guid modificationUser);
 
     /// <summary>
     /// Obtiene la lista de productos asociados a una empresa.
