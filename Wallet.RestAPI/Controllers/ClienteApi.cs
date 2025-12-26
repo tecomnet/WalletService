@@ -113,7 +113,7 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/cliente/{idCliente}/servicios-favoritos")]
+        [Route("/{version:apiVersion}/cliente/{idCliente}/serviciosFavoritos")]
         [ValidateModelState]
         [SwaggerOperation("GetServiciosFavoritosPorCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<ServicioFavoritoResult>), description: "OK")]

@@ -12,7 +12,6 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the CuentaWallet API controller.
 /// </summary>
-[Authorize]
 public class CuentaWalletApiController(ICuentaWalletFacade cuentaWalletFacade, IMapper mapper)
     : CuentaWalletApiControllerBase
 {
@@ -46,6 +45,6 @@ public class CuentaWalletApiController(ICuentaWalletFacade cuentaWalletFacade, I
 
         // Return Created response. 
         // Note: Ideally we should return CreatedAtAction but for now returning 201 with body is fine matching swagger.
-        return StatusCode(201, response);
+        return Created(uri: $"/{version}/cuentaWallet/{wallet.Id}", value: response);
     }
 }

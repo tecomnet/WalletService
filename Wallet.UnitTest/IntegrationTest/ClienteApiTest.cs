@@ -78,8 +78,8 @@ public class ClienteApiTest : DatabaseTestFixture
             context.ServicioFavorito.Add(servicioFav);
             await context.SaveChangesAsync();
 
-            // 3. Test Get Favorite Services by Client
-            var response = await client.GetAsync($"/{ApiVersion}/cliente/{clienteEntity.Id}/servicios-favoritos");
+            // 3. Get Servicios Favoritos
+            var response = await client.GetAsync($"/{ApiVersion}/cliente/{clienteEntity.Id}/serviciosFavoritos");
             var content = await response.Content.ReadAsStringAsync();
 
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);

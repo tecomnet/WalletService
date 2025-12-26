@@ -121,6 +121,9 @@ public class ServiceErrorsBuilder
 
     #region Cliente
 
+    /// <summary>Error: El usuario está inactivo.</summary>
+    public const string UsuarioInactivo = "USUARIO-INACTIVO";
+
     /// <summary>Error: El dispositivo móvil autorizado es requerido.</summary>
     public const string DispositivoMovilAutorizadoRequerido = "DISPOSITIVO-MOVIL-AUTORIZADO-REQUERIDO";
 
@@ -351,6 +354,12 @@ public class ServiceErrorsBuilder
 
     /// <summary>Error: El cliente ya está registrado.</summary>
     public const string ClienteYaRegistrado = "CLIENTE-YA-REGISTRADO";
+
+    /// <summary>Error: La cuenta wallet está inactiva.</summary>
+    public const string CuentaWalletInactiva = "CUENTA-WALLET-INACTIVA";
+
+    /// <summary>Error: La dirección está inactiva.</summary>
+    public const string DireccionInactiva = "DIRECCION-INACTIVA";
 
     #endregion
 
@@ -637,6 +646,9 @@ public class ServiceErrorsBuilder
     /// <summary>Error: Servicio favorito no encontrado.</summary>
     public const string ServicioFavoritoNoEncontrado = "SERVICIO-FAVORITO-NO-ENCONTRADO";
 
+    /// <summary>Error: Servicio favorito inactivo.</summary>
+    public const string ServicioFavoritoInactivo = "SERVICIO-FAVORITO-INACTIVO";
+
     /// <summary>
     /// Carga los errores relacionados con la entidad ServicioFavorito.
     /// </summary>
@@ -647,6 +659,12 @@ public class ServiceErrorsBuilder
             errorCode: ServicioFavoritoNoEncontrado,
             message: "Servicio Favorito no encontrado",
             description: "El servicio favorito con id {0} no fue encontrado.");
+
+        // Error de servicio favorito inactivo
+        AddServiceError(
+            errorCode: ServicioFavoritoInactivo,
+            message: "Servicio Favorito inactivo",
+            description: "El servicio favorito con id {0} no está activo. Primero debe activarlo.");
     }
 
     #endregion
@@ -687,6 +705,9 @@ public class ServiceErrorsBuilder
     /// <summary>Error: La configuración KeyValue ya existe.</summary>
     public const string KeyValueConfigYaExiste = "KEY-VALUE-CONFIG-YA-EXISTE";
 
+    /// <summary>Error: La configuración KeyValue está inactiva.</summary>
+    public const string KeyValueConfigInactivo = "KEY-VALUE-CONFIG-INACTIVO";
+
     /// <summary>
     /// Carga los errores relacionados con la entidad KeyValueConfig.
     /// </summary>
@@ -703,6 +724,12 @@ public class ServiceErrorsBuilder
             errorCode: KeyValueConfigYaExiste,
             message: "La configuración ya existe.",
             description: "La configuración con clave {0} ya existe.");
+
+        // Error de configuración inactiva
+        AddServiceError(
+            errorCode: KeyValueConfigInactivo,
+            message: "La configuración está inactiva.",
+            description: "La configuración con clave {0} no está activa. Primero debe activarla.");
     }
 
     #endregion

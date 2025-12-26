@@ -16,6 +16,7 @@ using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
+[Trait("Category", "Integration")]
 public class UserApiTest : DatabaseTestFixture
 {
     // Api URI
@@ -428,15 +429,31 @@ public class UserApiTest : DatabaseTestFixture
     [Fact]
     public async Task Confirmar2FA_Email_Success()
     {
+        // Custom factory to override mock
+        var factory = Factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureTestServices(services =>
+            {
+                var mock = new Mock<ITwilioServiceFacade>();
+                mock.Setup(x => x.ConfirmarVerificacionEmail(It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                mock.Setup(x => x.VerificacionEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+
+                services.AddScoped<ITwilioServiceFacade>(_ => mock.Object);
+            });
+        });
+
         // Arrange
+        var client = factory.CreateClient();
         var (user, token) = await CreateAuthenticatedUserAsync();
-        var client = Factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         // 1. Update Email to trigger 2FA
         var updateRequest = new EmailUpdateRequest
         {
-            CorreoElectronico = $"confirm2fa{Guid.NewGuid()}@test.com"
+            CorreoElectronico = $"confirm2fa{Guid.NewGuid()}@test.com",
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
         var updateContent = CreateContent(body: updateRequest);
         await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaEmail", content: updateContent);
@@ -448,7 +465,7 @@ public class UserApiTest : DatabaseTestFixture
         // 3. Confirm 2FA
         var confirmRequest = new
         {
-            tipo = "Email",
+            tipo = "email", // lowercase
             codigo = verificationCode
         };
         // Use manual serialization to ensure control
@@ -480,16 +497,32 @@ public class UserApiTest : DatabaseTestFixture
     [Fact]
     public async Task Confirmar2FA_Telefono_Success()
     {
+        // Custom factory to override mock
+        var factory = Factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureTestServices(services =>
+            {
+                var mock = new Mock<ITwilioServiceFacade>();
+                mock.Setup(x => x.ConfirmarVerificacionSMS(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                mock.Setup(x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+
+                services.AddScoped<ITwilioServiceFacade>(_ => mock.Object);
+            });
+        });
+
         // Arrange
+        var client = factory.CreateClient();
         var (user, token) = await CreateAuthenticatedUserAsync();
-        var client = Factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         // 1. Update Phone to trigger 2FA
         var updateRequest = new TelefonoUpdateRequest
         {
-            CodigoPais = "052",
-            Telefono = "55" + new Random().Next(10000000, 99999999)
+            CodigoPais = "+52",
+            Telefono = "55" + new Random().Next(10000000, 99999999),
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
         var updateContent = CreateContent(body: updateRequest);
         var updateResponse = await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaTelefono",
@@ -502,7 +535,7 @@ public class UserApiTest : DatabaseTestFixture
         // 3. Confirm 2FA
         var confirmRequest = new
         {
-            tipo = "Sms",
+            tipo = "sms", // lowercase
             codigo = verificationCode
         };
 
@@ -514,7 +547,6 @@ public class UserApiTest : DatabaseTestFixture
             requestUri: $"{API_VERSION}/usuario/{user.Id}/confirmar2fa", content: confirmContent);
 
         // Assert
-        // var responseContentString = await response.Content.ReadAsStringAsync(); // Debugging
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<bool>(value: responseContentString);
@@ -526,6 +558,7 @@ public class UserApiTest : DatabaseTestFixture
             var dbUser = await context.Usuario.Include(u => u.Verificaciones2Fa)
                 .FirstAsync(u => u.Id == user.Id);
             var verificacion = dbUser.Verificaciones2Fa
+                .OrderByDescending(v => v.CreationTimestamp)
                 .FirstOrDefault(v => v.Codigo == verificationCode && v.Tipo == Tipo2FA.Sms);
             Assert.NotNull(verificacion);
             Assert.True(verificacion.Verificado);
@@ -553,9 +586,6 @@ public class UserApiTest : DatabaseTestFixture
 
         // Use the custom factory to create client
         var client = factory.CreateClient();
-        // Since we created a new client/factory, we need to authenticate again? 
-        // Factory.CreateAuthenticatedUserAsync uses the global Factory. 
-        // But the DB is shared (Postgres/SQL container).
         // We can reuse the tokens if we set the header.
         var (user, token) = await CreateAuthenticatedUserAsync();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
@@ -564,7 +594,8 @@ public class UserApiTest : DatabaseTestFixture
         var updateRequest = new TelefonoUpdateRequest
         {
             CodigoPais = "052",
-            Telefono = "55" + new Random().Next(10000000, 99999999)
+            Telefono = "55" + new Random().Next(10000000, 99999999),
+            ConcurrencyToken = Convert.ToBase64String(user.ConcurrencyToken)
         };
         var updateContent = CreateContent(body: updateRequest);
         var updateResponse = await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaTelefono",
@@ -577,7 +608,7 @@ public class UserApiTest : DatabaseTestFixture
         // 3. Confirm 2FA
         var confirmRequest = new
         {
-            tipo = "Sms",
+            tipo = "sms", // lowercase
             codigo = verificationCode
         };
 

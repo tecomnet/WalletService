@@ -60,7 +60,7 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="404">Not Found</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/cliente/{idCliente}/pago-servicios")]
+        [Route("/{version:apiVersion}/cliente/{idCliente}/pagoServicios")]
         [ValidateModelState]
         [SwaggerOperation("GetDetallesPagoServicioPorCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<DetallesPagoServicioResult>), description: "OK")]
@@ -83,7 +83,7 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost]
-        [Route("/{version:apiVersion}/pago-servicios")]
+        [Route("/{version:apiVersion}/pagoServicios")]
         [ValidateModelState]
         [SwaggerOperation("RegistrarPagoServicio")]
         [SwaggerResponse(statusCode: 201, type: typeof(DetallesPagoServicioResult), description: "Created")]

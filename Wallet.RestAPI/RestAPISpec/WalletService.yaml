@@ -332,7 +332,7 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
-  "/{version}/cliente/{idCliente}/servicios-favoritos":
+  "/{version}/cliente/{idCliente}/serviciosFavoritos":
     parameters:
       - $ref: "#/components/parameters/version"
       - $ref: "#/components/parameters/idCliente"
@@ -490,7 +490,7 @@ paths:
           description: token autorizacion del dispositivo
       tags:
         - DispositivoMovilAutorizado
-  "/{version}/pago-servicios":
+  "/{version}/pagoServicios":
     parameters:
       - $ref: "#/components/parameters/version"
     post:
@@ -2036,7 +2036,7 @@ paths:
               $ref: "#/components/schemas/RevokeTokenRequest"
       tags:
         - Auth
-  "/{version}/cuenta-wallet":
+  "/{version}/cuentaWallet":
     parameters:
       - $ref: "#/components/parameters/version"
     post:
@@ -2063,7 +2063,7 @@ paths:
         - jwsToken: []
       tags:
         - CuentaWallet
-  "/{version}/cliente/{idCliente}/cuenta-wallet":
+  "/{version}/cliente/{idCliente}/cuentaWallet":
     parameters:
       - $ref: "#/components/parameters/version"
       - $ref: "#/components/parameters/idCliente"
@@ -2113,7 +2113,7 @@ paths:
         - jwsToken: []
       tags:
         - BitacoraTransaccion
-  "/{version}/cliente/{idCliente}/pago-servicios":
+  "/{version}/cliente/{idCliente}/pagoServicios":
     parameters:
       - $ref: "#/components/parameters/version"
       - $ref: "#/components/parameters/idCliente"
@@ -2313,7 +2313,7 @@ components:
         - direccion
         - idProveedor
         - numeroReferencia
-    TipoDocumentoConsentimientoEnum:
+    TipoDocumentoConsentimiento:
       type: string
       x-stoplight:
         id: 94d48ef2c5166
@@ -2634,7 +2634,7 @@ components:
           type: string
           maxLength: 255
         categoria:
-          $ref: "#/components/schemas/CategoriaEnum"
+          $ref: "#/components/schemas/Categoria"
         concurrencyToken:
           type: string
 
@@ -3096,8 +3096,8 @@ components:
         - numeroInterior
         - referencia
         - concurrencyToken
-    DispositivoEnum:
-      title: DispositivoEnum
+    Dispositivo:
+      title: Dispositivo
       x-stoplight:
         id: 0zx76o4y76jnu
       type: string

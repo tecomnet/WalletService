@@ -88,6 +88,14 @@ public class ServicioFavoritoFacade(
             // Obtiene el servicio favorito existente.
             var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito: idServicioFavorito);
 
+            // Validar que el servicio favorito esté activo
+            if (!servicioFavorito.IsActive)
+            {
+                throw new EMGeneralAggregateException(
+                    DomCommon.BuildEmGeneralException(ServiceErrorsBuilder.ServicioFavoritoInactivo,
+                        [idServicioFavorito], this.GetType().Name));
+            }
+
             // Manejo de ConcurrencyToken
             if (!string.IsNullOrEmpty(concurrencyToken))
             {

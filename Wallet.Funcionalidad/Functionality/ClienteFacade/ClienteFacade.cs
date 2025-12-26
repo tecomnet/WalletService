@@ -87,6 +87,14 @@ public class ClienteFacade(
                 .Include(navigationPropertyPath: x => x.Usuario)
                 .FirstOrDefaultAsync(c => c.UsuarioId == idUsuario);
 
+            if (cliente != null && !cliente.IsActive)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ClienteInactivo,
+                    dynamicContent: [cliente.NombreCompleto],
+                    module: this.GetType().Name));
+            }
+
             if (cliente == null)
             {
                 // Recuperar el usuario para vincularlo

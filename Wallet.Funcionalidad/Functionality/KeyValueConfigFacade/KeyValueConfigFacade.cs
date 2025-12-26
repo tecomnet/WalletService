@@ -97,6 +97,14 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
         {
             var config = await ObtenerKeyValueConfigPorKeyAsync(key);
 
+            // Validar que la configuración esté activa
+            if (!config.IsActive)
+            {
+                throw new EMGeneralAggregateException(
+                    DomCommon.BuildEmGeneralException(ServiceErrorsBuilder.KeyValueConfigInactivo,
+                        [key], this.GetType().Name));
+            }
+
             // Manejo de ConcurrencyToken
             if (!string.IsNullOrEmpty(concurrencyToken))
             {

@@ -47,6 +47,24 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
                     dynamicContent: []));
             }
 
+            // Validar que el cliente esté activo
+            if (!cliente.IsActive)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ClienteInactivo,
+                    dynamicContent: [cliente.NombreCompleto],
+                    module: this.GetType().Name));
+            }
+
+            // Validar que la dirección esté activa
+            if (!direccion.IsActive)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.DireccionInactiva,
+                    dynamicContent: [],
+                    module: this.GetType().Name));
+            }
+
             // Manejo de ConcurrencyToken
             if (!string.IsNullOrEmpty(concurrencyToken))
             {

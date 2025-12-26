@@ -36,7 +36,7 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="404">Not Found</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/cliente/{idCliente}/cuenta-wallet")]
+        [Route("/{version:apiVersion}/cliente/{idCliente}/cuentaWallet")]
         [ValidateModelState]
         [SwaggerOperation("GetCuentaWalletPorCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(CuentaWalletResult), description: "OK")]
@@ -58,7 +58,7 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="400">Bad Request</response>
         /// <response code="401">Unauthorized</response>
         [HttpPost]
-        [Route("/{version:apiVersion}/cuenta-wallet")]
+        [Route("/{version:apiVersion}/cuentaWallet")]
         [ValidateModelState]
         [SwaggerOperation("CreateCuentaWallet")]
         [SwaggerResponse(statusCode: 201, type: typeof(CuentaWalletResult), description: "Created")]

@@ -101,8 +101,9 @@ public class UsuarioFacade(
             // Obtiene el usuario existente.
             var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
             // Valida que el usuario tenga el registro completado.
-            ValidarUsuarioRegistroCompletado(usuario);
-
+            ValidarUsuarioRegistroCompletado(usuario: usuario);
+            ValidarUsuarioIsActive(usuario: usuario);
+            // TODO: ValidarConfirmacionCodigoVerificacionSms2Fa(usuario: usuario); // Metodo no existe
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
                 Convert.FromBase64String(concurrencyToken);
@@ -138,6 +139,7 @@ public class UsuarioFacade(
             if (validarEstatus)
             {
                 ValidarUsuarioRegistroCompletado(usuario);
+                ValidarUsuarioIsActive(usuario);
             }
 
             // Establece el token original para la validación de concurrencia optimista
@@ -194,6 +196,7 @@ public class UsuarioFacade(
             if (validarEstatus)
             {
                 ValidarUsuarioRegistroCompletado(usuario);
+                ValidarUsuarioIsActive(usuario);
             }
 
             // Establece el token original para la validación de concurrencia optimista
@@ -509,6 +512,21 @@ public class UsuarioFacade(
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.InvalidRegistrationState,
                 dynamicContent: [usuario.Estatus.ToString(), EstatusRegistroEnum.RegistroCompletado.ToString()],
+                module: this.GetType().Name));
+        }
+    }
+
+    /// <summary>
+    /// Valida que el usuario tenga el estatus de activo.
+    /// </summary>
+    /// <param name="usuario">Usuario a validar.</param>
+    private void ValidarUsuarioIsActive(Usuario usuario)
+    {
+        if (!usuario.IsActive)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.UsuarioInactivo,
+                dynamicContent: [],
                 module: this.GetType().Name));
         }
     }

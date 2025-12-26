@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
+using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos.GestionWallet;
 
 namespace Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
@@ -36,6 +38,17 @@ public class CuentaWalletFacade(ServiceDbContext context) : ICuentaWalletFacade
     {
         var wallet = await context.CuentaWallet.FindAsync(idWallet)
                      ?? throw new KeyNotFoundException($"Wallet {idWallet} no encontrada.");
+
+        // Validar que la wallet esté activa
+        if (!wallet.IsActive)
+        {
+            // Nota: Usamos una excepción genérica si no tenemos el builder inyectado aquí,
+            // pero lo ideal es usar EMGeneralAggregateException consistente con el resto.
+            // Dado que esta clase no usa DomCommon ni ServiceErrorsBuilder explícitamente en los usings actuales,
+            // agregaré la excepción estándar.
+            throw new EMGeneralAggregateException(
+                DomCommon.BuildEmGeneralException(ServiceErrorsBuilder.CuentaWalletInactiva, [], this.GetType().Name));
+        }
 
         wallet.ActualizarSaldo(nuevoSaldo, modificationUser);
         context.Entry(wallet).State = EntityState.Modified;
