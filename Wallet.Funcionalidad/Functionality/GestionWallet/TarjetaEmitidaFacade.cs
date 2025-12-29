@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
+using Wallet.DOM.Comun;
 using Wallet.DOM.Enums;
+using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos.GestionWallet;
 
 namespace Wallet.Funcionalidad.Functionality.GestionWallet;
@@ -68,6 +71,10 @@ public class TarjetaEmitidaFacade(ServiceDbContext context) : ITarjetaEmitidaFac
         if (Convert.ToBase64String(tarjeta.ConcurrencyToken) != concurrencyToken)
             throw new DbUpdateConcurrencyException("La tarjeta ha sido modificada por otro usuario.");
 
+        // Validar estatus de cliente y usuario
+        await context.Entry(entity: tarjeta).Reference(propertyExpression: t => t.CuentaWallet).LoadAsync();
+        await ValidarClienteYUsuarioActivos(idCliente: tarjeta.CuentaWallet.IdCliente);
+
         tarjeta.BloquearTemporalmente(bloquear, modificationUser);
         await context.SaveChangesAsync();
     }
@@ -80,6 +87,10 @@ public class TarjetaEmitidaFacade(ServiceDbContext context) : ITarjetaEmitidaFac
         if (Convert.ToBase64String(tarjeta.ConcurrencyToken) != concurrencyToken)
             throw new DbUpdateConcurrencyException("La tarjeta ha sido modificada por otro usuario.");
 
+        // Validar estatus de cliente y usuario
+        await context.Entry(entity: tarjeta).Reference(propertyExpression: t => t.CuentaWallet).LoadAsync();
+        await ValidarClienteYUsuarioActivos(idCliente: tarjeta.CuentaWallet.IdCliente);
+
         tarjeta.ConfigurarReglas(nuevoLimite, comprasLinea, retiros, modificationUser);
         await context.SaveChangesAsync();
     }
@@ -87,6 +98,8 @@ public class TarjetaEmitidaFacade(ServiceDbContext context) : ITarjetaEmitidaFac
 
     public async Task<TarjetaEmitida> SolicitarTarjetaVirtualAdicionalAsync(int idCliente, Guid creationUser)
     {
+        await ValidarClienteYUsuarioActivos(idCliente: idCliente);
+
         var cuenta = await context.CuentaWallet
                          .FirstOrDefaultAsync(c => c.IdCliente == idCliente)
                      ?? throw new KeyNotFoundException($"No se encontró cuenta wallet para el cliente {idCliente}.");
@@ -114,6 +127,8 @@ public class TarjetaEmitidaFacade(ServiceDbContext context) : ITarjetaEmitidaFac
     public async Task<TarjetaEmitida> SolicitarTarjetaFisicaAsync(int idCliente, string nombreImpreso,
         Guid creationUser)
     {
+        await ValidarClienteYUsuarioActivos(idCliente: idCliente);
+
         var cuenta = await context.CuentaWallet
                          .FirstOrDefaultAsync(c => c.IdCliente == idCliente)
                      ?? throw new KeyNotFoundException($"No se encontró cuenta wallet para el cliente {idCliente}.");
@@ -149,5 +164,33 @@ public class TarjetaEmitidaFacade(ServiceDbContext context) : ITarjetaEmitidaFac
         var tokenProcesador = Guid.NewGuid().ToString("N");
 
         return (panSimulado, tokenProcesador);
+    }
+
+    /// <summary>
+    /// Valida que el cliente y su usuario asociado estén activos.
+    /// </summary>
+    /// <param name="idCliente">Identificador del cliente.</param>
+    private async Task ValidarClienteYUsuarioActivos(int idCliente)
+    {
+        var cliente = await context.Cliente
+                          .Include(navigationPropertyPath: c => c.Usuario)
+                          .FirstOrDefaultAsync(predicate: c => c.Id == idCliente)
+                      ?? throw new KeyNotFoundException(message: $"Cliente {idCliente} no encontrado.");
+
+        if (!cliente.IsActive)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ClienteInactivo,
+                dynamicContent: [cliente.NombreCompleto ?? "Cliente"],
+                module: this.GetType().Name));
+        }
+
+        if (!cliente.Usuario.IsActive)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.UsuarioInactivo,
+                dynamicContent: [],
+                module: this.GetType().Name));
+        }
     }
 }

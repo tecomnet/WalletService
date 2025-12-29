@@ -69,5 +69,16 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
         }
+
+        /// <inheritdoc />
+        public override async Task<IActionResult> DeleteUsuarioAsync(string version, int? idUsuario,
+            string concurrencyToken)
+        {
+            await usuarioFacade.DesactivarUsuarioAsync(
+                idUsuario: idUsuario.Value,
+                concurrencyToken: concurrencyToken,
+                modificationUser: this.GetAuthenticatedUserGuid());
+            return NoContent();
+        }
     }
 }

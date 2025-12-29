@@ -50,7 +50,7 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int? idUsuario);
-        
+
         /// <summary>
         /// Actualiza contraseña
         /// </summary>
@@ -77,7 +77,7 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int? idUsuario, [FromBody] ContrasenaUpdateRequest body);
-        
+
         /// <summary>
         /// Confirma codigo de verificacion 2FA
         /// </summary>
@@ -158,5 +158,33 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int? idUsuario, [FromBody] TelefonoUpdateRequest body);
+
+        /// <summary>
+        /// Desactiva un usuario
+        /// </summary>
+        /// <remarks>Desactiva un usuario impidiendo operaciones futuras</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idUsuario">ID del usuario a desactivar</param>
+        /// <param name="concurrencyToken">Token de concurrencia</param>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Response to client error status code</response>
+        /// <response code="401">Response to client error status code</response>
+        /// <response code="404">Response to client error status code</response>
+        [HttpDelete]
+        [Route(template: "/{version:apiVersion}/usuario/{idUsuario}")]
+        [ValidateModelState]
+        [SwaggerOperation(summary: "DeleteUsuario")]
+        [SwaggerResponse(statusCode: 204, description: "No Content")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error status code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error status code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error status code")]
+        public abstract Task<IActionResult> DeleteUsuarioAsync(
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
+            [FromRoute] [Required] int? idUsuario,
+            [FromQuery] [Required] string concurrencyToken);
     }
 }

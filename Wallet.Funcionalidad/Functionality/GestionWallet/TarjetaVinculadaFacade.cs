@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Modelos.GestionWallet;
 using Wallet.DOM.Enums;
+using Wallet.DOM.Errors;
+using Wallet.DOM.Comun;
+using Wallet.DOM;
 
 namespace Wallet.Funcionalidad.Functionality.GestionWallet;
 
@@ -10,6 +13,8 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
     public async Task<TarjetaVinculada> VincularTarjetaAsync(int idCliente, string tokenPasarela, string panEnmascarado,
         string alias, MarcaTarjeta marca, DateTime fechaExpiracion, Guid creationUser, string? gatewayCustomerId = null)
     {
+        await ValidarClienteYUsuarioActivos(idCliente: idCliente);
+
         var cuenta = await context.CuentaWallet.FirstOrDefaultAsync(c => c.IdCliente == idCliente);
         if (cuenta == null)
             throw new KeyNotFoundException($"No se encontró una cuenta Wallet para el cliente {idCliente}");
@@ -48,6 +53,10 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
                           .FirstOrDefaultAsync(t => t.Id == idTarjeta)
                       ?? throw new KeyNotFoundException($"Tarjeta vinculada con ID {idTarjeta} no encontrada.");
 
+        // Validar estatus de cliente y usuario
+        await context.Entry(entity: tarjeta).Reference(propertyExpression: t => t.CuentaWallet).LoadAsync();
+        await ValidarClienteYUsuarioActivos(idCliente: tarjeta.CuentaWallet.IdCliente);
+
         tarjeta.Deactivate(modificationUser);
         await context.SaveChangesAsync();
     }
@@ -55,6 +64,8 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
     public async Task EstablecerFavoritaAsync(int idTarjeta, int idCliente, string concurrencyToken,
         Guid modificationUser)
     {
+        await ValidarClienteYUsuarioActivos(idCliente: idCliente);
+
         // First find the account for the client
         var cuenta = await context.CuentaWallet.FirstOrDefaultAsync(c => c.IdCliente == idCliente);
         if (cuenta == null)
@@ -88,5 +99,33 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
         }
 
         await context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Valida que el cliente y su usuario asociado estén activos.
+    /// </summary>
+    /// <param name="idCliente">Identificador del cliente.</param>
+    private async Task ValidarClienteYUsuarioActivos(int idCliente)
+    {
+        var cliente = await context.Cliente
+                          .Include(navigationPropertyPath: c => c.Usuario)
+                          .FirstOrDefaultAsync(predicate: c => c.Id == idCliente)
+                      ?? throw new KeyNotFoundException(message: $"Cliente {idCliente} no encontrado.");
+
+        if (!cliente.IsActive)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ClienteInactivo,
+                dynamicContent: [cliente.NombreCompleto ?? "Cliente"],
+                module: this.GetType().Name));
+        }
+
+        if (!cliente.Usuario.IsActive)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.UsuarioInactivo,
+                dynamicContent: [],
+                module: this.GetType().Name));
+        }
     }
 }

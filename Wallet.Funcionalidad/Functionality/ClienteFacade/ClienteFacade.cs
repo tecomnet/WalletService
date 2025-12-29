@@ -86,12 +86,23 @@ public class ClienteFacade(
                 .Include(navigationPropertyPath: x => x.Usuario)
                 .FirstOrDefaultAsync(predicate: c => c.UsuarioId == idUsuario);
 
-            if (cliente != null && !cliente.IsActive)
+            if (cliente != null)
             {
-                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                    errorCode: ServiceErrorsBuilder.ClienteInactivo,
-                    dynamicContent: [cliente.NombreCompleto],
-                    module: this.GetType().Name));
+                if (!cliente.IsActive)
+                {
+                    throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.ClienteInactivo,
+                        dynamicContent: [cliente.NombreCompleto ?? "Cliente"],
+                        module: this.GetType().Name));
+                }
+
+                if (!cliente.Usuario.IsActive)
+                {
+                    throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.UsuarioInactivo,
+                        dynamicContent: [],
+                        module: this.GetType().Name));
+                }
             }
 
             if (cliente == null)
@@ -103,6 +114,14 @@ public class ClienteFacade(
                     throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                         errorCode: ServiceErrorsBuilder.UsuarioNoEncontrado,
                         dynamicContent: [idUsuario],
+                        module: this.GetType().Name));
+                }
+
+                if (!usuario.IsActive)
+                {
+                    throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.UsuarioInactivo,
+                        dynamicContent: [],
                         module: this.GetType().Name));
                 }
 

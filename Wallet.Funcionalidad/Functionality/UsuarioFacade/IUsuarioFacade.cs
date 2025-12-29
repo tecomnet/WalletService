@@ -80,5 +80,12 @@ public interface IUsuarioFacade
     Task<Usuario> GuardarUsuarioPreRegistroAsync(string codigoPais, string telefono,
         string? testCase = null);
 
-    // TODO: Agregar metodo para desactivar/eliminar usuario
+    /// <summary>
+    /// Desactiva un usuario, impidiendo que realice operaciones.
+    /// </summary>
+    /// <param name="idUsuario">El identificador del usuario.</param>
+    /// <param name="concurrencyToken">El token de concurrencia para validación optimista.</param>
+    /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
+    /// <returns>Una tarea que representa la operación asíncrona.</returns>
+    Task DesactivarUsuarioAsync(int idUsuario, string concurrencyToken, Guid modificationUser);
 }

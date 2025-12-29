@@ -260,6 +260,7 @@ public class UsuarioFacade(
             if (validarEstatus)
             {
                 ValidarUsuarioRegistroCompletado(usuario: usuario);
+                ValidarUsuarioIsActive(usuario: usuario);
             }
 
             // Carga explícitamente las verificaciones 2FA activas del tipo solicitado.
@@ -381,6 +382,34 @@ public class UsuarioFacade(
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
             // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task DesactivarUsuarioAsync(int idUsuario, string concurrencyToken, Guid modificationUser)
+    {
+        try
+        {
+            // Obtiene el usuario existente.
+            var usuario = await ObtenerUsuarioPorIdAsync(idUsuario: idUsuario);
+
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(entity: usuario).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
+
+            // Desactiva el usuario (borrado lógico).
+            usuario.Deactivate(modificationUser: modificationUser);
+
+            // Guarda los cambios.
+            await context.SaveChangesAsync();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
                 module: this.GetType().Name,
