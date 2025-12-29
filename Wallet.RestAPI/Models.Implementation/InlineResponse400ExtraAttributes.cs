@@ -5,7 +5,14 @@ namespace Wallet.RestAPI.Models
     public partial class InlineResponse400ExtraAttributes
     {
         #region Constructors
-        public InlineResponse400ExtraAttributes(){}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InlineResponse400ExtraAttributes"/> class.
+        /// </summary>
+        public InlineResponse400ExtraAttributes()
+        {
+        }
+
         /// <summary>
         /// Basic constructor
         /// </summary>
@@ -20,7 +27,7 @@ namespace Wallet.RestAPI.Models
             string? serviceName,
             string? serviceLocation
 #nullable disable
-            )
+        )
         {
             // Set the attributes
             DesciptionDynamicContents = descriptionDynamicContents;
@@ -28,6 +35,7 @@ namespace Wallet.RestAPI.Models
             ServiceName = serviceName;
             ServiceLocation = serviceLocation;
         }
+
         #endregion
     }
 }

@@ -14,17 +14,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace Wallet.RestAPI.Controllers.Implementation
 {
     /// <summary>
-    ///
+    /// Implementation of the Health API controller.
     /// </summary>
     [ApiController]
     public class HealthApiController : HealthApiControllerBase
     {
+        /// <inheritdoc/>
         public override IActionResult GetHealth()
         {
             // Return 200
             return this.Ok();
         }
 
+        /// <inheritdoc/>
         public override IActionResult GetReady()
         {
             // Return 200

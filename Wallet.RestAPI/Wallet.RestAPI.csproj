@@ -6,6 +6,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
 		<PackageId>Wallet.RestAPI</PackageId>
+		<UserSecretsId>2B35854F-24E6-4CC6-95D1-A79D63CFAB99</UserSecretsId>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(RunConfiguration)' == 'web' " />
 	<PropertyGroup>

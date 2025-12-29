@@ -1,4 +1,3 @@
-using System;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
@@ -8,7 +7,9 @@ namespace Wallet.UnitTest.DOM.Modelos;
 public class DocumentoTest : UnitTestTemplate
 {
     // Cadena de 100 caracteres exactos
-    private const string Max100Chars = "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789"; 
+    private const string Max100Chars =
+        "0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789";
+
     // Cadena de 101 caracteres
     private const string Over100Chars = Max100Chars + "X";
 
@@ -16,26 +17,27 @@ public class DocumentoTest : UnitTestTemplate
     // PARÁMETROS: CaseName, Nombre (string), TipoPersona (TipoPersona), Success, ExpectedErrors
 
     // === 1. CASOS DE ÉXITO (Nombre y TipoPersona válidos) ===
-    [InlineData("1. OK: Nombre válido (Fisica)",
-        "Pasaporte", TipoPersona.Fisica,
-        true, new string[] { })]
-    [InlineData("2. OK: Nombre Min Length (Moral)",
-        "A", TipoPersona.Moral,
-        true, new string[] { })]
-    [InlineData("3. OK: Nombre Max Length (Extrajero)",
-        Max100Chars, TipoPersona.Extranjero,
-        true, new string[] { })]
+    [InlineData(data: ["1. OK: Nombre válido (Fisica)", "Pasaporte", TipoPersona.Fisica, true, new string[] { }])]
+    [InlineData(data: ["2. OK: Nombre Min Length (Moral)", "A", TipoPersona.Moral, true, new string[] { }])]
+    [InlineData(data:
+        ["3. OK: Nombre Max Length (Extrajero)", Max100Chars, TipoPersona.Extranjero, true, new string[] { }])]
 
     // === 2. ERRORES DE NOMBRE (string, required, min 1, max 100) ===
-    [InlineData("4. ERROR: Nombre null",
-        null, TipoPersona.Fisica,
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("5. ERROR: Nombre empty",
-        "", TipoPersona.Moral,
-        false, new string[] { "PROPERTY-VALIDATION-REQUIRED-ERROR" })]
-    [InlineData("6. ERROR: Nombre too long (101)",
-        Over100Chars, TipoPersona.Extranjero,
-        false, new string[] { "PROPERTY-VALIDATION-LENGTH-INVALID" })]
+    [InlineData(data:
+    [
+        "4. ERROR: Nombre null", null, TipoPersona.Fisica, false,
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
+    ])]
+    [InlineData(data:
+    [
+        "5. ERROR: Nombre empty", "", TipoPersona.Moral, false,
+        new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
+    ])]
+    [InlineData(data:
+    [
+        "6. ERROR: Nombre too long (101)", Over100Chars, TipoPersona.Extranjero, false,
+        new string[] { ServiceErrorsBuilder.PropertyValidationLengthInvalid }
+    ])]
 
     // === 3. ERRORES DE TIPO PERSONA (Requerido) ===
     // NOTA: Como 'TipoPersona' es un 'enum' no-nullable en el constructor, no puede ser null. 
@@ -62,11 +64,11 @@ public class DocumentoTest : UnitTestTemplate
                 testCase: caseName);
 
             // Assert Success
-            Assert.True(success, $"El caso '{caseName}' falló cuando se esperaba éxito.");
+            Assert.True(condition: success, userMessage: $"El caso '{caseName}' falló cuando se esperaba éxito.");
 
             // Comprobar la asignación de propiedades (solo si hay éxito)
-            Assert.Equal(nombre, documento.Nombre);
-            Assert.Equal(tipoPersona, documento.TipoPersona);
+            Assert.Equal(expected: nombre, actual: documento.Nombre);
+            Assert.Equal(expected: tipoPersona, actual: documento.TipoPersona);
         }
         // Catch the managed errors and check them with the expected ones in the case of failures
         catch (EMGeneralAggregateException exception)
@@ -76,10 +78,12 @@ public class DocumentoTest : UnitTestTemplate
         }
         // Catch any non managed errors and display them to understand the root cause
         catch (Exception exception) when (exception is not EMGeneralAggregateException &&
-                                             exception is not Xunit.Sdk.TrueException && exception is not Xunit.Sdk.FalseException)
+                                          exception is not Xunit.Sdk.TrueException &&
+                                          exception is not Xunit.Sdk.FalseException)
         {
             // Should not reach for unmanaged errors
-            Assert.Fail($"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
+            Assert.Fail(
+                message: $"Excepción no gestionada en '{caseName}': {exception.GetType().Name} - {exception.Message}");
         }
     }
 }

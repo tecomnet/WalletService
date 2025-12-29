@@ -18,7 +18,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
         /// Will execute this method as default when an unhandled error occurs
         /// </summary>
         /// <returns>Standard InlineResponse400</returns>
-        [Route("Error")]
+        [Route(template: "Error")]
         public object Error()
         {
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
@@ -28,8 +28,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
             }
 
             var exception = context.Error;
-            var emGeneralAggregateException = new EMGeneralAggregateException(new EMGeneralException(exception.Message, exception));
-            return BadRequest(new InlineResponse400(emGeneralAggregateException));
+            var emGeneralAggregateException = new EMGeneralAggregateException(exception: new EMGeneralException(message: exception.Message, inner: exception));
+            return BadRequest(error: new InlineResponse400(aggregateException: emGeneralAggregateException));
         }
     }
 }

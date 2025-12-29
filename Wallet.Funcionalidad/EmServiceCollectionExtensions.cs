@@ -2,110 +2,134 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Wallet.DOM.ApplicationDbContext;
+using Wallet.DOM.Helper;
+using Wallet.Funcionalidad.Functionality.AuthFacade;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
+using Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
+using Wallet.Funcionalidad.Functionality.ProveedorFacade;
+using Wallet.Funcionalidad.Functionality.RegistroFacade;
+using Wallet.Funcionalidad.Functionality.ServicioFavoritoFacade;
+using Wallet.Funcionalidad.Functionality.UsuarioFacade;
+using Wallet.Funcionalidad.Functionality.KeyValueConfigFacade;
 using Wallet.Funcionalidad.Helper;
 using Wallet.Funcionalidad.ServiceClient;
+using Wallet.Funcionalidad.Services.TokenService;
 
 namespace Wallet.Funcionalidad
 {
 	/// <summary>
-	/// Special EM service extensions 602 385
+	/// Extensiones especiales para la colección de servicios de EM.
+	/// Proporciona métodos para configurar y registrar los servicios y fachadas de la aplicación.
 	/// </summary>
 	public static partial class EmServiceCollectionExtensions
 	{
+		/// <summary>
+		/// Configura los servicios internos de la aplicación, incluyendo logging, constructores de URL y otros servicios específicos.
+		/// </summary>
+		/// <param name="services">La colección de servicios para registrar las dependencias.</param>
 		private static void ConfigureServices(IServiceCollection services)
 		{
-            services.AddLogging();
-            services.AddScoped<UrlBuilder>();
-			// Setup for external services
+			// Habilita el servicio de logging.
+			services.AddLogging();
+			// Registra el constructor de URLs como un servicio con ámbito.
+			services.AddScoped<UrlBuilder>();
+			// Configuración de servicios externos.
 			ConfigureExternalConnectionServices(services: services);
-			// Configure facades
+			// Configuración de servicios de fachada.
 			ConfigureFacadeServices(services: services);
+			// Configuración de servicios internos.
+			ConfigureInternalServices(services: services);
 		}
-
-		public static IServiceCollection AddEmServices(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddDbContext<ServiceDbContext>(
-                options =>
-                {
-                    var connString = BuildConnectionString(configuration);
-                    options.UseSqlServer(connString,
-                        optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-                }
-            );
-            ConfigureServices(services);
-            return services;
-        }
-
-		public static string GetConnectionString()
-		{
-			// Try to get test connection string from environment variable
-			if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("testDbConnectionString")))
-			{
-				// Retorna la cadena de conexion de la variable de ambiente del windows
-				//return Environment.GetEnvironmentVariable("testDbConnectionString")!;
-				// Retorna la conexion espaecificada
-				return "Server=.;Initial Catalog=WallerService;User Id=sa; password=123;TrustServerCertificate=True;";
-				// Retorna la conexion del server dev www.winsefweb.net
-				//return "Server=www.winsefweb.net;Initial Catalog=TECOMNET_WALLET;User Id=DesarrolloTecomnet; password=t3comn3t2025*iu;TrustServerCertificate=True;";
-			}
-			// Try to get test connection string from environment variables
-			if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbServer")) &&
-			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("Database")) &&
-			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbUser")) &&
-			    !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("DbPassword")))
-			{
-				return $"Server=tcp:{Environment.GetEnvironmentVariable("DbServer")};" +
-				       $"Initial Catalog={Environment.GetEnvironmentVariable("Database")};" +
-				       $"User Id={Environment.GetEnvironmentVariable("DbUser")};" +
-				       $"password={Environment.GetEnvironmentVariable("DbPassword")}; TrustServerCertificate=true;";
-			}
-			// return empty string
-			return string.Empty;
-		}
-
-		public static IServiceCollection AddEmTestServices(this IServiceCollection services)
-        {
-            services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(GetConnectionString(),
-                optionsBuilder => optionsBuilder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
-            ConfigureServices(services);
-            return services;
-        }
-        
-        public static string BuildConnectionString(IConfiguration configuration)
-        {
-            // try to build a connection string from environment variables
-            var connectionString = GetConnectionString();
-            // if we have a connection string, return it
-            if (!string.IsNullOrWhiteSpace(connectionString)) return connectionString;
-            // try to build a connection string from configuration
-            if (!string.IsNullOrWhiteSpace(configuration["dbConnectionString"])) 
-                return configuration["dbConnectionString"]!;
-            
-            throw new Exception("No configuration detected for the service database.");
-        }
 
 		/// <summary>
-		/// Setup external connection services
+		/// Agrega los servicios de la aplicación al contenedor de inyección de dependencias.
+		/// Configura el DbContext y otros servicios esenciales.
 		/// </summary>
-		/// <param name="services"></param>
+		/// <param name="services">La colección de servicios a la que se añadirán los servicios de EM.</param>
+		/// <param name="configuration">La configuración de la aplicación.</param>
+		/// <returns>La colección de servicios actualizada.</returns>
+		public static IServiceCollection AddEmServices(
+			this IServiceCollection services,
+			IConfiguration configuration)
+		{
+			// Configura el contexto de base de datos para usar SQL Server.
+			services.AddDbContext<ServiceDbContext>(optionsAction: options =>
+				{
+					// Construye la cadena de conexión a la base de datos.
+					var connString = DbConnectionHelper.BuildConnectionString(configuration: configuration);
+					options.UseSqlServer(connectionString: connString,
+						sqlServerOptionsAction: optionsBuilder =>
+							optionsBuilder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery));
+				}
+			);
+			// Llama al método para configurar servicios adicionales.
+			ConfigureServices(services: services);
+			return services;
+		}
+
+
+		/// <summary>
+		/// Agrega los servicios de la aplicación para entornos de prueba.
+		/// Configura el DbContext con la cadena de conexión obtenida de la configuración.
+		/// </summary>
+		/// <param name="services">La colección de servicios a la que se añadirán los servicios de prueba de EM.</param>
+		/// <param name="configuration">La configuración de la aplicación.</param>
+		/// <returns>La colección de servicios actualizada.</returns>
+		public static IServiceCollection AddEmTestServices(this IServiceCollection services, IConfiguration configuration)
+		{
+			services.AddDbContext<ServiceDbContext>(optionsAction: options => options.UseSqlServer(
+				connectionString: DbConnectionHelper.GetConnectionString(configuration: configuration),
+				sqlServerOptionsAction: builder =>
+					builder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery)));
+			// Llama al método para configurar servicios adicionales.
+			ConfigureServices(services: services);
+			return services;
+		}
+
+
+		/// <summary>
+		/// Configura los servicios de conexión a proveedores externos.
+		/// </summary>
+		/// <param name="services">La colección de servicios para registrar las dependencias.</param>
 		private static void ConfigureExternalConnectionServices(IServiceCollection services)
 		{
+			// Registra la fachada del servicio Twilio.
 			services.AddScoped<ITwilioServiceFacade, TwilioServiceFacade>();
+			// Registra la fachada del servicio Checkton PLD.
 			services.AddScoped<IChecktonPldServiceFacade, ChecktonPldServiceFacade>();
 		}
 
+		/// <summary>
+		/// Configura y registra las fachadas de la aplicación.
+		/// </summary>
+		/// <param name="services">La colección de servicios para registrar las dependencias.</param>
 		private static void ConfigureFacadeServices(IServiceCollection services)
 		{
+			// Fachadas de gestión de datos.
 			services.AddScoped<IClienteFacade, ClienteFacade>();
 			services.AddScoped<IDireccionFacade, DireccionFacade>();
-            services.AddScoped<IUbicacionGeolocalizacionFacade, UbicacionGeolocalizacionFacade>();
-            services.AddScoped<IDispositivoMovilAutorizadoFacade, DispositivoMovilAutorizadoFacadeFacade>();
-            services.AddScoped<IEmpresaFacade, EmpresaFacade>();
-            services.AddScoped<IEstadoFacade, EstadoFacade>();
+			services.AddScoped<IUbicacionGeolocalizacionFacade, UbicacionGeolocalizacionFacade>();
+			services.AddScoped<IDispositivoMovilAutorizadoFacade, DispositivoMovilAutorizadoFacadeFacade>();
+			services.AddScoped<IEmpresaFacade, EmpresaFacade>();
+			services.AddScoped<IEstadoFacade, EstadoFacade>();
+			services.AddScoped<IProveedorFacade, ProveedorFacade>();
+			services.AddScoped<IServicioFavoritoFacade, ServicioFavoritoFacade>();
+			services.AddScoped<IUsuarioFacade, UsuarioFacade>();
+			services.AddScoped<IConsentimientosUsuarioFacade, ConsentimientosUsuarioFacade>();
+			services.AddScoped<IRegistroFacade, RegistroFacade>();
+			services.AddScoped<IKeyValueConfigFacade, KeyValueConfigFacade>();
+			// Fachada de autenticación.
+			services.AddScoped<IAuthFacade, AuthFacade>();
+		}
+
+		/// <summary>
+		/// Configura y registra los servicios internos de la aplicación.
+		/// </summary>
+		/// <param name="services">La colección de servicios para registrar las dependencias.</param>
+		private static void ConfigureInternalServices(IServiceCollection services)
+		{
+			// Servicio para la gestión de tokens.
+			services.AddScoped<ITokenService, TokenService>();
 		}
 	}
 }
-

@@ -15,7 +15,7 @@ using Wallet.RestAPI.Controllers.Base;
 namespace Wallet.RestAPI.Controllers
 {
     /// <summary>
-    ///
+    /// Base controller for Health checks.
     /// </summary>
     [ApiController]
     public abstract class HealthApiControllerBase : ServiceBaseController
@@ -26,7 +26,7 @@ namespace Wallet.RestAPI.Controllers
         /// <remarks>Health check for the service</remarks>
         /// <response code="200">OK</response>
         [HttpGet]
-        [Route("/{version::apiVersion}/health")]
+        [Route(template: "/health")]
         //[Authorize]
         [ValidateModelState]
         public abstract IActionResult GetHealth();
@@ -38,7 +38,7 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="200">OK</response>
         /// <response code="400">Example response</response>
         [HttpGet]
-        [Route("/{version::apiVersion}/ready")]
+        [Route(template: "/ready")]
         //[Authorize]
         [ValidateModelState]
         [ProducesResponseType(statusCode: 400, type: typeof(object))]

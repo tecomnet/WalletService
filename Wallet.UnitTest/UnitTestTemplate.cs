@@ -19,10 +19,10 @@ namespace Wallet.UnitTest
         {
             // Assert not null errors
             if (exception.InnerException is not null)
-                Assert.True(expectedErrors is not null,
-                    $"No errors defined. {exception.InnerException.Description}");
+                Assert.True(condition: expectedErrors is not null,
+                    userMessage: $"No errors defined. {exception.InnerException.Description}");
             else
-                Assert.True(expectedErrors is not null, $"No errors defined.");
+                Assert.True(condition: expectedErrors is not null, userMessage: $"No errors defined.");
             // Only process when the expected errors exists
             if (expectedErrors is not null)
             {
@@ -30,13 +30,13 @@ namespace Wallet.UnitTest
                 List<string> errorCodes = new();
                 // Get the list of error codes
                 if (exception.InnerExceptions is not null)
-                    errorCodes = exception.InnerExceptions.Select(e => e.Code).ToList();
+                    errorCodes = exception.InnerExceptions.Select(selector: e => e.Code).ToList();
                 // Match the errors
                 var allErrors = true;
                 // Iterate the excpetions
                 foreach (var innerException in errorCodes)
                     // Check the expected errors
-                    allErrors &= expectedErrors.Contains(innerException);
+                    allErrors &= expectedErrors.Contains(value: innerException);
                 // Convert the expected errors as a string
                 var stringExpectedErrors = string.Empty;
                 // Iterate the expected errors and concatenate them
@@ -51,10 +51,10 @@ namespace Wallet.UnitTest
                     stringExceptionErrors += $"{errorCode} | ";
                 // Assert the expected result and errors
                 Assert.True(
-                    !success &&
-                    allErrors,
-                    $"Missing errors. Case: {caseName}: " +
-                    $"Expected are {stringExpectedErrors} and got {stringExceptionErrors}");
+                    condition: !success &&
+                               allErrors,
+                    userMessage: $"Missing errors. Case: {caseName}: " +
+                                 $"Expected are {stringExpectedErrors} and got {stringExceptionErrors}");
             }
         }
     }

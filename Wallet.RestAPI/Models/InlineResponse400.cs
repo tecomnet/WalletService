@@ -40,9 +40,9 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class InlineResponse400 {\n");
-            sb.Append("  Errors: ").Append(Errors).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class InlineResponse400 {\n");
+            sb.Append(value: "  Errors: ").Append(value: Errors).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -52,7 +52,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((InlineResponse400)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (InlineResponse400)obj);
         }
 
         /// <summary>
@@ -74,14 +74,14 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(InlineResponse400 other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Errors == other.Errors ||
                     Errors != null &&
-                    Errors.SequenceEqual(other.Errors)
+                    Errors.SequenceEqual(second: other.Errors)
                 );
         }
 
@@ -106,12 +106,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(InlineResponse400 left, InlineResponse400 right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(InlineResponse400 left, InlineResponse400 right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

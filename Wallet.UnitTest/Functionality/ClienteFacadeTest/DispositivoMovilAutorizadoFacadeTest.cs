@@ -7,17 +7,14 @@ using Xunit.Sdk;
 namespace Wallet.UnitTest.Functionality.ClienteFacadeTest;
 
 public class DispositivoMovilAutorizadoFacadeFacadeTest(SetupDataConfig setupConfig)
-    : BaseFacadeTest<IDispositivoMovilAutorizadoFacade>(setupConfig) 
+    : BaseFacadeTest<IDispositivoMovilAutorizadoFacade>(setupConfig: setupConfig) 
 {
     [Theory]
     // Casos Ok
-    [InlineData("1. Caso Ok: Se agrega dispositivo movil autorizado", 1, "token", "id dispositivo", "nombre dispositivo", "caracteristica dispositivo", true,
-        true, new string[] { })]
+    [InlineData(data: ["1. Caso Ok: Se agrega dispositivo movil autorizado", 1, "token", "id dispositivo", "nombre dispositivo", "caracteristica dispositivo", true, true, new string[] { }])]
     // Casos Error
-    [InlineData("2. Caso Error: El cliente no existe", 245, "token", "id dispositivo", "nombre dispositivo", "caracteristica dispositivo", true,
-        false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado })]
-    [InlineData("3. Caso Error: El dispositivo movil autorizado ya existe", 3, "32414", "32414", "nombre dispositivo", "caracteristica dispositivo", true,
-        false, new string[] { ServiceErrorsBuilder.DispositivoMovilAutorizadoDuplicado })]
+    [InlineData(data: ["2. Caso Error: El cliente no existe", 245, "token", "id dispositivo", "nombre dispositivo", "caracteristica dispositivo", true, false, new string[] { ServiceErrorsBuilder.ClienteNoEncontrado }])]
+    [InlineData(data: ["3. Caso Error: El dispositivo movil autorizado ya existe", 3, "32414", "32414", "nombre dispositivo", "caracteristica dispositivo", true, false, new string[] { ServiceErrorsBuilder.DispositivoMovilAutorizadoDuplicado }])]
     public async Task GuardarDispositivoAutorizadoAsync(
         string caseName,
         int idCliente,
@@ -43,21 +40,21 @@ public class DispositivoMovilAutorizadoFacadeFacadeTest(SetupDataConfig setupCon
             // Assert
             Assert.NotNull(dispositivo);
             // Checa las propiedades
-            Assert.Equal(token, dispositivo.Token);
-            Assert.Equal(idDispositivo, dispositivo.IdDispositivo);
-            Assert.Equal(nombre, dispositivo.Nombre);
-            Assert.Equal(caracteristicas, dispositivo.Caracteristicas);
-            Assert.True(dispositivo.Actual);
+            Assert.Equal(expected: token, actual: dispositivo.Token);
+            Assert.Equal(expected: idDispositivo, actual: dispositivo.IdDispositivo);
+            Assert.Equal(expected: nombre, actual: dispositivo.Nombre);
+            Assert.Equal(expected: caracteristicas, actual: dispositivo.Caracteristicas);
+            Assert.True(condition: dispositivo.Actual);
             // Obtener directamente de la bd
-            var dispositivoContext = await Context.DispositivoMovilAutorizado.FirstOrDefaultAsync(x => x.Id == dispositivo.Id);
+            var dispositivoContext = await Context.DispositivoMovilAutorizado.FirstOrDefaultAsync(predicate: x => x.Id == dispositivo.Id);
             // Valida que existe en bd
             Assert.NotNull(dispositivoContext);
             // Compara las propiedades
-            Assert.Equal(token, dispositivoContext.Token);
-            Assert.Equal(idDispositivo, dispositivoContext.IdDispositivo);
-            Assert.Equal(nombre, dispositivoContext.Nombre);
-            Assert.Equal(caracteristicas, dispositivoContext.Caracteristicas);
-            Assert.True(dispositivoContext.Actual);
+            Assert.Equal(expected: token, actual: dispositivoContext.Token);
+            Assert.Equal(expected: idDispositivo, actual: dispositivoContext.IdDispositivo);
+            Assert.Equal(expected: nombre, actual: dispositivoContext.Nombre);
+            Assert.Equal(expected: caracteristicas, actual: dispositivoContext.Caracteristicas);
+            Assert.True(condition: dispositivoContext.Actual);
             // Checa si es el dispositivo movil autroizado
             if (validarDispositivo)
             {
@@ -65,12 +62,12 @@ public class DispositivoMovilAutorizadoFacadeFacadeTest(SetupDataConfig setupCon
                 var esDispositivo = await Facade.EsDispositivoAutorizadoAsync(
                     idCliente: idCliente, idDispositivo: idDispositivo, token: token);
                 // Valida que es el dispositivo moveil autorizado
-                Assert.True(esDispositivo);
+                Assert.True(condition: esDispositivo);
                 // Valida cuando no es dispositivo movil autorizado
                 esDispositivo = await Facade.EsDispositivoAutorizadoAsync(
                     idCliente: idCliente, idDispositivo: idDispositivo, token: "token invalido");
                 // No es el dispositivo movil autorizado
-                Assert.False(esDispositivo);
+                Assert.False(condition: esDispositivo);
             }
             // Assert the success
             Assert.True(condition:success, userMessage: "Should not reach on failures.");
@@ -86,7 +83,7 @@ public class DispositivoMovilAutorizadoFacadeFacadeTest(SetupDataConfig setupCon
                                           exception is not TrueException && exception is not FalseException)
         {
             // Should not reach for unmanaged errors
-            Assert.Fail($"Uncaught exception. {exception.Message}");
+            Assert.Fail(message: $"Uncaught exception. {exception.Message}");
         }
     }
 }

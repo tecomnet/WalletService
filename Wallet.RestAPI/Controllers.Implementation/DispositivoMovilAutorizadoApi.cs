@@ -1,41 +1,52 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
-/// <inheritdoc/>
-public class DispositivoMovilAutorizadoApiController(IDispositivoMovilAutorizadoFacade dispositivoMovilAutorizadoFacade, IMapper mapper) : DispositivoMovilAutorizadoApiControllerBase
+
+/// <summary>
+/// Implementation of the DispositivoMovilAutorizado API controller.
+/// </summary>
+//[Authorize]
+public class DispositivoMovilAutorizadoApiController(
+    IDispositivoMovilAutorizadoFacade dispositivoMovilAutorizadoFacade,
+    IMapper mapper) : DispositivoMovilAutorizadoApiControllerBase
 {
-    public override async Task<IActionResult> GetDispositivoMovilAutorizadoAsync([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int? idCliente, [FromQuery] string idDispositivo, [FromQuery] string token)
+    /// <inheritdoc/>
+    public override async Task<IActionResult> GetDispositivoMovilAutorizadoAsync(
+        string version,
+        int? idCliente, string idDispositivo, string token)
     {
         // Call facade method
-        var esDispositivoAutorizado = await dispositivoMovilAutorizadoFacade.EsDispositivoAutorizadoAsync(idCliente: idCliente.Value, idDispositivo: idDispositivo, token: token);
+        var esDispositivoAutorizado =
+            await dispositivoMovilAutorizadoFacade.EsDispositivoAutorizadoAsync(idCliente: idCliente.Value,
+                idDispositivo: idDispositivo, token: token);
         // Map to response model
         //var response = mapper.Map<DispositivoMovilAutorizadoResult>(dispositivoMovilAutorizado);
         // Return OK response
-        return Ok(esDispositivoAutorizado);
+        return Ok(value: esDispositivoAutorizado);
     }
 
-
     /// <inheritdoc/>
-    public override async Task<IActionResult> PostDispositivoMovilAutorizadoAsync([FromRoute, RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$"), Required] string version, [FromRoute, Required] int idCliente, [FromBody] DispositivoMovilAutorizadoRequest body)
+    public override async Task<IActionResult> PostDispositivoMovilAutorizadoAsync(
+        string version,
+        int? idCliente, DispositivoMovilAutorizadoRequest body)
     {
         // Call facade method
         var dispositivoMovilAutorizado = await dispositivoMovilAutorizadoFacade.GuardarDispositivoAutorizadoAsync(
-            idCliente: idCliente,
+            idCliente: idCliente.Value,
             idDispositivo: body.IdDispositivo,
             token: body.Token,
             nombre: body.Nombre,
             caracteristicas: body.Caracteristicas,
-            creationUser: Guid.Empty);
+            creationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
-        var response = mapper.Map<DispositivoMovilAutorizadoResult>(dispositivoMovilAutorizado);
+        var response = mapper.Map<DispositivoMovilAutorizadoResult>(source: dispositivoMovilAutorizado);
         // Return OK response
-        return Ok(response);
+        return Ok(value: response);
     }
-
 }
