@@ -1,5 +1,4 @@
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Xunit.Sdk;
 
@@ -98,7 +97,7 @@ public class DireccionTest : UnitTestTemplate
                 estado: estado,
                 creationUser: Guid.NewGuid());
 
-            Assert.NotNull(direccion);
+            Assert.NotNull(@object: direccion);
             Assert.Equal(expected: pais, actual: direccion.Pais);
             Assert.Equal(expected: estado, actual: direccion.Estado);
 
@@ -114,7 +113,7 @@ public class DireccionTest : UnitTestTemplate
                 referencia: referencia,
                 modificationUser: Guid.NewGuid());
             // Validamos los valores actualizados
-            Assert.NotNull(direccion);
+            Assert.NotNull(@object: direccion);
             Assert.Equal(expected: codigoPostal, actual: direccion.CodigoPostal);
             Assert.Equal(expected: municipio, actual: direccion.Municipio);
             Assert.Equal(expected: colonia, actual: direccion.Colonia);

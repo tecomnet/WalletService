@@ -38,7 +38,7 @@ public class DispositivoMovilAutorizadoFacadeFacadeTest(SetupDataConfig setupCon
                 testCase: SetupConfig.TestCaseId
             );
             // Assert
-            Assert.NotNull(dispositivo);
+            Assert.NotNull(@object: dispositivo);
             // Checa las propiedades
             Assert.Equal(expected: token, actual: dispositivo.Token);
             Assert.Equal(expected: idDispositivo, actual: dispositivo.IdDispositivo);
@@ -48,7 +48,7 @@ public class DispositivoMovilAutorizadoFacadeFacadeTest(SetupDataConfig setupCon
             // Obtener directamente de la bd
             var dispositivoContext = await Context.DispositivoMovilAutorizado.FirstOrDefaultAsync(predicate: x => x.Id == dispositivo.Id);
             // Valida que existe en bd
-            Assert.NotNull(dispositivoContext);
+            Assert.NotNull(@object: dispositivoContext);
             // Compara las propiedades
             Assert.Equal(expected: token, actual: dispositivoContext.Token);
             Assert.Equal(expected: idDispositivo, actual: dispositivoContext.IdDispositivo);

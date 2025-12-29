@@ -47,7 +47,7 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets CuentaCLABE
         /// </summary>
         [Required]
-        [StringLength(18, MinimumLength = 18)]
+        [StringLength(maximumLength: 18, MinimumLength = 18)]
         [DataMember(Name = "cuentaCLABE")]
         public string CuentaCLABE { get; set; }
 
@@ -55,7 +55,7 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Moneda
         /// </summary>
         [Required]
-        [StringLength(3)]
+        [StringLength(maximumLength: 3)]
         [DataMember(Name = "moneda")]
         public string Moneda { get; set; }
 
@@ -87,16 +87,16 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class CuentaWalletResult {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  IdCliente: ").Append(IdCliente).Append("\n");
-            sb.Append("  SaldoActual: ").Append(SaldoActual).Append("\n");
-            sb.Append("  CuentaCLABE: ").Append(CuentaCLABE).Append("\n");
-            sb.Append("  Moneda: ").Append(Moneda).Append("\n");
-            sb.Append("  Guid: ").Append(Guid).Append("\n");
-            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
-            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class CuentaWalletResult {\n");
+            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
+            sb.Append(value: "  IdCliente: ").Append(value: IdCliente).Append(value: "\n");
+            sb.Append(value: "  SaldoActual: ").Append(value: SaldoActual).Append(value: "\n");
+            sb.Append(value: "  CuentaCLABE: ").Append(value: CuentaCLABE).Append(value: "\n");
+            sb.Append(value: "  Moneda: ").Append(value: Moneda).Append(value: "\n");
+            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
+            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
+            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -106,7 +106,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -116,9 +116,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((CuentaWalletResult)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (CuentaWalletResult)obj);
         }
 
         /// <summary>
@@ -128,49 +128,49 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(CuentaWalletResult other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other.Id)
+                    Id.Equals(other: other.Id)
                 ) &&
                 (
                     IdCliente == other.IdCliente ||
                     IdCliente != null &&
-                    IdCliente.Equals(other.IdCliente)
+                    IdCliente.Equals(other: other.IdCliente)
                 ) &&
                 (
                     SaldoActual == other.SaldoActual ||
                     SaldoActual != null &&
-                    SaldoActual.Equals(other.SaldoActual)
+                    SaldoActual.Equals(other: other.SaldoActual)
                 ) &&
                 (
                     CuentaCLABE == other.CuentaCLABE ||
                     CuentaCLABE != null &&
-                    CuentaCLABE.Equals(other.CuentaCLABE)
+                    CuentaCLABE.Equals(value: other.CuentaCLABE)
                 ) &&
                 (
                     Moneda == other.Moneda ||
                     Moneda != null &&
-                    Moneda.Equals(other.Moneda)
+                    Moneda.Equals(value: other.Moneda)
                 ) &&
                 (
                     Guid == other.Guid ||
                     Guid != null &&
-                    Guid.Equals(other.Guid)
+                    Guid.Equals(other: other.Guid)
                 ) &&
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other.CreationTimestamp)
+                    CreationTimestamp.Equals(other: other.CreationTimestamp)
                 ) &&
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
-                    IsActive.Equals(other.IsActive)
+                    IsActive.Equals(other: other.IsActive)
                 );
         }
 
@@ -209,12 +209,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(CuentaWalletResult left, CuentaWalletResult right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(CuentaWalletResult left, CuentaWalletResult right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
 #pragma warning restore 1591

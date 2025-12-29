@@ -91,17 +91,17 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class BitacoraTransaccionResult {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  IdBilletera: ").Append(IdBilletera).Append("\n");
-            sb.Append("  Monto: ").Append(Monto).Append("\n");
-            sb.Append("  Tipo: ").Append(Tipo).Append("\n");
-            sb.Append("  Direccion: ").Append(Direccion).Append("\n");
-            sb.Append("  Estatus: ").Append(Estatus).Append("\n");
-            sb.Append("  RefExternaId: ").Append(RefExternaId).Append("\n");
-            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
-            sb.Append("  Guid: ").Append(Guid).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class BitacoraTransaccionResult {\n");
+            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
+            sb.Append(value: "  IdBilletera: ").Append(value: IdBilletera).Append(value: "\n");
+            sb.Append(value: "  Monto: ").Append(value: Monto).Append(value: "\n");
+            sb.Append(value: "  Tipo: ").Append(value: Tipo).Append(value: "\n");
+            sb.Append(value: "  Direccion: ").Append(value: Direccion).Append(value: "\n");
+            sb.Append(value: "  Estatus: ").Append(value: Estatus).Append(value: "\n");
+            sb.Append(value: "  RefExternaId: ").Append(value: RefExternaId).Append(value: "\n");
+            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
+            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -111,7 +111,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -121,9 +121,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((BitacoraTransaccionResult)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (BitacoraTransaccionResult)obj);
         }
 
         /// <summary>
@@ -133,54 +133,54 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(BitacoraTransaccionResult other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other.Id)
+                    Id.Equals(other: other.Id)
                 ) && 
                 (
                     IdBilletera == other.IdBilletera ||
                     IdBilletera != null &&
-                    IdBilletera.Equals(other.IdBilletera)
+                    IdBilletera.Equals(other: other.IdBilletera)
                 ) && 
                 (
                     Monto == other.Monto ||
                     Monto != null &&
-                    Monto.Equals(other.Monto)
+                    Monto.Equals(other: other.Monto)
                 ) && 
                 (
                     Tipo == other.Tipo ||
                     Tipo != null &&
-                    Tipo.Equals(other.Tipo)
+                    Tipo.Equals(value: other.Tipo)
                 ) && 
                 (
                     Direccion == other.Direccion ||
                     Direccion != null &&
-                    Direccion.Equals(other.Direccion)
+                    Direccion.Equals(value: other.Direccion)
                 ) && 
                 (
                     Estatus == other.Estatus ||
                     Estatus != null &&
-                    Estatus.Equals(other.Estatus)
+                    Estatus.Equals(value: other.Estatus)
                 ) && 
                 (
                     RefExternaId == other.RefExternaId ||
                     RefExternaId != null &&
-                    RefExternaId.Equals(other.RefExternaId)
+                    RefExternaId.Equals(value: other.RefExternaId)
                 ) && 
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other.CreationTimestamp)
+                    CreationTimestamp.Equals(other: other.CreationTimestamp)
                 ) && 
                 (
                     Guid == other.Guid ||
                     Guid != null &&
-                    Guid.Equals(other.Guid)
+                    Guid.Equals(other: other.Guid)
                 );
         }
 
@@ -220,12 +220,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(BitacoraTransaccionResult left, BitacoraTransaccionResult right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(BitacoraTransaccionResult left, BitacoraTransaccionResult right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

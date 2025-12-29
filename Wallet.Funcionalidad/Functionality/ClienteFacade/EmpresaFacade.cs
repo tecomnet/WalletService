@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionEmpresa;
 
@@ -108,8 +107,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         {
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(empresa).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: empresa).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             // Validamos que la empresa este activa
             ValidarEmpresaActiva(empresa: empresa);
             // Validamos duplicidad
@@ -139,8 +138,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         {
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(empresa).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: empresa).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             // Eliminamos la empresa
             empresa.Deactivate(modificationUser: modificationUser);
             // Guardamos cambios
@@ -166,8 +165,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         {
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(empresa).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: empresa).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             // Activamos la empresa
             empresa.Activate(modificationUser: modificationUser);
             // Guardamos cambios
@@ -192,8 +191,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         try
         {
             var empresa = await context.Empresa
-                .Include(e => e.Productos)
-                .FirstOrDefaultAsync(e => e.Id == idEmpresa);
+                .Include(navigationPropertyPath: e => e.Productos)
+                .FirstOrDefaultAsync(predicate: e => e.Id == idEmpresa);
 
             if (empresa is null)
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -217,8 +216,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         try
         {
             var empresa = await context.Empresa
-                .Include(e => e.Clientes)
-                .FirstOrDefaultAsync(e => e.Id == idEmpresa);
+                .Include(navigationPropertyPath: e => e.Clientes)
+                .FirstOrDefaultAsync(predicate: e => e.Id == idEmpresa);
 
             if (empresa is null)
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -242,8 +241,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         try
         {
             var empresa = await context.Empresa
-                .Include(e => e.Productos)
-                .FirstOrDefaultAsync(e => e.Id == idEmpresa);
+                .Include(navigationPropertyPath: e => e.Productos)
+                .FirstOrDefaultAsync(predicate: e => e.Id == idEmpresa);
 
             if (empresa is null)
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -254,19 +253,19 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
 
             // Obtener los productos que se quieren asignar y verificar que existan
             var productosEntidad = await context.Producto
-                .Where(p => idsProductos.Contains(p.Id))
+                .Where(predicate: p => idsProductos.Contains(p.Id))
                 .ToListAsync();
 
             // Cargar solo IDs de productos existentes para chequeo eficiente en memoria
-            var existingProductIds = new HashSet<int>(empresa.Productos.Select(p => p.Id));
+            var existingProductIds = new HashSet<int>(collection: empresa.Productos.Select(selector: p => p.Id));
 
             foreach (var producto in productosEntidad)
             {
                 // Si la empresa no tiene asignado este producto, se agrega
-                if (!existingProductIds.Contains(producto.Id))
+                if (!existingProductIds.Contains(item: producto.Id))
                 {
-                    empresa.Productos.Add(producto);
-                    existingProductIds.Add(producto.Id); // Mantener set actualizado
+                    empresa.Productos.Add(item: producto);
+                    existingProductIds.Add(item: producto.Id); // Mantener set actualizado
                     // Actualizamos usuario de modificación en la empresa
                     empresa.Actualizar(nombre: empresa.Nombre, modificationUser: modificationUser);
                 }
@@ -290,8 +289,8 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
         try
         {
             var empresa = await context.Empresa
-                .Include(e => e.Productos)
-                .FirstOrDefaultAsync(e => e.Id == idEmpresa);
+                .Include(navigationPropertyPath: e => e.Productos)
+                .FirstOrDefaultAsync(predicate: e => e.Id == idEmpresa);
 
             if (empresa is null)
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -302,12 +301,12 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
 
             // Identificar los productos a remover que efectivamente están en la lista de la empresa
             var productosARemover = empresa.Productos
-                .Where(p => idsProductos.Contains(p.Id))
+                .Where(predicate: p => idsProductos.Contains(item: p.Id))
                 .ToList();
 
             foreach (var producto in productosARemover)
             {
-                empresa.Productos.Remove(producto);
+                empresa.Productos.Remove(item: producto);
                 // Actualizamos usuario de modificación
                 empresa.Actualizar(nombre: empresa.Nombre, modificationUser: modificationUser);
             }

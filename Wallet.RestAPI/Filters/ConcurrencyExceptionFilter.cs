@@ -17,7 +17,7 @@ public class ConcurrencyExceptionFilter : IExceptionFilter
         if (context.Exception is DbUpdateConcurrencyException)
         {
             // 409 Conflict is the standard HTTP status for optimistic concurrency control failures.
-            context.Result = new StatusCodeResult((int)HttpStatusCode.Conflict);
+            context.Result = new StatusCodeResult(statusCode: (int)HttpStatusCode.Conflict);
             context.ExceptionHandled = true;
         }
     }

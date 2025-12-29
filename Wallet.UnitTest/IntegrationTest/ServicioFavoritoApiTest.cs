@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Wallet.DOM.ApplicationDbContext;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.DOM.Modelos.GestionUsuario;
@@ -32,13 +31,13 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         Context = CreateContext();
         SetupDataAsync(setupDataAction: async context =>
         {
-            if (!await context.Empresa.AnyAsync(e => e.Nombre == "Tecomnet"))
+            if (!await context.Empresa.AnyAsync(predicate: e => e.Nombre == "Tecomnet"))
             {
                 var empresa = new Empresa(nombre: "Tecomnet", creationUser: Guid.NewGuid());
                 await context.Empresa.AddAsync(entity: empresa);
             }
 
-            if (!await context.Broker.AnyAsync(b => b.Nombre == "Broker Test"))
+            if (!await context.Broker.AnyAsync(predicate: b => b.Nombre == "Broker Test"))
             {
                 var broker = new Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
                 await context.Broker.AddAsync(entity: broker);
@@ -73,7 +72,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ServicioFavoritoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: request.Alias, actual: result.Alias);
         Assert.True(condition: result.Id > 0);
     }
@@ -101,7 +100,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
             JsonConvert.DeserializeObject<List<ServicioFavoritoResult>>(
                 value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Contains(collection: result, filter: s => s.Id == servicioFavorito.Id);
     }
 
@@ -122,7 +121,7 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ServicioFavoritoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: servicioFavorito.Id, actual: result.Id);
         Assert.True(condition: result.IsActive);
     }
@@ -145,31 +144,31 @@ public class ServicioFavoritoApiTest : DatabaseTestFixture
 
     private async Task<ClienteResult> CreateCliente(HttpClient client)
     {
-        var usuario = new Usuario("+52", "5512345678", "juan@example.com", null,
-            Wallet.DOM.Enums.EstatusRegistroEnum.RegistroCompletado,
-            Guid.NewGuid());
-        Context.Usuario.Add(usuario);
+        var usuario = new Usuario(codigoPais: "+52", telefono: "5512345678", correoElectronico: "juan@example.com", contrasena: null,
+            estatus: Wallet.DOM.Enums.EstatusRegistroEnum.RegistroCompletado,
+            creationUser: Guid.NewGuid());
+        Context.Usuario.Add(entity: usuario);
         await Context.SaveChangesAsync();
 
-        var empresa = await Context.Empresa.FirstAsync(e => e.Nombre == "Tecomnet");
+        var empresa = await Context.Empresa.FirstAsync(predicate: e => e.Nombre == "Tecomnet");
 
-        var cliente = new Cliente(usuario, empresa, Guid.NewGuid());
-        cliente.AgregarDatosPersonales("Juan", "Perez", "Lopez", new DateOnly(1990, 1, 1),
-            Wallet.DOM.Enums.Genero.Masculino, Guid.NewGuid());
+        var cliente = new Cliente(usuario: usuario, empresa: empresa, creationUser: Guid.NewGuid());
+        cliente.AgregarDatosPersonales(nombre: "Juan", primerApellido: "Perez", segundoApellido: "Lopez", fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1),
+            genero: Wallet.DOM.Enums.Genero.Masculino, modificationUser: Guid.NewGuid());
         // cliente.AgregarTipoPersona(Wallet.DOM.Enums.TipoPersona.Fisica, Guid.NewGuid()); // Removed? Cliente constructor doesn't set TipoPersona but method exists.
         // Wait, Cliente model requires TipoPersona for DocumentacionAdjunta but here we are just creating client.
         // Let's keep existing logic if possible but updating constructor as needed.
         // Step 919 shows Cliente constructor takes (Usuario, Empresa, CreationUser). I updated that.
 
-        cliente.AgregarTipoPersona(Wallet.DOM.Enums.TipoPersona.Fisica, Guid.NewGuid());
-        cliente.AgregarRfc("ABC1234567890", Guid.NewGuid());
-        cliente.AgregarCurp("ABCD123456EFGHIJ01", Guid.NewGuid());
-        cliente.AgregarFotoAWS("foto.jpg", Guid.NewGuid());
+        cliente.AgregarTipoPersona(tipoPersona: Wallet.DOM.Enums.TipoPersona.Fisica, modificationUser: Guid.NewGuid());
+        cliente.AgregarRfc(rfc: "ABC1234567890", modificationUser: Guid.NewGuid());
+        cliente.AgregarCurp(curp: "ABCD123456EFGHIJ01", modificationUser: Guid.NewGuid());
+        cliente.AgregarFotoAWS(fotoAWS: "foto.jpg", modificationUser: Guid.NewGuid());
         // Direccion required? Model says Direccion? property.
         // Let's add address to be safe if tests depend on it.
-        cliente.AgregarDireccion(new Direccion("MX", "Yucatan", Guid.NewGuid()), Guid.NewGuid());
+        cliente.AgregarDireccion(direccion: new Direccion(pais: "MX", estado: "Yucatan", creationUser: Guid.NewGuid()), creationUser: Guid.NewGuid());
 
-        Context.Cliente.Add(cliente);
+        Context.Cliente.Add(entity: cliente);
         await Context.SaveChangesAsync();
 
         return new ClienteResult

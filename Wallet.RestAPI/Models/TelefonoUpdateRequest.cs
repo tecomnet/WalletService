@@ -27,7 +27,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(3, MinimumLength=3)]
+        [StringLength(maximumLength: 3, MinimumLength=3)]
         [DataMember(Name="codigoPais")]
         public string CodigoPais { get; set; }
 
@@ -36,7 +36,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(10, MinimumLength=9)]
+        [StringLength(maximumLength: 10, MinimumLength=9)]
         [DataMember(Name="telefono")]
         public string Telefono { get; set; }
 
@@ -56,11 +56,11 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class TelefonoUpdateRequest {\n");
-            sb.Append("  CodigoPais: ").Append(CodigoPais).Append("\n");
-            sb.Append("  Telefono: ").Append(Telefono).Append("\n");
-            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class TelefonoUpdateRequest {\n");
+            sb.Append(value: "  CodigoPais: ").Append(value: CodigoPais).Append(value: "\n");
+            sb.Append(value: "  Telefono: ").Append(value: Telefono).Append(value: "\n");
+            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -70,7 +70,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((TelefonoUpdateRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (TelefonoUpdateRequest)obj);
         }
 
         /// <summary>
@@ -92,24 +92,24 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(TelefonoUpdateRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     CodigoPais == other.CodigoPais ||
                     CodigoPais != null &&
-                    CodigoPais.Equals(other.CodigoPais)
+                    CodigoPais.Equals(value: other.CodigoPais)
                 ) && 
                 (
                     Telefono == other.Telefono ||
                     Telefono != null &&
-                    Telefono.Equals(other.Telefono)
+                    Telefono.Equals(value: other.Telefono)
                 ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
-                    ConcurrencyToken.Equals(other.ConcurrencyToken)
+                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
                 );
         }
 
@@ -138,12 +138,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(TelefonoUpdateRequest left, TelefonoUpdateRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(TelefonoUpdateRequest left, TelefonoUpdateRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

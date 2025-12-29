@@ -48,11 +48,11 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
         try
         {
             // Setup duplicate product for validation test
-            if (caseName.Contains("duplicate sku"))
+            if (caseName.Contains(value: "duplicate sku"))
             {
-                var duplicateProduct = new Producto(await Context.Proveedor.FindAsync(proveedorId),
-                    "SKU123-DUP", "Other Name", "icon", "Cat", 10, SetupConfig.UserId);
-                await Context.Producto.AddAsync(duplicateProduct);
+                var duplicateProduct = new Producto(proveedor: await Context.Proveedor.FindAsync(keyValues: proveedorId),
+                    sku: "SKU123-DUP", nombre: "Other Name", urlIcono: "icon", categoria: "Cat", precio: 10, creationUser: SetupConfig.UserId);
+                await Context.Producto.AddAsync(entity: duplicateProduct);
                 await Context.SaveChangesAsync();
             }
 
@@ -67,7 +67,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                 creationUser: SetupConfig.UserId);
 
             // Assert producto created
-            Assert.NotNull(producto);
+            Assert.NotNull(@object: producto);
             // Assert properties
             Assert.True(condition: producto.Sku == sku &&
                                    producto.Nombre == nombre &&
@@ -79,7 +79,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
             // Get from context
             var productoContext = await Context.Producto.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
-            Assert.NotNull(productoContext);
+            Assert.NotNull(@object: productoContext);
             Assert.True(condition: productoContext.Sku == sku &&
                                    productoContext.Nombre == nombre &&
                                    productoContext.Precio == (decimal)precio &&
@@ -132,18 +132,18 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
         try
         {
             // Setup duplicate product for validation test
-            if (caseName.Contains("duplicate sku"))
+            if (caseName.Contains(value: "duplicate sku"))
             {
-                var duplicateProduct = new Producto(await Context.Proveedor.FindAsync(1),
-                    "SKU-DUP-UPD",
-                    "Conflict Name", "icon", "Cat", 10, SetupConfig.UserId);
-                await Context.Producto.AddAsync(duplicateProduct);
+                var duplicateProduct = new Producto(proveedor: await Context.Proveedor.FindAsync(keyValues: 1),
+                    sku: "SKU-DUP-UPD",
+                    nombre: "Conflict Name", urlIcono: "icon", categoria: "Cat", precio: 10, creationUser: SetupConfig.UserId);
+                await Context.Producto.AddAsync(entity: duplicateProduct);
                 await Context.SaveChangesAsync();
             }
 
             // Get existing token
-            var existingProducto = await Context.Producto.AsNoTracking().FirstOrDefaultAsync(p => p.Id == idProducto);
-            var token = Convert.ToBase64String(existingProducto?.ConcurrencyToken ?? new byte[] { });
+            var existingProducto = await Context.Producto.AsNoTracking().FirstOrDefaultAsync(predicate: p => p.Id == idProducto);
+            var token = Convert.ToBase64String(inArray: existingProducto?.ConcurrencyToken ?? new byte[] { });
 
             var producto = await Facade.ActualizarProductoAsync(
                 idProducto: idProducto,
@@ -154,7 +154,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                 categoria: categoria,
                 concurrencyToken: token,
                 modificationUser: SetupConfig.UserId);
-            Assert.NotNull(producto);
+            Assert.NotNull(@object: producto);
             Assert.True(condition: producto.Sku == sku &&
                                    producto.Nombre == nombre &&
                                    producto.Precio == (decimal)precio &&
@@ -163,7 +163,7 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
                                    producto.ModificationUser == SetupConfig.UserId);
             var productoContext = await Context.Producto.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
-            Assert.NotNull(productoContext);
+            Assert.NotNull(@object: productoContext);
             Assert.True(condition: productoContext.Sku == sku &&
                                    productoContext.Nombre == nombre &&
                                    productoContext.Precio == (decimal)precio &&
@@ -199,11 +199,11 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
         {
             var producto =
                 await Facade.EliminarProductoAsync(idProducto: idProducto, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(producto);
+            Assert.NotNull(@object: producto);
             Assert.False(condition: producto.IsActive);
             var productoContext = await Context.Producto.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
-            Assert.NotNull(productoContext);
+            Assert.NotNull(@object: productoContext);
             Assert.False(condition: productoContext.IsActive);
             Assert.True(condition: success);
         }
@@ -234,11 +234,11 @@ public class ProductoFacadeTest(SetupDataConfig setupConfig)
         {
             var producto =
                 await Facade.ActivarProductoAsync(idProducto: idProducto, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(producto);
+            Assert.NotNull(@object: producto);
             Assert.True(condition: producto.IsActive);
             var productoContext = await Context.Producto.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == producto.Id);
-            Assert.NotNull(productoContext);
+            Assert.NotNull(@object: productoContext);
             Assert.True(condition: productoContext.IsActive);
             Assert.True(condition: success);
         }

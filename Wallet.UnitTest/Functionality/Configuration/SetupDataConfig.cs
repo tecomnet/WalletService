@@ -33,6 +33,18 @@ public class SetupDataConfig : DatabaseTestFixture
 			var primerProveedor = _commonSettings.Proveedores.First();
 			_commonSettings.CrearServiciosFavoritos(primerCliente: primerCliente, primerProveedor: primerProveedor);
 
+			// Create Wallet Accounts and Cards
+			_commonSettings.CrearCuentas(primerCliente);
+			await context.AddRangeAsync(_commonSettings.Cuentas);
+			await context.SaveChangesAsync();
+
+			var primerCuenta = _commonSettings.Cuentas.First();
+			_commonSettings.CrearTarjetasEmitidas(primerCuenta);
+			await context.AddRangeAsync(_commonSettings.TarjetasEmitidas);
+
+			_commonSettings.CrearTarjetasVinculadas(primerCuenta);
+			await context.AddRangeAsync(_commonSettings.TarjetasVinculadas);
+
 			await context.AddRangeAsync(entities: _commonSettings.ServiciosFavoritos);
 			await context.SaveChangesAsync();
 		}).GetAwaiter().GetResult();

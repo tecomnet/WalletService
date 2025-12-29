@@ -45,10 +45,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class CompletarRegistroRequest {\n");
-            sb.Append("  Contrasena: ").Append(Contrasena).Append("\n");
-            sb.Append("  ConfirmacionContrasena: ").Append(ConfirmacionContrasena).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class CompletarRegistroRequest {\n");
+            sb.Append(value: "  Contrasena: ").Append(value: Contrasena).Append(value: "\n");
+            sb.Append(value: "  ConfirmacionContrasena: ").Append(value: ConfirmacionContrasena).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -58,7 +58,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((CompletarRegistroRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (CompletarRegistroRequest)obj);
         }
 
         /// <summary>
@@ -80,19 +80,19 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(CompletarRegistroRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Contrasena == other.Contrasena ||
                     Contrasena != null &&
-                    Contrasena.Equals(other.Contrasena)
+                    Contrasena.Equals(value: other.Contrasena)
                 ) && 
                 (
                     ConfirmacionContrasena == other.ConfirmacionContrasena ||
                     ConfirmacionContrasena != null &&
-                    ConfirmacionContrasena.Equals(other.ConfirmacionContrasena)
+                    ConfirmacionContrasena.Equals(value: other.ConfirmacionContrasena)
                 );
         }
 
@@ -119,12 +119,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(CompletarRegistroRequest left, CompletarRegistroRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(CompletarRegistroRequest left, CompletarRegistroRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

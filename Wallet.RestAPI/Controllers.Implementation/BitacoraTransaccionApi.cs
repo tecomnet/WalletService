@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,7 +21,7 @@ public class BitacoraTransaccionApiController(
     public override async Task<IActionResult> GetTransaccionesPorClienteAsync(string version, int idCliente)
     {
         // Call facade method
-        var transacciones = await bitacoraTransaccionFacade.ObtenerPorClienteAsync(idCliente);
+        var transacciones = await bitacoraTransaccionFacade.ObtenerPorClienteAsync(idCliente: idCliente);
 
         // Map to response model
         var response = mapper.Map<List<BitacoraTransaccionResult>>(source: transacciones);

@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.BrokerFacade
@@ -28,9 +27,9 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         {
             try
             {
-                var broker = new Broker(nombre, creationUser);
-                ValidarDuplicidad(nombre);
-                await _context.Broker.AddAsync(broker);
+                var broker = new Broker(nombre: nombre, creationUser: creationUser);
+                ValidarDuplicidad(nombre: nombre);
+                await _context.Broker.AddAsync(entity: broker);
                 await _context.SaveChangesAsync();
                 return broker;
             }
@@ -64,7 +63,7 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         {
             try
             {
-                var broker = await _context.Broker.FirstOrDefaultAsync(b => b.Id == idBroker);
+                var broker = await _context.Broker.FirstOrDefaultAsync(predicate: b => b.Id == idBroker);
                 if (broker == null)
                 {
                     throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -91,14 +90,14 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         {
             try
             {
-                var broker = await ObtenerBrokerPorIdAsync(idBroker);
+                var broker = await ObtenerBrokerPorIdAsync(idBroker: idBroker);
                 // Establece el token original para la validación de concurrencia optimista
-                _context.Entry(broker).Property(x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(concurrencyToken);
+                _context.Entry(entity: broker).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(s: concurrencyToken);
 
                 ValidarIsActive(broker: broker);
-                ValidarDuplicidad(nombre, broker.Id);
-                broker.Update(nombre, modificationUser);
+                ValidarDuplicidad(nombre: nombre, id: broker.Id);
+                broker.Update(nombre: nombre, modificationUser: modificationUser);
                 await _context.SaveChangesAsync();
                 return broker;
             }
@@ -117,8 +116,8 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         {
             try
             {
-                var broker = await ObtenerBrokerPorIdAsync(idBroker);
-                broker.Deactivate(modificationUser);
+                var broker = await ObtenerBrokerPorIdAsync(idBroker: idBroker);
+                broker.Deactivate(modificationUser: modificationUser);
                 await _context.SaveChangesAsync();
                 return broker;
             }
@@ -135,8 +134,8 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
         {
             try
             {
-                var broker = await ObtenerBrokerPorIdAsync(idBroker);
-                broker.Activate(modificationUser);
+                var broker = await ObtenerBrokerPorIdAsync(idBroker: idBroker);
+                broker.Activate(modificationUser: modificationUser);
                 await _context.SaveChangesAsync();
                 return broker;
             }
@@ -157,10 +156,10 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
                 // Verify broker exists first? Or just return empty list?
                 // Plan said: querying context.Proveedor.Where(p => p.BrokerId == idBroker)
                 // Let's verify broker exists first to throw 404 if not found, consistent with other endpoints.
-                await ObtenerBrokerPorIdAsync(idBroker);
+                await ObtenerBrokerPorIdAsync(idBroker: idBroker);
 
                 return await _context.Proveedor
-                    .Where(p => p.BrokerId == idBroker && p.IsActive)
+                    .Where(predicate: p => p.BrokerId == idBroker && p.IsActive)
                     .ToListAsync();
             }
             catch (Exception exception) when (exception is not EMGeneralAggregateException)

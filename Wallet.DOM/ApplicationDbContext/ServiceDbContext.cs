@@ -32,6 +32,8 @@ public class ServiceDbContext : DbContext
     public DbSet<CuentaWallet> CuentaWallet { get; set; }
     public DbSet<BitacoraTransaccion> BitacoraTransaccion { get; set; }
     public DbSet<DetallesPagoServicio> DetallesPagoServicio { get; set; }
+    public DbSet<TarjetaEmitida> TarjetaEmitida { get; set; }
+    public DbSet<TarjetaVinculada> TarjetaVinculada { get; set; }
 
 
     // Sobrescribimos este método para configurar el modelo y agregar los datos iniciales
@@ -58,8 +60,8 @@ public class ServiceDbContext : DbContext
 
         // Configuración de la relación muchos a muchos entre Empresa y Producto
         modelBuilder.Entity<Empresa>()
-            .HasMany(e => e.Productos)
-            .WithMany(p => p.Empresas);
+            .HasMany(navigationExpression: e => e.Productos)
+            .WithMany(navigationExpression: p => p.Empresas);
 
         // -----------------------------------------------------
         // 2. SEEDING DE DATOS (Llenado de datos iniciales)
@@ -122,28 +124,44 @@ public class ServiceDbContext : DbContext
         );*/
         // Wallet Management Configuration
         modelBuilder.Entity<CuentaWallet>()
-            .HasKey(c => c.Id);
+            .HasKey(keyExpression: c => c.Id);
 
         modelBuilder.Entity<CuentaWallet>()
-            .HasOne(c => c.Cliente)
+            .HasOne(navigationExpression: c => c.Cliente)
             .WithMany()
-            .HasForeignKey(c => c.IdCliente);
+            .HasForeignKey(foreignKeyExpression: c => c.IdCliente);
 
         modelBuilder.Entity<BitacoraTransaccion>()
-            .HasKey(b => b.Id);
+            .HasKey(keyExpression: b => b.Id);
 
         modelBuilder.Entity<BitacoraTransaccion>()
-            .HasOne(b => b.CuentaWallet)
-            .WithMany(w => w.BitacoraTransacciones)
-            .HasForeignKey(b => b.IdBilletera);
+            .HasOne(navigationExpression: b => b.CuentaWallet)
+            .WithMany(navigationExpression: w => w.BitacoraTransacciones)
+            .HasForeignKey(foreignKeyExpression: b => b.IdBilletera);
 
         modelBuilder.Entity<DetallesPagoServicio>()
-            .HasKey(d => d.Id);
+            .HasKey(keyExpression: d => d.Id);
 
         modelBuilder.Entity<DetallesPagoServicio>()
-            .HasOne(d => d.Transaccion)
+            .HasOne(navigationExpression: d => d.Transaccion)
             .WithMany() // Assuming 1:Many or 1:1? Let's assume 1 transaction has optional details, details belongs to transaction. Modulo details points to transaction.
-            .HasForeignKey(d => d.IdTransaccion);
+            .HasForeignKey(foreignKeyExpression: d => d.IdTransaccion);
+
+        modelBuilder.Entity<TarjetaEmitida>()
+            .HasKey(keyExpression: t => t.Id);
+
+        modelBuilder.Entity<TarjetaEmitida>()
+            .HasOne(navigationExpression: t => t.CuentaWallet)
+            .WithMany()
+            .HasForeignKey(foreignKeyExpression: t => t.IdCuentaWallet);
+
+        modelBuilder.Entity<TarjetaVinculada>()
+            .HasKey(keyExpression: t => t.Id);
+
+        modelBuilder.Entity<TarjetaVinculada>()
+            .HasOne(navigationExpression: t => t.CuentaWallet)
+            .WithMany(navigationExpression: c => c.TarjetasVinculadas)
+            .HasForeignKey(foreignKeyExpression: t => t.IdCuentaWallet);
     }
 }
     

@@ -33,14 +33,14 @@ public class KeyValueConfig : ValidatablePersistentObjectLogicalDelete
     /// La clave de la configuración.
     /// </summary>
     [Required]
-    [MaxLength(100)]
+    [MaxLength(length: 100)]
     public string Key { get; private set; }
 
     /// <summary>
     /// El valor de la configuración.
     /// </summary>
     [Required]
-    [MaxLength(2000)]
+    [MaxLength(length: 2000)]
     public string Value { get; private set; }
 
     /// <summary>

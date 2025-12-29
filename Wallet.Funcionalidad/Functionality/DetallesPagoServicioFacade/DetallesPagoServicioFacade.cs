@@ -13,10 +13,10 @@ public class DetallesPagoServicioFacade(
     public async Task<DetallesPagoServicio> GuardarDetallesAsync(int idTransaccion, int idProveedor,
         string numeroReferencia, Guid creationUser, string? codigoAutorizacion)
     {
-        var detalles = new DetallesPagoServicio(idTransaccion, idProveedor, numeroReferencia, creationUser,
-            codigoAutorizacion);
+        var detalles = new DetallesPagoServicio(idTransaccion: idTransaccion, idProveedor: idProveedor, numeroReferencia: numeroReferencia, creationUser: creationUser,
+            codigoAutorizacion: codigoAutorizacion);
 
-        context.DetallesPagoServicio.Add(detalles);
+        context.DetallesPagoServicio.Add(entity: detalles);
         await context.SaveChangesAsync();
 
         return detalles;
@@ -25,17 +25,17 @@ public class DetallesPagoServicioFacade(
     public async Task<DetallesPagoServicio> ObtenerPorIdAsync(int id)
     {
         return await context.DetallesPagoServicio
-                   .Include(d => d.Transaccion)
-                   .FirstOrDefaultAsync(d => d.Id == id)
-               ?? throw new KeyNotFoundException($"Detalle de pago {id} no encontrado.");
+                   .Include(navigationPropertyPath: d => d.Transaccion)
+                   .FirstOrDefaultAsync(predicate: d => d.Id == id)
+               ?? throw new KeyNotFoundException(message: $"Detalle de pago {id} no encontrado.");
     }
 
     public async Task<List<DetallesPagoServicio>> ObtenerPorClienteAsync(int idCliente)
     {
         return await context.DetallesPagoServicio
-            .Include(d => d.Transaccion)
-            .ThenInclude(t => t.CuentaWallet)
-            .Where(d => d.Transaccion!.CuentaWallet!.IdCliente == idCliente)
+            .Include(navigationPropertyPath: d => d.Transaccion)
+            .ThenInclude(navigationPropertyPath: t => t.CuentaWallet)
+            .Where(predicate: d => d.Transaccion!.CuentaWallet!.IdCliente == idCliente)
             .ToListAsync();
     }
 
@@ -47,8 +47,8 @@ public class DetallesPagoServicioFacade(
     public async Task<List<DetallesPagoServicio>> ObtenerPorTransaccionAsync(int idTransaccion)
     {
         return await context.DetallesPagoServicio
-            .Include(d => d.Transaccion)
-            .Where(d => d.IdTransaccion == idTransaccion)
+            .Include(navigationPropertyPath: d => d.Transaccion)
+            .Where(predicate: d => d.IdTransaccion == idTransaccion)
             .ToListAsync();
     }
 
@@ -69,25 +69,25 @@ public class DetallesPagoServicioFacade(
         {
             // 1. Crear la transacción en bitácora
             var transaccion = await bitacoraTransaccionFacade.GuardarTransaccionAsync(
-                idBilletera,
-                monto,
-                nombreServicio, // Tipo de transacción (ej. SERVICIO)
-                direccion,
-                estatus,
-                creationUser,
-                refExternaId
+                idBilletera: idBilletera,
+                monto: monto,
+                tipo: nombreServicio, // Tipo de transacción (ej. SERVICIO)
+                direccion: direccion,
+                estatus: estatus,
+                creationUser: creationUser,
+                refExternaId: refExternaId
             );
 
             // 2. Crear los detalles del pago de servicio vinculados a la transacción
             var detalles = new DetallesPagoServicio(
-                transaccion.Id,
-                idProveedor,
-                numeroReferencia,
-                creationUser,
-                codigoAutorizacion
+                idTransaccion: transaccion.Id,
+                idProveedor: idProveedor,
+                numeroReferencia: numeroReferencia,
+                creationUser: creationUser,
+                codigoAutorizacion: codigoAutorizacion
             );
 
-            context.DetallesPagoServicio.Add(detalles);
+            context.DetallesPagoServicio.Add(entity: detalles);
             await context.SaveChangesAsync();
 
             // 3. Confirmar la transacción de base de datos

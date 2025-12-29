@@ -35,7 +35,7 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
                 testCase: SetupConfig.TestCaseId);
 
             // Assert proveedor created
-            Assert.NotNull(proveedor);
+            Assert.NotNull(@object: proveedor);
             // Assert properties
             Assert.True(condition: proveedor.Nombre == nombre &&
                                    proveedor.BrokerId == brokerId &&
@@ -44,7 +44,7 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
             // Get from context
             var proveedorContext = await Context.Proveedor.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
-            Assert.NotNull(proveedorContext);
+            Assert.NotNull(@object: proveedorContext);
             Assert.True(condition: proveedorContext.Nombre == nombre &&
                                    proveedorContext.BrokerId == brokerId &&
                                    proveedorContext.CreationUser == SetupConfig.UserId);
@@ -81,8 +81,8 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
         {
             // Get existing token
             var existingProveedor =
-                await Context.Proveedor.AsNoTracking().FirstOrDefaultAsync(p => p.Id == idProveedor);
-            var token = Convert.ToBase64String(existingProveedor?.ConcurrencyToken ?? new byte[] { });
+                await Context.Proveedor.AsNoTracking().FirstOrDefaultAsync(predicate: p => p.Id == idProveedor);
+            var token = Convert.ToBase64String(inArray: existingProveedor?.ConcurrencyToken ?? new byte[] { });
 
             var proveedor = await Facade.ActualizarProveedorAsync(
                 idProveedor: idProveedor,
@@ -92,13 +92,13 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
                 modificationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 
-            Assert.NotNull(proveedor);
+            Assert.NotNull(@object: proveedor);
             Assert.True(condition: proveedor.Nombre == nombre &&
                                    proveedor.ModificationUser == SetupConfig.UserId);
 
             var proveedorContext = await Context.Proveedor.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
-            Assert.NotNull(proveedorContext);
+            Assert.NotNull(@object: proveedorContext);
             Assert.True(condition: proveedorContext.Nombre == nombre &&
                                    proveedorContext.ModificationUser == SetupConfig.UserId);
 
@@ -131,12 +131,12 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
         {
             var proveedor =
                 await Facade.EliminarProveedorAsync(idProveedor: idProveedor, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(proveedor);
+            Assert.NotNull(@object: proveedor);
             Assert.False(condition: proveedor.IsActive);
 
             var proveedorContext = await Context.Proveedor.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
-            Assert.NotNull(proveedorContext);
+            Assert.NotNull(@object: proveedorContext);
             Assert.False(condition: proveedorContext.IsActive);
 
             Assert.True(condition: success);
@@ -168,12 +168,12 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
         {
             var proveedor =
                 await Facade.ActivarProveedorAsync(idProveedor: idProveedor, modificationUser: SetupConfig.UserId);
-            Assert.NotNull(proveedor);
+            Assert.NotNull(@object: proveedor);
             Assert.True(condition: proveedor.IsActive);
 
             var proveedorContext = await Context.Proveedor.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == proveedor.Id);
-            Assert.NotNull(proveedorContext);
+            Assert.NotNull(@object: proveedorContext);
             Assert.True(condition: proveedorContext.IsActive);
 
             Assert.True(condition: success);

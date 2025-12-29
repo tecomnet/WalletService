@@ -21,16 +21,16 @@ namespace Wallet.RestAPI.Controllers.Implementation
             switch (body.Tipo)
             {
                 case Tipo2FAEnum.SMSEnum:
-                    result = await registroFacade.ConfirmarNumeroAsync(idUsuario.Value, body.Codigo);
+                    result = await registroFacade.ConfirmarNumeroAsync(idUsuario: idUsuario.Value, codigo: body.Codigo);
                     break;
                 case Tipo2FAEnum.EMAILEnum:
-                    result = await registroFacade.VerificarCorreoAsync(idUsuario.Value, body.Codigo);
+                    result = await registroFacade.VerificarCorreoAsync(idUsuario: idUsuario.Value, codigo: body.Codigo);
                     break;
                 default:
-                    return BadRequest("Tipo de verificación no soportado.");
+                    return BadRequest(error: "Tipo de verificación no soportado.");
             }
 
-            return Ok(result);
+            return Ok(value: result);
         }
 
         /// <inheritdoc />
@@ -38,28 +38,28 @@ namespace Wallet.RestAPI.Controllers.Implementation
             AceptarTerminosRequest body)
         {
             var usuario =
-                await registroFacade.AceptarTerminosCondicionesAsync(idUsuario.Value, body.Version,
-                    body.AceptoTerminos.Value,
-                    body.AceptoPrivacidad.Value, body.AceptoPld.Value);
-            return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
+                await registroFacade.AceptarTerminosCondicionesAsync(idUsuario: idUsuario.Value, version: body.Version,
+                    aceptoTerminos: body.AceptoTerminos.Value,
+                    aceptoPrivacidad: body.AceptoPrivacidad.Value, aceptoPld: body.AceptoPld.Value);
+            return Created(uri: $"/{version}/usuario/{usuario.Id}", value: mapper.Map<UsuarioResult>(source: usuario));
         }
 
         /// <inheritdoc />
         public override async Task<IActionResult> PutCompletarRegistroAsync(string version, int? idUsuario,
             CompletarRegistroRequest body)
         {
-            var usuario = await registroFacade.CompletarRegistroAsync(idUsuario.Value, body.Contrasena,
-                body.ConfirmacionContrasena);
-            return Ok(mapper.Map<UsuarioResult>(usuario));
+            var usuario = await registroFacade.CompletarRegistroAsync(idUsuario: idUsuario.Value, contrasena: body.Contrasena,
+                confirmacionContrasena: body.ConfirmacionContrasena);
+            return Ok(value: mapper.Map<UsuarioResult>(source: usuario));
         }
 
         /// <inheritdoc />
         public override async Task<IActionResult> PostRegistrarBiometricosAsync(string version, int? idUsuario,
             RegistrarBiometricosRequest body)
         {
-            var usuario = await registroFacade.RegistrarDatosBiometricosAsync(idUsuario.Value, body.IdDispositivo,
-                body.Token, body.Nombre, body.Caracteristicas);
-            return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
+            var usuario = await registroFacade.RegistrarDatosBiometricosAsync(idUsuario: idUsuario.Value, idDispositivo: body.IdDispositivo,
+                token: body.Token, nombre: body.Nombre, caracteristicas: body.Caracteristicas);
+            return Created(uri: $"/{version}/usuario/{usuario.Id}", value: mapper.Map<UsuarioResult>(source: usuario));
         }
 
         /// <inheritdoc />
@@ -67,8 +67,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
             RegistrarCorreoRequest body)
         {
             var usuario =
-                await registroFacade.RegistrarCorreoAsync(idUsuario.Value, body.Correo);
-            return Ok(mapper.Map<UsuarioResult>(usuario));
+                await registroFacade.RegistrarCorreoAsync(idUsuario: idUsuario.Value, correo: body.Correo);
+            return Ok(value: mapper.Map<UsuarioResult>(source: usuario));
         }
 
         /// <inheritdoc />
@@ -77,7 +77,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var usuario = await registroFacade.PreRegistroAsync(
                 codigoPais: body.CodigoPais,
                 telefono: body.Telefono);
-            return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
+            return Created(uri: $"/{version}/usuario/{usuario.Id}", value: mapper.Map<UsuarioResult>(source: usuario));
         }
 
         /// <inheritdoc />
@@ -90,10 +90,10 @@ namespace Wallet.RestAPI.Controllers.Implementation
                 apellidoPaterno: body.ApellidoPaterno,
                 apellidoMaterno: body.ApellidoMaterno,
                 nombreEstado: body.NombreEstado,
-                fechaNacimiento: DateOnly.FromDateTime(body.FechaNacimiento.Value),
+                fechaNacimiento: DateOnly.FromDateTime(dateTime: body.FechaNacimiento.Value),
                 genero: (DOM.Enums.Genero)body.Genero);
 
-            return Created($"/{version}/usuario/{usuario.Id}", mapper.Map<UsuarioResult>(usuario));
+            return Created(uri: $"/{version}/usuario/{usuario.Id}", value: mapper.Map<UsuarioResult>(source: usuario));
         }
     }
 }

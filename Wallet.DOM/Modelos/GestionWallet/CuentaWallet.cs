@@ -13,8 +13,10 @@ public class CuentaWallet : ValidatablePersistentObjectLogicalDelete
 {
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
-        PropertyConstraint.StringPropertyConstraint(nameof(Moneda), true, 3, 3),
-        PropertyConstraint.StringPropertyConstraint(nameof(CuentaCLABE), true, 18, 18)
+        PropertyConstraint.StringPropertyConstraint(propertyName: nameof(Moneda), isRequired: true, minimumLength: 3,
+            maximumLength: 3),
+        PropertyConstraint.StringPropertyConstraint(propertyName: nameof(CuentaCLABE), isRequired: true,
+            minimumLength: 18, maximumLength: 18)
     ];
 
     /// <summary>
@@ -30,7 +32,7 @@ public class CuentaWallet : ValidatablePersistentObjectLogicalDelete
     /// Moneda de la cuenta (MXN, USD).
     /// </summary>
     [Required]
-    [MaxLength(3)]
+    [MaxLength(length: 3)]
     public string Moneda { get; private set; }
 
     /// <summary>
@@ -44,13 +46,13 @@ public class CuentaWallet : ValidatablePersistentObjectLogicalDelete
     /// Cuenta CLABE virtual (STP).
     /// </summary>
     [Required]
-    [MaxLength(18)]
+    [MaxLength(length: 18)]
     public string CuentaCLABE { get; private set; }
 
     /// <summary>
     /// Propiedad de navegación al Cliente.
     /// </summary>
-    [ForeignKey(nameof(IdCliente))]
+    [ForeignKey(name: nameof(IdCliente))]
     public virtual Cliente? Cliente { get; set; }
 
     /// <summary>
@@ -59,20 +61,22 @@ public class CuentaWallet : ValidatablePersistentObjectLogicalDelete
     public virtual ICollection<BitacoraTransaccion> BitacoraTransacciones { get; set; } =
         new List<BitacoraTransaccion>();
 
+    public virtual ICollection<TarjetaVinculada> TarjetasVinculadas { get; set; } = new List<TarjetaVinculada>();
+
     // Constructor requerido por EF Core
     protected CuentaWallet()
     {
     }
 
     public CuentaWallet(int idCliente, string moneda, string cuentaCLABE, Guid creationUser, string? testCase = null)
-        : base(creationUser, testCase)
+        : base(creationUser: creationUser, testCase: testCase)
     {
         List<EMGeneralException> exceptions = new();
 
-        IsPropertyValid(nameof(Moneda), moneda, ref exceptions);
-        IsPropertyValid(nameof(CuentaCLABE), cuentaCLABE, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Moneda), value: moneda, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(CuentaCLABE), value: cuentaCLABE, exceptions: ref exceptions);
 
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions);
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
         IdCliente = idCliente;
         Moneda = moneda;
@@ -83,6 +87,6 @@ public class CuentaWallet : ValidatablePersistentObjectLogicalDelete
     public void ActualizarSaldo(decimal nuevoSaldo, Guid modificationUser)
     {
         SaldoActual = nuevoSaldo;
-        Update(modificationUser);
+        Update(modificationUser: modificationUser);
     }
 }

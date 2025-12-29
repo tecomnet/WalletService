@@ -27,7 +27,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
@@ -36,7 +36,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="apellidoPaterno")]
         public string ApellidoPaterno { get; set; }
 
@@ -45,7 +45,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="apellidoMaterno")]
         public string ApellidoMaterno { get; set; }
 
@@ -54,7 +54,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(100, MinimumLength=1)]
+        [StringLength(maximumLength: 100, MinimumLength=1)]
         [DataMember(Name="nombreEstado")]
         public string NombreEstado { get; set; }
 
@@ -90,15 +90,15 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class DatosClienteUpdateRequest {\n");
-            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
-            sb.Append("  ApellidoPaterno: ").Append(ApellidoPaterno).Append("\n");
-            sb.Append("  ApellidoMaterno: ").Append(ApellidoMaterno).Append("\n");
-            sb.Append("  NombreEstado: ").Append(NombreEstado).Append("\n");
-            sb.Append("  FechaNacimiento: ").Append(FechaNacimiento).Append("\n");
-            sb.Append("  Genero: ").Append(Genero).Append("\n");
-            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class DatosClienteUpdateRequest {\n");
+            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
+            sb.Append(value: "  ApellidoPaterno: ").Append(value: ApellidoPaterno).Append(value: "\n");
+            sb.Append(value: "  ApellidoMaterno: ").Append(value: ApellidoMaterno).Append(value: "\n");
+            sb.Append(value: "  NombreEstado: ").Append(value: NombreEstado).Append(value: "\n");
+            sb.Append(value: "  FechaNacimiento: ").Append(value: FechaNacimiento).Append(value: "\n");
+            sb.Append(value: "  Genero: ").Append(value: Genero).Append(value: "\n");
+            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -108,7 +108,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -118,9 +118,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((DatosClienteUpdateRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (DatosClienteUpdateRequest)obj);
         }
 
         /// <summary>
@@ -130,44 +130,44 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(DatosClienteUpdateRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(other.Nombre)
+                    Nombre.Equals(value: other.Nombre)
                 ) && 
                 (
                     ApellidoPaterno == other.ApellidoPaterno ||
                     ApellidoPaterno != null &&
-                    ApellidoPaterno.Equals(other.ApellidoPaterno)
+                    ApellidoPaterno.Equals(value: other.ApellidoPaterno)
                 ) && 
                 (
                     ApellidoMaterno == other.ApellidoMaterno ||
                     ApellidoMaterno != null &&
-                    ApellidoMaterno.Equals(other.ApellidoMaterno)
+                    ApellidoMaterno.Equals(value: other.ApellidoMaterno)
                 ) && 
                 (
                     NombreEstado == other.NombreEstado ||
                     NombreEstado != null &&
-                    NombreEstado.Equals(other.NombreEstado)
+                    NombreEstado.Equals(value: other.NombreEstado)
                 ) && 
                 (
                     FechaNacimiento == other.FechaNacimiento ||
                     FechaNacimiento != null &&
-                    FechaNacimiento.Equals(other.FechaNacimiento)
+                    FechaNacimiento.Equals(other: other.FechaNacimiento)
                 ) && 
                 (
                     Genero == other.Genero ||
                     Genero != null &&
-                    Genero.Equals(other.Genero)
+                    Genero.Equals(other: other.Genero)
                 ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
-                    ConcurrencyToken.Equals(other.ConcurrencyToken)
+                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
                 );
         }
 
@@ -204,12 +204,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(DatosClienteUpdateRequest left, DatosClienteUpdateRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(DatosClienteUpdateRequest left, DatosClienteUpdateRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

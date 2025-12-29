@@ -35,7 +35,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(20, MinimumLength=1)]
+        [StringLength(maximumLength: 20, MinimumLength=1)]
         [DataMember(Name="version")]
         public string Version { get; set; }
 
@@ -46,10 +46,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ConsentimientoUsuarioRequest {\n");
-            sb.Append("  TipoDocumento: ").Append(TipoDocumento).Append("\n");
-            sb.Append("  Version: ").Append(Version).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class ConsentimientoUsuarioRequest {\n");
+            sb.Append(value: "  TipoDocumento: ").Append(value: TipoDocumento).Append(value: "\n");
+            sb.Append(value: "  Version: ").Append(value: Version).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -59,7 +59,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -69,9 +69,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ConsentimientoUsuarioRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (ConsentimientoUsuarioRequest)obj);
         }
 
         /// <summary>
@@ -81,19 +81,19 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ConsentimientoUsuarioRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     TipoDocumento == other.TipoDocumento ||
                     TipoDocumento != null &&
-                    TipoDocumento.Equals(other.TipoDocumento)
+                    TipoDocumento.Equals(obj: other.TipoDocumento)
                 ) && 
                 (
                     Version == other.Version ||
                     Version != null &&
-                    Version.Equals(other.Version)
+                    Version.Equals(value: other.Version)
                 );
         }
 
@@ -120,12 +120,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ConsentimientoUsuarioRequest left, ConsentimientoUsuarioRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(ConsentimientoUsuarioRequest left, ConsentimientoUsuarioRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

@@ -19,7 +19,7 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
         {
             // Verifica si ya existe una configuración con la misma clave
             var existingConfig = await context.KeyValueConfig
-                .FirstOrDefaultAsync(x => x.Key == key);
+                .FirstOrDefaultAsync(predicate: x => x.Key == key);
 
             if (existingConfig != null)
             {
@@ -31,7 +31,7 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
 
             var config = new KeyValueConfig(key: key, value: value, creationUser: creationUser, testCase: testCase);
 
-            await context.KeyValueConfig.AddAsync(config);
+            await context.KeyValueConfig.AddAsync(entity: config);
             await context.SaveChangesAsync();
 
             return config;
@@ -51,7 +51,7 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
         try
         {
             var config = await context.KeyValueConfig
-                .FirstOrDefaultAsync(x => x.Key == key);
+                .FirstOrDefaultAsync(predicate: x => x.Key == key);
 
             if (config == null)
             {
@@ -95,21 +95,21 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
     {
         try
         {
-            var config = await ObtenerKeyValueConfigPorKeyAsync(key);
+            var config = await ObtenerKeyValueConfigPorKeyAsync(key: key);
 
             // Validar que la configuración esté activa
             if (!config.IsActive)
             {
                 throw new EMGeneralAggregateException(
-                    DomCommon.BuildEmGeneralException(ServiceErrorsBuilder.KeyValueConfigInactivo,
-                        [key], this.GetType().Name));
+                    exception: DomCommon.BuildEmGeneralException(errorCode: ServiceErrorsBuilder.KeyValueConfigInactivo,
+                        dynamicContent: [key], module: this.GetType().Name));
             }
 
             // Manejo de ConcurrencyToken
-            if (!string.IsNullOrEmpty(concurrencyToken))
+            if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
-                context.Entry(config).Property(x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(concurrencyToken);
+                context.Entry(entity: config).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(s: concurrencyToken);
             }
 
             config.Update(value: value, modificationUser: modificationUser);
@@ -138,7 +138,7 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
     {
         try
         {
-            var config = await ObtenerKeyValueConfigPorKeyAsync(key);
+            var config = await ObtenerKeyValueConfigPorKeyAsync(key: key);
 
             config.Deactivate(modificationUser: modificationUser);
 
@@ -160,7 +160,7 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
     {
         try
         {
-            var config = await ObtenerKeyValueConfigPorKeyAsync(key);
+            var config = await ObtenerKeyValueConfigPorKeyAsync(key: key);
 
             config.Activate(modificationUser: modificationUser);
 

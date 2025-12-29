@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 using Wallet.RestAPI.Controllers;
 using Wallet.RestAPI.Models;
@@ -18,7 +17,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     {
         if (idProducto == null)
         {
-            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
         }
 
         var result =
@@ -32,7 +31,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     {
         if (idProducto == null)
         {
-            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
         }
 
         var producto = await proveedorFacade.ObtenerProductoPorIdAsync(idProducto: idProducto.Value);
@@ -53,7 +52,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     {
         if (idProveedor == null)
         {
-            throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
         }
 
         var productos = await proveedorFacade.ObtenerProductosPorProveedorAsync(proveedorId: idProveedor.Value);
@@ -66,7 +65,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     {
         if (idProveedor == null)
         {
-            throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
         }
 
         var producto = await proveedorFacade.GuardarProductoAsync(
@@ -87,7 +86,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     {
         if (idProducto == null)
         {
-            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
         }
 
         var result =
@@ -101,12 +100,12 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     {
         if (idProducto == null)
         {
-            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
         }
 
         if (body == null)
         {
-            throw new ArgumentNullException(nameof(body), "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(body), message: "El ID del proveedor es requerido.");
         }
 
         var result = await proveedorFacade.ActualizarProveedorDeProductoAsync(
@@ -123,7 +122,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     {
         if (idProducto == null)
         {
-            throw new ArgumentNullException(nameof(idProducto), "El ID del producto es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
         }
 
         var producto = await proveedorFacade.ActualizarProductoAsync(

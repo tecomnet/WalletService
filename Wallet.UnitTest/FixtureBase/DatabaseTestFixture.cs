@@ -86,10 +86,7 @@ namespace Wallet.UnitTest.FixtureBase
         protected internal ServiceDbContext CreateContext()
             => new(
                 options: new DbContextOptionsBuilder<ServiceDbContext>()
-                    .UseSqlServer(connectionString: _connectionString,
-                        sqlServerOptionsAction: optionsBuilder =>
-                            optionsBuilder.UseQuerySplittingBehavior(
-                                querySplittingBehavior: QuerySplittingBehavior.SplitQuery))
+                    .UseSqlServer(connectionString: _connectionString)
                     .Options);
 
         public async Task<(Usuario User, string Token)> CreateAuthenticatedUserAsync()

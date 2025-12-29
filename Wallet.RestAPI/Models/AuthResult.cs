@@ -65,13 +65,13 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class AuthResult {\n");
-            sb.Append("  AccessToken: ").Append(AccessToken).Append("\n");
-            sb.Append("  RefreshToken: ").Append(RefreshToken).Append("\n");
-            sb.Append("  Success: ").Append(Success).Append("\n");
-            sb.Append("  Errors: ").Append(Errors).Append("\n");
-            sb.Append("  IdCliente: ").Append(IdCliente).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class AuthResult {\n");
+            sb.Append(value: "  AccessToken: ").Append(value: AccessToken).Append(value: "\n");
+            sb.Append(value: "  RefreshToken: ").Append(value: RefreshToken).Append(value: "\n");
+            sb.Append(value: "  Success: ").Append(value: Success).Append(value: "\n");
+            sb.Append(value: "  Errors: ").Append(value: Errors).Append(value: "\n");
+            sb.Append(value: "  IdCliente: ").Append(value: IdCliente).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -81,7 +81,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -91,9 +91,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((AuthResult)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (AuthResult)obj);
         }
 
         /// <summary>
@@ -103,34 +103,34 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(AuthResult other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     AccessToken == other.AccessToken ||
                     AccessToken != null &&
-                    AccessToken.Equals(other.AccessToken)
+                    AccessToken.Equals(value: other.AccessToken)
                 ) && 
                 (
                     RefreshToken == other.RefreshToken ||
                     RefreshToken != null &&
-                    RefreshToken.Equals(other.RefreshToken)
+                    RefreshToken.Equals(value: other.RefreshToken)
                 ) && 
                 (
                     Success == other.Success ||
                     Success != null &&
-                    Success.Equals(other.Success)
+                    Success.Equals(other: other.Success)
                 ) && 
                 (
                     Errors == other.Errors ||
                     Errors != null &&
-                    Errors.SequenceEqual(other.Errors)
+                    Errors.SequenceEqual(second: other.Errors)
                 ) && 
                 (
                     IdCliente == other.IdCliente ||
                     IdCliente != null &&
-                    IdCliente.Equals(other.IdCliente)
+                    IdCliente.Equals(other: other.IdCliente)
                 );
         }
 
@@ -163,12 +163,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(AuthResult left, AuthResult right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(AuthResult left, AuthResult right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

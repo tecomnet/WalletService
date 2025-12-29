@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
@@ -20,7 +19,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
         try
         {
             // Busca el broker asociado.
-            var broker = await context.Broker.FirstOrDefaultAsync(x => x.Id == brokerId);
+            var broker = await context.Broker.FirstOrDefaultAsync(predicate: x => x.Id == brokerId);
             if (broker == null)
             {
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -89,8 +88,8 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             // Obtiene el proveedor existente.
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(proveedor).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: proveedor).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             ValidarProveedorIsActive(proveedor: proveedor);
             ValidarProveedorDuplicado(nombre: nombre, id: idProveedor);
             // Actualiza los datos del proveedor.

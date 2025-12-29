@@ -1,11 +1,9 @@
 using System.Net;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
-using Xunit;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
@@ -23,18 +21,18 @@ public class ConcurrencyIntegrationTest : DatabaseTestFixture
         var context = CreateContext();
 
         var key = "ConcurrencyKey_" + Guid.NewGuid();
-        var initialConfig = new KeyValueConfig(key, "InitialValue", Guid.NewGuid());
-        context.KeyValueConfig.Add(initialConfig);
+        var initialConfig = new KeyValueConfig(key: key, value: "InitialValue", creationUser: Guid.NewGuid());
+        context.KeyValueConfig.Add(entity: initialConfig);
         await context.SaveChangesAsync();
 
         // 2. Act - Both users get the resource
         // User 1 gets the resource
-        var response1 = await client1.GetAsync($"{ApiVersion}/{ApiUri}/{key}");
-        var config1 = JsonConvert.DeserializeObject<KeyValueConfigResult>(await response1.Content.ReadAsStringAsync());
+        var response1 = await client1.GetAsync(requestUri: $"{ApiVersion}/{ApiUri}/{key}");
+        var config1 = JsonConvert.DeserializeObject<KeyValueConfigResult>(value: await response1.Content.ReadAsStringAsync());
 
         // User 2 gets the resource
-        var response2 = await client2.GetAsync($"{ApiVersion}/{ApiUri}/{key}");
-        var config2 = JsonConvert.DeserializeObject<KeyValueConfigResult>(await response2.Content.ReadAsStringAsync());
+        var response2 = await client2.GetAsync(requestUri: $"{ApiVersion}/{ApiUri}/{key}");
+        var config2 = JsonConvert.DeserializeObject<KeyValueConfigResult>(value: await response2.Content.ReadAsStringAsync());
 
         // 3. Act - User 1 updates the resource successfully
         var updatePayload1 = new KeyValueConfigUpdateRequest
@@ -43,13 +41,13 @@ public class ConcurrencyIntegrationTest : DatabaseTestFixture
             ConcurrencyToken = config1.ConcurrencyToken
         };
 
-        var updateResponse1 = await client1.PutAsync($"{ApiVersion}/{ApiUri}/{key}",
-            new StringContent(JsonConvert.SerializeObject(updatePayload1), System.Text.Encoding.UTF8,
-                "application/json"));
+        var updateResponse1 = await client1.PutAsync(requestUri: $"{ApiVersion}/{ApiUri}/{key}",
+            content: new StringContent(content: JsonConvert.SerializeObject(value: updatePayload1), encoding: System.Text.Encoding.UTF8,
+                mediaType: "application/json"));
 
         var content1 = await updateResponse1.Content.ReadAsStringAsync();
-        Assert.True(updateResponse1.StatusCode == HttpStatusCode.OK,
-            $"User 1 update failed. Status: {updateResponse1.StatusCode}, Body: {content1}");
+        Assert.True(condition: updateResponse1.StatusCode == HttpStatusCode.OK,
+            userMessage: $"User 1 update failed. Status: {updateResponse1.StatusCode}, Body: {content1}");
 
         // 4. Act - User 2 tries to update with the OLD token
         var updatePayload2 = new KeyValueConfigUpdateRequest
@@ -58,9 +56,9 @@ public class ConcurrencyIntegrationTest : DatabaseTestFixture
             ConcurrencyToken = config2.ConcurrencyToken // This token is now stale
         };
 
-        var updateResponse2 = await client2.PutAsync($"{ApiVersion}/{ApiUri}/{key}",
-            new StringContent(JsonConvert.SerializeObject(updatePayload2), System.Text.Encoding.UTF8,
-                "application/json"));
+        var updateResponse2 = await client2.PutAsync(requestUri: $"{ApiVersion}/{ApiUri}/{key}",
+            content: new StringContent(content: JsonConvert.SerializeObject(value: updatePayload2), encoding: System.Text.Encoding.UTF8,
+                mediaType: "application/json"));
 
         // 5. Assert - Should fail with 500 or specific error, depending on how global error handler maps the exception
         // The facade throws EMGeneralAggregateException with ConcurrencyError
@@ -78,12 +76,12 @@ public class ConcurrencyIntegrationTest : DatabaseTestFixture
             updateResponse2.StatusCode == HttpStatusCode.Conflict)
         {
             // Check if body contains the error code
-            Assert.Contains(ServiceErrorsBuilder.ConcurrencyError, content2);
+            Assert.Contains(expectedSubstring: ServiceErrorsBuilder.ConcurrencyError, actualString: content2);
         }
         else
         {
             // Fail if it's 200 OK
-            Assert.NotEqual(HttpStatusCode.OK, updateResponse2.StatusCode);
+            Assert.NotEqual(expected: HttpStatusCode.OK, actual: updateResponse2.StatusCode);
         }
     }
 }

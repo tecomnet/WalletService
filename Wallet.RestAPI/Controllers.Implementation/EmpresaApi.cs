@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Helpers;
@@ -48,7 +47,7 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         int? idEmpresa, EmpresaUpdateRequest body)
     {
         if (!idEmpresa.HasValue)
-            return BadRequest("IdEmpresa is required");
+            return BadRequest(error: "IdEmpresa is required");
 
         // Call facade method
         var empresa = await empresaFacade.ActualizaEmpresaAsync(idEmpresa: idEmpresa.Value, nombre: body.Nombre,
@@ -66,7 +65,7 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         int? idEmpresa)
     {
         if (!idEmpresa.HasValue)
-            return BadRequest("IdEmpresa is required");
+            return BadRequest(error: "IdEmpresa is required");
 
         // Call facade method
         var productos = await empresaFacade.ObtenerProductosPorEmpresaAsync(idEmpresa: idEmpresa.Value);
@@ -82,7 +81,7 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         int? idEmpresa)
     {
         if (!idEmpresa.HasValue)
-            return BadRequest("IdEmpresa is required");
+            return BadRequest(error: "IdEmpresa is required");
 
         // Call facade method
         var clientes = await empresaFacade.ObtenerClientesPorEmpresaAsync(idEmpresa: idEmpresa.Value);
@@ -98,12 +97,12 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         string version, int? idEmpresa)
     {
         if (!idEmpresa.HasValue)
-            return BadRequest("IdEmpresa is required");
+            return BadRequest(error: "IdEmpresa is required");
 
         // Call facade method
         var empresa = await empresaFacade.AsignarProductosAsync(
             idEmpresa: idEmpresa.Value,
-            idsProductos: body.ProductoIds?.Where(x => x.HasValue).Select(x => x.Value).ToList() ?? new List<int>(),
+            idsProductos: body.ProductoIds?.Where(predicate: x => x.HasValue).Select(selector: x => x.Value).ToList() ?? new List<int>(),
             modificationUser: this.GetAuthenticatedUserGuid());
 
         // Map to response model
@@ -120,12 +119,12 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         int? idEmpresa)
     {
         if (!idEmpresa.HasValue)
-            return BadRequest("IdEmpresa is required");
+            return BadRequest(error: "IdEmpresa is required");
 
         // Call facade method
         var empresa = await empresaFacade.DesasignarProductosAsync(
             idEmpresa: idEmpresa.Value,
-            idsProductos: body.ProductoIds?.Where(x => x.HasValue).Select(x => x.Value).ToList() ?? new List<int>(),
+            idsProductos: body.ProductoIds?.Where(predicate: x => x.HasValue).Select(selector: x => x.Value).ToList() ?? new List<int>(),
             modificationUser: this.GetAuthenticatedUserGuid());
 
         // Map to response model
@@ -139,7 +138,7 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     public override async Task<IActionResult> GetEmpresaAsync(string version, int? idEmpresa)
     {
         if (!idEmpresa.HasValue)
-            return BadRequest("IdEmpresa is required");
+            return BadRequest(error: "IdEmpresa is required");
 
         // Call facade method
         var empresa = await empresaFacade.ObtenerPorIdAsync(idEmpresa: idEmpresa.Value);
@@ -154,7 +153,7 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         string concurrencyToken)
     {
         if (!idEmpresa.HasValue)
-            return BadRequest("IdEmpresa is required");
+            return BadRequest(error: "IdEmpresa is required");
 
         // Call facade method
         var empresa =
@@ -171,7 +170,7 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         StatusChangeRequest body)
     {
         if (!idEmpresa.HasValue)
-            return BadRequest("IdEmpresa is required");
+            return BadRequest(error: "IdEmpresa is required");
 
         // Call facade method
         var empresa =

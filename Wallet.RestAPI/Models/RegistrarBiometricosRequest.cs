@@ -61,12 +61,12 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class RegistrarBiometricosRequest {\n");
-            sb.Append("  IdDispositivo: ").Append(IdDispositivo).Append("\n");
-            sb.Append("  Token: ").Append(Token).Append("\n");
-            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
-            sb.Append("  Caracteristicas: ").Append(Caracteristicas).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class RegistrarBiometricosRequest {\n");
+            sb.Append(value: "  IdDispositivo: ").Append(value: IdDispositivo).Append(value: "\n");
+            sb.Append(value: "  Token: ").Append(value: Token).Append(value: "\n");
+            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
+            sb.Append(value: "  Caracteristicas: ").Append(value: Caracteristicas).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -76,7 +76,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((RegistrarBiometricosRequest)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (RegistrarBiometricosRequest)obj);
         }
 
         /// <summary>
@@ -98,29 +98,29 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(RegistrarBiometricosRequest other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     IdDispositivo == other.IdDispositivo ||
                     IdDispositivo != null &&
-                    IdDispositivo.Equals(other.IdDispositivo)
+                    IdDispositivo.Equals(value: other.IdDispositivo)
                 ) && 
                 (
                     Token == other.Token ||
                     Token != null &&
-                    Token.Equals(other.Token)
+                    Token.Equals(value: other.Token)
                 ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(other.Nombre)
+                    Nombre.Equals(value: other.Nombre)
                 ) && 
                 (
                     Caracteristicas == other.Caracteristicas ||
                     Caracteristicas != null &&
-                    Caracteristicas.Equals(other.Caracteristicas)
+                    Caracteristicas.Equals(value: other.Caracteristicas)
                 );
         }
 
@@ -151,12 +151,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(RegistrarBiometricosRequest left, RegistrarBiometricosRequest right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(RegistrarBiometricosRequest left, RegistrarBiometricosRequest right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

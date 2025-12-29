@@ -1259,6 +1259,174 @@ namespace Wallet.DOM.Migrations
                     b.ToTable("DetallesPagoServicio");
                 });
 
+            modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.TarjetaEmitida", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("BloqueoTemporal")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ComprasEnLineaHabilitadas")
+                        .HasColumnType("bit");
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Estado")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EstadoEntrega")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaExpiracion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("IdCuentaWallet")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("LimiteDiario")
+                        .HasColumnType("decimal(19,2)");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MotivoCancelacion")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("NombreImpreso")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NumeroGuia")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PanEnmascarado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Paqueteria")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("RetirosCajeroHabilitados")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TokenProcesador")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCuentaWallet");
+
+                    b.ToTable("TarjetaEmitida");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.TarjetaVinculada", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Alias")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte[]>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("CreationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("EsFavorita")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaExpiracion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GatewayCustomerId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("IdCuentaWallet")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Marca")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModificationTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModificationUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PanEnmascarado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TestCaseID")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("TokenPasarela")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCuentaWallet");
+
+                    b.ToTable("TarjetaVinculada");
+                });
+
             modelBuilder.Entity("Wallet.DOM.Modelos.KeyValueConfig", b =>
                 {
                     b.Property<int>("Id")
@@ -1507,6 +1675,28 @@ namespace Wallet.DOM.Migrations
                     b.Navigation("Transaccion");
                 });
 
+            modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.TarjetaEmitida", b =>
+                {
+                    b.HasOne("Wallet.DOM.Modelos.GestionWallet.CuentaWallet", "CuentaWallet")
+                        .WithMany()
+                        .HasForeignKey("IdCuentaWallet")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CuentaWallet");
+                });
+
+            modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.TarjetaVinculada", b =>
+                {
+                    b.HasOne("Wallet.DOM.Modelos.GestionWallet.CuentaWallet", "CuentaWallet")
+                        .WithMany("TarjetasVinculadas")
+                        .HasForeignKey("IdCuentaWallet")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CuentaWallet");
+                });
+
             modelBuilder.Entity("Wallet.DOM.Modelos.GestionCliente.Cliente", b =>
                 {
                     b.Navigation("ActividadEconomicas");
@@ -1549,6 +1739,8 @@ namespace Wallet.DOM.Migrations
             modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.CuentaWallet", b =>
                 {
                     b.Navigation("BitacoraTransacciones");
+
+                    b.Navigation("TarjetasVinculadas");
                 });
 #pragma warning restore 612, 618
         }

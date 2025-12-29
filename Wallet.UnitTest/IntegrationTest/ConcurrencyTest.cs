@@ -1,10 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Wallet.DOM.Enums;
-using Wallet.DOM.Modelos;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 
@@ -16,8 +13,8 @@ public class ConcurrencyTest : DatabaseTestFixture
 
     private StringContent CreateContent(object body)
     {
-        var json = JsonConvert.SerializeObject(body);
-        return new StringContent(json, Encoding.UTF8, "application/json");
+        var json = JsonConvert.SerializeObject(value: body);
+        return new StringContent(content: json, encoding: Encoding.UTF8, mediaType: "application/json");
     }
 
     [Fact]
@@ -26,15 +23,15 @@ public class ConcurrencyTest : DatabaseTestFixture
         // Arrange
         var (user, token) = await CreateAuthenticatedUserAsync();
         var client = Factory.CreateClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         // Get current user to fetch ConcurrencyToken
-        var getResponse = await client.GetAsync($"{API_VERSION}/usuario/{user.Id}");
+        var getResponse = await client.GetAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}");
         getResponse.EnsureSuccessStatusCode();
         var currentUsuario =
-            JsonConvert.DeserializeObject<UsuarioResult>(await getResponse.Content.ReadAsStringAsync());
-        Assert.NotNull(currentUsuario);
-        Assert.NotNull(currentUsuario.ConcurrencyToken);
+            JsonConvert.DeserializeObject<UsuarioResult>(value: await getResponse.Content.ReadAsStringAsync());
+        Assert.NotNull(@object: currentUsuario);
+        Assert.NotNull(@object: currentUsuario.ConcurrencyToken);
 
         var request = new EmailUpdateRequest
         {
@@ -44,13 +41,13 @@ public class ConcurrencyTest : DatabaseTestFixture
 
         // Act
         var response = await client.PutAsync(
-            $"{API_VERSION}/usuario/{user.Id}/actualizaEmail", CreateContent(request));
+            requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaEmail", content: CreateContent(body: request));
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var result = JsonConvert.DeserializeObject<UsuarioResult>(await response.Content.ReadAsStringAsync());
-        Assert.NotNull(result);
-        Assert.Equal(request.CorreoElectronico, result.CorreoElectronico);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+        var result = JsonConvert.DeserializeObject<UsuarioResult>(value: await response.Content.ReadAsStringAsync());
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: request.CorreoElectronico, actual: result.CorreoElectronico);
     }
 
     [Fact]
@@ -59,21 +56,21 @@ public class ConcurrencyTest : DatabaseTestFixture
         // Arrange
         var (user, token) = await CreateAuthenticatedUserAsync();
         var client = Factory.CreateClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         // 1. Get current token (Version 1)
-        var getResponse = await client.GetAsync($"{API_VERSION}/usuario/{user.Id}");
+        var getResponse = await client.GetAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}");
         getResponse.EnsureSuccessStatusCode();
         var currentUsuario =
-            JsonConvert.DeserializeObject<UsuarioResult>(await getResponse.Content.ReadAsStringAsync());
-        Assert.NotNull(currentUsuario);
+            JsonConvert.DeserializeObject<UsuarioResult>(value: await getResponse.Content.ReadAsStringAsync());
+        Assert.NotNull(@object: currentUsuario);
         var staleToken = currentUsuario.ConcurrencyToken;
 
         // 2. Simulate concurrent update (Backdoor)
         await using var context = CreateContext();
-        var userDb = await context.Usuario.FindAsync(user.Id);
-        userDb.ActualizarTelefono(userDb.CodigoPais, "5555555555",
-            Guid.NewGuid()); // Modify something to change version
+        var userDb = await context.Usuario.FindAsync(keyValues: user.Id);
+        userDb.ActualizarTelefono(codigoPais: userDb.CodigoPais, telefono: "5555555555",
+            modificationUser: Guid.NewGuid()); // Modify something to change version
         await context.SaveChangesAsync(); // DB token is now Version 2
 
         var request = new EmailUpdateRequest
@@ -84,9 +81,9 @@ public class ConcurrencyTest : DatabaseTestFixture
 
         // Act
         var response = await client.PutAsync(
-            $"{API_VERSION}/usuario/{user.Id}/actualizaEmail", CreateContent(request));
+            requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaEmail", content: CreateContent(body: request));
 
         // Assert
-        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.Conflict, actual: response.StatusCode);
     }
 }

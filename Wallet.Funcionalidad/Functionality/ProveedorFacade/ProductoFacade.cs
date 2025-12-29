@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
-using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
@@ -99,10 +97,10 @@ public partial class ProveedorFacade : IProveedorFacade
             // Obtiene el producto existente.
             var producto = await ObtenerProductoPorIdAsync(idProducto: idProducto);
             // Establece el token original para la validación de concurrencia optimista
-            if (!string.IsNullOrEmpty(concurrencyToken))
+            if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
-                context.Entry(producto).Property(x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(concurrencyToken);
+                context.Entry(entity: producto).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(s: concurrencyToken);
             }
 
             // Valida que el producto no esté inactivo.
@@ -247,7 +245,7 @@ public partial class ProveedorFacade : IProveedorFacade
         if (existentes.Count == 0) return;
 
         // Validar duplicidad de nombre
-        if (existentes.Any(x => x.Nombre == nombre))
+        if (existentes.Any(predicate: x => x.Nombre == nombre))
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ProductoExistente,
@@ -256,7 +254,7 @@ public partial class ProveedorFacade : IProveedorFacade
         }
 
         // Validar duplicidad de SKU
-        if (existentes.Any(x => x.Sku == sku))
+        if (existentes.Any(predicate: x => x.Sku == sku))
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ProductoSkuExistente,

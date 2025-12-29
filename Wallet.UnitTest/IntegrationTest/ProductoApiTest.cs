@@ -19,7 +19,7 @@ public class ProductoApiTest : DatabaseTestFixture
     {
         SetupDataAsync(setupDataAction: async context =>
         {
-            if (!await context.Broker.AnyAsync(b => b.Nombre == "Broker Test"))
+            if (!await context.Broker.AnyAsync(predicate: b => b.Nombre == "Broker Test"))
             {
                 var broker = new Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
                 await context.Broker.AddAsync(entity: broker);
@@ -61,7 +61,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: request.Sku, actual: result.Sku);
         Assert.Equal(expected: provider.Id, actual: result.ProveedorId);
     }
@@ -82,7 +82,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: product.Id, actual: result.Id);
     }
 
@@ -112,7 +112,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: updateRequest.Sku, actual: result.Sku);
         Assert.Equal(expected: (decimal?)updateRequest.Precio, actual: result.Precio);
     }
@@ -133,7 +133,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.False(condition: result.IsActive);
     }
 
@@ -155,7 +155,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<List<ProductoResult>>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.True(condition: result.Count >= 2);
     }
 
@@ -177,7 +177,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<List<ProductoResult>>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.True(condition: result.Count >= 2);
     }
 
@@ -200,14 +200,14 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
 
         // Verify update
         var getResponse = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}/{product.Id}");
         var getResult = JsonConvert.DeserializeObject<ProductoResult>(
             value: await getResponse.Content.ReadAsStringAsync(),
             settings: _jsonSettings);
-        Assert.NotNull(getResult);
+        Assert.NotNull(@object: getResult);
         Assert.Equal(expected: providerB.Id, actual: getResult.ProveedorId);
     }
 

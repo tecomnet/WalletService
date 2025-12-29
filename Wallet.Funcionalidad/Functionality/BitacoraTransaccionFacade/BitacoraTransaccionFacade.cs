@@ -11,9 +11,9 @@ public class BitacoraTransaccionFacade(ServiceDbContext context) : IBitacoraTran
         string estatus, Guid creationUser, string? refExternaId)
     {
         var transaccion =
-            new BitacoraTransaccion(idBilletera, monto, tipo, direccion, estatus, creationUser, refExternaId);
+            new BitacoraTransaccion(idBilletera: idBilletera, monto: monto, tipo: tipo, direccion: direccion, estatus: estatus, creationUser: creationUser, refExternaId: refExternaId);
 
-        context.BitacoraTransaccion.Add(transaccion);
+        context.BitacoraTransaccion.Add(entity: transaccion);
         await context.SaveChangesAsync();
 
         return transaccion;
@@ -22,25 +22,25 @@ public class BitacoraTransaccionFacade(ServiceDbContext context) : IBitacoraTran
     public async Task<List<BitacoraTransaccion>> ObtenerTodasAsync()
     {
         return await context.BitacoraTransaccion
-            .Include(b => b.CuentaWallet)
-            .OrderByDescending(b => b.CreationTimestamp)
+            .Include(navigationPropertyPath: b => b.CuentaWallet)
+            .OrderByDescending(keySelector: b => b.CreationTimestamp)
             .ToListAsync();
     }
 
     public async Task<BitacoraTransaccion> ObtenerPorIdAsync(int id)
     {
         return await context.BitacoraTransaccion
-                   .Include(b => b.CuentaWallet)
-                   .FirstOrDefaultAsync(b => b.Id == id) ??
-               throw new KeyNotFoundException($"Transaccion con ID {id} no encontrada.");
+                   .Include(navigationPropertyPath: b => b.CuentaWallet)
+                   .FirstOrDefaultAsync(predicate: b => b.Id == id) ??
+               throw new KeyNotFoundException(message: $"Transaccion con ID {id} no encontrada.");
     }
 
     public async Task<List<BitacoraTransaccion>> ObtenerPorClienteAsync(int idCliente)
     {
         return await context.BitacoraTransaccion
-            .Include(b => b.CuentaWallet)
-            .Where(b => b.CuentaWallet!.IdCliente == idCliente)
-            .OrderByDescending(b => b.CreationTimestamp)
+            .Include(navigationPropertyPath: b => b.CuentaWallet)
+            .Where(predicate: b => b.CuentaWallet!.IdCliente == idCliente)
+            .OrderByDescending(keySelector: b => b.CreationTimestamp)
             .ToListAsync();
     }
 }

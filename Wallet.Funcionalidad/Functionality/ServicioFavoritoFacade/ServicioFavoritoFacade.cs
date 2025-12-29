@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
@@ -92,15 +91,15 @@ public class ServicioFavoritoFacade(
             if (!servicioFavorito.IsActive)
             {
                 throw new EMGeneralAggregateException(
-                    DomCommon.BuildEmGeneralException(ServiceErrorsBuilder.ServicioFavoritoInactivo,
-                        [idServicioFavorito], this.GetType().Name));
+                    exception: DomCommon.BuildEmGeneralException(errorCode: ServiceErrorsBuilder.ServicioFavoritoInactivo,
+                        dynamicContent: [idServicioFavorito], module: this.GetType().Name));
             }
 
             // Manejo de ConcurrencyToken
-            if (!string.IsNullOrEmpty(concurrencyToken))
+            if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
-                context.Entry(servicioFavorito).Property(x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(concurrencyToken);
+                context.Entry(entity: servicioFavorito).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(s: concurrencyToken);
             }
 
             // Actualiza los datos del servicio favorito.

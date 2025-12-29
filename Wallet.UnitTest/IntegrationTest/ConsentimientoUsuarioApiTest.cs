@@ -48,9 +48,9 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
         Assert.Equal(expected: HttpStatusCode.Created, actual: response.StatusCode);
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<ConsentimientoUsuarioResult>(value: responseContentString);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: request.Version, actual: result.Version);
-        Assert.Equal(expected: EnumExtensions.GetEnumMemberValue(request.TipoDocumento), actual: result.TipoDocumento);
+        Assert.Equal(expected: EnumExtensions.GetEnumMemberValue(enumValue: request.TipoDocumento), actual: result.TipoDocumento);
         Assert.Equal(expected: user.Id, actual: result.IdUsuario);
     }
 
@@ -80,10 +80,10 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<List<ConsentimientoUsuarioResult>>(value: responseContentString);
-        Assert.NotNull(result);
-        Assert.NotEmpty(result);
-        var privacidad = result.FirstOrDefault(c => c.TipoDocumento == EnumExtensions.GetEnumMemberValue(TipoDocumentoConsentimientoEnum.PrivacidadEnum));
-        Assert.NotNull(privacidad);
+        Assert.NotNull(@object: result);
+        Assert.NotEmpty(collection: result);
+        var privacidad = result.FirstOrDefault(predicate: c => c.TipoDocumento == EnumExtensions.GetEnumMemberValue(enumValue: TipoDocumentoConsentimientoEnum.PrivacidadEnum));
+        Assert.NotNull(@object: privacidad);
         Assert.Equal(expected: "v2.0", actual: privacidad.Version);
     }
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
@@ -23,7 +22,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         string concurrencyToken)
     {
         if (!idCliente.HasValue)
-            return BadRequest("IdCliente is required");
+            return BadRequest(error: "IdCliente is required");
 
         // Call facade method
         var cliente =
@@ -38,7 +37,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     public override async Task<IActionResult> GetClienteAsync(string version, int? idCliente)
     {
         if (!idCliente.HasValue)
-            return BadRequest("IdCliente is required");
+            return BadRequest(error: "IdCliente is required");
 
         // Call facade method
         var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente.Value);
@@ -64,7 +63,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     public override async Task<IActionResult> GetServiciosFavoritosPorClienteAsync(string version, int? idCliente)
     {
         if (!idCliente.HasValue)
-            return BadRequest("IdCliente is required");
+            return BadRequest(error: "IdCliente is required");
 
         // Call facade method
         var serviciosFavoritos = await clienteFacade.ObtenerServiciosFavoritosAsync(idCliente: idCliente.Value);
@@ -78,7 +77,7 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         StatusChangeRequest body)
     {
         if (!idCliente.HasValue)
-            return BadRequest("IdCliente is required");
+            return BadRequest(error: "IdCliente is required");
 
         // Call facade method
         var cliente = await clienteFacade.ActivarClienteAsync(idCliente: idCliente.Value,
@@ -94,10 +93,10 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         int? idCliente)
     {
         if (!idCliente.HasValue)
-            return BadRequest("IdCliente is required");
+            return BadRequest(error: "IdCliente is required");
 
         if (body.FechaNacimiento == null)
-            return BadRequest("FechaNacimiento is required");
+            return BadRequest(error: "FechaNacimiento is required");
 
         var cliente = await clienteFacade.ActualizarClienteAsync(
             idCliente: idCliente.Value,
@@ -105,13 +104,13 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
             primerApellido: body.ApellidoPaterno,
             segundoApellido: body.ApellidoMaterno,
             nombreEstado: body.NombreEstado,
-            fechaNacimiento: DateOnly.FromDateTime(body.FechaNacimiento.Value),
+            fechaNacimiento: DateOnly.FromDateTime(dateTime: body.FechaNacimiento.Value),
             genero: (DOM.Enums.Genero)body.Genero,
             concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
 
-        var response = mapper.Map<ClienteResult>(cliente);
-        return Ok(response);
+        var response = mapper.Map<ClienteResult>(source: cliente);
+        return Ok(value: response);
     }
 }
 

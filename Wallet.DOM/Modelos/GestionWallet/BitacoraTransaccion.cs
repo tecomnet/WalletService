@@ -12,10 +12,10 @@ public class BitacoraTransaccion : ValidatablePersistentObjectLogicalDelete
 {
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
-        PropertyConstraint.StringPropertyConstraint(nameof(Tipo), true, 1, 50),
-        PropertyConstraint.StringPropertyConstraint(nameof(Direccion), true, 1, 20),
-        PropertyConstraint.StringPropertyConstraint(nameof(Estatus), true, 1, 20),
-        PropertyConstraint.StringPropertyConstraint(nameof(RefExternaId), false, 1, 100)
+        PropertyConstraint.StringPropertyConstraint(propertyName: nameof(Tipo), isRequired: true, minimumLength: 1, maximumLength: 50),
+        PropertyConstraint.StringPropertyConstraint(propertyName: nameof(Direccion), isRequired: true, minimumLength: 1, maximumLength: 20),
+        PropertyConstraint.StringPropertyConstraint(propertyName: nameof(Estatus), isRequired: true, minimumLength: 1, maximumLength: 20),
+        PropertyConstraint.StringPropertyConstraint(propertyName: nameof(RefExternaId), isRequired: false, minimumLength: 1, maximumLength: 100)
     ];
 
     [Required] public int IdBilletera { get; set; }
@@ -28,30 +28,30 @@ public class BitacoraTransaccion : ValidatablePersistentObjectLogicalDelete
     /// Tipo de transacción: SPEI, DEPOSITO, SERVICIO, REMESA
     /// </summary>
     [Required]
-    [MaxLength(50)]
+    [MaxLength(length: 50)]
     public string Tipo { get; set; }
 
     /// <summary>
     /// Dirección de la transacción: Abono, Cargo
     /// </summary>
     [Required]
-    [MaxLength(20)]
+    [MaxLength(length: 20)]
     public string Direccion { get; set; }
 
     /// <summary>
     /// Estatus de la transacción: Pendiente, Completada, Fallida
     /// </summary>
     [Required]
-    [MaxLength(20)]
+    [MaxLength(length: 20)]
     public string Estatus { get; set; }
 
     /// <summary>
     /// Identificador externo del proveedor (UUID)
     /// </summary>
-    [MaxLength(100)]
+    [MaxLength(length: 100)]
     public string? RefExternaId { get; set; }
 
-    [ForeignKey(nameof(IdBilletera))] public virtual CuentaWallet? CuentaWallet { get; set; }
+    [ForeignKey(name: nameof(IdBilletera))] public virtual CuentaWallet? CuentaWallet { get; set; }
 
     protected BitacoraTransaccion()
     {
@@ -59,14 +59,14 @@ public class BitacoraTransaccion : ValidatablePersistentObjectLogicalDelete
 
     public BitacoraTransaccion(int idBilletera, decimal monto, string tipo, string direccion, string estatus,
         Guid creationUser, string? refExternaId = null)
-        : base(creationUser)
+        : base(creationUser: creationUser)
     {
         List<EMGeneralException> exceptions = new();
-        IsPropertyValid(nameof(Tipo), tipo, ref exceptions);
-        IsPropertyValid(nameof(Direccion), direccion, ref exceptions);
-        IsPropertyValid(nameof(Estatus), estatus, ref exceptions);
+        IsPropertyValid(propertyName: nameof(Tipo), value: tipo, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(Direccion), value: direccion, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(Estatus), value: estatus, exceptions: ref exceptions);
 
-        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions);
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
         IdBilletera = idBilletera;
         Monto = monto;

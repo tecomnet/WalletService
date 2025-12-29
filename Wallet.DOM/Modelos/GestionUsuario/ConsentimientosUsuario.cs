@@ -28,7 +28,7 @@ public class ConsentimientosUsuario : ValidatablePersistentObjectLogicalDelete
     /// Obtiene o establece el identificador único del usuario al que pertenece el consentimiento.
     /// Es una clave foránea a la entidad <see cref="Usuario"/>.
     /// </summary>
-    [ForeignKey("Usuario")]
+    [ForeignKey(name: "Usuario")]
     public int IdUsuario { get; private set; }
 
     /// <summary>

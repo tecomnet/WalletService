@@ -34,16 +34,16 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="400">Response to client error satus code</response>
         /// <response code="401">Response to client error satus code</response>
         [HttpPost]
-        [Route("/{version:apiVersion}/configurations")]
+        [Route(template: "/{version:apiVersion}/configurations")]
         [ValidateModelState]
-        [SwaggerOperation("CreateKeyValueConfig")]
+        [SwaggerOperation(summary: "CreateKeyValueConfig")]
         [SwaggerResponse(statusCode: 201, type: typeof(KeyValueConfigResult), description: "Created")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> CreateKeyValueConfigAsync([FromBody] KeyValueConfigRequest body,
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version);
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpDelete]
-        [Route("/{version:apiVersion}/configurations/{key}")]
+        [Route(template: "/{version:apiVersion}/configurations/{key}")]
         [ValidateModelState]
-        [SwaggerOperation("DeleteKeyValueConfig")]
+        [SwaggerOperation(summary: "DeleteKeyValueConfig")]
         [SwaggerResponse(statusCode: 200, type: typeof(KeyValueConfigResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -67,7 +67,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> DeleteKeyValueConfigAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] string key);
 
@@ -79,16 +79,16 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="400">Response to client error satus code</response>
         /// <response code="401">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/configurations")]
+        [Route(template: "/{version:apiVersion}/configurations")]
         [ValidateModelState]
-        [SwaggerOperation("GetConfigurations")]
+        [SwaggerOperation(summary: "GetConfigurations")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<KeyValueConfigResult>), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetConfigurationsAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version);
 
         /// <summary>
@@ -101,9 +101,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route("/{version:apiVersion}/configurations/{key}")]
+        [Route(template: "/{version:apiVersion}/configurations/{key}")]
         [ValidateModelState]
-        [SwaggerOperation("GetKeyValueConfigByKey")]
+        [SwaggerOperation(summary: "GetKeyValueConfigByKey")]
         [SwaggerResponse(statusCode: 200, type: typeof(KeyValueConfigResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -112,7 +112,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetKeyValueConfigByKeyAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] string key);
 
@@ -127,9 +127,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version:apiVersion}/configurations/{key}")]
+        [Route(template: "/{version:apiVersion}/configurations/{key}")]
         [ValidateModelState]
-        [SwaggerOperation("UpdateKeyValueConfig")]
+        [SwaggerOperation(summary: "UpdateKeyValueConfig")]
         [SwaggerResponse(statusCode: 200, type: typeof(KeyValueConfigResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -138,7 +138,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> UpdateKeyValueConfigAsync([FromBody] KeyValueConfigUpdateRequest body,
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] string key);
 
@@ -152,9 +152,9 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route("/{version:apiVersion}/configurations/{key}/activate")]
+        [Route(template: "/{version:apiVersion}/configurations/{key}/activate")]
         [ValidateModelState]
-        [SwaggerOperation("ActivateKeyValueConfig")]
+        [SwaggerOperation(summary: "ActivateKeyValueConfig")]
         [SwaggerResponse(statusCode: 200, type: typeof(KeyValueConfigResult), description: "OK")]
         [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
@@ -163,7 +163,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> ActivateKeyValueConfigAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] string key);
     }

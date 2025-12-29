@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -23,7 +22,7 @@ public class DetallesPagoServicioApiController(
     public override async Task<IActionResult> GetDetallesPorTransaccionAsync(string version, int idTransaccion)
     {
         // Call facade method
-        var detalles = await detallesPagoServicioFacade.ObtenerPorTransaccionAsync(idTransaccion);
+        var detalles = await detallesPagoServicioFacade.ObtenerPorTransaccionAsync(idTransaccion: idTransaccion);
 
         // Map to response model
         var response = mapper.Map<List<DetallesPagoServicioResult>>(source: detalles);
@@ -36,7 +35,7 @@ public class DetallesPagoServicioApiController(
     public override async Task<IActionResult> GetDetallesPagoServicioPorClienteAsync(string version, int idCliente)
     {
         // Call facade method
-        var detalles = await detallesPagoServicioFacade.ObtenerPorClienteAsync(idCliente);
+        var detalles = await detallesPagoServicioFacade.ObtenerPorClienteAsync(idCliente: idCliente);
 
         // Map to response model
         var response = mapper.Map<List<DetallesPagoServicioResult>>(source: detalles);

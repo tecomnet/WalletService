@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
@@ -161,10 +160,10 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             ValidarEstadoActivo(estado: estado);
 
             // Manejo de ConcurrencyToken
-            if (!string.IsNullOrEmpty(concurrencyToken))
+            if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
-                context.Entry(estado).Property(x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(concurrencyToken);
+                context.Entry(entity: estado).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(s: concurrencyToken);
             }
 
             // Valida que el nuevo nombre no cause duplicidad con otros estados (excluyendo el actual).

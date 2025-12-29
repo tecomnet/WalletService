@@ -1,5 +1,4 @@
 using Wallet.DOM.Enums;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionUsuario;
 
 namespace Wallet.Funcionalidad.Functionality.UsuarioFacade;
@@ -80,4 +79,6 @@ public interface IUsuarioFacade
     /// <returns>Una tarea que representa la operación asíncrona, con el objeto <see cref="Usuario"/> creado.</returns>
     Task<Usuario> GuardarUsuarioPreRegistroAsync(string codigoPais, string telefono,
         string? testCase = null);
+
+    // TODO: Agregar metodo para desactivar/eliminar usuario
 }

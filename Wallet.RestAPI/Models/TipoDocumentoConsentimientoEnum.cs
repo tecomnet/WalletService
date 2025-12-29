@@ -18,7 +18,7 @@ namespace Wallet.RestAPI.Models
           /// Tipo de documento de consentimiento
           /// </summary>
           /// <value>Tipo de documento de consentimiento</value>
-          [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+          [JsonConverter(converterType: typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
           public enum TipoDocumentoConsentimientoEnum
           {
               /// <summary>

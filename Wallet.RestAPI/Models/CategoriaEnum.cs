@@ -18,7 +18,7 @@ namespace Wallet.RestAPI.Models
           /// Estructura enum para categoria de proveeedor y productos
           /// </summary>
           /// <value>Estructura enum para categoria de proveeedor y productos</value>
-          [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+          [JsonConverter(converterType: typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
           public enum CategoriaEnum
           {
               /// <summary>

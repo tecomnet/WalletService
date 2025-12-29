@@ -17,6 +17,7 @@ using Wallet.Funcionalidad.Services.TokenService;
 using Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
 using Wallet.Funcionalidad.Functionality.BitacoraTransaccionFacade;
 using Wallet.Funcionalidad.Functionality.DetallesPagoServicioFacade;
+using Wallet.Funcionalidad.Functionality.GestionWallet;
 
 namespace Wallet.Funcionalidad
 {
@@ -80,8 +81,14 @@ namespace Wallet.Funcionalidad
 		/// <returns>La colección de servicios actualizada.</returns>
 		public static IServiceCollection AddEmTestServices(this IServiceCollection services, IConfiguration configuration)
 		{
+			var connectionString = DbConnectionHelper.GetConnectionString(configuration: configuration);
+			if (!connectionString.Contains("MultipleActiveResultSets"))
+			{
+				connectionString += ";MultipleActiveResultSets=True";
+			}
+
 			services.AddDbContext<ServiceDbContext>(optionsAction: options => options.UseSqlServer(
-				connectionString: DbConnectionHelper.GetConnectionString(configuration: configuration),
+				connectionString: connectionString,
 				sqlServerOptionsAction: builder =>
 					builder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery)));
 			// Llama al método para configurar servicios adicionales.
@@ -128,6 +135,8 @@ namespace Wallet.Funcionalidad
 			services.AddScoped<ICuentaWalletFacade, CuentaWalletFacade>();
 			services.AddScoped<IBitacoraTransaccionFacade, BitacoraTransaccionFacade>();
 			services.AddScoped<IDetallesPagoServicioFacade, DetallesPagoServicioFacade>();
+			services.AddScoped<ITarjetaEmitidaFacade, TarjetaEmitidaFacade>();
+			services.AddScoped<ITarjetaVinculadaFacade, TarjetaVinculadaFacade>();
 		}
 
 		/// <summary>

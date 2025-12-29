@@ -1,7 +1,6 @@
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM.Modelos.GestionCliente;
 
@@ -66,10 +65,10 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
             }
 
             // Manejo de ConcurrencyToken
-            if (!string.IsNullOrEmpty(concurrencyToken))
+            if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
-                context.Entry(direccion).Property(x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(concurrencyToken);
+                context.Entry(entity: direccion).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                    Convert.FromBase64String(s: concurrencyToken);
             }
 
             // Actualiza los datos de la dirección con los valores proporcionados.

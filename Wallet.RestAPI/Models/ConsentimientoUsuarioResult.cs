@@ -117,19 +117,19 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ConsentimientoUsuarioResult {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  IdUsuario: ").Append(IdUsuario).Append("\n");
-            sb.Append("  TipoDocumento: ").Append(TipoDocumento).Append("\n");
-            sb.Append("  Version: ").Append(Version).Append("\n");
-            sb.Append("  FechaAceptacion: ").Append(FechaAceptacion).Append("\n");
-            sb.Append("  Guid: ").Append(Guid).Append("\n");
-            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
-            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
-            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
-            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
-            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class ConsentimientoUsuarioResult {\n");
+            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
+            sb.Append(value: "  IdUsuario: ").Append(value: IdUsuario).Append(value: "\n");
+            sb.Append(value: "  TipoDocumento: ").Append(value: TipoDocumento).Append(value: "\n");
+            sb.Append(value: "  Version: ").Append(value: Version).Append(value: "\n");
+            sb.Append(value: "  FechaAceptacion: ").Append(value: FechaAceptacion).Append(value: "\n");
+            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
+            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
+            sb.Append(value: "  ModificationTimestamp: ").Append(value: ModificationTimestamp).Append(value: "\n");
+            sb.Append(value: "  CreationUser: ").Append(value: CreationUser).Append(value: "\n");
+            sb.Append(value: "  ModificationUser: ").Append(value: ModificationUser).Append(value: "\n");
+            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -139,7 +139,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -149,9 +149,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ConsentimientoUsuarioResult)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (ConsentimientoUsuarioResult)obj);
         }
 
         /// <summary>
@@ -161,64 +161,64 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ConsentimientoUsuarioResult other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other.Id)
+                    Id.Equals(other: other.Id)
                 ) && 
                 (
                     IdUsuario == other.IdUsuario ||
                     IdUsuario != null &&
-                    IdUsuario.Equals(other.IdUsuario)
+                    IdUsuario.Equals(other: other.IdUsuario)
                 ) && 
                 (
                     TipoDocumento == other.TipoDocumento ||
                     TipoDocumento != null &&
-                    TipoDocumento.Equals(other.TipoDocumento)
+                    TipoDocumento.Equals(value: other.TipoDocumento)
                 ) && 
                 (
                     Version == other.Version ||
                     Version != null &&
-                    Version.Equals(other.Version)
+                    Version.Equals(value: other.Version)
                 ) && 
                 (
                     FechaAceptacion == other.FechaAceptacion ||
                     FechaAceptacion != null &&
-                    FechaAceptacion.Equals(other.FechaAceptacion)
+                    FechaAceptacion.Equals(other: other.FechaAceptacion)
                 ) && 
                 (
                     Guid == other.Guid ||
                     Guid != null &&
-                    Guid.Equals(other.Guid)
+                    Guid.Equals(other: other.Guid)
                 ) && 
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other.CreationTimestamp)
+                    CreationTimestamp.Equals(other: other.CreationTimestamp)
                 ) && 
                 (
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
-                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                    ModificationTimestamp.Equals(other: other.ModificationTimestamp)
                 ) && 
                 (
                     CreationUser == other.CreationUser ||
                     CreationUser != null &&
-                    CreationUser.Equals(other.CreationUser)
+                    CreationUser.Equals(other: other.CreationUser)
                 ) && 
                 (
                     ModificationUser == other.ModificationUser ||
                     ModificationUser != null &&
-                    ModificationUser.Equals(other.ModificationUser)
+                    ModificationUser.Equals(other: other.ModificationUser)
                 ) && 
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
-                    IsActive.Equals(other.IsActive)
+                    IsActive.Equals(other: other.IsActive)
                 );
         }
 
@@ -263,12 +263,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ConsentimientoUsuarioResult left, ConsentimientoUsuarioResult right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(ConsentimientoUsuarioResult left, ConsentimientoUsuarioResult right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

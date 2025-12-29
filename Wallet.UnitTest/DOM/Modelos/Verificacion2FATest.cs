@@ -1,6 +1,5 @@
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionUsuario;
 using Xunit.Sdk;
 

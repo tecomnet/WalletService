@@ -19,7 +19,7 @@ public static class RegionInfoHelper
                                       where culture.LCID != 127
                                       select new RegionInfo(name: culture.Name).TwoLetterISORegionName)
                                      .Distinct()
-                                     .OrderBy(x => x);
+                                     .OrderBy(keySelector: x => x);
 
         // Comprobar si existe algún nombre de región ISO en la lista que coincida
         // con el código de país proporcionado (convertido a mayúsculas para una comparación sin distinción de mayúsculas y minúsculas).

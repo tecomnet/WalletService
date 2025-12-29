@@ -2036,33 +2036,6 @@ paths:
               $ref: "#/components/schemas/RevokeTokenRequest"
       tags:
         - Auth
-  "/{version}/cuentaWallet":
-    parameters:
-      - $ref: "#/components/parameters/version"
-    post:
-      summary: Crea una nueva cuenta wallet
-      operationId: CreateCuentaWallet
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrearCuentaWalletRequest"
-        required: true
-      responses:
-        "201":
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CuentaWalletResult"
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-        "401":
-          $ref: "#/components/responses/HTTP_Error_400"
-      security:
-        - jwsToken: []
-      tags:
-        - CuentaWallet
   "/{version}/cliente/{idCliente}/cuentaWallet":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -2171,6 +2144,209 @@ paths:
         - jwsToken: []
       tags:
         - DetallesPagoServicio
+
+  "/{version}/cliente/{idCliente}/tarjetasemitidas":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene las tarjetas emitidas de un cliente
+      operationId: GetTarjetasEmitidasPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TarjetaEmitidaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaEmitida
+  "/{version}/cliente/{idCliente}/tarjetasemitidas/virtual":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    post:
+      summary: Solicita una tarjeta virtual adicional
+      operationId: SolicitarTarjetaVirtual
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SolicitarTarjetaVirtualRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TarjetaEmitidaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaEmitida
+  "/{version}/cliente/{idCliente}/tarjetasemitidas/fisica":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    post:
+      summary: Solicita una tarjeta fisica
+      operationId: SolicitarTarjetaFisica
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SolicitarTarjetaFisicaRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TarjetaEmitidaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaEmitida
+  "/{version}/tarjetasemitidas/{idTarjeta}/bloqueo":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idTarjeta
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
+      summary: Cambia el estado de bloqueo de una tarjeta
+      operationId: CambiarBloqueoTarjeta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CambioBloqueoRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaEmitida
+  "/{version}/tarjetasemitidas/{idTarjeta}/configuracion":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idTarjeta
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
+      summary: Actualiza la configuracion de una tarjeta
+      operationId: ActualizarConfiguracionTarjeta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfiguracionTarjetaRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaEmitida
+  "/{version}/cliente/{idCliente}/tarjetasvinculadas":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene las tarjetas vinculadas de un cliente
+      operationId: GetTarjetasVinculadasPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TarjetaVinculadaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaVinculada
+    post:
+      summary: Vincula una tarjeta externa
+      operationId: VincularTarjeta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VincularTarjetaRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TarjetaVinculadaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaVinculada
+  "/{version}/tarjetasvinculadas/{idTarjeta}":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idTarjeta
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+    delete:
+      summary: Desvincula una tarjeta
+      operationId: DesvincularTarjeta
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaVinculada
+  "/{version}/tarjetasvinculadas/{idTarjeta}/favorita":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idTarjeta
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+    put:
+      summary: Establece una tarjeta como favorita
+      operationId: EstablecerTarjetaFavorita
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetFavoritaRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+      tags:
+        - TarjetaVinculada
 
 components:
   schemas:
@@ -4054,6 +4230,163 @@ components:
                     - instance
             required:
               - errors
+
+    TarjetaEmitidaResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        panEnmascarado:
+          type: string
+        fechaExpiracion:
+          type: string
+          format: date-time
+        estado:
+          $ref: "#/components/schemas/EstadoTarjetaEnum"
+        tipo:
+          $ref: "#/components/schemas/TipoTarjetaEnum"
+        limiteDiario:
+          type: number
+          format: decimal
+        comprasEnLineaHabilitadas:
+          type: boolean
+        retirosCajeroHabilitados:
+          type: boolean
+        nombreImpreso:
+          type: string
+        estadoEntrega:
+          $ref: "#/components/schemas/EstadoEntregaEnum"
+        concurrencyToken:
+          type: string
+    TarjetaVinculadaResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        panEnmascarado:
+          type: string
+        alias:
+          type: string
+        marca:
+          $ref: "#/components/schemas/MarcaTarjetaEnum"
+        esFavorita:
+          type: boolean
+        concurrencyToken:
+          type: string
+    SolicitarTarjetaVirtualRequest:
+      type: object
+      properties:
+        idCliente:
+          type: integer
+          format: int32
+      required:
+        - idCliente
+    SolicitarTarjetaFisicaRequest:
+      type: object
+      properties:
+        idCliente:
+          type: integer
+          format: int32
+        nombreImpreso:
+          type: string
+      required:
+        - idCliente
+        - nombreImpreso
+    CambioBloqueoRequest:
+      type: object
+      properties:
+        bloquear:
+          type: boolean
+        concurrencyToken:
+          type: string
+      required:
+        - bloquear
+        - concurrencyToken
+    ConfiguracionTarjetaRequest:
+      type: object
+      properties:
+        limiteDiario:
+          type: number
+          format: decimal
+        comprasEnLinea:
+          type: boolean
+        retiros:
+          type: boolean
+        concurrencyToken:
+          type: string
+      required:
+        - limiteDiario
+        - comprasEnLinea
+        - retiros
+        - concurrencyToken
+    VincularTarjetaRequest:
+      type: object
+      properties:
+        idCliente:
+          type: integer
+          format: int32
+        tokenPasarela:
+          type: string
+        panEnmascarado:
+          type: string
+        alias:
+          type: string
+        marca:
+          $ref: "#/components/schemas/MarcaTarjetaEnum"
+        fechaExpiracion:
+          type: string
+          format: date-time
+      required:
+        - idCliente
+        - tokenPasarela
+        - panEnmascarado
+        - alias
+        - marca
+        - fechaExpiracion
+    SetFavoritaRequest:
+      type: object
+      properties:
+        idCliente:
+          type: integer
+          format: int32
+        concurrencyToken:
+          type: string
+      required:
+        - idCliente
+        - concurrencyToken
+    TipoTarjetaEnum:
+      type: string
+      enum:
+        - Fisica
+        - Virtual
+    EstadoTarjetaEnum:
+      type: string
+      enum:
+        - Activa
+        - Inactiva
+        - BloqueadaTemporalmente
+        - CanceladaPorRobo
+        - CanceladaPorExtravio
+        - CanceladaPorSistema
+        - Expirada
+    MarcaTarjetaEnum:
+      type: string
+      enum:
+        - Visa
+        - Mastercard
+        - Amex
+        - Carnet
+        - Otra
+    EstadoEntregaEnum:
+      type: string
+      enum:
+        - Solicitada
+        - EnProduccion
+        - Enviada
+        - Entregada
+        - Devuelta
 
 tags:
   - name: Auth

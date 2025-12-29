@@ -3,26 +3,31 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos.GestionWallet;
+using Wallet.Funcionalidad.Functionality.GestionWallet;
 
 namespace Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
 
-public class CuentaWalletFacade(ServiceDbContext context) : ICuentaWalletFacade
+public class CuentaWalletFacade(ServiceDbContext context, ITarjetaEmitidaFacade tarjetaEmitidaFacade)
+    : ICuentaWalletFacade
 {
     public async Task<CuentaWallet> CrearCuentaWalletAsync(int idCliente, Guid creationUser, string moneda = "MXN")
     {
         // Verificar si ya existe una wallet para evitar duplicados
-        var existingWallet = await context.CuentaWallet.FirstOrDefaultAsync(w => w.IdCliente == idCliente);
+        var existingWallet = await context.CuentaWallet.FirstOrDefaultAsync(predicate: w => w.IdCliente == idCliente);
         if (existingWallet != null) return existingWallet;
 
         // Generar CLABE simulada (18 dígitos)
         // En prod usaría un servicio real o algoritmo específico de banco
         var random = new Random();
-        var clabe = $"646{random.NextInt64(100000000000000, 999999999999999)}";
+        var clabe = $"646{random.NextInt64(minValue: 100000000000000, maxValue: 999999999999999)}";
 
-        var wallet = new CuentaWallet(idCliente, moneda, clabe, creationUser);
+        var wallet = new CuentaWallet(idCliente: idCliente, moneda: moneda, cuentaCLABE: clabe, creationUser: creationUser);
 
-        context.CuentaWallet.Add(wallet);
+        context.CuentaWallet.Add(entity: wallet);
         await context.SaveChangesAsync();
+
+        // Crear Tarjeta Virtual Inicial Automáticamente
+        await tarjetaEmitidaFacade.CrearTarjetaInicialAsync(idCuentaWallet: wallet.Id, creationUser: creationUser);
 
         return wallet;
     }
@@ -30,14 +35,14 @@ public class CuentaWalletFacade(ServiceDbContext context) : ICuentaWalletFacade
     public async Task<CuentaWallet> ObtenerPorClienteAsync(int idCliente)
     {
         return await context.CuentaWallet
-                   .FirstOrDefaultAsync(w => w.IdCliente == idCliente)
-               ?? throw new KeyNotFoundException($"No se encontró wallet para el cliente {idCliente}");
+                   .FirstOrDefaultAsync(predicate: w => w.IdCliente == idCliente)
+               ?? throw new KeyNotFoundException(message: $"No se encontró wallet para el cliente {idCliente}");
     }
 
     public async Task<CuentaWallet> ActualizarSaldoAsync(int idWallet, decimal nuevoSaldo, Guid modificationUser)
     {
-        var wallet = await context.CuentaWallet.FindAsync(idWallet)
-                     ?? throw new KeyNotFoundException($"Wallet {idWallet} no encontrada.");
+        var wallet = await context.CuentaWallet.FindAsync(keyValues: idWallet)
+                     ?? throw new KeyNotFoundException(message: $"Wallet {idWallet} no encontrada.");
 
         // Validar que la wallet esté activa
         if (!wallet.IsActive)
@@ -47,11 +52,11 @@ public class CuentaWalletFacade(ServiceDbContext context) : ICuentaWalletFacade
             // Dado que esta clase no usa DomCommon ni ServiceErrorsBuilder explícitamente en los usings actuales,
             // agregaré la excepción estándar.
             throw new EMGeneralAggregateException(
-                DomCommon.BuildEmGeneralException(ServiceErrorsBuilder.CuentaWalletInactiva, [], this.GetType().Name));
+                exception: DomCommon.BuildEmGeneralException(errorCode: ServiceErrorsBuilder.CuentaWalletInactiva, dynamicContent: [], module: this.GetType().Name));
         }
 
-        wallet.ActualizarSaldo(nuevoSaldo, modificationUser);
-        context.Entry(wallet).State = EntityState.Modified;
+        wallet.ActualizarSaldo(nuevoSaldo: nuevoSaldo, modificationUser: modificationUser);
+        context.Entry(entity: wallet).State = EntityState.Modified;
 
         await context.SaveChangesAsync();
         return wallet;

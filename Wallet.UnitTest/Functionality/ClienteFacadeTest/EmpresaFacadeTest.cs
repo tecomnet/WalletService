@@ -20,7 +20,7 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         // Act
         var result = await Facade.ObtenerPorIdAsync(idEmpresa: id);
         // Assert
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: id, actual: result.Id);
         Assert.Equal(expected: nombreEsperado, actual: result.Nombre);
     }
@@ -47,7 +47,7 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         var result = await Facade.ObtenerPorNombreAsync(nombre: nombre);
 
         // Assert
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: nombre, actual: result.Nombre);
     }
 
@@ -76,13 +76,13 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
             testCase: SetupConfig.TestCaseId);
 
         // Assert
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.True(condition: result.Id > 0); // EF Core asignó un ID
         Assert.Equal(expected: nombreNuevo, actual: result.Nombre);
 
         // Verifica que se guardó en la DB
         var savedEntity = await Context.Empresa.AsNoTracking().FirstAsync(predicate: x => x.Id == result.Id);
-        Assert.NotNull(savedEntity);
+        Assert.NotNull(@object: savedEntity);
     }
 
     [Theory(DisplayName = "GuardarEmpresaAsync: Lanza excepción por duplicidad de nombre")]
@@ -108,9 +108,9 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         const string nuevoNombre = "TecomnetActualizada";
 
         // Act
-        var empresaValida = await Context.Empresa.AsNoTracking().FirstAsync(e => e.Id == idAActualizar);
+        var empresaValida = await Context.Empresa.AsNoTracking().FirstAsync(predicate: e => e.Id == idAActualizar);
         var result = await Facade.ActualizaEmpresaAsync(idEmpresa: idAActualizar, nombre: nuevoNombre,
-            concurrencyToken: Convert.ToBase64String(empresaValida.ConcurrencyToken),
+            concurrencyToken: Convert.ToBase64String(inArray: empresaValida.ConcurrencyToken),
             modificationUser: SetupConfig.UserId);
 
         // Assert
@@ -128,12 +128,12 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         const int idAActualizar = 1; // Tecomnet
         const string nombreDuplicado = "EmpresaInactiva"; // Ya existe
 
-        var empresaValida = await Context.Empresa.AsNoTracking().FirstAsync(e => e.Id == idAActualizar);
+        var empresaValida = await Context.Empresa.AsNoTracking().FirstAsync(predicate: e => e.Id == idAActualizar);
 
         // Act & Assert
         await Assert.ThrowsAsync<EMGeneralAggregateException>(testCode: () =>
             Facade.ActualizaEmpresaAsync(idEmpresa: idAActualizar, nombre: nombreDuplicado,
-                concurrencyToken: Convert.ToBase64String(empresaValida.ConcurrencyToken),
+                concurrencyToken: Convert.ToBase64String(inArray: empresaValida.ConcurrencyToken),
                 modificationUser: SetupConfig.UserId));
     }
 
@@ -152,7 +152,7 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         // Act & Assert
         await Assert.ThrowsAsync<EMGeneralAggregateException>(testCode: () =>
             Facade.ActualizaEmpresaAsync(idEmpresa: idInactiva, nombre: "NombreNoImporta",
-                concurrencyToken: Convert.ToBase64String(token),
+                concurrencyToken: Convert.ToBase64String(inArray: token),
                 modificationUser: SetupConfig.UserId));
     }
 
@@ -170,7 +170,7 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
         // Act
         var empresa = await Facade.ObtenerPorIdAsync(idEmpresa: idAEliminar);
         var result = await Facade.EliminaEmpresaAsync(idEmpresa: idAEliminar,
-            concurrencyToken: Convert.ToBase64String(empresa.ConcurrencyToken), modificationUser: SetupConfig.UserId);
+            concurrencyToken: Convert.ToBase64String(inArray: empresa.ConcurrencyToken), modificationUser: SetupConfig.UserId);
 
         // Assert
         Assert.False(condition: result.IsActive);
@@ -193,7 +193,7 @@ public class EmpresaFacadeTest(SetupDataConfig setupConfig)
 
         // Act
         var result = await Facade.ActivaEmpresaAsync(idEmpresa: idAActivar,
-            concurrencyToken: Convert.ToBase64String(empresaToDeactivate!.ConcurrencyToken),
+            concurrencyToken: Convert.ToBase64String(inArray: empresaToDeactivate!.ConcurrencyToken),
             modificationUser: SetupConfig.UserId);
 
         // Assert

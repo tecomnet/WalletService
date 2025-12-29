@@ -1,6 +1,5 @@
 using Moq;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Xunit.Sdk;
 

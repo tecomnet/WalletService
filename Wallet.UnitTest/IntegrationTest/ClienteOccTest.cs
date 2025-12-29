@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.RestAPI.Models;
@@ -34,8 +33,8 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
     {
         // 0. Seed Company and State needed for registration
         var commonSettings = new CommonSettings();
-        Context.Empresa.AddRange(commonSettings.Empresas);
-        Context.Estado.AddRange(commonSettings.Estados);
+        Context.Empresa.AddRange(entities: commonSettings.Empresas);
+        Context.Estado.AddRange(entities: commonSettings.Estados);
         await Context.SaveChangesAsync();
 
         var client = Factory.CreateClient();
@@ -44,44 +43,44 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
         // 1. Create Authenticated User
         var (userModel, token) = await CreateAuthenticatedUserAsync();
         client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            new System.Net.Http.Headers.AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         // Fetch user into current context to link entities
-        var user = await Context.Usuario.FirstAsync(u => u.Id == userModel.Id);
+        var user = await Context.Usuario.FirstAsync(predicate: u => u.Id == userModel.Id);
 
         var empresa = await Context.Empresa.FirstAsync();
         var estado = await Context.Estado.FirstAsync();
 
-        var cliente = new Cliente(user, empresa, user.CreationUser);
+        var cliente = new Cliente(usuario: user, empresa: empresa, creationUser: user.CreationUser);
         cliente.AgregarDatosPersonales(
             nombre: "Initial",
             primerApellido: "User",
             segundoApellido: "Test",
-            fechaNacimiento: new DateOnly(1990, 1, 1),
+            fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1),
             genero: Genero.Masculino,
             modificationUser: user.CreationUser);
-        cliente.AgregarEstado(estado, user.CreationUser);
+        cliente.AgregarEstado(estado: estado, modificationUser: user.CreationUser);
 
-        var checkton = new ValidacionCheckton(TipoCheckton.Curp, true, user.CreationUser);
-        cliente.AgregarValidacionCheckton(checkton, user.CreationUser);
-        cliente.AgregarCurp("AAAA000000HDFXXX00", user.CreationUser);
+        var checkton = new ValidacionCheckton(tipoCheckton: TipoCheckton.Curp, resultado: true, creationUser: user.CreationUser);
+        cliente.AgregarValidacionCheckton(validacion: checkton, modificationUser: user.CreationUser);
+        cliente.AgregarCurp(curp: "AAAA000000HDFXXX00", modificationUser: user.CreationUser);
 
-        var verif = new Verificacion2FA("sid123", DateTime.Now.AddMinutes(10), Tipo2FA.Sms, user.CreationUser);
-        user.AgregarVerificacion2Fa(verif, user.CreationUser);
-        verif.MarcarComoVerificado("1234", user.CreationUser);
+        var verif = new Verificacion2FA(twilioSid: "sid123", fechaVencimiento: DateTime.Now.AddMinutes(value: 10), tipo: Tipo2FA.Sms, creationUser: user.CreationUser);
+        user.AgregarVerificacion2Fa(verificacion: verif, modificationUser: user.CreationUser);
+        verif.MarcarComoVerificado(codigo: "1234", modificationUser: user.CreationUser);
 
-        Context.Cliente.Add(cliente);
+        Context.Cliente.Add(entity: cliente);
         await Context.SaveChangesAsync();
 
         // Detach to ensure we are testing real API behavior
         Context.ChangeTracker.Clear();
 
         // 2. Get Cliente to obtain ConcurrencyToken
-        var responseGet = await client.GetAsync($"/{version}/cliente/{cliente.Id}");
-        Assert.Equal(HttpStatusCode.OK, responseGet.StatusCode);
-        var clienteResult = JsonConvert.DeserializeObject<ClienteResult>(await responseGet.Content.ReadAsStringAsync());
-        Assert.NotNull(clienteResult);
-        Assert.NotNull(clienteResult.ConcurrencyToken);
+        var responseGet = await client.GetAsync(requestUri: $"/{version}/cliente/{cliente.Id}");
+        Assert.Equal(expected: HttpStatusCode.OK, actual: responseGet.StatusCode);
+        var clienteResult = JsonConvert.DeserializeObject<ClienteResult>(value: await responseGet.Content.ReadAsStringAsync());
+        Assert.NotNull(@object: clienteResult);
+        Assert.NotNull(@object: clienteResult.ConcurrencyToken);
         var originalToken = clienteResult.ConcurrencyToken;
 
         // 3. Update with VALID token
@@ -90,24 +89,24 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
             Nombre = "Updated Name",
             ApellidoPaterno = "Updated Last",
             ApellidoMaterno = "Updated Mat",
-            FechaNacimiento = new DateTime(1991, 2, 2),
+            FechaNacimiento = new DateTime(year: 1991, month: 2, day: 2),
             NombreEstado = estado.Nombre,
             Genero = (int)GeneroEnum.FemeninoEnum, // Changed
             ConcurrencyToken = originalToken
         };
 
-        var responsePut1 = await client.PutAsync($"/{version}/cliente/{cliente.Id}",
-            new StringContent(JsonConvert.SerializeObject(updateRequest), Encoding.UTF8, "application/json"));
+        var responsePut1 = await client.PutAsync(requestUri: $"/{version}/cliente/{cliente.Id}",
+            content: new StringContent(content: JsonConvert.SerializeObject(value: updateRequest), encoding: Encoding.UTF8, mediaType: "application/json"));
 
         if (responsePut1.StatusCode != HttpStatusCode.OK)
         {
-            _output.WriteLine("Update failed: " + await responsePut1.Content.ReadAsStringAsync());
+            _output.WriteLine(message: "Update failed: " + await responsePut1.Content.ReadAsStringAsync());
         }
 
-        Assert.Equal(HttpStatusCode.OK, responsePut1.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: responsePut1.StatusCode);
 
-        var resultPut1 = JsonConvert.DeserializeObject<ClienteResult>(await responsePut1.Content.ReadAsStringAsync());
-        Assert.NotEqual(originalToken, resultPut1.ConcurrencyToken); // Token should change
+        var resultPut1 = JsonConvert.DeserializeObject<ClienteResult>(value: await responsePut1.Content.ReadAsStringAsync());
+        Assert.NotEqual(expected: originalToken, actual: resultPut1.ConcurrencyToken); // Token should change
 
         // 4. Update with STALE token (Failure Expected)
         var updateRequestStale = new DatosClienteUpdateRequest
@@ -115,15 +114,15 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
             Nombre = "Conflict Name",
             ApellidoPaterno = "Conflict Last",
             ApellidoMaterno = "Conflict Mat",
-            FechaNacimiento = new DateTime(1991, 2, 2),
+            FechaNacimiento = new DateTime(year: 1991, month: 2, day: 2),
             NombreEstado = estado.Nombre,
             Genero = (int)GeneroEnum.FemeninoEnum,
             ConcurrencyToken = originalToken // Using OLD token
         };
 
-        var responsePut2 = await client.PutAsync($"/{version}/cliente/{cliente.Id}",
-            new StringContent(JsonConvert.SerializeObject(updateRequestStale), Encoding.UTF8, "application/json"));
+        var responsePut2 = await client.PutAsync(requestUri: $"/{version}/cliente/{cliente.Id}",
+            content: new StringContent(content: JsonConvert.SerializeObject(value: updateRequestStale), encoding: Encoding.UTF8, mediaType: "application/json"));
 
-        Assert.Equal(HttpStatusCode.Conflict, responsePut2.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.Conflict, actual: responsePut2.StatusCode);
     }
 }

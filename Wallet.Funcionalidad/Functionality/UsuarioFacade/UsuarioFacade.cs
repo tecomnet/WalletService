@@ -4,7 +4,6 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.Funcionalidad.ServiceClient;
@@ -30,7 +29,7 @@ public class UsuarioFacade(
             // Busca el usuario por su ID, incluyendo todas las relaciones necesarias.
             var usuario = await context.Usuario
                 .Include(navigationPropertyPath: u => u.Cliente)
-                .ThenInclude(c => c.Empresa)
+                .ThenInclude(navigationPropertyPath: c => c.Empresa)
                 .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
 
             // Si no se encuentra, lanza una excepción.
@@ -75,7 +74,7 @@ public class UsuarioFacade(
 
             if (usuario.Cliente != null)
             {
-                claims.Add(new Claim(type: "IdCliente", value: usuario.Cliente.Id.ToString()));
+                claims.Add(item: new Claim(type: "IdCliente", value: usuario.Cliente.Id.ToString()));
             }
 
             var accesToken = tokenService.GenerateAccessToken(claims: claims);
@@ -105,8 +104,8 @@ public class UsuarioFacade(
             ValidarUsuarioIsActive(usuario: usuario);
             // TODO: ValidarConfirmacionCodigoVerificacionSms2Fa(usuario: usuario); // Metodo no existe
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: usuario).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             // Actualiza la contraseña, validando la actual.
             usuario.ActualizarContrasena(
                 contrasenaActual: contrasenaActual,
@@ -138,13 +137,13 @@ public class UsuarioFacade(
             // Valida que el usuario tenga el registro completado.
             if (validarEstatus)
             {
-                ValidarUsuarioRegistroCompletado(usuario);
-                ValidarUsuarioIsActive(usuario);
+                ValidarUsuarioRegistroCompletado(usuario: usuario);
+                ValidarUsuarioIsActive(usuario: usuario);
             }
 
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: usuario).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             // Actualiza el correo electrónico en la entidad.
             usuario.ActualizarCorreoElectronico(correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
@@ -195,13 +194,13 @@ public class UsuarioFacade(
             // Valida que el usuario tenga el registro completado.
             if (validarEstatus)
             {
-                ValidarUsuarioRegistroCompletado(usuario);
-                ValidarUsuarioIsActive(usuario);
+                ValidarUsuarioRegistroCompletado(usuario: usuario);
+                ValidarUsuarioIsActive(usuario: usuario);
             }
 
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(usuario).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: usuario).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             // Actualiza el teléfono en la entidad.
             usuario.ActualizarTelefono(codigoPais: codigoPais, telefono: telefono,
                 modificationUser: modificationUser);
@@ -247,7 +246,7 @@ public class UsuarioFacade(
         {
             bool confirmado = false;
             // Obtiene el usuario.
-            var usuario = await context.Usuario.FindAsync(idUsuario);
+            var usuario = await context.Usuario.FindAsync(keyValues: idUsuario);
 
             if (usuario == null)
             {
@@ -260,7 +259,7 @@ public class UsuarioFacade(
             // Valida que el usuario tenga el registro completado.
             if (validarEstatus)
             {
-                ValidarUsuarioRegistroCompletado(usuario);
+                ValidarUsuarioRegistroCompletado(usuario: usuario);
             }
 
             // Carga explícitamente las verificaciones 2FA activas del tipo solicitado.

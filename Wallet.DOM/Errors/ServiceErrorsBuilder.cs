@@ -50,6 +50,8 @@ public class ServiceErrorsBuilder
         RegistroErrors();
         // 11. Errores de KeyValueConfig
         KeyValueConfigErrors();
+        // 12. Errores de GestionWallet
+        GestionWalletErrors();
     }
 
     /// <summary>
@@ -730,6 +732,34 @@ public class ServiceErrorsBuilder
             errorCode: KeyValueConfigInactivo,
             message: "La configuración está inactiva.",
             description: "La configuración con clave {0} no está activa. Primero debe activarla.");
+    }
+
+    #endregion
+
+    #region GestionWallet
+
+    /// <summary>Error: Operación logística no permitida para tarjeta virtual.</summary>
+    public const string TarjetaVirtualNoLogistica = "TARJETA-VIRTUAL-NO-LOGISTICA";
+
+    /// <summary>Error: La tarjeta ha expirado.</summary>
+    public const string TarjetaExpirada = "TARJETA-EXPIRADA";
+
+    /// <summary>
+    /// Carga los errores relacionados con GestionWallet (Tarjetas).
+    /// </summary>
+    private void GestionWalletErrors()
+    {
+        // Error de logística en tarjeta virtual
+        AddServiceError(
+            errorCode: TarjetaVirtualNoLogistica,
+            message: "Operación no permitida.",
+            description: "No se pueden realizar operaciones de logística/entrega en una tarjeta virtual.");
+
+        // Error de tarjeta expirada
+        AddServiceError(
+            errorCode: TarjetaExpirada,
+            message: "Tarjeta Expirada.",
+            description: "La tarjeta ha expirado y no puede realizar operaciones.");
     }
 
     #endregion

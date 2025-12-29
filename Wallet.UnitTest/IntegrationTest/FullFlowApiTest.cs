@@ -3,7 +3,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Wallet.DOM.Enums;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.DOM.Modelos.GestionUsuario;
@@ -61,10 +60,10 @@ public class FullFlowApiTest : DatabaseTestFixture
         var client = Factory.CreateClient();
         // Establece el encabezado de autorización con el token Bearer.
         client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            new System.Net.Http.Headers.AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         // Siembra datos iniciales necesarios para el Cliente (Empresa) y crea un Cliente para el usuario.
-        int clienteId = await SeedClientForUser(user);
+        int clienteId = await SeedClientForUser(user: user);
 
         // 2. Registro de 3 Empresas
         // Itera para crear múltiples empresas.
@@ -73,17 +72,17 @@ public class FullFlowApiTest : DatabaseTestFixture
         {
             var request = new EmpresaRequest { Nombre = $"Empresa Test {i}" };
             // Envía la solicitud POST para crear una empresa.
-            var response = await client.PostAsync($"/{ApiVersion}/empresa", CreateContent(request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
-            Assert.True(response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
-                $"Expected Created or OK for Empresa but got {response.StatusCode}. Content: {content}");
+            Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
+                userMessage: $"Expected Created or OK for Empresa but got {response.StatusCode}. Content: {content}");
             // Deserializa la respuesta para obtener el resultado de la empresa creada.
-            var result = JsonConvert.DeserializeObject<EmpresaResult>(content, _jsonSettings);
-            Assert.NotNull(result);
+            var result = JsonConvert.DeserializeObject<EmpresaResult>(value: content, settings: _jsonSettings);
+            Assert.NotNull(@object: result);
             // Almacena el ID de la empresa creada.
-            if (result.Id.HasValue) empresaIds.Add(result.Id.Value);
-            _output.WriteLine($"Empresa creada: {result.Nombre} (ID: {result.Id})");
+            if (result.Id.HasValue) empresaIds.Add(item: result.Id.Value);
+            _output.WriteLine(message: $"Empresa creada: {result.Nombre} (ID: {result.Id})");
         }
 
         // 3. Registro de 2 Brokers
@@ -93,17 +92,17 @@ public class FullFlowApiTest : DatabaseTestFixture
         {
             var request = new BrokerRequest { Nombre = $"Broker Test {i}" };
             // Envía la solicitud POST para crear un broker.
-            var response = await client.PostAsync($"/{ApiVersion}/broker", CreateContent(request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/broker", content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
-            Assert.True(response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
-                $"Expected Created or OK for Broker but got {response.StatusCode}. Content: {content}");
+            Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
+                userMessage: $"Expected Created or OK for Broker but got {response.StatusCode}. Content: {content}");
             // Deserializa la respuesta para obtener el resultado del broker creado.
-            var result = JsonConvert.DeserializeObject<BrokerResult>(content, _jsonSettings);
-            Assert.NotNull(result);
+            var result = JsonConvert.DeserializeObject<BrokerResult>(value: content, settings: _jsonSettings);
+            Assert.NotNull(@object: result);
             // Almacena el ID del broker creado.
-            brokerIds.Add(result.Id.Value);
-            _output.WriteLine($"Broker creado: {result.Nombre} (ID: {result.Id})");
+            brokerIds.Add(item: result.Id.Value);
+            _output.WriteLine(message: $"Broker creado: {result.Nombre} (ID: {result.Id})");
         }
 
         // 4. Registro de 6 Proveedores (Distribuidos entre Brokers)
@@ -112,7 +111,7 @@ public class FullFlowApiTest : DatabaseTestFixture
         for (int i = 1; i <= 6; i++)
         {
             // Asigna el proveedor a un broker de forma rotativa.
-            var brokerId = brokerIds[(i - 1) % brokerIds.Count];
+            var brokerId = brokerIds[index: (i - 1) % brokerIds.Count];
             var request = new ProveedorRequest
             {
                 Nombre = $"Proveedor Test {i}",
@@ -120,17 +119,17 @@ public class FullFlowApiTest : DatabaseTestFixture
                 BrokerId = brokerId
             };
             // Envía la solicitud POST para crear un proveedor.
-            var response = await client.PostAsync($"/{ApiVersion}/proveedor", CreateContent(request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor", content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
-            Assert.True(response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
-                $"Expected Created or OK for Proveedor but got {response.StatusCode}. Content: {content}");
+            Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
+                userMessage: $"Expected Created or OK for Proveedor but got {response.StatusCode}. Content: {content}");
             // Deserializa la respuesta para obtener el resultado del proveedor creado.
-            var result = JsonConvert.DeserializeObject<ProveedorResult>(content, _jsonSettings);
-            Assert.NotNull(result);
+            var result = JsonConvert.DeserializeObject<ProveedorResult>(value: content, settings: _jsonSettings);
+            Assert.NotNull(@object: result);
             // Almacena el ID del proveedor creado.
-            if (result.Id.HasValue) proveedorIds.Add(result.Id.Value);
-            _output.WriteLine($"Proveedor creado: {result.Nombre} (ID: {result.Id}) vinculado al Broker {brokerId}");
+            if (result.Id.HasValue) proveedorIds.Add(item: result.Id.Value);
+            _output.WriteLine(message: $"Proveedor creado: {result.Nombre} (ID: {result.Id}) vinculado al Broker {brokerId}");
         }
 
         // 5. Registro de 10 Productos (Distribuidos entre Proveedores)
@@ -139,7 +138,7 @@ public class FullFlowApiTest : DatabaseTestFixture
         for (int i = 1; i <= 10; i++)
         {
             // Asigna el producto a un proveedor de forma rotativa.
-            var proveedorId = proveedorIds[(i - 1) % proveedorIds.Count];
+            var proveedorId = proveedorIds[index: (i - 1) % proveedorIds.Count];
             var request = new ProductoRequest
             {
                 Sku = $"SKU-{i}",
@@ -149,19 +148,19 @@ public class FullFlowApiTest : DatabaseTestFixture
                 Categoria = CategoriaEnum.MOVILIDADEnum
             };
             // Envía la solicitud POST para crear un producto asociado a un proveedor.
-            var response = await client.PostAsync($"/{ApiVersion}/proveedor/{proveedorId}/producto",
-                CreateContent(request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedorId}/producto",
+                content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
-            Assert.True(response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
-                $"Expected Created or OK for Producto but got {response.StatusCode}. Content: {content}");
+            Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
+                userMessage: $"Expected Created or OK for Producto but got {response.StatusCode}. Content: {content}");
             // Deserializa la respuesta para obtener el resultado del producto creado.
-            var result = JsonConvert.DeserializeObject<ProductoResult>(content, _jsonSettings);
-            Assert.NotNull(result);
+            var result = JsonConvert.DeserializeObject<ProductoResult>(value: content, settings: _jsonSettings);
+            Assert.NotNull(@object: result);
             // Almacena el ID del producto creado.
-            if (result.Id.HasValue) productoIds.Add(result.Id.Value);
+            if (result.Id.HasValue) productoIds.Add(item: result.Id.Value);
             _output.WriteLine(
-                $"Producto creado: {result.Nombre} (ID: {result.Id}) vinculado al Proveedor {proveedorId}");
+                message: $"Producto creado: {result.Nombre} (ID: {result.Id}) vinculado al Proveedor {proveedorId}");
         }
 
         // 6. Registro de 2 Servicios Favoritos
@@ -169,7 +168,7 @@ public class FullFlowApiTest : DatabaseTestFixture
         for (int i = 1; i <= 2; i++)
         {
             // Utiliza los primeros proveedores para los servicios favoritos.
-            var proveedorId = proveedorIds[i % proveedorIds.Count]; 
+            var proveedorId = proveedorIds[index: i % proveedorIds.Count]; 
             var request = new ServicioFavoritoRequest
             {
                 ClienteId = clienteId,
@@ -178,15 +177,15 @@ public class FullFlowApiTest : DatabaseTestFixture
                 NumeroReferencia = $"REF-{i}"
             };
             // Envía la solicitud POST para crear un servicio favorito.
-            var response = await client.PostAsync($"/{ApiVersion}/servicioFavorito", CreateContent(request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/servicioFavorito", content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
-            Assert.True(response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
-                $"Expected Created or OK for Servicio Favorito but got {response.StatusCode}. Content: {content}");
+            Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
+                userMessage: $"Expected Created or OK for Servicio Favorito but got {response.StatusCode}. Content: {content}");
             // Deserializa la respuesta para obtener el resultado del servicio favorito creado.
-            var result = JsonConvert.DeserializeObject<ServicioFavoritoResult>(content, _jsonSettings);
-            Assert.NotNull(result);
-            _output.WriteLine($"Servicio Favorito creado: {result.Alias} (ID: {result.Id})");
+            var result = JsonConvert.DeserializeObject<ServicioFavoritoResult>(value: content, settings: _jsonSettings);
+            Assert.NotNull(@object: result);
+            _output.WriteLine(message: $"Servicio Favorito creado: {result.Alias} (ID: {result.Id})");
         }
     }
 
@@ -201,25 +200,25 @@ public class FullFlowApiTest : DatabaseTestFixture
         await using var context = CreateContext();
 
         // Siembra una Empresa por defecto para el cliente.
-        var empresa = new Empresa("Tecomnet Default", Guid.NewGuid());
-        await context.Empresa.AddAsync(empresa);
+        var empresa = new Empresa(nombre: "Tecomnet Default", creationUser: Guid.NewGuid());
+        await context.Empresa.AddAsync(entity: empresa);
         await context.SaveChangesAsync();
 
         // Asumiendo que el usuario ya está adjunto o que su ID coincide.
         // CreateAuthenticatedUserAsync crea el usuario en la DB.
         // Necesitamos buscarlo o adjuntarlo? No, solo usar el ID.
-        var userDb = await context.Usuario.FindAsync(user.Id);
+        var userDb = await context.Usuario.FindAsync(keyValues: user.Id);
 
         // Crea una nueva instancia de Cliente vinculada al usuario y la empresa.
-        var cliente = new Cliente(userDb!, empresa, Guid.NewGuid());
+        var cliente = new Cliente(usuario: userDb!, empresa: empresa, creationUser: Guid.NewGuid());
         // Agrega datos personales al cliente.
-        cliente.AgregarDatosPersonales("Test", "User", "FullFlow", new DateOnly(1990, 1, 1), Genero.Masculino,
-            Guid.NewGuid());
+        cliente.AgregarDatosPersonales(nombre: "Test", primerApellido: "User", segundoApellido: "FullFlow", fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1), genero: Genero.Masculino,
+            modificationUser: Guid.NewGuid());
         // Agrega una dirección al cliente.
-        cliente.AgregarDireccion(new Direccion("MX", "CDMX", Guid.NewGuid()), Guid.NewGuid());
+        cliente.AgregarDireccion(direccion: new Direccion(pais: "MX", estado: "CDMX", creationUser: Guid.NewGuid()), creationUser: Guid.NewGuid());
 
         // Agrega el cliente al contexto y guarda los cambios en la base de datos.
-        await context.Cliente.AddAsync(cliente);
+        await context.Cliente.AddAsync(entity: cliente);
         await context.SaveChangesAsync();
 
         return cliente.Id;
@@ -233,8 +232,8 @@ public class FullFlowApiTest : DatabaseTestFixture
     private StringContent CreateContent(object body)
     {
         // Serializa el objeto a una cadena JSON utilizando la configuración predefinida.
-        var json = JsonConvert.SerializeObject(body, _jsonSettings);
+        var json = JsonConvert.SerializeObject(value: body, settings: _jsonSettings);
         // Crea un StringContent con el JSON, codificación UTF8 y tipo de contenido application/json.
-        return new StringContent(json, Encoding.UTF8, "application/json");
+        return new StringContent(content: json, encoding: Encoding.UTF8, mediaType: "application/json");
     }
 }

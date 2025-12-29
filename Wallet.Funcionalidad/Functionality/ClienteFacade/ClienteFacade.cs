@@ -3,7 +3,6 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.Funcionalidad.ServiceClient;
 
@@ -85,7 +84,7 @@ public class ClienteFacade(
             var cliente = await context.Cliente
                 .Include(navigationPropertyPath: x => x.Direccion)
                 .Include(navigationPropertyPath: x => x.Usuario)
-                .FirstOrDefaultAsync(c => c.UsuarioId == idUsuario);
+                .FirstOrDefaultAsync(predicate: c => c.UsuarioId == idUsuario);
 
             if (cliente != null && !cliente.IsActive)
             {
@@ -98,7 +97,7 @@ public class ClienteFacade(
             if (cliente == null)
             {
                 // Recuperar el usuario para vincularlo
-                var usuario = await context.Usuario.FirstOrDefaultAsync(u => u.Id == idUsuario);
+                var usuario = await context.Usuario.FirstOrDefaultAsync(predicate: u => u.Id == idUsuario);
                 if (usuario == null)
                 {
                     throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -110,16 +109,16 @@ public class ClienteFacade(
                 // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
                 var empresa = await empresaFacade.ObtenerPorNombreAsync(nombre: "Tecomnet");
                 // Crear cliente
-                cliente = new Cliente(usuario, creationUser: usuario.CreationUser, empresa: empresa);
-                await context.Cliente.AddAsync(cliente);
+                cliente = new Cliente(usuario: usuario, creationUser: usuario.CreationUser, empresa: empresa);
+                await context.Cliente.AddAsync(entity: cliente);
             }
             else
             {
                 if (enforceClientConcurrency)
                 {
                     // Establece el token original para la validación de concurrencia optimista
-                    context.Entry(cliente).Property(x => x.ConcurrencyToken).OriginalValue =
-                        Convert.FromBase64String(concurrencyToken);
+                    context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                        Convert.FromBase64String(s: concurrencyToken);
                 }
             }
 
@@ -174,8 +173,8 @@ public class ClienteFacade(
         {
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(cliente).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             cliente.Deactivate(modificationUser: modificationUser);
             cliente.Usuario.Deactivate(modificationUser: modificationUser); // Also deactivate Usuario? Maybe.
             await context.SaveChangesAsync();
@@ -199,8 +198,8 @@ public class ClienteFacade(
         {
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Establece el token original para la validación de concurrencia optimista
-            context.Entry(cliente).Property(x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(concurrencyToken);
+            context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                Convert.FromBase64String(s: concurrencyToken);
             cliente.Activate(modificationUser: modificationUser);
             cliente.Usuario.Activate(modificationUser: modificationUser); // Also activate Usuario? Maybe.
             await context.SaveChangesAsync();
@@ -244,8 +243,8 @@ public class ClienteFacade(
         {
             // Obtener cliente con sus servicios favoritos
             var cliente = await context.Cliente
-                .Include(c => c.ServiciosFavoritos)
-                .FirstOrDefaultAsync(c => c.Id == idCliente);
+                .Include(navigationPropertyPath: c => c.ServiciosFavoritos)
+                .FirstOrDefaultAsync(predicate: c => c.Id == idCliente);
 
             // Validar cliente
             if (cliente == null)
@@ -285,7 +284,7 @@ public class ClienteFacade(
         try
         {
             // Obtener cliente para asegurar existencia y obtener UsuarioId
-            var cliente = await ObtenerClientePorIdAsync(idCliente);
+            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
 
             // Llamar a la logica central de actualización
             return await ActualizarClienteDatosPersonalesAsync(

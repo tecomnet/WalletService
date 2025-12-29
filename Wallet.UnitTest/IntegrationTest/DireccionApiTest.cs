@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
@@ -26,7 +25,7 @@ public class DireccionApiTest : DatabaseTestFixture
         await using var context = CreateContext();
 
         // Attach user to context to avoid tracking issues if needed, or just use ID
-        var userFromDb = await context.Usuario.FindAsync(user.Id);
+        var userFromDb = await context.Usuario.FindAsync(keyValues: user.Id);
 
         var empresa = new Empresa(nombre: "Empresa Test", creationUser: Guid.NewGuid());
         await context.Empresa.AddAsync(entity: empresa);
@@ -64,7 +63,7 @@ public class DireccionApiTest : DatabaseTestFixture
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<DireccionResult>(value: responseContentString);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: direccion.CodigoPostal, actual: result.CodigoPostal);
         Assert.Equal(expected: direccion.Calle, actual: result.Calle);
     }

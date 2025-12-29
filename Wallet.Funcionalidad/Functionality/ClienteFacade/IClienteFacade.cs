@@ -1,5 +1,4 @@
 using Wallet.DOM.Enums;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;

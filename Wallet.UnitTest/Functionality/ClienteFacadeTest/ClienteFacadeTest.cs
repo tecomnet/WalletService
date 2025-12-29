@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
@@ -85,10 +84,10 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 nombreEstado: nombreEstado,
                 fechaNacimiento: fechaNacimientoDateOnly,
                 genero: genero,
-                concurrencyToken: Convert.ToBase64String(concurrencyToken),
+                concurrencyToken: Convert.ToBase64String(inArray: concurrencyToken),
                 modificationUser: SetupConfig.UserId);
             // Assert user created
-            Assert.NotNull(cliente);
+            Assert.NotNull(@object: cliente);
             // Assert user properties
             Assert.True(condition: cliente.Nombre == nombre &&
                                    cliente.PrimerApellido == primerApellido &&
@@ -101,7 +100,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             var clienteContext = await Context.Cliente.Include(navigationPropertyPath: x => x.Estado).AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm user created in context
-            Assert.NotNull(clienteContext);
+            Assert.NotNull(@object: clienteContext);
             // Assert user properties
             Assert.True(condition: clienteContext.Nombre == nombre &&
                                    clienteContext.PrimerApellido == primerApellido &&
@@ -151,19 +150,19 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             string token = string.Empty;
             if (success)
             {
-                var existingCliente = await Facade.ObtenerClientePorIdAsync(idCliente);
-                token = Convert.ToBase64String(existingCliente.ConcurrencyToken);
+                var existingCliente = await Facade.ObtenerClientePorIdAsync(idCliente: idCliente);
+                token = Convert.ToBase64String(inArray: existingCliente.ConcurrencyToken);
             }
             else
             {
-                token = Convert.ToBase64String(new byte[8]); // Dummy token for fail case
+                token = Convert.ToBase64String(inArray: new byte[8]); // Dummy token for fail case
             }
 
             var cliente =
                 await Facade.EliminarClienteAsync(idCliente: idCliente, concurrencyToken: token,
                     modificationUser: SetupConfig.UserId);
             // Assert cliente returned
-            Assert.NotNull(cliente);
+            Assert.NotNull(@object: cliente);
             // Assert cliente properties
             Assert.False(condition: cliente.IsActive);
             Assert.True(condition: cliente.ModificationUser == SetupConfig.UserId);
@@ -171,7 +170,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             var clienteContext =
                 await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm cliente updated in context
-            Assert.NotNull(clienteContext);
+            Assert.NotNull(@object: clienteContext);
             // Assert cliente persisted as deactivated
             Assert.False(condition: clienteContext.IsActive);
             Assert.True(condition: clienteContext.ModificationUser == SetupConfig.UserId);
@@ -218,19 +217,19 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
                 // For test case 1, client is active, but we can still try to activate it or check token logic.
                 // Actually ActivarClienteAsync assumes it's inactive? The test case "1. Successfully case, activa cliente" implies it works.
                 // We need to fetch it to get the token regardless.
-                var existingCliente = await Facade.ObtenerClientePorIdAsync(idCliente);
-                token = Convert.ToBase64String(existingCliente.ConcurrencyToken);
+                var existingCliente = await Facade.ObtenerClientePorIdAsync(idCliente: idCliente);
+                token = Convert.ToBase64String(inArray: existingCliente.ConcurrencyToken);
             }
             else
             {
-                token = Convert.ToBase64String(new byte[8]);
+                token = Convert.ToBase64String(inArray: new byte[8]);
             }
 
             var cliente =
                 await Facade.ActivarClienteAsync(idCliente: idCliente, concurrencyToken: token,
                     modificationUser: SetupConfig.UserId);
             // Assert cliente returned
-            Assert.NotNull(cliente);
+            Assert.NotNull(@object: cliente);
             // Assert cliente properties
             Assert.True(condition: cliente.IsActive);
             Assert.True(condition: cliente.ModificationUser == SetupConfig.UserId);
@@ -238,7 +237,7 @@ public class ClienteFacadeTest(SetupDataConfig setupConfig)
             var clienteContext =
                 await Context.Cliente.AsNoTracking().FirstOrDefaultAsync(predicate: x => x.Id == cliente.Id);
             // Confirm cliente updated in context
-            Assert.NotNull(clienteContext);
+            Assert.NotNull(@object: clienteContext);
             // Assert cliente persisted as activated
             Assert.True(condition: clienteContext.IsActive);
             Assert.True(condition: clienteContext.ModificationUser == SetupConfig.UserId);

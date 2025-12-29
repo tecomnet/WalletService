@@ -35,57 +35,65 @@ public class AutoMapperProfile : Profile
                 memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.Telefono))
             .ForMember(destinationMember: dest => dest.CorreoElectronico,
                 memberOptions: opt => opt.MapFrom(mapExpression: src => src.Usuario.CorreoElectronico))
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<UbicacionesGeolocalizacion, UbicacionResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<DispositivoMovilAutorizado, DispositivoMovilAutorizadoResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Direccion, DireccionResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Empresa, EmpresaResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Estado, EstadoResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<ServicioFavorito, ServicioFavoritoResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Proveedor, ProveedorResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Producto, ProductoResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Usuario, UsuarioResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<Wallet.Funcionalidad.Models.AuthResultDto, AuthResult>();
         CreateMap<Broker, BrokerResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>();
         CreateMap<KeyValueConfig, KeyValueConfigResult>()
-            .ForMember(dest => dest.ConcurrencyToken,
-                opt => opt.MapFrom(src =>
+            .ForMember(destinationMember: dest => dest.ConcurrencyToken,
+                memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<CuentaWallet, CuentaWalletResult>();
         CreateMap<BitacoraTransaccion, BitacoraTransaccionResult>();
         CreateMap<DetallesPagoServicio, DetallesPagoServicioResult>();
+        CreateMap<TarjetaEmitida, TarjetaEmitidaResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<TarjetaVinculada, TarjetaVinculadaResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
     }
 }

@@ -21,12 +21,12 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
     {
         // El login puede ser un correo electrónico o un número de teléfono.
         var usuario = await context.Usuario
-            .Include(user => user.Cliente)
+            .Include(navigationPropertyPath: user => user.Cliente)
             .FirstOrDefaultAsync(predicate: u => u.CorreoElectronico == login || u.Telefono == login);
 
         // Verifica si el usuario existe y si la contraseña es correcta.
         // Se utiliza el método VerificarContrasena que usa BCrypt internamente.
-        if (usuario == null || !usuario.VerificarContrasena(password))
+        if (usuario == null || !usuario.VerificarContrasena(password: password))
         {
             return new AuthResultDto
             {

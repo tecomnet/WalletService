@@ -1,5 +1,5 @@
+using Wallet.DOM.Modelos.GestionWallet;
 using Wallet.DOM.Enums;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.DOM.Modelos.GestionUsuario;
@@ -19,6 +19,9 @@ public class CommonSettings
 	public readonly List<Proveedor> Proveedores = [];
 	public readonly List<ServicioFavorito> ServiciosFavoritos = [];
 	public readonly List<Producto> Productos = [];
+	public readonly List<CuentaWallet> Cuentas = [];
+	public readonly List<TarjetaEmitida> TarjetasEmitidas = [];
+	public readonly List<TarjetaVinculada> TarjetasVinculadas = [];
 
 	public CommonSettings()
 	{
@@ -28,6 +31,58 @@ public class CommonSettings
 		CrearClientes();
 		CrearBrokers();
 		CrearProveedores();
+	}
+
+	public void CrearCuentas(Cliente cliente)
+	{
+		var cuenta = new CuentaWallet(
+			idCliente: cliente.Id,
+			moneda: "MXN",
+			cuentaCLABE: "123456789012345678",
+			creationUser: UserId
+		);
+		Cuentas.Add(cuenta);
+	}
+
+	public void CrearTarjetasEmitidas(CuentaWallet cuenta)
+	{
+		var tarjetaVirtual = new TarjetaEmitida(
+			idCuentaWallet: cuenta.Id,
+			tokenProcesador: Guid.NewGuid().ToString("N"),
+			panEnmascarado: "400000******1234",
+			tipo: TipoTarjeta.Virtual,
+			fechaExpiracion: DateTime.UtcNow.AddYears(3),
+			creationUser: UserId
+		);
+		tarjetaVirtual.ActivarTarjeta(UserId);
+
+		var tarjetaFisica = new TarjetaEmitida(
+			idCuentaWallet: cuenta.Id,
+			tokenProcesador: Guid.NewGuid().ToString("N"),
+			panEnmascarado: "400000******5678",
+			tipo: TipoTarjeta.Fisica,
+			fechaExpiracion: DateTime.UtcNow.AddYears(5),
+			creationUser: UserId,
+			nombreImpreso: "Cliente Test"
+		);
+		// Fisica starts inactive usually
+
+		TarjetasEmitidas.Add(tarjetaVirtual);
+		TarjetasEmitidas.Add(tarjetaFisica);
+	}
+
+	public void CrearTarjetasVinculadas(CuentaWallet cuenta)
+	{
+		var tarjeta = new TarjetaVinculada(
+			idCuentaWallet: cuenta.Id,
+			tokenPasarela: "tok_12345",
+			panEnmascarado: "411111******1111",
+			alias: "Mi Visa",
+			marca: MarcaTarjeta.Visa,
+			fechaExpiracion: DateTime.UtcNow.AddYears(2),
+			creationUser: UserId
+		);
+		TarjetasVinculadas.Add(tarjeta);
 	}
 
 
@@ -176,7 +231,7 @@ public class CommonSettings
 		var broker = new Broker(
 			nombre: "Broker Principal",
 			creationUser: UserId);
-		Brokers.Add(broker);
+		Brokers.Add(item: broker);
 	}
 
 	private void CrearProveedores()
@@ -199,7 +254,7 @@ public class CommonSettings
 			icono: "https://cfe.mx/logo.png",
 			categoria: "Servicios",
 			creationUser: UserId);
-		Productos.Add(producto);
+		Productos.Add(item: producto);
 
 		// Nuevo proveedor
 		proveedor = new Proveedor(

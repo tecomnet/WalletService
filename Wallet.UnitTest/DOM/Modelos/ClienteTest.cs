@@ -1,7 +1,6 @@
 using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
 using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.DOM.Modelos.GestionUsuario;
@@ -372,14 +371,14 @@ public class ClienteTest : UnitTestTemplate
             {
                 case "CrearContrasena":
                     cliente.Usuario.CrearContrasena(contrasena: nuevaContrasena!, modificationUser: Guid.NewGuid());
-                    if (!string.IsNullOrEmpty(nuevaContrasena))
+                    if (!string.IsNullOrEmpty(value: nuevaContrasena))
                     {
-                        Assert.True(cliente.Usuario.VerificarContrasena(nuevaContrasena),
-                            "Password hash verification failed.");
+                        Assert.True(condition: cliente.Usuario.VerificarContrasena(password: nuevaContrasena),
+                            userMessage: "Password hash verification failed.");
                     }
                     else
                     {
-                        Assert.Null(cliente.Usuario.Contrasena);
+                        Assert.Null(@object: cliente.Usuario.Contrasena);
                     }
 
                     break;
@@ -388,14 +387,14 @@ public class ClienteTest : UnitTestTemplate
                     cliente.Usuario.ActualizarContrasena(contrasenaNueva: nuevaContrasena!,
                         confirmacionContrasenaNueva: confirmacionNuevaContrasena!, contrasenaActual: contrasenaActual,
                         modificationUser: Guid.NewGuid());
-                    if (!string.IsNullOrEmpty(nuevaContrasena))
+                    if (!string.IsNullOrEmpty(value: nuevaContrasena))
                     {
-                        Assert.True(cliente.Usuario.VerificarContrasena(nuevaContrasena),
-                            "Password hash verification failed.");
+                        Assert.True(condition: cliente.Usuario.VerificarContrasena(password: nuevaContrasena),
+                            userMessage: "Password hash verification failed.");
                     }
                     else
                     {
-                        Assert.Null(cliente.Usuario.Contrasena);
+                        Assert.Null(@object: cliente.Usuario.Contrasena);
                     }
 
                     break;

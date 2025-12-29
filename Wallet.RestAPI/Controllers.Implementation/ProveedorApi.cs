@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 using Wallet.RestAPI.Models;
@@ -36,7 +35,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
     {
         if (idProveedor == null)
         {
-            throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
         }
 
         var proveedor = await _proveedorFacade.EliminarProveedorAsync(idProveedor: idProveedor.Value,
@@ -50,7 +49,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
     {
         if (idProveedor == null)
         {
-            throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
         }
 
         var proveedorEncontrado =
@@ -88,7 +87,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
     {
         if (idProveedor == null)
         {
-            throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
         }
 
         var proveedor = await _proveedorFacade.ActivarProveedorAsync(idProveedor: idProveedor.Value,
@@ -103,7 +102,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
     {
         if (idProveedor == null)
         {
-            throw new ArgumentNullException(nameof(idProveedor), "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
         }
 
         var proveedor = await _proveedorFacade.ActualizarProveedorAsync(

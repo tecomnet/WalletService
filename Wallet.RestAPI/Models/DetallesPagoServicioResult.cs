@@ -70,14 +70,14 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class DetallesPagoServicioResult {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  IdTransaccion: ").Append(IdTransaccion).Append("\n");
-            sb.Append("  IdProveedor: ").Append(IdProveedor).Append("\n");
-            sb.Append("  NumeroReferencia: ").Append(NumeroReferencia).Append("\n");
-            sb.Append("  CodigoAutorizacion: ").Append(CodigoAutorizacion).Append("\n");
-            sb.Append("  Guid: ").Append(Guid).Append("\n");
-            sb.Append("}\n");
+            sb.Append(value: "class DetallesPagoServicioResult {\n");
+            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
+            sb.Append(value: "  IdTransaccion: ").Append(value: IdTransaccion).Append(value: "\n");
+            sb.Append(value: "  IdProveedor: ").Append(value: IdProveedor).Append(value: "\n");
+            sb.Append(value: "  NumeroReferencia: ").Append(value: NumeroReferencia).Append(value: "\n");
+            sb.Append(value: "  CodigoAutorizacion: ").Append(value: CodigoAutorizacion).Append(value: "\n");
+            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
+            sb.Append(value: "}\n");
             return sb.ToString();
         }
 
@@ -87,7 +87,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
         }
 
         /// <summary>
@@ -97,9 +97,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((DetallesPagoServicioResult)obj);
+            if (ReferenceEquals(objA: null, objB: obj)) return false;
+            if (ReferenceEquals(objA: this, objB: obj)) return true;
+            return obj.GetType() == GetType() && Equals(other: (DetallesPagoServicioResult)obj);
         }
 
         /// <summary>
@@ -109,39 +109,39 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(DetallesPagoServicioResult other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(objA: null, objB: other)) return false;
+            if (ReferenceEquals(objA: this, objB: other)) return true;
 
             return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other.Id)
+                    Id.Equals(other: other.Id)
                 ) && 
                 (
                     IdTransaccion == other.IdTransaccion ||
                     IdTransaccion != null &&
-                    IdTransaccion.Equals(other.IdTransaccion)
+                    IdTransaccion.Equals(other: other.IdTransaccion)
                 ) && 
                 (
                     IdProveedor == other.IdProveedor ||
                     IdProveedor != null &&
-                    IdProveedor.Equals(other.IdProveedor)
+                    IdProveedor.Equals(other: other.IdProveedor)
                 ) && 
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
-                    NumeroReferencia.Equals(other.NumeroReferencia)
+                    NumeroReferencia.Equals(value: other.NumeroReferencia)
                 ) && 
                 (
                     CodigoAutorizacion == other.CodigoAutorizacion ||
                     CodigoAutorizacion != null &&
-                    CodigoAutorizacion.Equals(other.CodigoAutorizacion)
+                    CodigoAutorizacion.Equals(value: other.CodigoAutorizacion)
                 ) && 
                 (
                     Guid == other.Guid ||
                     Guid != null &&
-                    Guid.Equals(other.Guid)
+                    Guid.Equals(other: other.Guid)
                 );
         }
 
@@ -175,12 +175,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(DetallesPagoServicioResult left, DetallesPagoServicioResult right)
         {
-            return Equals(left, right);
+            return Equals(objA: left, objB: right);
         }
 
         public static bool operator !=(DetallesPagoServicioResult left, DetallesPagoServicioResult right)
         {
-            return !Equals(left, right);
+            return !Equals(objA: left, objB: right);
         }
 
         #pragma warning restore 1591

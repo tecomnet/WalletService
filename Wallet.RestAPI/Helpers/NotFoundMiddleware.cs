@@ -44,22 +44,22 @@ namespace Wallet.RestAPI.Helpers
                 var allowedVersions = new[] { "0.1" };
                 if (context.Request.Path != null)
                 {
-                    var segments = context.Request.Path.ToString().Split('/');
+                    var segments = context.Request.Path.ToString().Split(separator: '/');
                     if (segments.Length > 1)
                     {
                         var segment = segments[1];
                         // Si es una versión permitida, retornamos (es un 404 real dentro de la versión)
-                        if (allowedVersions.Contains(segment))
+                        if (allowedVersions.Contains(value: segment))
                         {
-                            await WriteNotFoundResponse(context);
+                            await WriteNotFoundResponse(context: context);
                             return;
                         }
 
                         // Si NO parece una versión (ej. "swagger", "health", "favicon.ico"), retornamos (es un 404 real)
                         // Esto evita que endpoints sin versión o recursos estáticos den error de versión.
-                        if (!System.Text.RegularExpressions.Regex.IsMatch(segment, @"^\d+\.\d+$"))
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(input: segment, pattern: @"^\d+\.\d+$"))
                         {
-                            await WriteNotFoundResponse(context);
+                            await WriteNotFoundResponse(context: context);
                             return;
                         }
 
@@ -81,7 +81,7 @@ namespace Wallet.RestAPI.Helpers
                 await context.Response.WriteAsync(text: JsonConvert.SerializeObject(value: problemDetails));
             }
             else if (context.Response.StatusCode == (int)HttpStatusCode.BadRequest &&
-                     context.Items.ContainsKey("BadVersion"))
+                     context.Items.ContainsKey(key: "BadVersion"))
             {
                 context.Response.ContentType = "application/json";
                 var problemDetails = new ProblemDetails();
