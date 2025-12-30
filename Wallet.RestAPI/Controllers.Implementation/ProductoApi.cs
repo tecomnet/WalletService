@@ -52,7 +52,8 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     {
         if (idProveedor == null)
         {
-            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProveedor),
+                message: "El ID del proveedor es requerido.");
         }
 
         var productos = await proveedorFacade.ObtenerProductosPorProveedorAsync(proveedorId: idProveedor.Value);
@@ -61,11 +62,25 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     }
 
     /// <inheritdoc />
+    public override async Task<IActionResult> GetProductosPorCategoriaAsync(string version, string categoria)
+    {
+        if (string.IsNullOrWhiteSpace(value: categoria))
+        {
+            throw new ArgumentNullException(paramName: nameof(categoria), message: "La categoría es requerida.");
+        }
+
+        var productos = await proveedorFacade.ObtenerProductosPorCategoriaAsync(categoria: categoria);
+        var result = mapper.Map<List<ProductoResult>>(source: productos);
+        return Ok(value: result);
+    }
+
+    /// <inheritdoc />
     public override async Task<IActionResult> PostProductoAsync(string version, int? idProveedor, ProductoRequest body)
     {
         if (idProveedor == null)
         {
-            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
+            throw new ArgumentNullException(paramName: nameof(idProveedor),
+                message: "El ID del proveedor es requerido.");
         }
 
         var producto = await proveedorFacade.GuardarProductoAsync(

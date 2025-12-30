@@ -1164,6 +1164,36 @@ paths:
       description: Obtiene todos los productos
       tags:
         - Producto
+  "/{version}/producto/categoria/{categoria}":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: categoria
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Categoría del producto
+    get:
+      summary: Obtiene productos filtrados por categoría
+      operationId: GetProductosPorCategoria
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductoResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Obtiene productos filtrados por categoría
+      tags:
+        - Producto
   "/{version}/producto/{idProducto}/activar":
     parameters:
       - $ref: "#/components/parameters/version"
@@ -3891,7 +3921,8 @@ components:
           type: string
           maxLength: 100
         categoria:
-          $ref: "#/components/schemas/Categoria"
+          type: string
+          maxLength: 100
         precio:
           type: number
           x-stoplight:

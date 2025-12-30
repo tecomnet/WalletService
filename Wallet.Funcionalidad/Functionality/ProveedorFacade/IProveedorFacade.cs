@@ -123,6 +123,13 @@ public interface IProveedorFacade
     Task<List<Producto>> ObtenerProductosAsync();
 
     /// <summary>
+    /// Obtiene todos los productos que pertenecen a una categoría específica.
+    /// </summary>
+    /// <param name="categoria">La categoría de los productos.</param>
+    /// <returns>Una lista de objetos <see cref="Producto"/> filtrada por categoría.</returns>
+    Task<List<Producto>> ObtenerProductosPorCategoriaAsync(string categoria);
+
+    /// <summary>
     /// Actualiza el proveedor de un producto.
     /// </summary>
     /// <param name="idProducto">El identificador único del producto a actualizar.</param>

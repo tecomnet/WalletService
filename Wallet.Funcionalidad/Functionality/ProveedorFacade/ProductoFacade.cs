@@ -188,6 +188,24 @@ public partial class ProveedorFacade : IProveedorFacade
     }
 
     /// <inheritdoc />
+    public async Task<List<Producto>> ObtenerProductosPorCategoriaAsync(string categoria)
+    {
+        try
+        {
+            return await context.Producto
+                .Where(predicate: x => x.Categoria == categoria && x.IsActive)
+                .ToListAsync();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    /// <inheritdoc />
     public async Task<Producto> ActualizarProveedorDeProductoAsync(int idProducto, int idProveedor,
         Guid modificationUser)
     {
