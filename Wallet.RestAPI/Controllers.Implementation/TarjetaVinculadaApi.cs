@@ -24,17 +24,13 @@ namespace Wallet.RestAPI.Controllers.Implementation
         public override async Task<IActionResult> VincularTarjetaAsync(string version, int idCliente,
             VincularTarjetaRequest body)
         {
-            if (idCliente != body.IdCliente)
-                return BadRequest(new InlineResponse400
-                    { Errors = new List<InlineResponse400Errors> { new() { Detail = "IdCliente mismatch" } } });
-
             // Map DTO enum to DOM enum manually if needed or casting safe if integers match. 
             // Since DTO enum has same integer values, casting is safe or mapper config handles it.
             // Using explicit cast or conversion for safety.
             var marca = (MarcaTarjeta)(int)body.Marca.Value;
 
-            var tarjeta = await tarjetaVinculadaFacade.VincularTarjetaAsync(idCliente, body.TokenPasarela,
-                body.PanEnmascarado, body.Alias, marca, body.FechaExpiracion.Value, this.GetAuthenticatedUserGuid());
+            var tarjeta = await tarjetaVinculadaFacade.VincularTarjetaAsync(idCliente,
+                body.NumeroTarjeta, body.Alias, marca, body.FechaExpiracion.Value, this.GetAuthenticatedUserGuid());
             var response = mapper.Map<TarjetaVinculadaResult>(tarjeta);
             return Created($"/{version}/tarjetas-vinculadas/{tarjeta.Id}", response);
         }
@@ -48,7 +44,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
         public override async Task<IActionResult> EstablecerTarjetaFavoritaAsync(string version, int idTarjeta,
             SetFavoritaRequest body)
         {
-            await tarjetaVinculadaFacade.EstablecerFavoritaAsync(idTarjeta, body.IdCliente.Value, body.ConcurrencyToken,
+            await tarjetaVinculadaFacade.EstablecerFavoritaAsync(idTarjeta, body.ConcurrencyToken,
                 this.GetAuthenticatedUserGuid());
             return Ok();
         }

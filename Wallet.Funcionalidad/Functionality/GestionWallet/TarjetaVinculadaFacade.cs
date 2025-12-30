@@ -10,7 +10,7 @@ namespace Wallet.Funcionalidad.Functionality.GestionWallet;
 
 public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculadaFacade
 {
-    public async Task<TarjetaVinculada> VincularTarjetaAsync(int idCliente, string tokenPasarela, string panEnmascarado,
+    public async Task<TarjetaVinculada> VincularTarjetaAsync(int idCliente, string numeroTarjeta,
         string alias, MarcaTarjeta marca, DateTime fechaExpiracion, Guid creationUser, string? gatewayCustomerId = null)
     {
         await ValidarClienteYUsuarioActivos(idCliente: idCliente);
@@ -22,8 +22,7 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
         // Crear la entidad TarjetaVinculada
         var tarjeta = new TarjetaVinculada(
             idCuentaWallet: cuenta.Id,
-            tokenPasarela: tokenPasarela,
-            panEnmascarado: panEnmascarado,
+            numeroTarjeta: numeroTarjeta,
             alias: alias,
             marca: marca,
             fechaExpiracion: fechaExpiracion,
@@ -61,29 +60,25 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
         await context.SaveChangesAsync();
     }
 
-    public async Task EstablecerFavoritaAsync(int idTarjeta, int idCliente, string concurrencyToken,
+    public async Task EstablecerFavoritaAsync(int idTarjeta, string concurrencyToken,
         Guid modificationUser)
     {
+        var tarjetaObjetivo = await context.TarjetaVinculada
+                                  .Include(t => t.CuentaWallet)
+                                  .FirstOrDefaultAsync(t => t.Id == idTarjeta)
+                              ?? throw new KeyNotFoundException($"Tarjeta vinculada con ID {idTarjeta} no encontrada.");
+
+        var idCliente = tarjetaObjetivo.CuentaWallet.IdCliente;
+
         await ValidarClienteYUsuarioActivos(idCliente: idCliente);
-
-        // First find the account for the client
-        var cuenta = await context.CuentaWallet.FirstOrDefaultAsync(c => c.IdCliente == idCliente);
-        if (cuenta == null)
-            throw new KeyNotFoundException($"No se encontró una cuenta Wallet para el cliente {idCliente}");
-
-        // Now find cards for that account
-        var tarjetas = await context.TarjetaVinculada
-            .Where(t => t.IdCuentaWallet == cuenta.Id)
-            .ToListAsync();
-
-        var tarjetaObjetivo = tarjetas.FirstOrDefault(t => t.Id == idTarjeta);
-
-        if (tarjetaObjetivo == null)
-            throw new KeyNotFoundException(
-                $"Tarjeta vinculada con ID {idTarjeta} no encontrada para el cliente {idCliente}.");
 
         if (Convert.ToBase64String(tarjetaObjetivo.ConcurrencyToken) != concurrencyToken)
             throw new DbUpdateConcurrencyException("La tarjeta ha sido modificada por otro usuario.");
+
+        // Now find other cards for that account to unset favorite
+        var tarjetas = await context.TarjetaVinculada
+            .Where(t => t.IdCuentaWallet == tarjetaObjetivo.IdCuentaWallet)
+            .ToListAsync();
 
         foreach (var tarjeta in tarjetas)
         {

@@ -8,13 +8,9 @@ namespace Wallet.RestAPI.Models
     public partial class SetFavoritaRequest
     {
         [Required]
-        [DataMember(Name = "idCliente")]
-        public int? IdCliente { get; set; }
-
-        [Required]
         [DataMember(Name = "concurrencyToken")]
         public string ConcurrencyToken { get; set; }
-        
+
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);

@@ -75,8 +75,7 @@ public class CommonSettings
 	{
 		var tarjeta = new TarjetaVinculada(
 			idCuentaWallet: cuenta.Id,
-			tokenPasarela: "tok_12345",
-			panEnmascarado: "411111******1111",
+			numeroTarjeta: "4111111111111111",
 			alias: "Mi Visa",
 			marca: MarcaTarjeta.Visa,
 			fechaExpiracion: DateTime.UtcNow.AddYears(2),

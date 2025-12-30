@@ -9,17 +9,9 @@ namespace Wallet.RestAPI.Models
     public partial class VincularTarjetaRequest
     {
         [Required]
-        [DataMember(Name = "idCliente")]
-        public int? IdCliente { get; set; }
+        [DataMember(Name = "numeroTarjeta")]
+        public string NumeroTarjeta { get; set; }
 
-        [Required]
-        [DataMember(Name = "tokenPasarela")]
-        public string TokenPasarela { get; set; }
-        
-        [Required]
-        [DataMember(Name = "panEnmascarado")]
-        public string PanEnmascarado { get; set; }
-        
         [Required]
         [DataMember(Name = "alias")]
         public string Alias { get; set; }
@@ -31,7 +23,7 @@ namespace Wallet.RestAPI.Models
         [Required]
         [DataMember(Name = "fechaExpiracion")]
         public DateTime? FechaExpiracion { get; set; }
-        
+
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);

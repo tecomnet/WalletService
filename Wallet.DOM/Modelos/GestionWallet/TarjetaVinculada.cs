@@ -14,8 +14,8 @@ public class TarjetaVinculada : ValidatablePersistentObjectLogicalDelete
 {
     protected override List<PropertyConstraint> PropertyConstraints =>
     [
-        PropertyConstraint.StringPropertyConstraint(propertyName: nameof(TokenPasarela), isRequired: true,
-            minimumLength: 1, maximumLength: 255),
+        PropertyConstraint.StringPropertyConstraint(propertyName: nameof(NumeroTarjeta), isRequired: true,
+            minimumLength: 13, maximumLength: 20),
         PropertyConstraint.StringPropertyConstraint(propertyName: nameof(PanEnmascarado), isRequired: true,
             minimumLength: 4, maximumLength: 20),
         PropertyConstraint.StringPropertyConstraint(propertyName: nameof(Alias), isRequired: true, minimumLength: 1,
@@ -27,11 +27,11 @@ public class TarjetaVinculada : ValidatablePersistentObjectLogicalDelete
     [Required] public int IdCuentaWallet { get; private set; }
 
     /// <summary>
-    /// Identificador del método de pago en la pasarela (e.g. pm_12345).
+    /// Número de tarjeta completo (Internal use only).
     /// </summary>
     [Required]
-    [MaxLength(length: 255)]
-    public string TokenPasarela { get; private set; }
+    [MaxLength(length: 20)]
+    public string NumeroTarjeta { get; private set; }
 
     /// <summary>
     /// ID del cliente en la pasarela (e.g. cus_12345).
@@ -75,8 +75,7 @@ public class TarjetaVinculada : ValidatablePersistentObjectLogicalDelete
 
     public TarjetaVinculada(
         int idCuentaWallet,
-        string tokenPasarela,
-        string panEnmascarado,
+        string numeroTarjeta,
         string alias,
         MarcaTarjeta marca,
         DateTime fechaExpiracion,
@@ -86,8 +85,7 @@ public class TarjetaVinculada : ValidatablePersistentObjectLogicalDelete
     {
         List<EMGeneralException> exceptions = new();
 
-        IsPropertyValid(propertyName: nameof(TokenPasarela), value: tokenPasarela, exceptions: ref exceptions);
-        IsPropertyValid(propertyName: nameof(PanEnmascarado), value: panEnmascarado, exceptions: ref exceptions);
+        IsPropertyValid(propertyName: nameof(NumeroTarjeta), value: numeroTarjeta, exceptions: ref exceptions);
         IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
         if (gatewayCustomerId != null)
             IsPropertyValid(propertyName: nameof(GatewayCustomerId), value: gatewayCustomerId,
@@ -96,8 +94,11 @@ public class TarjetaVinculada : ValidatablePersistentObjectLogicalDelete
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
         IdCuentaWallet = idCuentaWallet;
-        TokenPasarela = tokenPasarela;
-        PanEnmascarado = panEnmascarado;
+        NumeroTarjeta = numeroTarjeta;
+        // Generate Masked PAN: **** 1234
+        var last4 = numeroTarjeta.Length > 4 ? numeroTarjeta.Substring(numeroTarjeta.Length - 4) : numeroTarjeta;
+        PanEnmascarado = $"**** {last4}";
+
         Alias = alias;
         Marca = marca;
         FechaExpiracion = fechaExpiracion;

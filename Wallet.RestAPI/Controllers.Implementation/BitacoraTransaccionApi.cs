@@ -11,7 +11,6 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the BitacoraTransaccion API controller.
 /// </summary>
-[Authorize]
 public class BitacoraTransaccionApiController(
     IBitacoraTransaccionFacade bitacoraTransaccionFacade,
     IMapper mapper)

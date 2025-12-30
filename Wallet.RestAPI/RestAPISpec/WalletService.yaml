@@ -4242,12 +4242,7 @@ components:
     VincularTarjetaRequest:
       type: object
       properties:
-        idCliente:
-          type: integer
-          format: int32
-        tokenPasarela:
-          type: string
-        panEnmascarado:
+        numeroTarjeta:
           type: string
         alias:
           type: string
@@ -4257,22 +4252,16 @@ components:
           type: string
           format: date-time
       required:
-        - idCliente
-        - tokenPasarela
-        - panEnmascarado
+        - numeroTarjeta
         - alias
         - marca
         - fechaExpiracion
     SetFavoritaRequest:
       type: object
       properties:
-        idCliente:
-          type: integer
-          format: int32
         concurrencyToken:
           type: string
       required:
-        - idCliente
         - concurrencyToken
     TipoTarjetaEnum:
       type: string
