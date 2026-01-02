@@ -16,7 +16,7 @@ namespace Wallet.RestAPI.Controllers
     public abstract class TarjetaVinculadaApiControllerBase : ServiceBaseController
     {
         [HttpGet]
-        [Route("/{version:apiVersion}/cliente/{idCliente}/tarjetasvinculadas")]
+        [Route("/{version:apiVersion}/cliente/{idCliente}/tarjetasVinculadas")]
         [ValidateModelState]
         [SwaggerOperation(summary: "GetTarjetasVinculadasPorCliente")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<TarjetaVinculadaResult>), description: "OK")]
@@ -27,7 +27,7 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] int idCliente);
 
         [HttpPost]
-        [Route("/{version:apiVersion}/cliente/{idCliente}/tarjetasvinculadas")]
+        [Route("/{version:apiVersion}/cliente/{idCliente}/tarjetasVinculadas")]
         [ValidateModelState]
         [SwaggerOperation(summary: "VincularTarjeta")]
         [SwaggerResponse(statusCode: 201, type: typeof(TarjetaVinculadaResult), description: "Created")]
@@ -39,7 +39,7 @@ namespace Wallet.RestAPI.Controllers
             [FromBody] VincularTarjetaRequest body);
 
         [HttpDelete]
-        [Route("/{version:apiVersion}/tarjetasvinculadas/{idTarjeta}")]
+        [Route("/{version:apiVersion}/tarjetasVinculadas/{idTarjeta}")]
         [ValidateModelState]
         [SwaggerOperation(summary: "DesvincularTarjeta")]
         [SwaggerResponse(statusCode: 200, description: "OK")]
@@ -50,7 +50,7 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] int idTarjeta);
 
         [HttpPut]
-        [Route("/{version:apiVersion}/tarjetasvinculadas/{idTarjeta}/favorita")]
+        [Route("/{version:apiVersion}/tarjetasVinculadas/{idTarjeta}/favorita")]
         [ValidateModelState]
         [SwaggerOperation(summary: "EstablecerTarjetaFavorita")]
         [SwaggerResponse(statusCode: 200, description: "OK")]

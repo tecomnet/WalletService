@@ -19,6 +19,32 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
         if (cuenta == null)
             throw new KeyNotFoundException($"No se encontró una cuenta Wallet para el cliente {idCliente}");
 
+        // Check if card with same number exists for this client (active or inactive)
+        // Note: Using IgnoreQueryFilters() to find soft-deleted (inactive) records if Global Query Filters are applied for soft delete,
+        // though typically IsActive filter is manual. If standard queries filter IsActive=true, we might need to bypass that.
+        // Assuming context.TarjetaVinculada queries might differ based on configuration, but standard EF Core doesn't auto-filter bool IsActive unless configured.
+        // However, let's explicitly look for any card for this wallet with this number.
+
+        var tarjetaExistente = await context.TarjetaVinculada
+            .FirstOrDefaultAsync(t => t.IdCuentaWallet == cuenta.Id && t.NumeroTarjeta == numeroTarjeta);
+
+        if (tarjetaExistente != null)
+        {
+            // If it exists but is active, we might want to return it or throw error?
+            // Requirement says "si se encuentra, se deberá volver a activar".
+            // If it's already active, we just update it.
+
+            tarjetaExistente.Reactivar(
+                alias: alias,
+                marca: marca,
+                fechaExpiracion: fechaExpiracion,
+                gatewayCustomerId: gatewayCustomerId,
+                modificationUser: creationUser);
+
+            await context.SaveChangesAsync();
+            return tarjetaExistente;
+        }
+
         // Crear la entidad TarjetaVinculada
         var tarjeta = new TarjetaVinculada(
             idCuentaWallet: cuenta.Id,
@@ -42,7 +68,7 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
     {
         return await context.TarjetaVinculada
             .Include(t => t.CuentaWallet)
-            .Where(t => t.CuentaWallet.IdCliente == idCliente)
+            .Where(t => t.CuentaWallet.IdCliente == idCliente && t.IsActive)
             .ToListAsync();
     }
 

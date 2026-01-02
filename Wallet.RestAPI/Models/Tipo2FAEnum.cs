@@ -25,10 +25,10 @@ namespace Wallet.RestAPI.Models
               /// Enum SMSEnum for SMS
               /// </summary>
               [EnumMember(Value = "SMS")]
-              SMSEnum = 0,
+              SMS = 0,
               /// <summary>
               /// Enum EMAILEnum for EMAIL
               /// </summary>
               [EnumMember(Value = "EMAIL")]
-              EMAILEnum = 1          }
+              EMAIL = 1          }
 }

@@ -332,6 +332,110 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
+  "/{version}/cliente/{idCliente}/tarjetasVinculadas":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/idCliente"
+    get:
+      summary: Obtiene las tarjetas vinculadas de un cliente
+      operationId: GetTarjetasVinculadasPorCliente
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TarjetaVinculadaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Obtiene las tarjetas vinculadas de un cliente
+      tags:
+        - TarjetaVinculada
+    post:
+      summary: Vincula una nueva tarjeta
+      operationId: VincularTarjeta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VincularTarjetaRequest"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TarjetaVinculadaResult"
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Vincula una nueva tarjeta al cliente
+      tags:
+        - TarjetaVinculada
+  "/{version}/tarjetasVinculadas/{idTarjeta}":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idTarjeta
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Id de la tarjeta vinculada
+    delete:
+      summary: Desvincula una tarjeta
+      operationId: DesvincularTarjeta
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Desvincula una tarjeta existente
+      tags:
+        - TarjetaVinculada
+  "/{version}/tarjetasVinculadas/{idTarjeta}/favorita":
+    parameters:
+      - $ref: "#/components/parameters/version"
+      - name: idTarjeta
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Id de la tarjeta vinculada
+    put:
+      summary: Establece tarjeta como favorita
+      operationId: EstablecerTarjetaFavorita
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetFavoritaRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "401":
+          $ref: "#/components/responses/HTTP_Error_400"
+        "404":
+          $ref: "#/components/responses/HTTP_Error_400"
+      description: Establece una tarjeta vinculada como la favorita
+      tags:
+        - TarjetaVinculada
   "/{version}/cliente/{idCliente}/serviciosFavoritos":
     parameters:
       - $ref: "#/components/parameters/version"

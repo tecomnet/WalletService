@@ -112,6 +112,30 @@ public class TarjetaVinculada : ValidatablePersistentObjectLogicalDelete
         Update(modificationUser: modificationUser);
     }
 
+    public void Reactivar(
+        string alias,
+        MarcaTarjeta marca,
+        DateTime fechaExpiracion,
+        string? gatewayCustomerId,
+        Guid modificationUser)
+    {
+        List<EMGeneralException> exceptions = new();
+
+        IsPropertyValid(propertyName: nameof(Alias), value: alias, exceptions: ref exceptions);
+        if (gatewayCustomerId != null)
+            IsPropertyValid(propertyName: nameof(GatewayCustomerId), value: gatewayCustomerId,
+                exceptions: ref exceptions);
+
+        if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
+
+        Alias = alias;
+        Marca = marca;
+        FechaExpiracion = fechaExpiracion;
+        if (gatewayCustomerId != null) GatewayCustomerId = gatewayCustomerId;
+
+        Activate(modificationUser);
+    }
+
     public void ActualizarAlias(string nuevoAlias, Guid modificationUser)
     {
         List<EMGeneralException> exceptions = new();

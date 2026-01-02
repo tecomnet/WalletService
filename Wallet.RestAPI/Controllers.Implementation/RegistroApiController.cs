@@ -20,10 +20,10 @@ namespace Wallet.RestAPI.Controllers.Implementation
 
             switch (body.Tipo)
             {
-                case Tipo2FAEnum.SMSEnum:
+                case Tipo2FAEnum.SMS:
                     result = await registroFacade.ConfirmarNumeroAsync(idUsuario: idUsuario.Value, codigo: body.Codigo);
                     break;
-                case Tipo2FAEnum.EMAILEnum:
+                case Tipo2FAEnum.EMAIL:
                     result = await registroFacade.VerificarCorreoAsync(idUsuario: idUsuario.Value, codigo: body.Codigo);
                     break;
                 default:
@@ -48,7 +48,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
         public override async Task<IActionResult> PutCompletarRegistroAsync(string version, int? idUsuario,
             CompletarRegistroRequest body)
         {
-            var usuario = await registroFacade.CompletarRegistroAsync(idUsuario: idUsuario.Value, contrasena: body.Contrasena,
+            var usuario = await registroFacade.CompletarRegistroAsync(idUsuario: idUsuario.Value,
+                contrasena: body.Contrasena,
                 confirmacionContrasena: body.ConfirmacionContrasena);
             return Ok(value: mapper.Map<UsuarioResult>(source: usuario));
         }
@@ -57,7 +58,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
         public override async Task<IActionResult> PostRegistrarBiometricosAsync(string version, int? idUsuario,
             RegistrarBiometricosRequest body)
         {
-            var usuario = await registroFacade.RegistrarDatosBiometricosAsync(idUsuario: idUsuario.Value, idDispositivo: body.IdDispositivo,
+            var usuario = await registroFacade.RegistrarDatosBiometricosAsync(idUsuario: idUsuario.Value,
+                idDispositivo: body.IdDispositivo,
                 token: body.Token, nombre: body.Nombre, caracteristicas: body.Caracteristicas);
             return Created(uri: $"/{version}/usuario/{usuario.Id}", value: mapper.Map<UsuarioResult>(source: usuario));
         }

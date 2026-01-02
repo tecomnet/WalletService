@@ -25,15 +25,15 @@ namespace Wallet.RestAPI.Models
               /// Enum MasculinoEnum for Masculino
               /// </summary>
               [EnumMember(Value = "Masculino")]
-              MasculinoEnum = 0,
+              Masculino = 0,
               /// <summary>
               /// Enum FemeninoEnum for Femenino
               /// </summary>
               [EnumMember(Value = "Femenino")]
-              FemeninoEnum = 1,
+              Femenino = 1,
               /// <summary>
               /// Enum NoBinarioEnum for NoBinario
               /// </summary>
               [EnumMember(Value = "NoBinario")]
-              NoBinarioEnum = 2          }
+              NoBinario = 2          }
 }

@@ -61,11 +61,13 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
             modificationUser: user.CreationUser);
         cliente.AgregarEstado(estado: estado, modificationUser: user.CreationUser);
 
-        var checkton = new ValidacionCheckton(tipoCheckton: TipoCheckton.Curp, resultado: true, creationUser: user.CreationUser);
+        var checkton = new ValidacionCheckton(tipoCheckton: TipoCheckton.Curp, resultado: true,
+            creationUser: user.CreationUser);
         cliente.AgregarValidacionCheckton(validacion: checkton, modificationUser: user.CreationUser);
         cliente.AgregarCurp(curp: "AAAA000000HDFXXX00", modificationUser: user.CreationUser);
 
-        var verif = new Verificacion2FA(twilioSid: "sid123", fechaVencimiento: DateTime.Now.AddMinutes(value: 10), tipo: Tipo2FA.Sms, creationUser: user.CreationUser);
+        var verif = new Verificacion2FA(twilioSid: "sid123", fechaVencimiento: DateTime.Now.AddMinutes(value: 10),
+            tipo: Tipo2FA.Sms, creationUser: user.CreationUser);
         user.AgregarVerificacion2Fa(verificacion: verif, modificationUser: user.CreationUser);
         verif.MarcarComoVerificado(codigo: "1234", modificationUser: user.CreationUser);
 
@@ -78,7 +80,8 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
         // 2. Get Cliente to obtain ConcurrencyToken
         var responseGet = await client.GetAsync(requestUri: $"/{version}/cliente/{cliente.Id}");
         Assert.Equal(expected: HttpStatusCode.OK, actual: responseGet.StatusCode);
-        var clienteResult = JsonConvert.DeserializeObject<ClienteResult>(value: await responseGet.Content.ReadAsStringAsync());
+        var clienteResult =
+            JsonConvert.DeserializeObject<ClienteResult>(value: await responseGet.Content.ReadAsStringAsync());
         Assert.NotNull(@object: clienteResult);
         Assert.NotNull(@object: clienteResult.ConcurrencyToken);
         var originalToken = clienteResult.ConcurrencyToken;
@@ -91,12 +94,13 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
             ApellidoMaterno = "Updated Mat",
             FechaNacimiento = new DateTime(year: 1991, month: 2, day: 2),
             NombreEstado = estado.Nombre,
-            Genero = (int)GeneroEnum.FemeninoEnum, // Changed
+            Genero = (int)GeneroEnum.Femenino, // Changed
             ConcurrencyToken = originalToken
         };
 
         var responsePut1 = await client.PutAsync(requestUri: $"/{version}/cliente/{cliente.Id}",
-            content: new StringContent(content: JsonConvert.SerializeObject(value: updateRequest), encoding: Encoding.UTF8, mediaType: "application/json"));
+            content: new StringContent(content: JsonConvert.SerializeObject(value: updateRequest),
+                encoding: Encoding.UTF8, mediaType: "application/json"));
 
         if (responsePut1.StatusCode != HttpStatusCode.OK)
         {
@@ -105,7 +109,8 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
 
         Assert.Equal(expected: HttpStatusCode.OK, actual: responsePut1.StatusCode);
 
-        var resultPut1 = JsonConvert.DeserializeObject<ClienteResult>(value: await responsePut1.Content.ReadAsStringAsync());
+        var resultPut1 =
+            JsonConvert.DeserializeObject<ClienteResult>(value: await responsePut1.Content.ReadAsStringAsync());
         Assert.NotEqual(expected: originalToken, actual: resultPut1.ConcurrencyToken); // Token should change
 
         // 4. Update with STALE token (Failure Expected)
@@ -116,12 +121,13 @@ public class ClienteOccTest : DatabaseTestFixture, IDisposable
             ApellidoMaterno = "Conflict Mat",
             FechaNacimiento = new DateTime(year: 1991, month: 2, day: 2),
             NombreEstado = estado.Nombre,
-            Genero = (int)GeneroEnum.FemeninoEnum,
+            Genero = (int)GeneroEnum.Femenino,
             ConcurrencyToken = originalToken // Using OLD token
         };
 
         var responsePut2 = await client.PutAsync(requestUri: $"/{version}/cliente/{cliente.Id}",
-            content: new StringContent(content: JsonConvert.SerializeObject(value: updateRequestStale), encoding: Encoding.UTF8, mediaType: "application/json"));
+            content: new StringContent(content: JsonConvert.SerializeObject(value: updateRequestStale),
+                encoding: Encoding.UTF8, mediaType: "application/json"));
 
         Assert.Equal(expected: HttpStatusCode.Conflict, actual: responsePut2.StatusCode);
     }
