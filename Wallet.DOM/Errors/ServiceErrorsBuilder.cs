@@ -741,6 +741,9 @@ public class ServiceErrorsBuilder
     /// <summary>Error: Operación logística no permitida para tarjeta virtual.</summary>
     public const string TarjetaVirtualNoLogistica = "TARJETA-VIRTUAL-NO-LOGISTICA";
 
+    /// <summary>Error: La tarjeta ya se encuentra vinculada.</summary>
+    public const string TarjetaYaVinculada = "TARJETA-YA-VINCULADA";
+
     /// <summary>Error: La tarjeta ha expirado.</summary>
     public const string TarjetaExpirada = "TARJETA-EXPIRADA";
 
@@ -760,6 +763,12 @@ public class ServiceErrorsBuilder
             errorCode: TarjetaExpirada,
             message: "Tarjeta Expirada.",
             description: "La tarjeta ha expirado y no puede realizar operaciones.");
+
+        // Error de tarjeta ya vinculada
+        AddServiceError(
+            errorCode: TarjetaYaVinculada,
+            message: "Tarjeta ya vinculada.",
+            description: "La tarjeta ya se encuentra vinculada a la cuenta.");
     }
 
     #endregion

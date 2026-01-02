@@ -44,9 +44,9 @@ namespace Wallet.RestAPI.Controllers.Implementation
         public override async Task<IActionResult> EstablecerTarjetaFavoritaAsync(string version, int idTarjeta,
             SetFavoritaRequest body)
         {
-            await tarjetaVinculadaFacade.EstablecerFavoritaAsync(idTarjeta, body.ConcurrencyToken,
+            var tarjeta = await tarjetaVinculadaFacade.EstablecerFavoritaAsync(idTarjeta, body.ConcurrencyToken,
                 this.GetAuthenticatedUserGuid());
-            return Ok();
+            return Ok(mapper.Map<TarjetaVinculadaResult>(tarjeta));
         }
     }
 }

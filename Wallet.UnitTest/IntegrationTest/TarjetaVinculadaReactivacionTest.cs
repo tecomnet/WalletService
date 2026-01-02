@@ -10,6 +10,7 @@ using Wallet.DOM.Modelos.GestionWallet;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 using Xunit.Abstractions;
+using Wallet.DOM.Errors;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
@@ -244,5 +245,155 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             Assert.True(t2.IsActive); // User 2's card active
             Assert.NotEqual(t1.IdCuentaWallet, t2.IdCuentaWallet);
         }
+    }
+
+    [Fact]
+    public async Task Test_EstablecerFavorita_ShouldReturnUpdatedEntity()
+    {
+        // 1. Auth & Setup
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
+
+        int idCliente;
+        int idTarjeta1, idTarjeta2;
+
+        using (var context = CreateContext())
+        {
+            var guid = Guid.NewGuid();
+            var empresa = new Empresa(nombre: "Tecomnet " + guid, creationUser: guid);
+            context.Empresa.Add(entity: empresa);
+            await context.SaveChangesAsync();
+
+            var usuario = new Usuario(codigoPais: "+52",
+                telefono: "55" + new Random().Next(10000000, 99999999),
+                correoElectronico: "favtest" + guid + "@test.com", contrasena: "Pass123!",
+                estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: guid);
+            context.Usuario.Add(entity: usuario);
+
+            var clienteEntity = new Cliente(usuario: usuario, empresa: empresa, creationUser: guid);
+            clienteEntity.AgregarDatosPersonales(nombre: "Fav", primerApellido: "Test", segundoApellido: "Client",
+                fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1), genero: Genero.Masculino,
+                modificationUser: guid);
+            context.Cliente.Add(entity: clienteEntity);
+            await context.SaveChangesAsync();
+            idCliente = clienteEntity.Id;
+
+            var cuentaWallet = new CuentaWallet(idCliente: clienteEntity.Id, moneda: "MXN",
+                cuentaCLABE: "123456789012345678", creationUser: guid);
+            context.CuentaWallet.Add(entity: cuentaWallet);
+            await context.SaveChangesAsync();
+
+            // Add 2 cards directly to simplify setup
+            var t1 = new TarjetaVinculada(idCuentaWallet: cuentaWallet.Id, numeroTarjeta: "1111222233334444",
+                alias: "Card 1", marca: MarcaTarjeta.Visa, fechaExpiracion: DateTime.Now.AddYears(1),
+                creationUser: guid);
+            var t2 = new TarjetaVinculada(idCuentaWallet: cuentaWallet.Id, numeroTarjeta: "5555666677778888",
+                alias: "Card 2", marca: MarcaTarjeta.Mastercard, fechaExpiracion: DateTime.Now.AddYears(1),
+                creationUser: guid);
+
+            context.TarjetaVinculada.AddRange(t1, t2);
+            await context.SaveChangesAsync();
+            idTarjeta1 = t1.Id;
+            idTarjeta2 = t2.Id;
+        }
+
+        // 2. Set Card 1 as Favorite
+        // PUT /tarjetasVinculadas/{idTarjeta}/favorita
+        // First get the token (mocking it by fetching or using what we know)
+        string concurrencyToken;
+        using (var context = CreateContext())
+        {
+            var t1 = await context.TarjetaVinculada.FindAsync(idTarjeta1);
+            concurrencyToken = Convert.ToBase64String(t1.ConcurrencyToken);
+        }
+
+        var request = new SetFavoritaRequest
+        {
+            ConcurrencyToken = concurrencyToken
+        };
+
+        var response = await client.PutAsync(requestUri: $"/{ApiVersion}/tarjetasVinculadas/{idTarjeta1}/favorita",
+            content: CreateContent(request));
+
+        // 3. Assert Response Body
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
+
+        var resultString = await response.Content.ReadAsStringAsync();
+        Assert.False(string.IsNullOrEmpty(resultString), "Response body should not be empty");
+
+        var result =
+            JsonConvert.DeserializeObject<TarjetaVinculadaResult>(value: resultString, settings: _jsonSettings);
+        Assert.NotNull(result);
+        Assert.Equal(expected: idTarjeta1, actual: result.Id);
+        Assert.True(result.EsFavorita, "Returned card should be marked as favorite");
+    }
+
+    [Fact]
+    public async Task Test_Vincular_Tarjeta_Duplicada_DebeFallar()
+    {
+        // 1. Auth & Setup
+        var (user, token) = await CreateAuthenticatedUserAsync();
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
+
+        int idCliente;
+        string cardNumber = "9999888877776666";
+
+        using (var context = CreateContext())
+        {
+            var guid = Guid.NewGuid();
+            var empresa = new Empresa(nombre: "Tecomnet " + guid, creationUser: guid);
+            context.Empresa.Add(entity: empresa);
+            await context.SaveChangesAsync();
+
+            var usuario = new Usuario(codigoPais: "+52",
+                telefono: "55" + new Random().Next(10000000, 99999999),
+                correoElectronico: "duptest" + guid + "@test.com", contrasena: "Pass123!",
+                estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: guid);
+            context.Usuario.Add(entity: usuario);
+
+            var clienteEntity = new Cliente(usuario: usuario, empresa: empresa, creationUser: guid);
+            clienteEntity.AgregarDatosPersonales(nombre: "Dup", primerApellido: "Test", segundoApellido: "Client",
+                fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1), genero: Genero.Masculino,
+                modificationUser: guid);
+            context.Cliente.Add(entity: clienteEntity);
+            await context.SaveChangesAsync();
+            idCliente = clienteEntity.Id;
+
+            var cuentaWallet = new CuentaWallet(idCliente: clienteEntity.Id, moneda: "MXN",
+                cuentaCLABE: "123456789012345678", creationUser: guid);
+            context.CuentaWallet.Add(entity: cuentaWallet);
+            await context.SaveChangesAsync();
+
+            // Add ACTIVE card
+            var t1 = new TarjetaVinculada(idCuentaWallet: cuentaWallet.Id, numeroTarjeta: cardNumber,
+                alias: "Card Active", marca: MarcaTarjeta.Visa, fechaExpiracion: DateTime.Now.AddYears(1),
+                creationUser: guid);
+            context.TarjetaVinculada.Add(t1);
+            await context.SaveChangesAsync();
+        }
+
+        // 2. Try to link the SAME card again
+        var request = new VincularTarjetaRequest
+        {
+            Alias = "Card Duplicate",
+            NumeroTarjeta = cardNumber,
+            Marca = MarcaTarjetaEnum.Visa,
+            FechaExpiracion = DateTime.UtcNow.AddYears(2)
+        };
+
+        var response = await client.PostAsync(requestUri: $"/{ApiVersion}/cliente/{idCliente}/tarjetasVinculadas",
+            content: CreateContent(request));
+
+        // 3. Assert Failure
+        // EMGeneralException typically maps to 400 Bad Request or similar in our global handler
+        Assert.False(response.IsSuccessStatusCode, "Should fail when linking duplicates");
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var errorContent = await response.Content.ReadAsStringAsync();
+        Assert.Contains(ServiceErrorsBuilder.TarjetaYaVinculada, errorContent);
     }
 }

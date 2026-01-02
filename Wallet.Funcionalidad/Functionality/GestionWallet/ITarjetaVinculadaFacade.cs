@@ -10,5 +10,5 @@ public interface ITarjetaVinculadaFacade
 
     Task<List<TarjetaVinculada>> ObtenerTarjetasPorClienteAsync(int idCliente);
     Task DesvincularTarjetaAsync(int idTarjeta, Guid modificationUser);
-    Task EstablecerFavoritaAsync(int idTarjeta, string concurrencyToken, Guid modificationUser);
+    Task<TarjetaVinculada> EstablecerFavoritaAsync(int idTarjeta, string concurrencyToken, Guid modificationUser);
 }

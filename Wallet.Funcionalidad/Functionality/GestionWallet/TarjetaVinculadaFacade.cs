@@ -30,10 +30,16 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
 
         if (tarjetaExistente != null)
         {
-            // If it exists but is active, we might want to return it or throw error?
-            // Requirement says "si se encuentra, se deberá volver a activar".
-            // If it's already active, we just update it.
+            // Validar si la tarjeta ya está activa
+            if (tarjetaExistente.IsActive)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.TarjetaYaVinculada,
+                    dynamicContent: [],
+                    module: this.GetType().Name));
+            }
 
+            // Si existe pero está inactiva, la reactivamos
             tarjetaExistente.Reactivar(
                 alias: alias,
                 marca: marca,
@@ -86,7 +92,7 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
         await context.SaveChangesAsync();
     }
 
-    public async Task EstablecerFavoritaAsync(int idTarjeta, string concurrencyToken,
+    public async Task<TarjetaVinculada> EstablecerFavoritaAsync(int idTarjeta, string concurrencyToken,
         Guid modificationUser)
     {
         var tarjetaObjetivo = await context.TarjetaVinculada
@@ -120,6 +126,7 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
         }
 
         await context.SaveChangesAsync();
+        return tarjetaObjetivo;
     }
 
     /// <summary>

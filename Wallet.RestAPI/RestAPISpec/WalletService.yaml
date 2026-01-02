@@ -427,6 +427,10 @@ paths:
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TarjetaVinculadaResult"
         "400":
           $ref: "#/components/responses/HTTP_Error_400"
         "401":
