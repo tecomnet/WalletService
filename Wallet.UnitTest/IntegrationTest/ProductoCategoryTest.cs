@@ -59,7 +59,7 @@ public class ProductoCategoryTest : DatabaseTestFixture
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         // Act
-        var response = await client.GetAsync($"/{API_VERSION}/producto/categoria/Electronica");
+        var response = await client.GetAsync($"/{API_VERSION}/producto?categoria=Electronica");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -79,7 +79,7 @@ public class ProductoCategoryTest : DatabaseTestFixture
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         // Act
-        var response = await client.GetAsync($"/{API_VERSION}/producto/categoria/Inexistente");
+        var response = await client.GetAsync($"/{API_VERSION}/producto?categoria=Inexistente");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

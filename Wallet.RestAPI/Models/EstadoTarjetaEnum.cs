@@ -1,19 +1,18 @@
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
     /// Enumeración para los estados de tarjeta (DTO)
     /// </summary>
-    [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+    [JsonConverter(typeof(CustomStringToEnumConverter<EstadoTarjetaEnum>))]
     public enum EstadoTarjetaEnum
     {
-        [EnumMember(Value = "Activa")]
-        Activa = 1,
+        [EnumMember(Value = "Activa")] Activa = 1,
 
-        [EnumMember(Value = "Inactiva")]
-        Inactiva = 2,
+        [EnumMember(Value = "Inactiva")] Inactiva = 2,
 
         [EnumMember(Value = "BloqueadaTemporalmente")]
         BloqueadaTemporalmente = 3,
@@ -27,7 +26,6 @@ namespace Wallet.RestAPI.Models
         [EnumMember(Value = "CanceladaPorSistema")]
         CanceladaPorSistema = 6,
 
-        [EnumMember(Value = "Expirada")]
-        Expirada = 7
+        [EnumMember(Value = "Expirada")] Expirada = 7
     }
 }

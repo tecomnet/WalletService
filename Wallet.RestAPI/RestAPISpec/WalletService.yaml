@@ -1254,6 +1254,13 @@ paths:
     get:
       summary: Obtiene todos los productos
       operationId: getProductos
+      parameters:
+        - name: categoria
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Categoría del producto para filtrar
       responses:
         "200":
           description: OK
@@ -1269,37 +1276,7 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
         "404":
           $ref: "#/components/responses/HTTP_Error_400"
-      description: Obtiene todos los productos
-      tags:
-        - Producto
-  "/{version}/producto/categoria/{categoria}":
-    parameters:
-      - $ref: "#/components/parameters/version"
-      - name: categoria
-        in: path
-        required: true
-        schema:
-          type: string
-        description: Categoría del producto
-    get:
-      summary: Obtiene productos filtrados por categoría
-      operationId: GetProductosPorCategoria
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ProductoResult"
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-        "401":
-          $ref: "#/components/responses/HTTP_Error_400"
-        "404":
-          $ref: "#/components/responses/HTTP_Error_400"
-      description: Obtiene productos filtrados por categoría
+      description: Obtiene todos los productos, opcionalmente filtrados por categoría
       tags:
         - Producto
   "/{version}/producto/{idProducto}/activar":
@@ -2424,90 +2401,6 @@ paths:
           $ref: "#/components/responses/HTTP_Error_400"
       tags:
         - TarjetaEmitida
-  "/{version}/cliente/{idCliente}/tarjetasvinculadas":
-    parameters:
-      - $ref: "#/components/parameters/version"
-      - $ref: "#/components/parameters/idCliente"
-    get:
-      summary: Obtiene las tarjetas vinculadas de un cliente
-      operationId: GetTarjetasVinculadasPorCliente
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TarjetaVinculadaResult"
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-      tags:
-        - TarjetaVinculada
-    post:
-      summary: Vincula una tarjeta externa
-      operationId: VincularTarjeta
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/VincularTarjetaRequest"
-        required: true
-      responses:
-        "201":
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TarjetaVinculadaResult"
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-      tags:
-        - TarjetaVinculada
-  "/{version}/tarjetasvinculadas/{idTarjeta}":
-    parameters:
-      - $ref: "#/components/parameters/version"
-      - name: idTarjeta
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int32
-    delete:
-      summary: Desvincula una tarjeta
-      operationId: DesvincularTarjeta
-      responses:
-        "200":
-          description: OK
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-      tags:
-        - TarjetaVinculada
-  "/{version}/tarjetasvinculadas/{idTarjeta}/favorita":
-    parameters:
-      - $ref: "#/components/parameters/version"
-      - name: idTarjeta
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int32
-    put:
-      summary: Establece una tarjeta como favorita
-      operationId: EstablecerTarjetaFavorita
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SetFavoritaRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-        "400":
-          $ref: "#/components/responses/HTTP_Error_400"
-      tags:
-        - TarjetaVinculada
 
 components:
   schemas:

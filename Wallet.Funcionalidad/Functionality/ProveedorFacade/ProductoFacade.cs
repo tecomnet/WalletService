@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.Errors;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
@@ -192,6 +193,14 @@ public partial class ProveedorFacade : IProveedorFacade
     {
         try
         {
+            if (!Enum.TryParse<ProductoCategoria>(value: categoria, ignoreCase: true, result: out _))
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ProductoCategoriaInvalida,
+                    dynamicContent: [categoria],
+                    module: this.GetType().Name));
+            }
+
             return await context.Producto
                 .Where(predicate: x => x.Categoria == categoria && x.IsActive)
                 .ToListAsync();

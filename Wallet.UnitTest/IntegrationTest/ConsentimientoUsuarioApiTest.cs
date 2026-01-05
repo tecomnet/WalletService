@@ -35,7 +35,7 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
 
         var request = new ConsentimientoUsuarioRequest
         {
-            TipoDocumento = TipoDocumentoConsentimientoEnum.TerminosEnum,
+            TipoDocumento = TipoDocumentoConsentimientoEnum.Terminos,
             Version = "v1.0"
         };
 
@@ -50,7 +50,8 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
         var result = JsonConvert.DeserializeObject<ConsentimientoUsuarioResult>(value: responseContentString);
         Assert.NotNull(@object: result);
         Assert.Equal(expected: request.Version, actual: result.Version);
-        Assert.Equal(expected: EnumExtensions.GetEnumMemberValue(enumValue: request.TipoDocumento), actual: result.TipoDocumento);
+        Assert.Equal(expected: EnumExtensions.GetEnumMemberValue(enumValue: request.TipoDocumento),
+            actual: result.TipoDocumento);
         Assert.Equal(expected: user.Id, actual: result.IdUsuario);
     }
 
@@ -65,7 +66,7 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
         // Post a consent first
         var request = new ConsentimientoUsuarioRequest
         {
-            TipoDocumento = TipoDocumentoConsentimientoEnum.PrivacidadEnum,
+            TipoDocumento = TipoDocumentoConsentimientoEnum.Privacidad,
             Version = "v2.0"
         };
         var content = CreateContent(body: request);
@@ -82,7 +83,9 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
         var result = JsonConvert.DeserializeObject<List<ConsentimientoUsuarioResult>>(value: responseContentString);
         Assert.NotNull(@object: result);
         Assert.NotEmpty(collection: result);
-        var privacidad = result.FirstOrDefault(predicate: c => c.TipoDocumento == EnumExtensions.GetEnumMemberValue(enumValue: TipoDocumentoConsentimientoEnum.PrivacidadEnum));
+        var privacidad = result.FirstOrDefault(predicate: c =>
+            c.TipoDocumento ==
+            EnumExtensions.GetEnumMemberValue(enumValue: TipoDocumentoConsentimientoEnum.Privacidad));
         Assert.NotNull(@object: privacidad);
         Assert.Equal(expected: "v2.0", actual: privacidad.Version);
     }

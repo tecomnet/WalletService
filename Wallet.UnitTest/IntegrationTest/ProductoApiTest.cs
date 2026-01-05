@@ -48,7 +48,7 @@ public class ProductoApiTest : DatabaseTestFixture
             Nombre = "Netflix Premium",
             Precio = 15.99m,
             UrlIcono = "https://netflix.com/icon.png",
-            Categoria = CategoriaEnum.SERVICIOSEnum
+            Categoria = CategoriaEnum.SERVICIOS
         };
         var content = CreateContent(body: request);
 
@@ -237,7 +237,7 @@ public class ProductoApiTest : DatabaseTestFixture
             Nombre = nombre,
             Precio = 10.0m,
             UrlIcono = "icon",
-            Categoria = CategoriaEnum.SERVICIOSEnum
+            Categoria = CategoriaEnum.SERVICIOS
         };
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{providerId}/producto",
             content: CreateContent(body: request));

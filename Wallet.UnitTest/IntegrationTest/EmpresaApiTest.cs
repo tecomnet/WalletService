@@ -37,7 +37,8 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         // 2. Create 
         var request = new EmpresaRequest { Nombre = "Empresa Integration Test" };
-        var response = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: request));
+        var response =
+            await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: request));
 
         var content = await response.Content.ReadAsStringAsync();
         Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
@@ -85,7 +86,8 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         // 2. Create an Empresa
         var createRequest = new EmpresaRequest { Nombre = "Empresa Get By Id Test" };
-        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: createRequest));
+        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+            content: CreateContent(body: createRequest));
         var createResult =
             JsonConvert.DeserializeObject<EmpresaResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
@@ -113,7 +115,8 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         // 2. Create 
         var createRequest = new EmpresaRequest { Nombre = "Empresa Update Test Original" };
-        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: createRequest));
+        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+            content: CreateContent(body: createRequest));
         var createResult =
             JsonConvert.DeserializeObject<EmpresaResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
@@ -126,7 +129,8 @@ public class EmpresaApiTest : DatabaseTestFixture
             Nombre = "Empresa Update Test Updated",
             ConcurrencyToken = createResult.ConcurrencyToken
         };
-        var response = await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}", content: CreateContent(body: updateRequest));
+        var response = await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}",
+            content: CreateContent(body: updateRequest));
         var content = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
@@ -149,22 +153,28 @@ public class EmpresaApiTest : DatabaseTestFixture
         // 2. Setup Data (Empresa, Broker, Proveedor, Producto)
         // Empresa
         var empresaReq = new EmpresaRequest { Nombre = "Empresa With Products" };
-        var empresaRes = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: empresaReq));
+        var empresaRes = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+            content: CreateContent(body: empresaReq));
         var empresa =
-            JsonConvert.DeserializeObject<EmpresaResult>(value: await empresaRes.Content.ReadAsStringAsync(), settings: _jsonSettings);
+            JsonConvert.DeserializeObject<EmpresaResult>(value: await empresaRes.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
 
         // Broker
         var brokerReq = new BrokerRequest { Nombre = "Broker For Products" };
-        var brokerRes = await client.PostAsync(requestUri: $"/{ApiVersion}/broker", content: CreateContent(body: brokerReq));
+        var brokerRes =
+            await client.PostAsync(requestUri: $"/{ApiVersion}/broker", content: CreateContent(body: brokerReq));
         var broker =
-            JsonConvert.DeserializeObject<BrokerResult>(value: await brokerRes.Content.ReadAsStringAsync(), settings: _jsonSettings);
+            JsonConvert.DeserializeObject<BrokerResult>(value: await brokerRes.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
 
         // Proveedor
         var provReq = new ProveedorRequest
             { Nombre = "Proveedor For Products", BrokerId = broker.Id, UrlIcono = "https://icon.png" };
-        var provRes = await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor", content: CreateContent(body: provReq));
+        var provRes =
+            await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor", content: CreateContent(body: provReq));
         var proveedor =
-            JsonConvert.DeserializeObject<ProveedorResult>(value: await provRes.Content.ReadAsStringAsync(), settings: _jsonSettings);
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await provRes.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
 
         // Producto
         var prodReq = new ProductoRequest
@@ -172,13 +182,15 @@ public class EmpresaApiTest : DatabaseTestFixture
             Nombre = "Producto Linked",
             Sku = "SKU-LINKED",
             Precio = 100,
-            Categoria = CategoriaEnum.MOVILIDADEnum,
+            Categoria = CategoriaEnum.MOVILIDAD,
             UrlIcono = "http://icon.png"
         };
         var prodRes =
-            await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedor.Id}/producto", content: CreateContent(body: prodReq));
+            await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedor.Id}/producto",
+                content: CreateContent(body: prodReq));
         var producto =
-            JsonConvert.DeserializeObject<ProductoResult>(value: await prodRes.Content.ReadAsStringAsync(), settings: _jsonSettings);
+            JsonConvert.DeserializeObject<ProductoResult>(value: await prodRes.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
 
         // 3. Manually link Empresa and Producto in DB
         using (var context = CreateContext())
@@ -215,9 +227,11 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         // 2. Setup Data (Empresa)
         var empresaReq = new EmpresaRequest { Nombre = "Empresa With Clients" };
-        var empresaRes = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: empresaReq));
+        var empresaRes = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+            content: CreateContent(body: empresaReq));
         var empresa =
-            JsonConvert.DeserializeObject<EmpresaResult>(value: await empresaRes.Content.ReadAsStringAsync(), settings: _jsonSettings);
+            JsonConvert.DeserializeObject<EmpresaResult>(value: await empresaRes.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
 
         // 3. Setup Clients linked to Empresa
         // NOTE: Cannot use API to create client easily without full setup (Usuario, etc).
@@ -282,45 +296,55 @@ public class EmpresaApiTest : DatabaseTestFixture
         // 2. Setup Data
         // Empresa
         var empresaReq = new EmpresaRequest { Nombre = $"Empresa Assign {suffix}" };
-        var empresaRes = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: empresaReq));
+        var empresaRes = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+            content: CreateContent(body: empresaReq));
         Assert.Equal(expected: HttpStatusCode.OK, actual: empresaRes.StatusCode);
         var empresa =
-            JsonConvert.DeserializeObject<EmpresaResult>(value: await empresaRes.Content.ReadAsStringAsync(), settings: _jsonSettings);
+            JsonConvert.DeserializeObject<EmpresaResult>(value: await empresaRes.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
 
         // Broker & Proveedor
         var brokerRes = await client.PostAsync(requestUri: $"/{ApiVersion}/broker",
             content: CreateContent(body: new BrokerRequest { Nombre = $"Broker Assign {suffix}" }));
         Assert.Equal(expected: HttpStatusCode.Created, actual: brokerRes.StatusCode);
         var broker =
-            JsonConvert.DeserializeObject<BrokerResult>(value: await brokerRes.Content.ReadAsStringAsync(), settings: _jsonSettings);
+            JsonConvert.DeserializeObject<BrokerResult>(value: await brokerRes.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
 
         var provReq = new ProveedorRequest
             { Nombre = $"Prov Assign {suffix}", BrokerId = broker.Id, UrlIcono = "http://icon.com" };
-        var provRes = await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor", content: CreateContent(body: provReq));
-        Assert.Equal(expected: HttpStatusCode.Created, actual: provRes.StatusCode); // Verify status code (likely 200 or 201)
+        var provRes =
+            await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor", content: CreateContent(body: provReq));
+        Assert.Equal(expected: HttpStatusCode.Created,
+            actual: provRes.StatusCode); // Verify status code (likely 200 or 201)
         var proveedor =
-            JsonConvert.DeserializeObject<ProveedorResult>(value: await provRes.Content.ReadAsStringAsync(), settings: _jsonSettings);
+            JsonConvert.DeserializeObject<ProveedorResult>(value: await provRes.Content.ReadAsStringAsync(),
+                settings: _jsonSettings);
 
         // Products
         var prod1Req = new ProductoRequest
         {
-            Nombre = $"P1 {suffix}", Sku = $"SKU1-{suffix}", Precio = 10, Categoria = CategoriaEnum.OTROSEnum,
+            Nombre = $"P1 {suffix}", Sku = $"SKU1-{suffix}", Precio = 10, Categoria = CategoriaEnum.OTROS,
             UrlIcono = "http://icon.com"
         };
         var prod1Res =
-            await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedor.Id}/producto", content: CreateContent(body: prod1Req));
-        Assert.True(condition: prod1Res.IsSuccessStatusCode, userMessage: $"Product 1 creation failed: {prod1Res.StatusCode}");
+            await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedor.Id}/producto",
+                content: CreateContent(body: prod1Req));
+        Assert.True(condition: prod1Res.IsSuccessStatusCode,
+            userMessage: $"Product 1 creation failed: {prod1Res.StatusCode}");
         var prod1 = JsonConvert.DeserializeObject<ProductoResult>(value: await prod1Res.Content.ReadAsStringAsync(),
             settings: _jsonSettings);
 
         var prod2Req = new ProductoRequest
         {
-            Nombre = $"P2 {suffix}", Sku = $"SKU2-{suffix}", Precio = 20, Categoria = CategoriaEnum.OTROSEnum,
+            Nombre = $"P2 {suffix}", Sku = $"SKU2-{suffix}", Precio = 20, Categoria = CategoriaEnum.OTROS,
             UrlIcono = "http://icon.com"
         };
         var prod2Res =
-            await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedor.Id}/producto", content: CreateContent(body: prod2Req));
-        Assert.True(condition: prod2Res.IsSuccessStatusCode, userMessage: $"Product 2 creation failed: {prod2Res.StatusCode}");
+            await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedor.Id}/producto",
+                content: CreateContent(body: prod2Req));
+        Assert.True(condition: prod2Res.IsSuccessStatusCode,
+            userMessage: $"Product 2 creation failed: {prod2Res.StatusCode}");
         var prod2 = JsonConvert.DeserializeObject<ProductoResult>(value: await prod2Res.Content.ReadAsStringAsync(),
             settings: _jsonSettings);
 
@@ -332,7 +356,8 @@ public class EmpresaApiTest : DatabaseTestFixture
         Assert.NotNull(value: prod2.Id);
         var assignIds = new AsignarProductosRequest { ProductoIds = new List<int?> { prod1.Id.Value, prod2.Id.Value } };
         var assignRes =
-            await client.PostAsync(requestUri: $"/{ApiVersion}/empresa/{empresa.Id}/productos", content: CreateContent(body: assignIds));
+            await client.PostAsync(requestUri: $"/{ApiVersion}/empresa/{empresa.Id}/productos",
+                content: CreateContent(body: assignIds));
         Assert.Equal(expected: HttpStatusCode.OK, actual: assignRes.StatusCode);
 
         // 4. Verify Assignment
@@ -346,7 +371,8 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         // 5. Test Idempotency (Duplicated Assignment)
         var assignResDuplicate =
-            await client.PostAsync(requestUri: $"/{ApiVersion}/empresa/{empresa.Id}/productos", content: CreateContent(body: assignIds));
+            await client.PostAsync(requestUri: $"/{ApiVersion}/empresa/{empresa.Id}/productos",
+                content: CreateContent(body: assignIds));
         Assert.Equal(expected: HttpStatusCode.OK, actual: assignResDuplicate.StatusCode);
 
         var getResDup = await client.GetAsync(requestUri: $"/{ApiVersion}/empresa/{empresa.Id}/productos");
@@ -382,7 +408,8 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         // 2. Create 
         var createRequest = new EmpresaRequest { Nombre = "Empresa Conflict Test" };
-        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: createRequest));
+        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+            content: CreateContent(body: createRequest));
         var createResult =
             JsonConvert.DeserializeObject<EmpresaResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
@@ -394,7 +421,8 @@ public class EmpresaApiTest : DatabaseTestFixture
             ConcurrencyToken = createResult.ConcurrencyToken
         };
         var response1 =
-            await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}", content: CreateContent(body: updateRequest1));
+            await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}",
+                content: CreateContent(body: updateRequest1));
         Assert.Equal(expected: HttpStatusCode.OK, actual: response1.StatusCode);
 
         // 4. Update 2 (Stale Token - Should Fail)
@@ -404,7 +432,8 @@ public class EmpresaApiTest : DatabaseTestFixture
             ConcurrencyToken = createResult.ConcurrencyToken // Stale token
         };
         var response2 =
-            await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}", content: CreateContent(body: updateRequest2));
+            await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}",
+                content: CreateContent(body: updateRequest2));
 
         Assert.Equal(expected: HttpStatusCode.Conflict, actual: response2.StatusCode);
     }
@@ -420,7 +449,8 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         // 2. Create 
         var createRequest = new EmpresaRequest { Nombre = "Empresa Delete Conflict Test" };
-        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: createRequest));
+        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+            content: CreateContent(body: createRequest));
         var createResult =
             JsonConvert.DeserializeObject<EmpresaResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
@@ -431,12 +461,14 @@ public class EmpresaApiTest : DatabaseTestFixture
             Nombre = "Empresa Delete Conflict Test Updated",
             ConcurrencyToken = createResult.ConcurrencyToken
         };
-        await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}", content: CreateContent(body: updateRequest));
+        await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}",
+            content: CreateContent(body: updateRequest));
 
         // 4. Delete with OLD Token (Should Fail)
         var oldTokenUrlEncoded = System.Web.HttpUtility.UrlEncode(str: createResult.ConcurrencyToken);
         var response =
-            await client.DeleteAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}?concurrencyToken={oldTokenUrlEncoded}");
+            await client.DeleteAsync(
+                requestUri: $"/{ApiVersion}/empresa/{createResult.Id}?concurrencyToken={oldTokenUrlEncoded}");
 
         Assert.Equal(expected: HttpStatusCode.Conflict, actual: response.StatusCode);
     }
@@ -452,7 +484,8 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         // 2. Create (Created active by default)
         var createRequest = new EmpresaRequest { Nombre = "Empresa Activate Conflict Test" };
-        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: createRequest));
+        var createResponse = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+            content: CreateContent(body: createRequest));
         var createResult =
             JsonConvert.DeserializeObject<EmpresaResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
@@ -464,7 +497,8 @@ public class EmpresaApiTest : DatabaseTestFixture
             ConcurrencyToken = createResult.ConcurrencyToken
         };
         var updateResponse =
-            await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}", content: CreateContent(body: updateRequest));
+            await client.PutAsync(requestUri: $"/{ApiVersion}/empresa/{createResult.Id}",
+                content: CreateContent(body: updateRequest));
         var updateResult =
             JsonConvert.DeserializeObject<EmpresaResult>(value: await updateResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);

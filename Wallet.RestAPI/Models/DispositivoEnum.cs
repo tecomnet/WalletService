@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -10,25 +10,25 @@
 
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
-  
-          /// <summary>
-          /// Estructura enum para dispositivo cliente
-          /// </summary>
-          /// <value>Estructura enum para dispositivo cliente</value>
-          [JsonConverter(converterType: typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-          public enum DispositivoEnum
-          {
-              /// <summary>
-              /// Enum APPEnum for APP
-              /// </summary>
-              [EnumMember(Value = "APP")]
-              APPEnum = 0,
-              /// <summary>
-              /// Enum WEBEnum for WEB
-              /// </summary>
-              [EnumMember(Value = "WEB")]
-              WEBEnum = 1          }
+    /// <summary>
+    /// Estructura enum para dispositivo cliente
+    /// </summary>
+    /// <value>Estructura enum para dispositivo cliente</value>
+    [JsonConverter(converterType: typeof(CustomStringToEnumConverter<DispositivoEnum>))]
+    public enum DispositivoEnum
+    {
+        /// <summary>
+        /// Enum APPEnum for APP
+        /// </summary>
+        [EnumMember(Value = "APP")] APP = 0,
+
+        /// <summary>
+        /// Enum WEBEnum for WEB
+        /// </summary>
+        [EnumMember(Value = "WEB")] WEB = 1
+    }
 }

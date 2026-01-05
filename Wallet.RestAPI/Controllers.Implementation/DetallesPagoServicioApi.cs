@@ -12,7 +12,7 @@ namespace Wallet.RestAPI.Controllers.Implementation;
 /// <summary>
 /// Implementation of the DetallesPagoServicio API controller.
 /// </summary>
-[Authorize]
+//[Authorize]
 public class DetallesPagoServicioApiController(
     IDetallesPagoServicioFacade detallesPagoServicioFacade,
     IMapper mapper)

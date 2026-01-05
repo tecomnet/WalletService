@@ -40,9 +40,12 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> GetProductosAsync(string version)
+    public override async Task<IActionResult> GetProductosAsync(string version, string categoria)
     {
-        var productos = await proveedorFacade.ObtenerProductosAsync();
+        var productos = string.IsNullOrWhiteSpace(categoria)
+            ? await proveedorFacade.ObtenerProductosAsync()
+            : await proveedorFacade.ObtenerProductosPorCategoriaAsync(categoria);
+
         var result = mapper.Map<List<ProductoResult>>(source: productos);
         return Ok(value: result);
     }
@@ -61,18 +64,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
         return Ok(value: response);
     }
 
-    /// <inheritdoc />
-    public override async Task<IActionResult> GetProductosPorCategoriaAsync(string version, string categoria)
-    {
-        if (string.IsNullOrWhiteSpace(value: categoria))
-        {
-            throw new ArgumentNullException(paramName: nameof(categoria), message: "La categoría es requerida.");
-        }
-
-        var productos = await proveedorFacade.ObtenerProductosPorCategoriaAsync(categoria: categoria);
-        var result = mapper.Map<List<ProductoResult>>(source: productos);
-        return Ok(value: result);
-    }
 
     /// <inheritdoc />
     public override async Task<IActionResult> PostProductoAsync(string version, int? idProveedor, ProductoRequest body)

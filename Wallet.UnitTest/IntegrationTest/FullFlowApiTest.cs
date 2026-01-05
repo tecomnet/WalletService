@@ -72,7 +72,8 @@ public class FullFlowApiTest : DatabaseTestFixture
         {
             var request = new EmpresaRequest { Nombre = $"Empresa Test {i}" };
             // Envía la solicitud POST para crear una empresa.
-            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa", content: CreateContent(body: request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/empresa",
+                content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
             Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
@@ -92,7 +93,8 @@ public class FullFlowApiTest : DatabaseTestFixture
         {
             var request = new BrokerRequest { Nombre = $"Broker Test {i}" };
             // Envía la solicitud POST para crear un broker.
-            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/broker", content: CreateContent(body: request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/broker",
+                content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
             Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
@@ -119,7 +121,8 @@ public class FullFlowApiTest : DatabaseTestFixture
                 BrokerId = brokerId
             };
             // Envía la solicitud POST para crear un proveedor.
-            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor", content: CreateContent(body: request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor",
+                content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
             Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
@@ -129,7 +132,8 @@ public class FullFlowApiTest : DatabaseTestFixture
             Assert.NotNull(@object: result);
             // Almacena el ID del proveedor creado.
             if (result.Id.HasValue) proveedorIds.Add(item: result.Id.Value);
-            _output.WriteLine(message: $"Proveedor creado: {result.Nombre} (ID: {result.Id}) vinculado al Broker {brokerId}");
+            _output.WriteLine(
+                message: $"Proveedor creado: {result.Nombre} (ID: {result.Id}) vinculado al Broker {brokerId}");
         }
 
         // 5. Registro de 10 Productos (Distribuidos entre Proveedores)
@@ -145,7 +149,7 @@ public class FullFlowApiTest : DatabaseTestFixture
                 Nombre = $"Producto Test {i}",
                 Precio = 100 + i,
                 UrlIcono = $"icon_{i}.png",
-                Categoria = CategoriaEnum.MOVILIDADEnum
+                Categoria = CategoriaEnum.MOVILIDAD
             };
             // Envía la solicitud POST para crear un producto asociado a un proveedor.
             var response = await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedorId}/producto",
@@ -168,7 +172,7 @@ public class FullFlowApiTest : DatabaseTestFixture
         for (int i = 1; i <= 2; i++)
         {
             // Utiliza los primeros proveedores para los servicios favoritos.
-            var proveedorId = proveedorIds[index: i % proveedorIds.Count]; 
+            var proveedorId = proveedorIds[index: i % proveedorIds.Count];
             var request = new ServicioFavoritoRequest
             {
                 ClienteId = clienteId,
@@ -177,11 +181,13 @@ public class FullFlowApiTest : DatabaseTestFixture
                 NumeroReferencia = $"REF-{i}"
             };
             // Envía la solicitud POST para crear un servicio favorito.
-            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/servicioFavorito", content: CreateContent(body: request));
+            var response = await client.PostAsync(requestUri: $"/{ApiVersion}/servicioFavorito",
+                content: CreateContent(body: request));
             var content = await response.Content.ReadAsStringAsync();
             // Verifica que la respuesta sea Created (201) u OK (200).
             Assert.True(condition: response.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK,
-                userMessage: $"Expected Created or OK for Servicio Favorito but got {response.StatusCode}. Content: {content}");
+                userMessage:
+                $"Expected Created or OK for Servicio Favorito but got {response.StatusCode}. Content: {content}");
             // Deserializa la respuesta para obtener el resultado del servicio favorito creado.
             var result = JsonConvert.DeserializeObject<ServicioFavoritoResult>(value: content, settings: _jsonSettings);
             Assert.NotNull(@object: result);
@@ -212,10 +218,12 @@ public class FullFlowApiTest : DatabaseTestFixture
         // Crea una nueva instancia de Cliente vinculada al usuario y la empresa.
         var cliente = new Cliente(usuario: userDb!, empresa: empresa, creationUser: Guid.NewGuid());
         // Agrega datos personales al cliente.
-        cliente.AgregarDatosPersonales(nombre: "Test", primerApellido: "User", segundoApellido: "FullFlow", fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1), genero: Genero.Masculino,
+        cliente.AgregarDatosPersonales(nombre: "Test", primerApellido: "User", segundoApellido: "FullFlow",
+            fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1), genero: Genero.Masculino,
             modificationUser: Guid.NewGuid());
         // Agrega una dirección al cliente.
-        cliente.AgregarDireccion(direccion: new Direccion(pais: "MX", estado: "CDMX", creationUser: Guid.NewGuid()), creationUser: Guid.NewGuid());
+        cliente.AgregarDireccion(direccion: new Direccion(pais: "MX", estado: "CDMX", creationUser: Guid.NewGuid()),
+            creationUser: Guid.NewGuid());
 
         // Agrega el cliente al contexto y guarda los cambios en la base de datos.
         await context.Cliente.AddAsync(entity: cliente);

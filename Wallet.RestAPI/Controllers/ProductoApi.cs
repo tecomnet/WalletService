@@ -80,8 +80,9 @@ namespace Wallet.RestAPI.Controllers
         /// <summary>
         /// Obtiene todos los productos
         /// </summary>
-        /// <remarks>Obtiene todos los productos</remarks>
+        /// <remarks>Obtiene todos los productos, opcionalmente filtrados por categoría</remarks>
         /// <param name="version">Version of the API to use</param>
+        /// <param name="categoria">Categoría del producto para filtrar</param>
         /// <response code="200">OK</response>
         /// <response code="400">Response to client error satus code</response>
         /// <response code="401">Response to client error satus code</response>
@@ -99,33 +100,8 @@ namespace Wallet.RestAPI.Controllers
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetProductosAsync(
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version);
-
-        /// <summary>
-        /// Obtiene productos filtrados por categoría
-        /// </summary>
-        /// <remarks>Obtiene productos filtrados por categoría</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="categoria">Categoría del producto</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpGet]
-        [Route(template: "/{version:apiVersion}/producto/categoria/{categoria}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "GetProductosPorCategoria")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<ProductoResult>), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetProductosPorCategoriaAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
-            [FromRoute] [Required] string categoria);
+            [FromQuery] string categoria);
 
         /// <summary>
         /// Obtiene los productos de un proveedor

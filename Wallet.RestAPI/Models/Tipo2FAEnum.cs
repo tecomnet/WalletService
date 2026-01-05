@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -10,25 +10,25 @@
 
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
-  
-          /// <summary>
-          /// Estructura enum para tipo de verificacion 2fa
-          /// </summary>
-          /// <value>Estructura enum para tipo de verificacion 2fa</value>
-          [JsonConverter(converterType: typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-          public enum Tipo2FAEnum
-          {
-              /// <summary>
-              /// Enum SMSEnum for SMS
-              /// </summary>
-              [EnumMember(Value = "SMS")]
-              SMS = 0,
-              /// <summary>
-              /// Enum EMAILEnum for EMAIL
-              /// </summary>
-              [EnumMember(Value = "EMAIL")]
-              EMAIL = 1          }
+    /// <summary>
+    /// Estructura enum para tipo de verificacion 2fa
+    /// </summary>
+    /// <value>Estructura enum para tipo de verificacion 2fa</value>
+    [JsonConverter(converterType: typeof(CustomStringToEnumConverter<Tipo2FAEnum>))]
+    public enum Tipo2FAEnum
+    {
+        /// <summary>
+        /// Enum SMSEnum for SMS
+        /// </summary>
+        [EnumMember(Value = "SMS")] SMS = 0,
+
+        /// <summary>
+        /// Enum EMAILEnum for EMAIL
+        /// </summary>
+        [EnumMember(Value = "EMAIL")] EMAIL = 1
+    }
 }

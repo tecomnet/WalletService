@@ -532,6 +532,7 @@ public class ServiceErrorsBuilder
     public const string ProductoExistente = "PRODUCTO-EXISTENTE";
     public const string ProductoSkuExistente = "PRODUCTO-SKU-EXISTENTE";
     public const string ProductoInactivo = "PRODUCTO-INACTIVO";
+    public const string ProductoCategoriaInvalida = "PRODUCTO-CATEGORIA-INVALIDA";
 
 
     /// <summary>
@@ -574,6 +575,11 @@ public class ServiceErrorsBuilder
             errorCode: ProductoInactivo,
             message: "El producto del proveedor de servicio no está activo.",
             description: "El producto del proveedor de servicio {0} no está activo. Primero debe activarlo.");
+        // Error de categoria invalida
+        AddServiceError(
+            errorCode: ProductoCategoriaInvalida,
+            message: "La categoría del producto es inválida.",
+            description: "La categoría provides {0} no es válida.");
     }
 
     #endregion

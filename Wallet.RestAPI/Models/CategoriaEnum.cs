@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -10,35 +10,35 @@
 
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
-  
-          /// <summary>
-          /// Estructura enum para categoria de proveeedor y productos
-          /// </summary>
-          /// <value>Estructura enum para categoria de proveeedor y productos</value>
-          [JsonConverter(converterType: typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-          public enum CategoriaEnum
-          {
-              /// <summary>
-              /// Enum SERVICIOSEnum for SERVICIOS
-              /// </summary>
-              [EnumMember(Value = "SERVICIOS")]
-              SERVICIOSEnum = 0,
-              /// <summary>
-              /// Enum RECARGASEnum for RECARGAS
-              /// </summary>
-              [EnumMember(Value = "RECARGAS")]
-              RECARGASEnum = 1,
-              /// <summary>
-              /// Enum MOVILIDADEnum for MOVILIDAD
-              /// </summary>
-              [EnumMember(Value = "MOVILIDAD")]
-              MOVILIDADEnum = 2,
-              /// <summary>
-              /// Enum OTROSEnum for OTROS
-              /// </summary>
-              [EnumMember(Value = "OTROS")]
-              OTROSEnum = 3          }
+  /// <summary>
+  /// Estructura enum para categoria de proveeedor y productos
+  /// </summary>
+  /// <value>Estructura enum para categoria de proveeedor y productos</value>
+  [JsonConverter(converterType: typeof(CustomStringToEnumConverter<CategoriaEnum>))]
+  public enum CategoriaEnum
+  {
+    /// <summary>
+    /// Enum SERVICIOSEnum for SERVICIOS
+    /// </summary>
+    [EnumMember(Value = "SERVICIOS")] SERVICIOS = 0,
+
+    /// <summary>
+    /// Enum RECARGASEnum for RECARGAS
+    /// </summary>
+    [EnumMember(Value = "RECARGAS")] RECARGAS = 1,
+
+    /// <summary>
+    /// Enum MOVILIDADEnum for MOVILIDAD
+    /// </summary>
+    [EnumMember(Value = "MOVILIDAD")] MOVILIDAD = 2,
+
+    /// <summary>
+    /// Enum OTROSEnum for OTROS
+    /// </summary>
+    [EnumMember(Value = "OTROS")] OTROS = 3
+  }
 }
