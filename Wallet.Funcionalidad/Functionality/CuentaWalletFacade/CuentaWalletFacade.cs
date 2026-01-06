@@ -21,7 +21,8 @@ public class CuentaWalletFacade(ServiceDbContext context, ITarjetaEmitidaFacade 
         var random = new Random();
         var clabe = $"646{random.NextInt64(minValue: 100000000000000, maxValue: 999999999999999)}";
 
-        var wallet = new CuentaWallet(idCliente: idCliente, moneda: moneda, cuentaCLABE: clabe, creationUser: creationUser);
+        var wallet = new CuentaWallet(idCliente: idCliente, moneda: moneda, cuentaCLABE: clabe,
+            creationUser: creationUser);
 
         context.CuentaWallet.Add(entity: wallet);
         await context.SaveChangesAsync();
@@ -36,13 +37,19 @@ public class CuentaWalletFacade(ServiceDbContext context, ITarjetaEmitidaFacade 
     {
         return await context.CuentaWallet
                    .FirstOrDefaultAsync(predicate: w => w.IdCliente == idCliente)
-               ?? throw new KeyNotFoundException(message: $"No se encontró wallet para el cliente {idCliente}");
+               ?? throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                   errorCode: ServiceErrorsBuilder.CuentaWalletNoEncontrada,
+                   dynamicContent: [idCliente],
+                   module: this.GetType().Name));
     }
 
     public async Task<CuentaWallet> ActualizarSaldoAsync(int idWallet, decimal nuevoSaldo, Guid modificationUser)
     {
         var wallet = await context.CuentaWallet.FindAsync(keyValues: idWallet)
-                     ?? throw new KeyNotFoundException(message: $"Wallet {idWallet} no encontrada.");
+                     ?? throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                         errorCode: ServiceErrorsBuilder.CuentaWalletNoEncontrada,
+                         dynamicContent: [idWallet],
+                         module: this.GetType().Name));
 
         // Validar que la wallet esté activa
         if (!wallet.IsActive)
@@ -52,7 +59,8 @@ public class CuentaWalletFacade(ServiceDbContext context, ITarjetaEmitidaFacade 
             // Dado que esta clase no usa DomCommon ni ServiceErrorsBuilder explícitamente en los usings actuales,
             // agregaré la excepción estándar.
             throw new EMGeneralAggregateException(
-                exception: DomCommon.BuildEmGeneralException(errorCode: ServiceErrorsBuilder.CuentaWalletInactiva, dynamicContent: [], module: this.GetType().Name));
+                exception: DomCommon.BuildEmGeneralException(errorCode: ServiceErrorsBuilder.CuentaWalletInactiva,
+                    dynamicContent: [], module: this.GetType().Name));
         }
 
         wallet.ActualizarSaldo(nuevoSaldo: nuevoSaldo, modificationUser: modificationUser);

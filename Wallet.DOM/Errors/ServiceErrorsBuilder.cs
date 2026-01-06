@@ -360,6 +360,9 @@ public class ServiceErrorsBuilder
     /// <summary>Error: La cuenta wallet está inactiva.</summary>
     public const string CuentaWalletInactiva = "CUENTA-WALLET-INACTIVA";
 
+    /// <summary>Error: La cuenta wallet no fue encontrada.</summary>
+    public const string CuentaWalletNoEncontrada = "CUENTA-WALLET-NO-ENCONTRADA";
+
     /// <summary>Error: La dirección está inactiva.</summary>
     public const string DireccionInactiva = "DIRECCION-INACTIVA";
 
@@ -775,6 +778,12 @@ public class ServiceErrorsBuilder
             errorCode: TarjetaYaVinculada,
             message: "Tarjeta ya vinculada.",
             description: "La tarjeta ya se encuentra vinculada a la cuenta.");
+
+        // Error de wallet no encontrada
+        AddServiceError(
+            errorCode: CuentaWalletNoEncontrada,
+            message: "La wallet no fue encontrada.",
+            description: "No se encontró wallet para el cliente {0}.");
     }
 
     #endregion

@@ -649,6 +649,6 @@ public class UserApiTest : DatabaseTestFixture
 
         // Assert
         // Current implementation returns BadRequest (400) for UsuarioNoEncontrado exception.
-        Assert.Equal(expected: HttpStatusCode.BadRequest, actual: response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.NotFound, actual: response.StatusCode);
     }
 }

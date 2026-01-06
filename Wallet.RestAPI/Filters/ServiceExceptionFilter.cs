@@ -41,7 +41,10 @@ public class ServiceExceptionFilter : IExceptionFilter
                 errorCode == ServiceErrorsBuilder.BrokerNoEncontrado ||
                 errorCode == ServiceErrorsBuilder.ProveedorNoEncontrado ||
                 errorCode == ServiceErrorsBuilder.ProductoNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.ServicioFavoritoNoEncontrado)
+                errorCode == ServiceErrorsBuilder.ServicioFavoritoNoEncontrado ||
+                errorCode == ServiceErrorsBuilder.UsuarioNoEncontrado ||
+                errorCode == ServiceErrorsBuilder.KeyValueConfigNoEncontrado ||
+                errorCode == ServiceErrorsBuilder.CuentaWalletNoEncontrada)
             {
                 statusCode = (int)HttpStatusCode.NotFound; // 404
             }

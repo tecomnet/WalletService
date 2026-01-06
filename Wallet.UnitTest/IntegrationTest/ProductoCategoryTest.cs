@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
@@ -46,6 +47,12 @@ public class ProductoCategoryTest : DatabaseTestFixture
 
             context.Producto.Add(productoElectronica);
             context.Producto.Add(productoHogar);
+
+            var productoRecarga = new Producto(proveedor: proveedor, sku: "REC01", nombre: "Recarga Cell",
+                urlIcono: "url", categoria: nameof(ProductoCategoria.Recargas), precio: 20m,
+                creationUser: Guid.NewGuid());
+            context.Producto.Add(productoRecarga);
+
             await context.SaveChangesAsync();
         }).GetAwaiter().GetResult();
     }
@@ -59,7 +66,7 @@ public class ProductoCategoryTest : DatabaseTestFixture
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         // Act
-        var response = await client.GetAsync($"/{API_VERSION}/producto?categoria=Electronica");
+        var response = await client.GetAsync($"/{API_VERSION}/producto?categoria={nameof(ProductoCategoria.Recargas)}");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -67,7 +74,7 @@ public class ProductoCategoryTest : DatabaseTestFixture
         var productos = await response.Content.ReadFromJsonAsync<List<ProductoResult>>();
         Assert.NotNull(productos);
         Assert.Single(productos);
-        Assert.Equal("TV 4K", productos.First().Nombre);
+        Assert.Equal("Recarga Cell", productos.First().Nombre);
     }
 
     [Fact]
@@ -82,10 +89,6 @@ public class ProductoCategoryTest : DatabaseTestFixture
         var response = await client.GetAsync($"/{API_VERSION}/producto?categoria=Inexistente");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var productos = await response.Content.ReadFromJsonAsync<List<ProductoResult>>();
-        Assert.NotNull(productos);
-        Assert.Empty(productos);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 }

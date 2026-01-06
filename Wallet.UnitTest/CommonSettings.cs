@@ -255,6 +255,16 @@ public class CommonSettings
 			creationUser: UserId);
 		Productos.Add(item: producto);
 
+		// Producto tipo Recargas
+		producto = proveedor.AgregarProducto(
+			sku: "TELCEL100",
+			nombre: "Recarga Telcel $100",
+			precio: 100m,
+			icono: "https://telcel.com/logo.png",
+			categoria: nameof(ProductoCategoria.Recargas),
+			creationUser: UserId);
+		Productos.Add(item: producto);
+
 		// Nuevo proveedor
 		proveedor = new Proveedor(
 			nombre: "Telmex",
