@@ -155,11 +155,16 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     }
 
     /// <inheritdoc />
-    public async Task<List<Proveedor>> ObtenerProveedoresAsync()
+    public async Task<List<Proveedor>> ObtenerProveedoresAsync(Categoria? categoria = null)
     {
         try
         {
-            return await context.Proveedor.ToListAsync();
+            List<Proveedor> proveedores;
+            if (categoria != null)
+                proveedores = await context.Proveedor.ToListAsync();
+            else
+                proveedores = await context.Proveedor. Where(p=>p.Categoria == categoria).ToListAsync();
+            return proveedores;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

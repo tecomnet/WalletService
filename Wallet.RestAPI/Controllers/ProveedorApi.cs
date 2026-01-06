@@ -76,7 +76,26 @@ namespace Wallet.RestAPI.Controllers
             [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
             string version,
             [FromRoute] [Required] int? idProveedor);
-        
+
+        /// <summary>
+        /// Obtiene todos los proveedores de servicio por categoria
+        /// </summary>
+        /// <remarks>Obtiene todos los proveedores de servicio por categoria</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="categoria">categoria del proveedor</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpGet]
+        [Route("/{version:apiVersion}/proveedorPorCategoria")]
+        [ValidateModelState]
+        [SwaggerOperation("GetProveedoresPorCategoria")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<ProveedorResult>), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        public abstract Task<IActionResult> GetProveedoresPorCategoriaAsync([FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version, [FromQuery] [Required()] string categoria);
         /// <summary>
         /// Obtiene todos los proveedores de servicio
         /// </summary>

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 using Wallet.UnitTest.Functionality.Configuration;
@@ -11,15 +12,16 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
 {
     [Theory]
     // Successfully case
-    [InlineData(data: ["1. Successfully case, create proveedor", "Netflix", 1, true, new string[] { }])]
+    [InlineData(data: ["1. Successfully case, create proveedor", "Netflix", Categoria.Servicios, 1, true, new string[] { }])]
     // Wrong cases
     [InlineData(data:
     [
-        "2. Wrong case, empty name", "", 1, false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
+        "2. Wrong case, empty name", "", Categoria.Servicios, 1, false, new string[] { ServiceErrorsBuilder.PropertyValidationRequiredError }
     ])]
     public async Task GuardarProveedorAsyncTest(
         string caseName,
         string nombre,
+        Categoria categoria,
         int brokerId,
         bool success,
         string[] expectedErrors)
@@ -31,6 +33,7 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
                 nombre: nombre,
                 urlIcono: "https://example.com/icon.png",
                 brokerId: brokerId,
+                categoria: categoria,
                 creationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
 
@@ -39,6 +42,7 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
             // Assert properties
             Assert.True(condition: proveedor.Nombre == nombre &&
                                    proveedor.BrokerId == brokerId &&
+                                   proveedor.Categoria == categoria &&
                                    proveedor.CreationUser == SetupConfig.UserId);
 
             // Get from context
@@ -47,6 +51,7 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
             Assert.NotNull(@object: proveedorContext);
             Assert.True(condition: proveedorContext.Nombre == nombre &&
                                    proveedorContext.BrokerId == brokerId &&
+                                   proveedorContext.Categoria == categoria &&
                                    proveedorContext.CreationUser == SetupConfig.UserId);
 
             Assert.True(condition: success);
@@ -64,16 +69,17 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
 
     [Theory]
     // Successfully case
-    [InlineData(data: ["1. Successfully case, update proveedor", 1, "CFE Updated", true, new string[] { }])]
+    [InlineData(data: ["1. Successfully case, update proveedor", 1, "CFE Updated", Categoria.Servicios, true, new string[] { }])]
     // Wrong cases
     [InlineData(data:
     [
-        "2. Wrong case, not found", 99, "Name", false, new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
+        "2. Wrong case, not found", 99, "Name", Categoria.Servicios, false, new string[] { ServiceErrorsBuilder.ProveedorNoEncontrado }
     ])] // CHECK ERROR CODE
     public async Task ActualizarProveedorAsyncTest(
         string caseName,
         int idProveedor,
         string nombre,
+        Categoria categoria,
         bool success,
         string[] expectedErrors)
     {
@@ -87,6 +93,7 @@ public class ProveedorFacadeTest(SetupDataConfig setupConfig)
             var proveedor = await Facade.ActualizarProveedorAsync(
                 idProveedor: idProveedor,
                 nombre: nombre,
+                categoria: categoria,
                 urlIcono: "https://example.com/icon.png",
                 concurrencyToken: token,
                 modificationUser: SetupConfig.UserId,

@@ -35,15 +35,23 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="nombre")]
         public string Nombre { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Categoria
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="categoria")]
+        public CategoriaEnum Categoria { get; set; }
 
         /// <summary>
         /// Gets or Sets UrlIcono
         /// </summary>
 
-        [MaxLength(length: 500)]
+        [MaxLength(500)]
         [DataMember(Name="urlIcono")]
         public string UrlIcono { get; set; }
 
@@ -54,11 +62,12 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ProveedorRequest {\n");
-            sb.Append(value: "  BrokerId: ").Append(value: BrokerId).Append(value: "\n");
-            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  UrlIcono: ").Append(value: UrlIcono).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class ProveedorRequest {\n");
+            sb.Append("  BrokerId: ").Append(BrokerId).Append("\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
+            sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -68,7 +77,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -78,9 +87,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ProveedorRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((ProveedorRequest)obj);
         }
 
         /// <summary>
@@ -90,24 +99,29 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ProveedorRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     BrokerId == other.BrokerId ||
                     BrokerId != null &&
-                    BrokerId.Equals(other: other.BrokerId)
+                    BrokerId.Equals(other.BrokerId)
                 ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(value: other.Nombre)
+                    Nombre.Equals(other.Nombre)
+                ) && 
+                (
+                    Categoria == other.Categoria ||
+                    Categoria != null &&
+                    Categoria.Equals(other.Categoria)
                 ) && 
                 (
                     UrlIcono == other.UrlIcono ||
                     UrlIcono != null &&
-                    UrlIcono.Equals(value: other.UrlIcono)
+                    UrlIcono.Equals(other.UrlIcono)
                 );
         }
 
@@ -125,6 +139,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + BrokerId.GetHashCode();
                     if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
+                    if (Categoria != null)
+                    hashCode = hashCode * 59 + Categoria.GetHashCode();
                     if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
                 return hashCode;
@@ -136,12 +152,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ProveedorRequest left, ProveedorRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(ProveedorRequest left, ProveedorRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

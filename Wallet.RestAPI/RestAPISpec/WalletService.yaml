@@ -1423,13 +1423,7 @@ paths:
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
       description: Obtiene todos los proveedores de servicio
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: categoria
-          description: categoria del proveedor
-          required: true
+      parameters: []
       tags:
         - Proveedor
   '/{version}/proveedorPorCategoria':

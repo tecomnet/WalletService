@@ -59,7 +59,7 @@ public interface IProveedorFacade
     /// Obtiene una lista de todos los proveedores registrados.
     /// </summary>
     /// <returns>Una lista de objetos <see cref="Proveedor"/>.</returns>
-    Task<List<Proveedor>> ObtenerProveedoresAsync();
+    Task<List<Proveedor>> ObtenerProveedoresAsync(Categoria? categoria = null);
 
     /// <summary>
     /// Agrega un nuevo producto a un proveedor existente.
