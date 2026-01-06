@@ -2598,7 +2598,7 @@ components:
         - direccion
         - idProveedor
         - numeroReferencia
-    TipoDocumentoConsentimiento:
+    TipoDocumentoConsentimientoEnum:
       type: string
       x-stoplight:
         id: 94d48ef2c5166
@@ -2612,7 +2612,7 @@ components:
       type: object
       properties:
         tipoDocumento:
-          $ref: '#/components/schemas/TipoDocumentoConsentimiento'
+          $ref: '#/components/schemas/TipoDocumentoConsentimientoEnum'
         version:
           type: string
           minLength: 1
@@ -2914,7 +2914,7 @@ components:
           type: string
           maxLength: 255
         categoria:
-          $ref: '#/components/schemas/Categoria'
+          $ref: '#/components/schemas/CategoriaEnum'
         concurrencyToken:
           type: string
       required:
@@ -3078,7 +3078,7 @@ components:
           x-stoplight:
             id: neep14yhburn4
         Dispositivo:
-          $ref: '#/components/schemas/Dispositivo'
+          $ref: '#/components/schemas/DispositivoEnum'
         TipoEvento:
           type: string
           x-stoplight:
@@ -3131,7 +3131,7 @@ components:
           x-stoplight:
             id: neep14yhburn4
         dispositivo:
-          $ref: '#/components/schemas/Dispositivo'
+          $ref: '#/components/schemas/DispositivoEnum'
         tipoEvento:
           type: string
           x-stoplight:
@@ -3369,7 +3369,7 @@ components:
         - numeroInterior
         - referencia
         - concurrencyToken
-    Dispositivo:
+    DispositivoEnum:
       title: Dispositivo
       x-stoplight:
         id: 0zx76o4y76jnu
@@ -3378,7 +3378,7 @@ components:
         - APP
         - WEB
       description: Estructura enum para dispositivo cliente
-    Tipo2FA:
+    Tipo2FAEnum:
       title: Tipo2FA
       x-stoplight:
         id: g9720ns8qbcnm
@@ -3387,7 +3387,7 @@ components:
       enum:
         - SMS
         - EMAIL
-    Categoria:
+    CategoriaEnum:
       title: Tipo2FA
       x-stoplight:
         id: 0f8j5s3ilu4ci
@@ -3398,7 +3398,7 @@ components:
         - RECARGAS
         - MOVILIDAD
         - OTROS
-    Genero:
+    GeneroEnum:
       title: Genero
       x-stoplight:
         id: f96aitg31pm61
@@ -3810,7 +3810,7 @@ components:
           minLength: 1
           maxLength: 100
         categoria:
-          $ref: '#/components/schemas/Categoria'
+          $ref: '#/components/schemas/CategoriaEnum'
         urlIcono:
           type: string
           maxLength: 500
@@ -3830,7 +3830,7 @@ components:
           minLength: 1
           maxLength: 100
         categoria:
-          $ref: '#/components/schemas/Categoria'
+          $ref: '#/components/schemas/CategoriaEnum'
         urlIcono:
           type: string
           maxLength: 500
@@ -4010,7 +4010,7 @@ components:
           x-stoplight:
             id: xjzu7h7g5gz5m
         categoria:
-          $ref: '#/components/schemas/Categoria'
+          $ref: '#/components/schemas/CategoriaEnum'
       required:
         - sku
         - nombre
@@ -4022,7 +4022,7 @@ components:
       description: Estructura para confirmar 2FA (SMS o Email)
       properties:
         Tipo:
-          $ref: '#/components/schemas/Tipo2FA'
+          $ref: '#/components/schemas/Tipo2FAEnum'
         Codigo:
           type: string
       required:
