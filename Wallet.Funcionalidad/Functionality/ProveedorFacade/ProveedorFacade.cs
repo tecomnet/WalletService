@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos.GestionEmpresa;
 
@@ -13,7 +14,7 @@ namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
 {
     /// <inheritdoc />
-    public async Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, int brokerId, Guid creationUser,
+    public async Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, Categoria categoria, int brokerId,  Guid creationUser,
         string? testCase = null)
     {
         try
@@ -29,7 +30,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             }
 
             // Crea una nueva instancia de Proveedor.
-            var proveedor = new Proveedor(nombre: nombre, urlIcono: urlIcono, broker: broker,
+            var proveedor = new Proveedor(nombre: nombre, urlIcono: urlIcono, broker: broker, categoria: categoria,
                 creationUser: creationUser);
             ValidarProveedorDuplicado(nombre: nombre);
             // Agrega el proveedor al contexto.
@@ -79,7 +80,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     }
 
     /// <inheritdoc />
-    public async Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, string urlIcono,
+    public async Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, Categoria categoria, string urlIcono, 
         string concurrencyToken, Guid modificationUser,
         string? testCase = null)
     {
@@ -93,7 +94,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             ValidarProveedorIsActive(proveedor: proveedor);
             ValidarProveedorDuplicado(nombre: nombre, id: idProveedor);
             // Actualiza los datos del proveedor.
-            proveedor.Update(nombre: nombre, urlIcono: urlIcono, modificationUser: modificationUser);
+            proveedor.Update(nombre: nombre, urlIcono: urlIcono, categoria: categoria, modificationUser: modificationUser);
 
             // Guarda los cambios.
             await context.SaveChangesAsync();

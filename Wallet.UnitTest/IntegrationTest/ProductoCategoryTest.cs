@@ -34,7 +34,7 @@ public class ProductoCategoryTest : DatabaseTestFixture
                 await context.SaveChangesAsync();
             }
 
-            var proveedor = new Proveedor(nombre: "Proveedor Test", urlIcono: "http://icon.com", broker: broker,
+            var proveedor = new Proveedor(nombre: "Proveedor Test", urlIcono: "http://icon.com", broker: broker, categoria: Categoria.Servicios,
                 creationUser: Guid.NewGuid());
             context.Proveedor.Add(proveedor);
 
@@ -49,7 +49,7 @@ public class ProductoCategoryTest : DatabaseTestFixture
             context.Producto.Add(productoHogar);
 
             var productoRecarga = new Producto(proveedor: proveedor, sku: "REC01", nombre: "Recarga Cell",
-                urlIcono: "url", categoria: nameof(ProductoCategoria.Recargas), precio: 20m,
+                urlIcono: "url", categoria: nameof(Categoria.Recargas), precio: 20m,
                 creationUser: Guid.NewGuid());
             context.Producto.Add(productoRecarga);
 
@@ -66,7 +66,7 @@ public class ProductoCategoryTest : DatabaseTestFixture
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         // Act
-        var response = await client.GetAsync($"/{API_VERSION}/producto?categoria={nameof(ProductoCategoria.Recargas)}");
+        var response = await client.GetAsync($"/{API_VERSION}/producto?categoria={nameof(Categoria.Recargas)}");
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

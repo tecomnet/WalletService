@@ -193,7 +193,7 @@ public partial class ProveedorFacade : IProveedorFacade
     {
         try
         {
-            if (!Enum.TryParse<ProductoCategoria>(value: categoria, ignoreCase: true, result: out _))
+            if (!Enum.TryParse<Categoria>(value: categoria, ignoreCase: true, result: out _))
             {
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                     errorCode: ServiceErrorsBuilder.ProductoCategoriaInvalida,

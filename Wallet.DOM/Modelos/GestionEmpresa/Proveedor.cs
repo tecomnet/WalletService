@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Wallet.DOM.Comun;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 
 namespace Wallet.DOM.Modelos.GestionEmpresa
@@ -35,6 +36,10 @@ namespace Wallet.DOM.Modelos.GestionEmpresa
         public string Nombre { get; private set; }
 
         [Required] [MaxLength(length: 255)] public string UrlIcono { get; private set; }
+        
+        
+        [Required]
+        public Categoria Categoria { get; private set; } 
 
         /// <summary>
         /// ID del broker al que pertenece este proveedor.
@@ -65,9 +70,10 @@ namespace Wallet.DOM.Modelos.GestionEmpresa
         /// </summary>
         /// <param name="nombre">El nombre del proveedor.</param>
         /// <param name="urlIcono">La URL del ícono del proveedor.</param>
+        /// <param name="categoria">Categoria del proveedor</param>
         /// <param name="broker">El broker asociado.</param>
         /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
-        public Proveedor(string nombre, string urlIcono, Broker broker, Guid creationUser) :
+        public Proveedor(string nombre, string urlIcono, Categoria categoria, Broker broker, Guid creationUser) :
             base(creationUser: creationUser)
         {
             var exceptions = new List<EMGeneralException>();
@@ -80,6 +86,7 @@ namespace Wallet.DOM.Modelos.GestionEmpresa
 
             Nombre = nombre;
             UrlIcono = urlIcono;
+            Categoria = categoria;
             Broker = broker;
             BrokerId = broker.Id;
             Productos = new HashSet<Producto>();
@@ -90,8 +97,9 @@ namespace Wallet.DOM.Modelos.GestionEmpresa
         /// </summary>
         /// <param name="nombre">El nuevo nombre del proveedor.</param>
         /// <param name="urlIcono">La URL del ícono del proveedor.</param>
+        /// <param name="categoria">Categoria del proveedor</param>
         /// <param name="modificationUser">El identificador del usuario que modifica el registro.</param>
-        public void Update(string nombre, string urlIcono, Guid modificationUser)
+        public void Update(string nombre, string urlIcono, Categoria categoria, Guid modificationUser)
         {
             var exceptions = new List<EMGeneralException>();
 
@@ -113,6 +121,12 @@ namespace Wallet.DOM.Modelos.GestionEmpresa
             if (this.UrlIcono != urlIcono)
             {
                 UrlIcono = urlIcono;
+                hasChanges = true;
+            }
+
+            if (this.Categoria != categoria)
+            {
+                Categoria = categoria;
                 hasChanges = true;
             }
 

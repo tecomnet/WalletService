@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
@@ -182,7 +183,7 @@ public class BrokerApiTest : DatabaseTestFixture
             brokerId = broker.Id;
 
             var proveedor =
-                new Proveedor(nombre: providerName, urlIcono: "https://example.com/icon.png", broker: broker, creationUser: Guid.NewGuid());
+                new Proveedor(nombre: providerName, urlIcono: "https://example.com/icon.png", categoria: Categoria.Servicios, broker: broker, creationUser: Guid.NewGuid());
             context.Proveedor.Add(entity: proveedor);
             await context.SaveChangesAsync();
         }

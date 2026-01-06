@@ -241,6 +241,7 @@ public class CommonSettings
 		var proveedor = new Proveedor(
 			nombre: "CFE",
 			urlIcono: "https://cfe.mx/logo.png",
+			categoria: Categoria.Servicios,
 			broker: broker,
 			creationUser: UserId);
 		// Agrega proveedor
@@ -261,7 +262,7 @@ public class CommonSettings
 			nombre: "Recarga Telcel $100",
 			precio: 100m,
 			icono: "https://telcel.com/logo.png",
-			categoria: nameof(ProductoCategoria.Recargas),
+			categoria: nameof(Categoria.Recargas),
 			creationUser: UserId);
 		Productos.Add(item: producto);
 
@@ -269,6 +270,7 @@ public class CommonSettings
 		proveedor = new Proveedor(
 			nombre: "Telmex",
 			urlIcono: "https://telmex.com/logo.png",
+			categoria: Categoria.Servicios,
 			broker: broker,
 			creationUser: UserId);
 		// Agrega proveedor

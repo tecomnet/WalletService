@@ -1,4 +1,5 @@
 using Moq;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
 using Wallet.DOM.Modelos.GestionEmpresa;
 using Xunit.Sdk;
@@ -45,6 +46,7 @@ public class ProveedorTest : UnitTestTemplate
             var proveedor = new Proveedor(
                 broker: mockBroker.Object,
                 urlIcono: "https://cfe.mx/logo.png",
+                categoria: Categoria.Servicios,
                 nombre: nombre,
                 creationUser: Guid.NewGuid()
             );
