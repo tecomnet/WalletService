@@ -3789,21 +3789,6 @@ components:
         urlIcono:
           type: string
           maxLength: 500
-        guid:
-          type: string
-          format: uuid
-        creationTimestamp:
-          type: string
-          format: date-time
-        modificationTimestamp:
-          type: string
-          format: date-time
-        creationUser:
-          type: string
-          format: uuid
-        modificationUser:
-          type: string
-          format: uuid
         isActive:
           type: boolean
         concurrencyToken:
@@ -3812,11 +3797,6 @@ components:
       required:
         - id
         - nombre
-        - guid
-        - creationTimestamp
-        - modificationTimestamp
-        - creationUser
-        - modificationUser
         - isActive
     ProveedorRequest:
       title: ProveedorRequest
