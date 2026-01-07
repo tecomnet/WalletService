@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,76 +21,29 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class EmpresaResult : IEquatable<EmpresaResult>
-    { 
+    {
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [Required]
-
-        [DataMember(Name="id")]
+        [DataMember(Name = "id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-
-        [StringLength(maximumLength: 100, MinimumLength=1)]
-        [DataMember(Name="nombre")]
+        [StringLength(maximumLength: 100, MinimumLength = 1)]
+        [DataMember(Name = "nombre")]
         public string Nombre { get; set; }
 
-        /// <summary>
-        /// Guid of the key-value configuration
-        /// </summary>
-        /// <value>Guid of the key-value configuration</value>
-        [Required]
-
-        [DataMember(Name="guid")]
-        public Guid? Guid { get; set; }
-
-        /// <summary>
-        /// Creation timestamp
-        /// </summary>
-        /// <value>Creation timestamp</value>
-        [Required]
-
-        [DataMember(Name="creationTimestamp")]
-        public DateTime? CreationTimestamp { get; set; }
-
-        /// <summary>
-        /// Modification timestamp
-        /// </summary>
-        /// <value>Modification timestamp</value>
-        [Required]
-
-        [DataMember(Name="modificationTimestamp")]
-        public DateTime? ModificationTimestamp { get; set; }
-
-        /// <summary>
-        /// Guid of the creation user
-        /// </summary>
-        /// <value>Guid of the creation user</value>
-        [Required]
-
-        [DataMember(Name="creationUser")]
-        public Guid? CreationUser { get; set; }
 
         /// <summary>
         /// Guid of the modification user
         /// </summary>
         /// <value>Guid of the modification user</value>
         [Required]
-
-        [DataMember(Name="modificationUser")]
-        public Guid? ModificationUser { get; set; }
-
-        /// <summary>
-        /// Guid of the modification user
-        /// </summary>
-        /// <value>Guid of the modification user</value>
-        [Required]
-
-        [DataMember(Name="isActive")]
+        [DataMember(Name = "isActive")]
         public bool? IsActive { get; set; }
 
         /// <summary>
@@ -98,7 +51,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         /// <value>Token de concurrencia</value>
 
-        [DataMember(Name="concurrencyToken")]
+        [DataMember(Name = "concurrencyToken")]
         public string ConcurrencyToken { get; set; }
 
         /// <summary>
@@ -111,11 +64,7 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "class EmpresaResult {\n");
             sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
             sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
-            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
-            sb.Append(value: "  ModificationTimestamp: ").Append(value: ModificationTimestamp).Append(value: "\n");
-            sb.Append(value: "  CreationUser: ").Append(value: CreationUser).Append(value: "\n");
-            sb.Append(value: "  ModificationUser: ").Append(value: ModificationUser).Append(value: "\n");
+
             sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
             sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
             sb.Append(value: "}\n");
@@ -153,47 +102,22 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other: other.Id)
-                ) && 
+                ) &&
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
                     Nombre.Equals(value: other.Nombre)
-                ) && 
-                (
-                    Guid == other.Guid ||
-                    Guid != null &&
-                    Guid.Equals(other: other.Guid)
-                ) && 
-                (
-                    CreationTimestamp == other.CreationTimestamp ||
-                    CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other: other.CreationTimestamp)
-                ) && 
-                (
-                    ModificationTimestamp == other.ModificationTimestamp ||
-                    ModificationTimestamp != null &&
-                    ModificationTimestamp.Equals(other: other.ModificationTimestamp)
-                ) && 
-                (
-                    CreationUser == other.CreationUser ||
-                    CreationUser != null &&
-                    CreationUser.Equals(other: other.CreationUser)
-                ) && 
-                (
-                    ModificationUser == other.ModificationUser ||
-                    ModificationUser != null &&
-                    ModificationUser.Equals(other: other.ModificationUser)
-                ) && 
+                ) &&
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other: other.IsActive)
-                ) && 
+                ) &&
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
@@ -211,30 +135,22 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
+                if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (Nombre != null)
+                if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                    if (Guid != null)
-                    hashCode = hashCode * 59 + Guid.GetHashCode();
-                    if (CreationTimestamp != null)
-                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                    if (ModificationTimestamp != null)
-                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
-                    if (CreationUser != null)
-                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                    if (ModificationUser != null)
-                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
-                    if (IsActive != null)
+
+                if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
-                    if (ConcurrencyToken != null)
+                if (ConcurrencyToken != null)
                     hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(EmpresaResult left, EmpresaResult right)
         {
@@ -246,7 +162,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(objA: left, objB: right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

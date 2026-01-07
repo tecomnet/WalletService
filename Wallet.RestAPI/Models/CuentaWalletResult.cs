@@ -59,19 +59,6 @@ namespace Wallet.RestAPI.Models
         [DataMember(Name = "moneda")]
         public string Moneda { get; set; }
 
-        /// <summary>
-        /// Gets or Sets Guid
-        /// </summary>
-        [Required]
-        [DataMember(Name = "guid")]
-        public Guid? Guid { get; set; }
-
-        /// <summary>
-        /// Gets or Sets CreationTimestamp
-        /// </summary>
-        [Required]
-        [DataMember(Name = "creationTimestamp")]
-        public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
         /// Gets or Sets IsActive
@@ -79,6 +66,13 @@ namespace Wallet.RestAPI.Models
         [Required]
         [DataMember(Name = "isActive")]
         public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [DataMember(Name = "concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -93,9 +87,9 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "  SaldoActual: ").Append(value: SaldoActual).Append(value: "\n");
             sb.Append(value: "  CuentaCLABE: ").Append(value: CuentaCLABE).Append(value: "\n");
             sb.Append(value: "  Moneda: ").Append(value: Moneda).Append(value: "\n");
-            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
-            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
+
             sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
+            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
         }
@@ -158,19 +152,14 @@ namespace Wallet.RestAPI.Models
                     Moneda.Equals(value: other.Moneda)
                 ) &&
                 (
-                    Guid == other.Guid ||
-                    Guid != null &&
-                    Guid.Equals(other: other.Guid)
-                ) &&
-                (
-                    CreationTimestamp == other.CreationTimestamp ||
-                    CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other: other.CreationTimestamp)
-                ) &&
-                (
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other: other.IsActive)
+                ) &&
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
                 );
         }
 
@@ -193,12 +182,11 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + CuentaCLABE.GetHashCode();
                 if (Moneda != null)
                     hashCode = hashCode * 59 + Moneda.GetHashCode();
-                if (Guid != null)
-                    hashCode = hashCode * 59 + Guid.GetHashCode();
-                if (CreationTimestamp != null)
-                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
+
                 if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
+                if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }

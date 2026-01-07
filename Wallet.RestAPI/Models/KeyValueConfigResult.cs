@@ -43,53 +43,8 @@ namespace Wallet.RestAPI.Models
         [DataMember(Name = "value")]
         public string Value { get; set; }
 
-        /// <summary>
-        /// Guid of the key-value configuration
-        /// </summary>
-        /// <value>Guid of the key-value configuration</value>
-        [Required]
-        [DataMember(Name = "guid")]
-        public Guid? Guid { get; set; }
 
-        /// <summary>
-        /// Creation timestamp
-        /// </summary>
-        /// <value>Creation timestamp</value>
-        [Required]
-        [DataMember(Name = "creationTimestamp")]
-        public DateTime? CreationTimestamp { get; set; }
-
-        /// <summary>
-        /// Modification timestamp
-        /// </summary>
-        /// <value>Modification timestamp</value>
-        [Required]
-        [DataMember(Name = "modificationTimestamp")]
-        public DateTime? ModificationTimestamp { get; set; }
-
-        /// <summary>
-        /// Guid of the creation user
-        /// </summary>
-        /// <value>Guid of the creation user</value>
-        [Required]
-        [DataMember(Name = "creationUser")]
-        public Guid? CreationUser { get; set; }
-
-        /// <summary>
-        /// Guid of the modification user
-        /// </summary>
-        /// <value>Guid of the modification user</value>
-        [Required]
-        [DataMember(Name = "modificationUser")]
-        public Guid? ModificationUser { get; set; }
-
-        /// <summary>
-        /// Guid of the modification user
-        /// </summary>
-        /// <value>Guid of the modification user</value>
-        [Required]
-        [DataMember(Name = "isActive")]
-        public bool? IsActive { get; set; }
+        [DataMember(Name = "isActive")] public bool? IsActive { get; set; }
 
         /// <summary>
         /// Token de concurrencia
@@ -110,11 +65,7 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
             sb.Append(value: "  Key: ").Append(value: Key).Append(value: "\n");
             sb.Append(value: "  Value: ").Append(value: Value).Append(value: "\n");
-            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
-            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
-            sb.Append(value: "  ModificationTimestamp: ").Append(value: ModificationTimestamp).Append(value: "\n");
-            sb.Append(value: "  CreationUser: ").Append(value: CreationUser).Append(value: "\n");
-            sb.Append(value: "  ModificationUser: ").Append(value: ModificationUser).Append(value: "\n");
+
             sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
             sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
             sb.Append(value: "}\n");
@@ -169,31 +120,6 @@ namespace Wallet.RestAPI.Models
                     Value.Equals(value: other.Value)
                 ) &&
                 (
-                    Guid == other.Guid ||
-                    Guid != null &&
-                    Guid.Equals(other: other.Guid)
-                ) &&
-                (
-                    CreationTimestamp == other.CreationTimestamp ||
-                    CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other: other.CreationTimestamp)
-                ) &&
-                (
-                    ModificationTimestamp == other.ModificationTimestamp ||
-                    ModificationTimestamp != null &&
-                    ModificationTimestamp.Equals(other: other.ModificationTimestamp)
-                ) &&
-                (
-                    CreationUser == other.CreationUser ||
-                    CreationUser != null &&
-                    CreationUser.Equals(other: other.CreationUser)
-                ) &&
-                (
-                    ModificationUser == other.ModificationUser ||
-                    ModificationUser != null &&
-                    ModificationUser.Equals(other: other.ModificationUser)
-                ) &&
-                (
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other: other.IsActive)
@@ -221,16 +147,7 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Key.GetHashCode();
                 if (Value != null)
                     hashCode = hashCode * 59 + Value.GetHashCode();
-                if (Guid != null)
-                    hashCode = hashCode * 59 + Guid.GetHashCode();
-                if (CreationTimestamp != null)
-                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                if (ModificationTimestamp != null)
-                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
-                if (CreationUser != null)
-                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                if (ModificationUser != null)
-                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+
                 if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 if (ConcurrencyToken != null)

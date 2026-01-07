@@ -73,40 +73,6 @@ namespace Wallet.RestAPI.Models
         [DataMember(Name = "urlIcono")]
         public string UrlIcono { get; set; }
 
-        /// <summary>
-        /// Gets or Sets Guid
-        /// </summary>
-        [Required]
-        [DataMember(Name = "guid")]
-        public Guid? Guid { get; set; }
-
-        /// <summary>
-        /// Gets or Sets CreationTimestamp
-        /// </summary>
-        [Required]
-        [DataMember(Name = "creationTimestamp")]
-        public DateTime? CreationTimestamp { get; set; }
-
-        /// <summary>
-        /// Gets or Sets ModificationTimestamp
-        /// </summary>
-        [Required]
-        [DataMember(Name = "modificationTimestamp")]
-        public DateTime? ModificationTimestamp { get; set; }
-
-        /// <summary>
-        /// Gets or Sets CreationUser
-        /// </summary>
-        [Required]
-        [DataMember(Name = "creationUser")]
-        public Guid? CreationUser { get; set; }
-
-        /// <summary>
-        /// Gets or Sets ModificationUser
-        /// </summary>
-        [Required]
-        [DataMember(Name = "modificationUser")]
-        public Guid? ModificationUser { get; set; }
 
         /// <summary>
         /// Gets or Sets IsActive
@@ -138,11 +104,7 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "  Categoria: ").Append(value: Categoria).Append(value: "\n");
             sb.Append(value: "  Precio: ").Append(value: Precio).Append(value: "\n");
             sb.Append(value: "  UrlIcono: ").Append(value: UrlIcono).Append(value: "\n");
-            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
-            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
-            sb.Append(value: "  ModificationTimestamp: ").Append(value: ModificationTimestamp).Append(value: "\n");
-            sb.Append(value: "  CreationUser: ").Append(value: CreationUser).Append(value: "\n");
-            sb.Append(value: "  ModificationUser: ").Append(value: ModificationUser).Append(value: "\n");
+
             sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
             sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
             sb.Append(value: "}\n");
@@ -217,31 +179,6 @@ namespace Wallet.RestAPI.Models
                     UrlIcono.Equals(value: other.UrlIcono)
                 ) &&
                 (
-                    Guid == other.Guid ||
-                    Guid != null &&
-                    Guid.Equals(other: other.Guid)
-                ) &&
-                (
-                    CreationTimestamp == other.CreationTimestamp ||
-                    CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other: other.CreationTimestamp)
-                ) &&
-                (
-                    ModificationTimestamp == other.ModificationTimestamp ||
-                    ModificationTimestamp != null &&
-                    ModificationTimestamp.Equals(other: other.ModificationTimestamp)
-                ) &&
-                (
-                    CreationUser == other.CreationUser ||
-                    CreationUser != null &&
-                    CreationUser.Equals(other: other.CreationUser)
-                ) &&
-                (
-                    ModificationUser == other.ModificationUser ||
-                    ModificationUser != null &&
-                    ModificationUser.Equals(other: other.ModificationUser)
-                ) &&
-                (
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other: other.IsActive)
@@ -277,16 +214,7 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Precio.GetHashCode();
                 if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
-                if (Guid != null)
-                    hashCode = hashCode * 59 + Guid.GetHashCode();
-                if (CreationTimestamp != null)
-                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                if (ModificationTimestamp != null)
-                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
-                if (CreationUser != null)
-                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                if (ModificationUser != null)
-                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+
                 if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                 if (ConcurrencyToken != null)

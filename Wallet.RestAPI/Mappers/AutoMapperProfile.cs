@@ -79,14 +79,26 @@ public class AutoMapperProfile : Profile
             .ForMember(destinationMember: dest => dest.ConcurrencyToken,
                 memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
-        CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>();
+        CreateMap<ConsentimientosUsuario, ConsentimientoUsuarioResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<KeyValueConfig, KeyValueConfigResult>()
             .ForMember(destinationMember: dest => dest.ConcurrencyToken,
                 memberOptions: opt => opt.MapFrom(mapExpression: src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
-        CreateMap<CuentaWallet, CuentaWalletResult>();
-        CreateMap<BitacoraTransaccion, BitacoraTransaccionResult>();
-        CreateMap<DetallesPagoServicio, DetallesPagoServicioResult>();
+        CreateMap<CuentaWallet, CuentaWalletResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<BitacoraTransaccion, BitacoraTransaccionResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
+        CreateMap<DetallesPagoServicio, DetallesPagoServicioResult>()
+            .ForMember(dest => dest.ConcurrencyToken,
+                opt => opt.MapFrom(src =>
+                    src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));
         CreateMap<TarjetaEmitida, TarjetaEmitidaResult>()
             .ForMember(dest => dest.ConcurrencyToken,
                 opt => opt.MapFrom(src =>

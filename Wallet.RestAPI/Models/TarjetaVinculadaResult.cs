@@ -8,9 +8,7 @@ namespace Wallet.RestAPI.Models
     [DataContract]
     public partial class TarjetaVinculadaResult : IEquatable<TarjetaVinculadaResult>
     {
-        [Required]
-        [DataMember(Name = "id")]
-        public int? Id { get; set; }
+        [Required] [DataMember(Name = "id")] public int? Id { get; set; }
 
         [Required]
         [DataMember(Name = "panEnmascarado")]
@@ -27,7 +25,9 @@ namespace Wallet.RestAPI.Models
         [Required]
         [DataMember(Name = "esFavorita")]
         public bool? EsFavorita { get; set; }
-        
+
+        [DataMember(Name = "isActive")] public bool? IsActive { get; set; }
+
         [DataMember(Name = "concurrencyToken")]
         public string ConcurrencyToken { get; set; }
 
@@ -58,6 +58,7 @@ namespace Wallet.RestAPI.Models
                    string.Equals(Alias, other.Alias) &&
                    Marca == other.Marca &&
                    EsFavorita == other.EsFavorita &&
+                   IsActive == other.IsActive &&
                    string.Equals(ConcurrencyToken, other.ConcurrencyToken);
         }
 
@@ -70,6 +71,7 @@ namespace Wallet.RestAPI.Models
                 hashCode = (hashCode * 397) ^ (Alias != null ? Alias.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Marca != null ? Marca.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (EsFavorita != null ? EsFavorita.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (IsActive != null ? IsActive.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (ConcurrencyToken != null ? ConcurrencyToken.GetHashCode() : 0);
                 return hashCode;
             }

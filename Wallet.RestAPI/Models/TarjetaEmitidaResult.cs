@@ -9,9 +9,7 @@ namespace Wallet.RestAPI.Models
     [DataContract]
     public partial class TarjetaEmitidaResult : IEquatable<TarjetaEmitidaResult>
     {
-        [Required]
-        [DataMember(Name = "id")]
-        public int? Id { get; set; }
+        [Required] [DataMember(Name = "id")] public int? Id { get; set; }
 
         [Required]
         [DataMember(Name = "panEnmascarado")]
@@ -25,9 +23,7 @@ namespace Wallet.RestAPI.Models
         [DataMember(Name = "estado")]
         public EstadoTarjetaEnum? Estado { get; set; }
 
-        [Required]
-        [DataMember(Name = "tipo")]
-        public TipoTarjetaEnum? Tipo { get; set; }
+        [Required] [DataMember(Name = "tipo")] public TipoTarjetaEnum? Tipo { get; set; }
 
         [Required]
         [DataMember(Name = "limiteDiario")]
@@ -41,11 +37,11 @@ namespace Wallet.RestAPI.Models
         [DataMember(Name = "retirosCajeroHabilitados")]
         public bool? RetirosCajeroHabilitados { get; set; }
 
-        [DataMember(Name = "nombreImpreso")]
-        public string NombreImpreso { get; set; }
+        [DataMember(Name = "nombreImpreso")] public string NombreImpreso { get; set; }
 
-        [DataMember(Name = "estadoEntrega")]
-        public EstadoEntregaEnum? EstadoEntrega { get; set; }
+        [DataMember(Name = "estadoEntrega")] public EstadoEntregaEnum? EstadoEntrega { get; set; }
+
+        [DataMember(Name = "isActive")] public bool? IsActive { get; set; }
 
         [DataMember(Name = "concurrencyToken")]
         public string ConcurrencyToken { get; set; }
@@ -83,6 +79,7 @@ namespace Wallet.RestAPI.Models
                    RetirosCajeroHabilitados == other.RetirosCajeroHabilitados &&
                    string.Equals(NombreImpreso, other.NombreImpreso) &&
                    EstadoEntrega == other.EstadoEntrega &&
+                   IsActive == other.IsActive &&
                    string.Equals(ConcurrencyToken, other.ConcurrencyToken);
         }
 
@@ -96,10 +93,13 @@ namespace Wallet.RestAPI.Models
                 hashCode = (hashCode * 397) ^ (Estado != null ? Estado.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (Tipo != null ? Tipo.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (LimiteDiario != null ? LimiteDiario.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (ComprasEnLineaHabilitadas != null ? ComprasEnLineaHabilitadas.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (RetirosCajeroHabilitados != null ? RetirosCajeroHabilitados.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^
+                           (ComprasEnLineaHabilitadas != null ? ComprasEnLineaHabilitadas.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^
+                           (RetirosCajeroHabilitados != null ? RetirosCajeroHabilitados.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (NombreImpreso != null ? NombreImpreso.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (EstadoEntrega != null ? EstadoEntrega.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (IsActive != null ? IsActive.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (ConcurrencyToken != null ? ConcurrencyToken.GetHashCode() : 0);
                 return hashCode;
             }

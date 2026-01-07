@@ -26,63 +26,60 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Id
         /// </summary>
         [Required]
-        [DataMember(Name="id")]
+        [DataMember(Name = "id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets IdBilletera
         /// </summary>
         [Required]
-        [DataMember(Name="idBilletera")]
+        [DataMember(Name = "idBilletera")]
         public int? IdBilletera { get; set; }
 
         /// <summary>
         /// Gets or Sets Monto
         /// </summary>
         [Required]
-        [DataMember(Name="monto")]
+        [DataMember(Name = "monto")]
         public decimal? Monto { get; set; }
 
         /// <summary>
         /// Gets or Sets Tipo
         /// </summary>
         [Required]
-        [DataMember(Name="tipo")]
+        [DataMember(Name = "tipo")]
         public string Tipo { get; set; }
 
         /// <summary>
         /// Gets or Sets Direccion
         /// </summary>
         [Required]
-        [DataMember(Name="direccion")]
+        [DataMember(Name = "direccion")]
         public string Direccion { get; set; }
 
         /// <summary>
         /// Gets or Sets Estatus
         /// </summary>
         [Required]
-        [DataMember(Name="estatus")]
+        [DataMember(Name = "estatus")]
         public string Estatus { get; set; }
 
-        /// <summary>
-        /// Gets or Sets RefExternaId
-        /// </summary>
-        [DataMember(Name="refExternaId")]
-        public string RefExternaId { get; set; }
+        [DataMember(Name = "refExternaId")] public string RefExternaId { get; set; }
 
         /// <summary>
-        /// Gets or Sets CreationTimestamp
+        /// Gets or Sets IsActive
         /// </summary>
         [Required]
-        [DataMember(Name="creationTimestamp")]
-        public DateTime? CreationTimestamp { get; set; }
+        [DataMember(Name = "isActive")]
+        public bool? IsActive { get; set; }
 
         /// <summary>
-        /// Gets or Sets Guid
+        /// Token de concurrencia
         /// </summary>
-        [Required]
-        [DataMember(Name="guid")]
-        public Guid? Guid { get; set; }
+        /// <value>Token de concurrencia</value>
+        [DataMember(Name = "concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
+
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -99,8 +96,8 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "  Direccion: ").Append(value: Direccion).Append(value: "\n");
             sb.Append(value: "  Estatus: ").Append(value: Estatus).Append(value: "\n");
             sb.Append(value: "  RefExternaId: ").Append(value: RefExternaId).Append(value: "\n");
-            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
-            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
+            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
+            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
         }
@@ -136,51 +133,51 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other: other.Id)
-                ) && 
+                ) &&
                 (
                     IdBilletera == other.IdBilletera ||
                     IdBilletera != null &&
                     IdBilletera.Equals(other: other.IdBilletera)
-                ) && 
+                ) &&
                 (
                     Monto == other.Monto ||
                     Monto != null &&
                     Monto.Equals(other: other.Monto)
-                ) && 
+                ) &&
                 (
                     Tipo == other.Tipo ||
                     Tipo != null &&
                     Tipo.Equals(value: other.Tipo)
-                ) && 
+                ) &&
                 (
                     Direccion == other.Direccion ||
                     Direccion != null &&
                     Direccion.Equals(value: other.Direccion)
-                ) && 
+                ) &&
                 (
                     Estatus == other.Estatus ||
                     Estatus != null &&
                     Estatus.Equals(value: other.Estatus)
-                ) && 
+                ) &&
                 (
                     RefExternaId == other.RefExternaId ||
                     RefExternaId != null &&
                     RefExternaId.Equals(value: other.RefExternaId)
-                ) && 
+                ) &&
                 (
-                    CreationTimestamp == other.CreationTimestamp ||
-                    CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other: other.CreationTimestamp)
-                ) && 
+                    IsActive == other.IsActive ||
+                    IsActive != null &&
+                    IsActive.Equals(other: other.IsActive)
+                ) &&
                 (
-                    Guid == other.Guid ||
-                    Guid != null &&
-                    Guid.Equals(other: other.Guid)
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
                 );
         }
 
@@ -207,16 +204,17 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Estatus.GetHashCode();
                 if (RefExternaId != null)
                     hashCode = hashCode * 59 + RefExternaId.GetHashCode();
-                if (CreationTimestamp != null)
-                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                if (Guid != null)
-                    hashCode = hashCode * 59 + Guid.GetHashCode();
+                if (IsActive != null)
+                    hashCode = hashCode * 59 + IsActive.GetHashCode();
+                if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(BitacoraTransaccionResult left, BitacoraTransaccionResult right)
         {
@@ -228,7 +226,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(objA: left, objB: right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

@@ -26,42 +26,50 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Id
         /// </summary>
         [Required]
-        [DataMember(Name="id")]
+        [DataMember(Name = "id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets IdTransaccion
         /// </summary>
         [Required]
-        [DataMember(Name="idTransaccion")]
+        [DataMember(Name = "idTransaccion")]
         public int? IdTransaccion { get; set; }
 
         /// <summary>
         /// Gets or Sets IdProveedor
         /// </summary>
         [Required]
-        [DataMember(Name="idProveedor")]
+        [DataMember(Name = "idProveedor")]
         public int? IdProveedor { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroReferencia
         /// </summary>
         [Required]
-        [DataMember(Name="numeroReferencia")]
+        [DataMember(Name = "numeroReferencia")]
         public string NumeroReferencia { get; set; }
 
         /// <summary>
         /// Gets or Sets CodigoAutorizacion
         /// </summary>
-        [DataMember(Name="codigoAutorizacion")]
+        [DataMember(Name = "codigoAutorizacion")]
         public string CodigoAutorizacion { get; set; }
 
         /// <summary>
-        /// Gets or Sets Guid
+        /// Gets or Sets IsActive
         /// </summary>
         [Required]
-        [DataMember(Name="guid")]
-        public Guid? Guid { get; set; }
+        [DataMember(Name = "isActive")]
+        public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [DataMember(Name = "concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
+
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -76,7 +84,8 @@ namespace Wallet.RestAPI.Models
             sb.Append(value: "  IdProveedor: ").Append(value: IdProveedor).Append(value: "\n");
             sb.Append(value: "  NumeroReferencia: ").Append(value: NumeroReferencia).Append(value: "\n");
             sb.Append(value: "  CodigoAutorizacion: ").Append(value: CodigoAutorizacion).Append(value: "\n");
-            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
+            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
+            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
             sb.Append(value: "}\n");
             return sb.ToString();
         }
@@ -112,36 +121,41 @@ namespace Wallet.RestAPI.Models
             if (ReferenceEquals(objA: null, objB: other)) return false;
             if (ReferenceEquals(objA: this, objB: other)) return true;
 
-            return 
+            return
                 (
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other: other.Id)
-                ) && 
+                ) &&
                 (
                     IdTransaccion == other.IdTransaccion ||
                     IdTransaccion != null &&
                     IdTransaccion.Equals(other: other.IdTransaccion)
-                ) && 
+                ) &&
                 (
                     IdProveedor == other.IdProveedor ||
                     IdProveedor != null &&
                     IdProveedor.Equals(other: other.IdProveedor)
-                ) && 
+                ) &&
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
                     NumeroReferencia.Equals(value: other.NumeroReferencia)
-                ) && 
+                ) &&
                 (
                     CodigoAutorizacion == other.CodigoAutorizacion ||
                     CodigoAutorizacion != null &&
                     CodigoAutorizacion.Equals(value: other.CodigoAutorizacion)
-                ) && 
+                ) &&
                 (
-                    Guid == other.Guid ||
-                    Guid != null &&
-                    Guid.Equals(other: other.Guid)
+                    IsActive == other.IsActive ||
+                    IsActive != null &&
+                    IsActive.Equals(other: other.IsActive)
+                ) &&
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
                 );
         }
 
@@ -164,14 +178,17 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + NumeroReferencia.GetHashCode();
                 if (CodigoAutorizacion != null)
                     hashCode = hashCode * 59 + CodigoAutorizacion.GetHashCode();
-                if (Guid != null)
-                    hashCode = hashCode * 59 + Guid.GetHashCode();
+                if (IsActive != null)
+                    hashCode = hashCode * 59 + IsActive.GetHashCode();
+                if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
 
         public static bool operator ==(DetallesPagoServicioResult left, DetallesPagoServicioResult right)
         {
@@ -183,7 +200,8 @@ namespace Wallet.RestAPI.Models
             return !Equals(objA: left, objB: right);
         }
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }
