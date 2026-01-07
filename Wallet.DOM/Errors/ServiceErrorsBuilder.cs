@@ -756,6 +756,15 @@ public class ServiceErrorsBuilder
     /// <summary>Error: La tarjeta ha expirado.</summary>
     public const string TarjetaExpirada = "TARJETA-EXPIRADA";
 
+    /// <summary>Error: La tarjeta no fue encontrada.</summary>
+    public const string TarjetaNoEncontrada = "TARJETA-NO-ENCONTRADA";
+
+    /// <summary>Error: La tarjeta vinculada no fue encontrada.</summary>
+    public const string TarjetaVinculadaNoEncontrada = "TARJETA-VINCULADA-NO-ENCONTRADA";
+
+    /// <summary>Error: El detalle de pago no fue encontrado.</summary>
+    public const string DetallePagoNoEncontrado = "DETALLE-PAGO-NO-ENCONTRADO";
+
     /// <summary>
     /// Carga los errores relacionados con GestionWallet (Tarjetas).
     /// </summary>
@@ -784,6 +793,24 @@ public class ServiceErrorsBuilder
             errorCode: CuentaWalletNoEncontrada,
             message: "La wallet no fue encontrada.",
             description: "No se encontró wallet para el cliente {0}.");
+
+        // Error de tarjeta no encontrada
+        AddServiceError(
+            errorCode: TarjetaNoEncontrada,
+            message: "Tarjeta no encontrada.",
+            description: "La tarjeta con id {0} no fue encontrada.");
+
+        // Error de tarjeta vinculada no encontrada
+        AddServiceError(
+            errorCode: TarjetaVinculadaNoEncontrada,
+            message: "Tarjeta vinculada no encontrada.",
+            description: "La tarjeta vinculada con id {0} no fue encontrada.");
+
+        // Error de detalle de pago no encontrado
+        AddServiceError(
+            errorCode: DetallePagoNoEncontrado,
+            message: "Detalle de pago no encontrado.",
+            description: "El detalle de pago con id {0} no fue encontrado.");
     }
 
     #endregion

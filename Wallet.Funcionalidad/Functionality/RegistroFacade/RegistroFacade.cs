@@ -30,8 +30,19 @@ public class RegistroFacade(
     /// <returns>El objeto <see cref="Usuario"/> recién creado en estado de pre-registro.</returns>
     public async Task<Usuario> PreRegistroAsync(string codigoPais, string telefono)
     {
-        // Llama al facade existente que ya maneja la creación en estado PreRegistro
-        return await usuarioFacade.GuardarUsuarioPreRegistroAsync(codigoPais: codigoPais, telefono: telefono);
+        try
+        {
+            // Llama al facade existente que ya maneja la creación en estado PreRegistro
+            return await usuarioFacade.GuardarUsuarioPreRegistroAsync(codigoPais: codigoPais, telefono: telefono);
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     /// <summary>
@@ -42,20 +53,35 @@ public class RegistroFacade(
     /// <returns>True si el código es válido y el número se confirma, false en caso contrario.</returns>
     public async Task<bool> ConfirmarNumeroAsync(int idUsuario, string codigo)
     {
-        // Valida que el usuario esté en el estado esperado (PreRegistro)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: EstatusRegistroEnum.PreRegistro);
-
-        // Confirma el código de verificación SMS a través del facade de usuario
-        var verificado =
-            await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario, tipo2FA: Tipo2FA.Sms, codigoVerificacion: codigo,
-                modificationUser: usuario.CreationUser, validarEstatus: false);
-        if (verificado)
+        try
         {
-            // Si es verificado, actualiza el estado del registro a NumeroConfirmado
-            await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.NumeroConfirmado, modificationUser: usuario.CreationUser);
-        }
+            // Valida que el usuario esté en el estado esperado (PreRegistro)
+            var usuario =
+                await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: EstatusRegistroEnum.PreRegistro);
 
-        return verificado;
+            // Confirma el código de verificación SMS a través del facade de usuario
+            var verificado =
+                await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario, tipo2FA: Tipo2FA.Sms,
+                    codigoVerificacion: codigo,
+                    modificationUser: usuario.CreationUser, validarEstatus: false);
+            if (verificado)
+            {
+                // Si es verificado, actualiza el estado del registro a NumeroConfirmado
+                await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.NumeroConfirmado,
+                    modificationUser: usuario.CreationUser);
+            }
+
+            return verificado;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     /// <summary>
@@ -72,26 +98,40 @@ public class RegistroFacade(
     public async Task<Usuario> CompletarDatosClienteAsync(int idUsuario, string nombre, string apellidoPaterno,
         string apellidoMaterno, string nombreEstado, DateOnly fechaNacimiento, Genero genero)
     {
-        // Valida que el usuario esté en el estado esperado (NumeroConfirmado)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: EstatusRegistroEnum.NumeroConfirmado);
+        try
+        {
+            // Valida que el usuario esté en el estado esperado (NumeroConfirmado)
+            var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
+                estatusEsperados: EstatusRegistroEnum.NumeroConfirmado);
 
-        // Actualizamos datos usando el facade de cliente
-        var tokenBytes = usuario.ConcurrencyToken; // Use current token from DB
-        await clienteFacade.ActualizarClienteDatosPersonalesAsync(
-            idUsuario: usuario.Id,
-            nombre: nombre,
-            primerApellido: apellidoPaterno,
-            segundoApellido: apellidoMaterno,
-            nombreEstado: nombreEstado,
-            fechaNacimiento: fechaNacimiento,
-            genero: genero,
-            concurrencyToken: Convert.ToBase64String(inArray: tokenBytes),
-            modificationUser: usuario.CreationUser,
-            enforceClientConcurrency: false);
+            // Actualizamos datos usando el facade de cliente
+            var tokenBytes = usuario.ConcurrencyToken; // Use current token from DB
+            await clienteFacade.ActualizarClienteDatosPersonalesAsync(
+                idUsuario: usuario.Id,
+                nombre: nombre,
+                primerApellido: apellidoPaterno,
+                segundoApellido: apellidoMaterno,
+                nombreEstado: nombreEstado,
+                fechaNacimiento: fechaNacimiento,
+                genero: genero,
+                concurrencyToken: Convert.ToBase64String(inArray: tokenBytes),
+                modificationUser: usuario.CreationUser,
+                enforceClientConcurrency: false);
 
-        // Actualiza el estado del registro a DatosClienteCompletado
-        await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.DatosClienteCompletado, modificationUser: usuario.CreationUser);
-        return usuario;
+            // Actualiza el estado del registro a DatosClienteCompletado
+            await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.DatosClienteCompletado,
+                modificationUser: usuario.CreationUser);
+            return usuario;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     /// <summary>
@@ -102,20 +142,33 @@ public class RegistroFacade(
     /// <returns>El objeto <see cref="Usuario"/> con el correo electrónico registrado.</returns>
     public async Task<Usuario> RegistrarCorreoAsync(int idUsuario, string correo)
     {
-        // Valida que el usuario esté en el estado esperado (DatosClienteCompletado o CorreoRegistrado si es reenvío)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
-            estatusEsperados: [EstatusRegistroEnum.DatosClienteCompletado, EstatusRegistroEnum.CorreoRegistrado]);
+        try
+        {
+            // Valida que el usuario esté en el estado esperado (DatosClienteCompletado o CorreoRegistrado si es reenvío)
+            var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
+                estatusEsperados: [EstatusRegistroEnum.DatosClienteCompletado, EstatusRegistroEnum.CorreoRegistrado]);
 
-        // Actualiza el correo electrónico del usuario a través del facade de usuario
-        // Nota: Pasamos usuario.ConcurrencyToken (el actual de DB) para ignorar OCC estricto en el flujo de registro
-        await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario: idUsuario, correoElectronico: correo,
-            concurrencyToken: Convert.ToBase64String(inArray: usuario.ConcurrencyToken ?? []),
-            modificationUser: usuario.CreationUser,
-            validarEstatus: false);
+            // Actualiza el correo electrónico del usuario a través del facade de usuario
+            // Nota: Pasamos usuario.ConcurrencyToken (el actual de DB) para ignorar OCC estricto en el flujo de registro
+            await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario: idUsuario, correoElectronico: correo,
+                concurrencyToken: Convert.ToBase64String(inArray: usuario.ConcurrencyToken ?? []),
+                modificationUser: usuario.CreationUser,
+                validarEstatus: false);
 
-        // Actualiza el estado del registro a CorreoRegistrado
-        await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.CorreoRegistrado, modificationUser: usuario.CreationUser);
-        return usuario;
+            // Actualiza el estado del registro a CorreoRegistrado
+            await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.CorreoRegistrado,
+                modificationUser: usuario.CreationUser);
+            return usuario;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     /// <summary>
@@ -126,20 +179,35 @@ public class RegistroFacade(
     /// <returns>True si el código es válido y el correo se verifica, false en caso contrario.</returns>
     public async Task<bool> VerificarCorreoAsync(int idUsuario, string codigo)
     {
-        // Valida que el usuario esté en el estado esperado (CorreoRegistrado)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: EstatusRegistroEnum.CorreoRegistrado);
-
-        // Confirma el código de verificación de Email a través del facade de usuario
-        var verificado =
-            await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario, tipo2FA: Tipo2FA.Email, codigoVerificacion: codigo,
-                modificationUser: usuario.CreationUser, validarEstatus: false);
-        if (verificado)
+        try
         {
-            // Si es verificado, actualiza el estado del registro a CorreoVerificado
-            await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.CorreoVerificado, modificationUser: usuario.CreationUser);
-        }
+            // Valida que el usuario esté en el estado esperado (CorreoRegistrado)
+            var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
+                estatusEsperados: EstatusRegistroEnum.CorreoRegistrado);
 
-        return verificado;
+            // Confirma el código de verificación de Email a través del facade de usuario
+            var verificado =
+                await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario, tipo2FA: Tipo2FA.Email,
+                    codigoVerificacion: codigo,
+                    modificationUser: usuario.CreationUser, validarEstatus: false);
+            if (verificado)
+            {
+                // Si es verificado, actualiza el estado del registro a CorreoVerificado
+                await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.CorreoVerificado,
+                    modificationUser: usuario.CreationUser);
+            }
+
+            return verificado;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     /// <summary>
@@ -153,25 +221,39 @@ public class RegistroFacade(
         string nombre,
         string caracteristicas)
     {
-        // Valida que el usuario esté en el estado esperado (CorreoVerificado)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: EstatusRegistroEnum.CorreoVerificado);
+        try
+        {
+            // Valida que el usuario esté en el estado esperado (CorreoVerificado)
+            var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
+                estatusEsperados: EstatusRegistroEnum.CorreoVerificado);
 
 
-        // Crea una nueva instancia de DispositivoMovilAutorizado
-        var dispositivo = new DispositivoMovilAutorizado(
-            token: token,
-            idDispositivo: idDispositivo,
-            nombre: nombre,
-            caracteristicas: caracteristicas,
-            creationUser: usuario.CreationUser
-        );
+            // Crea una nueva instancia de DispositivoMovilAutorizado
+            var dispositivo = new DispositivoMovilAutorizado(
+                token: token,
+                idDispositivo: idDispositivo,
+                nombre: nombre,
+                caracteristicas: caracteristicas,
+                creationUser: usuario.CreationUser
+            );
 
-        // Agrega el dispositivo al usuario
-        usuario.AgregarDispositivoMovilAutorizado(dispositivo: dispositivo, modificationUser: usuario.CreationUser);
+            // Agrega el dispositivo al usuario
+            usuario.AgregarDispositivoMovilAutorizado(dispositivo: dispositivo, modificationUser: usuario.CreationUser);
 
-        // Actualiza el estado del registro a DatosBiometricosRegistrado
-        await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.DatosBiometricosRegistrado, modificationUser: usuario.CreationUser);
-        return usuario;
+            // Actualiza el estado del registro a DatosBiometricosRegistrado
+            await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.DatosBiometricosRegistrado,
+                modificationUser: usuario.CreationUser);
+            return usuario;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     /// <summary>
@@ -186,29 +268,46 @@ public class RegistroFacade(
     public async Task<Usuario> AceptarTerminosCondicionesAsync(int idUsuario, string version, bool aceptoTerminos,
         bool aceptoPrivacidad, bool aceptoPld)
     {
-        // Valida que el usuario esté en el estado esperado (DatosBiometricosRegistrado)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: EstatusRegistroEnum.DatosBiometricosRegistrado);
-
-
-        // Valida que se hayan aceptado todos los términos requeridos
-        if (!aceptoTerminos || !aceptoPrivacidad || !aceptoPld)
+        try
         {
-            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.TerminosNoAceptados,
-                dynamicContent: []));
+            // Valida que el usuario esté en el estado esperado (DatosBiometricosRegistrado)
+            var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
+                estatusEsperados: EstatusRegistroEnum.DatosBiometricosRegistrado);
+
+
+            // Valida que se hayan aceptado todos los términos requeridos
+            if (!aceptoTerminos || !aceptoPrivacidad || !aceptoPld)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.TerminosNoAceptados,
+                    dynamicContent: []));
+            }
+
+            // Registra los diferentes tipos de consentimientos a través del facade de consentimientos
+            await consentimientosUsuarioFacade.GuardarConsentimientoAsync(idUsuario: idUsuario,
+                tipoDocumento: TipoDocumentoConsentimiento.Terminos,
+                version: version, creationUser: usuario.CreationUser);
+            await consentimientosUsuarioFacade.GuardarConsentimientoAsync(idUsuario: idUsuario,
+                tipoDocumento: TipoDocumentoConsentimiento.Privacidad,
+                version: version, creationUser: usuario.CreationUser);
+            await consentimientosUsuarioFacade.GuardarConsentimientoAsync(idUsuario: idUsuario,
+                tipoDocumento: TipoDocumentoConsentimiento.PLD,
+                version: version, creationUser: usuario.CreationUser);
+
+            // Actualiza el estado del registro a TerminosCondicionesAceptado
+            await ActualizarEstatusAsync(usuario: usuario,
+                nuevoEstatus: EstatusRegistroEnum.TerminosCondicionesAceptado, modificationUser: usuario.CreationUser);
+            return usuario;
         }
-
-        // Registra los diferentes tipos de consentimientos a través del facade de consentimientos
-        await consentimientosUsuarioFacade.GuardarConsentimientoAsync(idUsuario: idUsuario, tipoDocumento: TipoDocumentoConsentimiento.Terminos,
-            version: version, creationUser: usuario.CreationUser);
-        await consentimientosUsuarioFacade.GuardarConsentimientoAsync(idUsuario: idUsuario, tipoDocumento: TipoDocumentoConsentimiento.Privacidad,
-            version: version, creationUser: usuario.CreationUser);
-        await consentimientosUsuarioFacade.GuardarConsentimientoAsync(idUsuario: idUsuario, tipoDocumento: TipoDocumentoConsentimiento.PLD,
-            version: version, creationUser: usuario.CreationUser);
-
-        // Actualiza el estado del registro a TerminosCondicionesAceptado
-        await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.TerminosCondicionesAceptado, modificationUser: usuario.CreationUser);
-        return usuario;
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     /// <summary>
@@ -221,37 +320,52 @@ public class RegistroFacade(
     /// <exception cref="EMGeneralAggregateException">Se lanza si las contraseñas no coinciden.</exception>
     public async Task<Usuario> CompletarRegistroAsync(int idUsuario, string contrasena, string confirmacionContrasena)
     {
-        // Valida que el usuario esté en el estado esperado (TerminosCondicionesAceptado)
-        var usuario = await ValidarEstadoAsync(idUsuario: idUsuario, estatusEsperados: EstatusRegistroEnum.TerminosCondicionesAceptado);
-
-
-        // Verifica que la contraseña y su confirmación coincidan
-        if (contrasena != confirmacionContrasena)
+        try
         {
-            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.ContrasenasNoCoinciden,
-                dynamicContent: []));
+            // Valida que el usuario esté en el estado esperado (TerminosCondicionesAceptado)
+            var usuario = await ValidarEstadoAsync(idUsuario: idUsuario,
+                estatusEsperados: EstatusRegistroEnum.TerminosCondicionesAceptado);
+
+
+            // Verifica que la contraseña y su confirmación coincidan
+            if (contrasena != confirmacionContrasena)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ContrasenasNoCoinciden,
+                    dynamicContent: []));
+            }
+
+            // Guarda la contraseña del usuario a través del facade de usuario
+            await usuarioFacade.GuardarContrasenaAsync(idUsuario: idUsuario, contrasena: contrasena,
+                modificationUser: usuario.CreationUser);
+
+            // Obtener el cliente asociado para vincular la wallet
+            var cliente = await context.Cliente.FirstOrDefaultAsync(predicate: c => c.UsuarioId == idUsuario);
+            if (cliente == null)
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ClienteNoEncontrado,
+                    dynamicContent: [idUsuario],
+                    module: this.GetType().Name));
+            }
+
+            // Crear la Billetera para el usuario usando el Guid del Cliente
+            await cuentaWalletFacade.CrearCuentaWalletAsync(idCliente: cliente.Id, creationUser: usuario.CreationUser);
+
+            // Actualiza el estado del registro a RegistroCompletado
+            await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.RegistroCompletado,
+                modificationUser: usuario.CreationUser);
+            return usuario;
         }
-
-        // Guarda la contraseña del usuario a través del facade de usuario
-        await usuarioFacade.GuardarContrasenaAsync(idUsuario: idUsuario, contrasena: contrasena, modificationUser: usuario.CreationUser);
-
-        // Obtener el cliente asociado para vincular la wallet
-        var cliente = await context.Cliente.FirstOrDefaultAsync(predicate: c => c.UsuarioId == idUsuario);
-        if (cliente == null)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
-            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
-                errorCode: ServiceErrorsBuilder.ClienteNoEncontrado,
-                dynamicContent: [idUsuario],
-                module: this.GetType().Name));
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
         }
-
-        // Crear la Billetera para el usuario usando el Guid del Cliente
-        await cuentaWalletFacade.CrearCuentaWalletAsync(idCliente: cliente.Id, creationUser: usuario.CreationUser);
-
-        // Actualiza el estado del registro a RegistroCompletado
-        await ActualizarEstatusAsync(usuario: usuario, nuevoEstatus: EstatusRegistroEnum.RegistroCompletado, modificationUser: usuario.CreationUser);
-        return usuario;
     }
 
     /// <summary>

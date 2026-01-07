@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Modelos.GestionWallet;
 using Wallet.Funcionalidad.Functionality.BitacoraTransaccionFacade;
+using Wallet.DOM;
+using Wallet.DOM.Errors;
 
 namespace Wallet.Funcionalidad.Functionality.DetallesPagoServicioFacade;
 
@@ -13,43 +15,102 @@ public class DetallesPagoServicioFacade(
     public async Task<DetallesPagoServicio> GuardarDetallesAsync(int idTransaccion, int idProveedor,
         string numeroReferencia, Guid creationUser, string? codigoAutorizacion)
     {
-        var detalles = new DetallesPagoServicio(idTransaccion: idTransaccion, idProveedor: idProveedor, numeroReferencia: numeroReferencia, creationUser: creationUser,
-            codigoAutorizacion: codigoAutorizacion);
+        try
+        {
+            var detalles = new DetallesPagoServicio(idTransaccion: idTransaccion, idProveedor: idProveedor,
+                numeroReferencia: numeroReferencia, creationUser: creationUser,
+                codigoAutorizacion: codigoAutorizacion);
 
-        context.DetallesPagoServicio.Add(entity: detalles);
-        await context.SaveChangesAsync();
+            context.DetallesPagoServicio.Add(entity: detalles);
+            await context.SaveChangesAsync();
 
-        return detalles;
+            return detalles;
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     public async Task<DetallesPagoServicio> ObtenerPorIdAsync(int id)
     {
-        return await context.DetallesPagoServicio
-                   .Include(navigationPropertyPath: d => d.Transaccion)
-                   .FirstOrDefaultAsync(predicate: d => d.Id == id)
-               ?? throw new KeyNotFoundException(message: $"Detalle de pago {id} no encontrado.");
+        try
+        {
+            return await context.DetallesPagoServicio
+                       .Include(navigationPropertyPath: d => d.Transaccion)
+                       .FirstOrDefaultAsync(predicate: d => d.Id == id)
+                   ?? throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                       errorCode: ServiceErrorsBuilder.DetallePagoNoEncontrado,
+                       dynamicContent: [id],
+                       module: this.GetType().Name));
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     public async Task<List<DetallesPagoServicio>> ObtenerPorClienteAsync(int idCliente)
     {
-        return await context.DetallesPagoServicio
-            .Include(navigationPropertyPath: d => d.Transaccion)
-            .ThenInclude(navigationPropertyPath: t => t.CuentaWallet)
-            .Where(predicate: d => d.Transaccion!.CuentaWallet!.IdCliente == idCliente)
-            .ToListAsync();
+        try
+        {
+            return await context.DetallesPagoServicio
+                .Include(navigationPropertyPath: d => d.Transaccion)
+                .ThenInclude(navigationPropertyPath: t => t.CuentaWallet)
+                .Where(predicate: d => d.Transaccion!.CuentaWallet!.IdCliente == idCliente)
+                .ToListAsync();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     public async Task<List<DetallesPagoServicio>> ObtenerTodosAsync()
     {
-        return await context.DetallesPagoServicio.ToListAsync();
+        try
+        {
+            return await context.DetallesPagoServicio.ToListAsync();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     public async Task<List<DetallesPagoServicio>> ObtenerPorTransaccionAsync(int idTransaccion)
     {
-        return await context.DetallesPagoServicio
-            .Include(navigationPropertyPath: d => d.Transaccion)
-            .Where(predicate: d => d.IdTransaccion == idTransaccion)
-            .ToListAsync();
+        try
+        {
+            return await context.DetallesPagoServicio
+                .Include(navigationPropertyPath: d => d.Transaccion)
+                .Where(predicate: d => d.IdTransaccion == idTransaccion)
+                .ToListAsync();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
     }
 
     public async Task<DetallesPagoServicio> RegistrarPagoServicioAsync(
@@ -95,9 +156,18 @@ public class DetallesPagoServicioFacade(
 
             return detalles;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
             await transaction.RollbackAsync();
+
+            if (exception is not EMGeneralAggregateException)
+            {
+                throw GenericExceptionManager.GetAggregateException(
+                    serviceName: DomCommon.ServiceName,
+                    module: this.GetType().Name,
+                    exception: exception);
+            }
+
             throw;
         }
     }

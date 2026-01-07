@@ -116,7 +116,8 @@ public class UsuarioFacade(
             await context.SaveChangesAsync();
             return usuario;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,

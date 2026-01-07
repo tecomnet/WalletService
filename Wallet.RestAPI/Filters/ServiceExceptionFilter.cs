@@ -34,17 +34,7 @@ public class ServiceExceptionFilter : IExceptionFilter
             var responseBody = new InlineResponse400(aggregateException: aggregateException);
 
             // Mapeo del código de error al Status Code HTTP
-            if (errorCode == ServiceErrorsBuilder.ClienteNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.EstadoNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.EmpresaNoEncontrada ||
-                errorCode == ServiceErrorsBuilder.CodigoVerificacionNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.BrokerNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.ProveedorNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.ProductoNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.ServicioFavoritoNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.UsuarioNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.KeyValueConfigNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.CuentaWalletNoEncontrada)
+            if (errorCode != null && (errorCode.Contains("NO-ENCONTRADA") || errorCode.Contains("NO-ENCONTRADO")))
             {
                 statusCode = (int)HttpStatusCode.NotFound; // 404
             }
