@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -14,26 +14,27 @@ using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
-    /// <summary>
-    /// Estructura enum para genero
-    /// </summary>
-    /// <value>Estructura enum para genero</value>
-    [JsonConverter(converterType: typeof(CustomStringToEnumConverter<GeneroEnum>))]
-    public enum GeneroEnum
-    {
-        /// <summary>
-        /// Enum MasculinoEnum for Masculino
-        /// </summary>
-        [EnumMember(Value = "Masculino")] Masculino = 0,
-
-        /// <summary>
-        /// Enum FemeninoEnum for Femenino
-        /// </summary>
-        [EnumMember(Value = "Femenino")] Femenino = 1,
-
-        /// <summary>
-        /// Enum NoBinarioEnum for NoBinario
-        /// </summary>
-        [EnumMember(Value = "NoBinario")] NoBinario = 2
-    }
+  
+          /// <summary>
+          /// Estructura enum para genero
+          /// </summary>
+          /// <value>Estructura enum para genero</value>
+          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<GeneroEnum>))]
+          public enum GeneroEnum
+          {
+              /// <summary>
+              /// Enum MasculinoEnum for Masculino
+              /// </summary>
+              [EnumMember(Value = "Masculino")]
+              MasculinoEnum = 0,
+              /// <summary>
+              /// Enum FemeninoEnum for Femenino
+              /// </summary>
+              [EnumMember(Value = "Femenino")]
+              FemeninoEnum = 1,
+              /// <summary>
+              /// Enum NoBinarioEnum for NoBinario
+              /// </summary>
+              [EnumMember(Value = "NoBinario")]
+              NoBinarioEnum = 2          }
 }

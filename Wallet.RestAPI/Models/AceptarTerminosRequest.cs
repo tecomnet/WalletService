@@ -61,12 +61,12 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class AceptarTerminosRequest {\n");
-            sb.Append(value: "  Version: ").Append(value: Version).Append(value: "\n");
-            sb.Append(value: "  AceptoTerminos: ").Append(value: AceptoTerminos).Append(value: "\n");
-            sb.Append(value: "  AceptoPrivacidad: ").Append(value: AceptoPrivacidad).Append(value: "\n");
-            sb.Append(value: "  AceptoPld: ").Append(value: AceptoPld).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class AceptarTerminosRequest {\n");
+            sb.Append("  Version: ").Append(Version).Append("\n");
+            sb.Append("  AceptoTerminos: ").Append(AceptoTerminos).Append("\n");
+            sb.Append("  AceptoPrivacidad: ").Append(AceptoPrivacidad).Append("\n");
+            sb.Append("  AceptoPld: ").Append(AceptoPld).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -76,7 +76,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (AceptarTerminosRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((AceptarTerminosRequest)obj);
         }
 
         /// <summary>
@@ -98,29 +98,29 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(AceptarTerminosRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Version == other.Version ||
                     Version != null &&
-                    Version.Equals(value: other.Version)
+                    Version.Equals(other.Version)
                 ) && 
                 (
                     AceptoTerminos == other.AceptoTerminos ||
                     AceptoTerminos != null &&
-                    AceptoTerminos.Equals(other: other.AceptoTerminos)
+                    AceptoTerminos.Equals(other.AceptoTerminos)
                 ) && 
                 (
                     AceptoPrivacidad == other.AceptoPrivacidad ||
                     AceptoPrivacidad != null &&
-                    AceptoPrivacidad.Equals(other: other.AceptoPrivacidad)
+                    AceptoPrivacidad.Equals(other.AceptoPrivacidad)
                 ) && 
                 (
                     AceptoPld == other.AceptoPld ||
                     AceptoPld != null &&
-                    AceptoPld.Equals(other: other.AceptoPld)
+                    AceptoPld.Equals(other.AceptoPld)
                 );
         }
 
@@ -151,12 +151,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(AceptarTerminosRequest left, AceptarTerminosRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(AceptarTerminosRequest left, AceptarTerminosRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

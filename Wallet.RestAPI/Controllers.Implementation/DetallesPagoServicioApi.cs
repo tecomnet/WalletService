@@ -50,13 +50,13 @@ public class DetallesPagoServicioApiController(
     {
         // Call facade method
         var detalle = await detallesPagoServicioFacade.RegistrarPagoServicioAsync(
-            idBilletera: body.IdBilletera,
-            monto: body.Monto,
+            idBilletera: body.IdBilletera.Value,
+            monto: body.Monto.Value,
             nombreServicio: body.NombreServicio,
             direccion: body.Direccion,
             estatus: "Completada", // Default status, could come from request if needed
             refExternaId: body.RefExternaId,
-            idProveedor: body.IdProveedor,
+            idProveedor: body.IdProveedor.Value,
             numeroReferencia: body.NumeroReferencia,
             codigoAutorizacion: body.CodigoAutorizacion,
             creationUser: this.GetAuthenticatedUserGuid()

@@ -45,10 +45,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class RefreshTokenRequest {\n");
-            sb.Append(value: "  AccessToken: ").Append(value: AccessToken).Append(value: "\n");
-            sb.Append(value: "  RefreshToken: ").Append(value: RefreshToken).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class RefreshTokenRequest {\n");
+            sb.Append("  AccessToken: ").Append(AccessToken).Append("\n");
+            sb.Append("  RefreshToken: ").Append(RefreshToken).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -58,7 +58,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (RefreshTokenRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((RefreshTokenRequest)obj);
         }
 
         /// <summary>
@@ -80,19 +80,19 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(RefreshTokenRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     AccessToken == other.AccessToken ||
                     AccessToken != null &&
-                    AccessToken.Equals(value: other.AccessToken)
+                    AccessToken.Equals(other.AccessToken)
                 ) && 
                 (
                     RefreshToken == other.RefreshToken ||
                     RefreshToken != null &&
-                    RefreshToken.Equals(value: other.RefreshToken)
+                    RefreshToken.Equals(other.RefreshToken)
                 );
         }
 
@@ -119,12 +119,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(RefreshTokenRequest left, RefreshTokenRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(RefreshTokenRequest left, RefreshTokenRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

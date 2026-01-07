@@ -27,7 +27,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
@@ -36,7 +36,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="apellidoPaterno")]
         public string ApellidoPaterno { get; set; }
 
@@ -45,7 +45,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="apellidoMaterno")]
         public string ApellidoMaterno { get; set; }
 
@@ -54,7 +54,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="nombreEstado")]
         public string NombreEstado { get; set; }
 
@@ -72,7 +72,7 @@ namespace Wallet.RestAPI.Models
         [Required]
 
         [DataMember(Name="genero")]
-        public int? Genero { get; set; }
+        public GeneroEnum Genero { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -81,14 +81,14 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class DatosClienteRequest {\n");
-            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  ApellidoPaterno: ").Append(value: ApellidoPaterno).Append(value: "\n");
-            sb.Append(value: "  ApellidoMaterno: ").Append(value: ApellidoMaterno).Append(value: "\n");
-            sb.Append(value: "  NombreEstado: ").Append(value: NombreEstado).Append(value: "\n");
-            sb.Append(value: "  FechaNacimiento: ").Append(value: FechaNacimiento).Append(value: "\n");
-            sb.Append(value: "  Genero: ").Append(value: Genero).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class DatosClienteRequest {\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  ApellidoPaterno: ").Append(ApellidoPaterno).Append("\n");
+            sb.Append("  ApellidoMaterno: ").Append(ApellidoMaterno).Append("\n");
+            sb.Append("  NombreEstado: ").Append(NombreEstado).Append("\n");
+            sb.Append("  FechaNacimiento: ").Append(FechaNacimiento).Append("\n");
+            sb.Append("  Genero: ").Append(Genero).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -98,7 +98,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -108,9 +108,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (DatosClienteRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((DatosClienteRequest)obj);
         }
 
         /// <summary>
@@ -120,39 +120,39 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(DatosClienteRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(value: other.Nombre)
+                    Nombre.Equals(other.Nombre)
                 ) && 
                 (
                     ApellidoPaterno == other.ApellidoPaterno ||
                     ApellidoPaterno != null &&
-                    ApellidoPaterno.Equals(value: other.ApellidoPaterno)
+                    ApellidoPaterno.Equals(other.ApellidoPaterno)
                 ) && 
                 (
                     ApellidoMaterno == other.ApellidoMaterno ||
                     ApellidoMaterno != null &&
-                    ApellidoMaterno.Equals(value: other.ApellidoMaterno)
+                    ApellidoMaterno.Equals(other.ApellidoMaterno)
                 ) && 
                 (
                     NombreEstado == other.NombreEstado ||
                     NombreEstado != null &&
-                    NombreEstado.Equals(value: other.NombreEstado)
+                    NombreEstado.Equals(other.NombreEstado)
                 ) && 
                 (
                     FechaNacimiento == other.FechaNacimiento ||
                     FechaNacimiento != null &&
-                    FechaNacimiento.Equals(other: other.FechaNacimiento)
+                    FechaNacimiento.Equals(other.FechaNacimiento)
                 ) && 
                 (
                     Genero == other.Genero ||
                     Genero != null &&
-                    Genero.Equals(other: other.Genero)
+                    Genero.Equals(other.Genero)
                 );
         }
 
@@ -187,12 +187,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(DatosClienteRequest left, DatosClienteRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(DatosClienteRequest left, DatosClienteRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

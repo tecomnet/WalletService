@@ -50,6 +50,7 @@ namespace Wallet.RestAPI.Models
         /// <summary>
         /// Gets or Sets UrlIcono
         /// </summary>
+        [Required]
 
         [MaxLength(500)]
         [DataMember(Name="urlIcono")]
@@ -64,8 +65,54 @@ namespace Wallet.RestAPI.Models
         public CategoriaEnum Categoria { get; set; }
 
         /// <summary>
-        /// Gets or Sets IsActive
+        /// Guid unico del registro
         /// </summary>
+        /// <value>Guid unico del registro</value>
+        [Required]
+
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
+
+        /// <summary>
+        /// Creation timestamp
+        /// </summary>
+        /// <value>Creation timestamp</value>
+        [Required]
+
+        [DataMember(Name="creationTimestamp")]
+        public DateTime? CreationTimestamp { get; set; }
+
+        /// <summary>
+        /// Modification timestamp
+        /// </summary>
+        /// <value>Modification timestamp</value>
+        [Required]
+
+        [DataMember(Name="modificationTimestamp")]
+        public DateTime? ModificationTimestamp { get; set; }
+
+        /// <summary>
+        /// Guid of the creation user
+        /// </summary>
+        /// <value>Guid of the creation user</value>
+        [Required]
+
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
         [Required]
 
         [DataMember(Name="isActive")]
@@ -93,6 +140,11 @@ namespace Wallet.RestAPI.Models
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
             sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
             sb.Append("  Categoria: ").Append(Categoria).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
             sb.Append("  IsActive: ").Append(IsActive).Append("\n");
             sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
@@ -157,6 +209,31 @@ namespace Wallet.RestAPI.Models
                     Categoria.Equals(other.Categoria)
                 ) && 
                 (
+                    Guid == other.Guid ||
+                    Guid != null &&
+                    Guid.Equals(other.Guid)
+                ) && 
+                (
+                    CreationTimestamp == other.CreationTimestamp ||
+                    CreationTimestamp != null &&
+                    CreationTimestamp.Equals(other.CreationTimestamp)
+                ) && 
+                (
+                    ModificationTimestamp == other.ModificationTimestamp ||
+                    ModificationTimestamp != null &&
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
+                ) && 
+                (
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other.IsActive)
@@ -188,6 +265,16 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
                     if (Categoria != null)
                     hashCode = hashCode * 59 + Categoria.GetHashCode();
+                    if (Guid != null)
+                    hashCode = hashCode * 59 + Guid.GetHashCode();
+                    if (CreationTimestamp != null)
+                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
+                    if (ModificationTimestamp != null)
+                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
                     if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                     if (ConcurrencyToken != null)

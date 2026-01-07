@@ -35,7 +35,7 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
 
         var request = new ConsentimientoUsuarioRequest
         {
-            TipoDocumento = TipoDocumentoConsentimientoEnum.Terminos,
+            TipoDocumento = TipoDocumentoConsentimientoEnum.TerminosEnum,
             Version = "v1.0"
         };
 
@@ -66,7 +66,7 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
         // Post a consent first
         var request = new ConsentimientoUsuarioRequest
         {
-            TipoDocumento = TipoDocumentoConsentimientoEnum.Privacidad,
+            TipoDocumento = TipoDocumentoConsentimientoEnum.PrivacidadEnum,
             Version = "v2.0"
         };
         var content = CreateContent(body: request);
@@ -85,7 +85,7 @@ public class ConsentimientoUsuarioApiTest : DatabaseTestFixture
         Assert.NotEmpty(collection: result);
         var privacidad = result.FirstOrDefault(predicate: c =>
             c.TipoDocumento ==
-            EnumExtensions.GetEnumMemberValue(enumValue: TipoDocumentoConsentimientoEnum.Privacidad));
+            EnumExtensions.GetEnumMemberValue(enumValue: TipoDocumentoConsentimientoEnum.PrivacidadEnum));
         Assert.NotNull(@object: privacidad);
         Assert.Equal(expected: "v2.0", actual: privacidad.Version);
     }

@@ -63,7 +63,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 2. ConfirmarNumero (API Call)
         var confirmarNumeroRequest = new ConfirmacionRequest
         {
-            Tipo = Tipo2FAEnum.SMS,
+            Tipo = Tipo2FAEnum.SMSEnum,
             Codigo = "1234" // Mock accepts any code
         };
         var responseConfirmar = await client.PutAsync(requestUri: $"/{version}/registro/{usuarioId}/confirmar",
@@ -81,7 +81,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Nombre = "Juan",
             ApellidoPaterno = "Perez",
             ApellidoMaterno = "Lopez",
-            Genero = (int)GeneroEnum.Masculino,
+            Genero = GeneroEnum.MasculinoEnum,
             NombreEstado = "Campeche",
             FechaNacimiento = new DateTime(year: 1990, month: 1, day: 1),
         };
@@ -135,7 +135,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
         // 5. VerificarCorreo (API Call)
         var verificarCorreoRequest = new ConfirmacionRequest
         {
-            Tipo = Tipo2FAEnum.EMAIL,
+            Tipo = Tipo2FAEnum.EMAILEnum,
             Codigo = "1234" // Mock accepts any code
         };
         var responseVerificarCorreo = await client.PutAsync(requestUri: $"/{version}/registro/{usuarioId}/confirmar",
@@ -241,7 +241,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // 2. ConfirmarNumero
         var confirmarRequest1 = new ConfirmacionRequest
-            { Tipo = Tipo2FAEnum.SMS, Codigo = "1234" };
+            { Tipo = Tipo2FAEnum.SMSEnum, Codigo = "1234" };
         await client.PutAsync(requestUri: $"/{version}/registro/{usuarioId}/confirmar",
             content: new StringContent(content: JsonConvert.SerializeObject(value: confirmarRequest1),
                 encoding: Encoding.UTF8, mediaType: "application/json"));
@@ -256,7 +256,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
             Nombre = "Test",
             ApellidoPaterno = "User",
             ApellidoMaterno = "Resume",
-            Genero = (int)GeneroEnum.Masculino,
+            Genero = GeneroEnum.MasculinoEnum,
             NombreEstado = "Campeche",
             FechaNacimiento = new DateTime(year: 1990, month: 1, day: 1),
         };
@@ -289,7 +289,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // 5. ConfirmarNumero (Again)
         var confirmarRequest2 = new ConfirmacionRequest
-            { Tipo = Tipo2FAEnum.SMS, Codigo = "1234" };
+            { Tipo = Tipo2FAEnum.SMSEnum, Codigo = "1234" };
         var responseConf2 = await client.PutAsync(requestUri: $"/{version}/registro/{usuarioId}/confirmar",
             content: new StringContent(content: JsonConvert.SerializeObject(value: confirmarRequest2),
                 encoding: Encoding.UTF8, mediaType: "application/json"));
@@ -327,7 +327,7 @@ public class RegistroApiTest : DatabaseTestFixture, IDisposable
 
         // 8. VerificarCorreo
         var verifCorreoRequest = new ConfirmacionRequest
-            { Tipo = Tipo2FAEnum.EMAIL, Codigo = "1234" };
+            { Tipo = Tipo2FAEnum.EMAILEnum, Codigo = "1234" };
         await client.PutAsync(requestUri: $"/{version}/registro/{usuarioId}/confirmar",
             content: new StringContent(content: JsonConvert.SerializeObject(value: verifCorreoRequest),
                 encoding: Encoding.UTF8, mediaType: "application/json"));

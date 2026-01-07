@@ -27,7 +27,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
             // Map DTO enum to DOM enum manually if needed or casting safe if integers match. 
             // Since DTO enum has same integer values, casting is safe or mapper config handles it.
             // Using explicit cast or conversion for safety.
-            var marca = (MarcaTarjeta)(int)body.Marca.Value;
+            var marca = (MarcaTarjeta)body.Marca;
 
             var tarjeta = await tarjetaVinculadaFacade.VincularTarjetaAsync(idCliente,
                 body.NumeroTarjeta, body.Alias, marca, body.FechaExpiracion.Value, this.GetAuthenticatedUserGuid());

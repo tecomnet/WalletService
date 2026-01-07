@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,138 +21,201 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class ClienteResult : IEquatable<ClienteResult>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [Required]
-        [DataMember(Name = "id")]
+
+        [DataMember(Name="id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets CodigoPais
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 3, MinimumLength = 3)]
-        [DataMember(Name = "codigoPais")]
+
+        [StringLength(3, MinimumLength=3)]
+        [DataMember(Name="codigoPais")]
         public string CodigoPais { get; set; }
 
         /// <summary>
         /// Gets or Sets Telefono
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 10, MinimumLength = 9)]
-        [DataMember(Name = "telefono")]
+
+        [StringLength(10, MinimumLength=9)]
+        [DataMember(Name="telefono")]
         public string Telefono { get; set; }
 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 100, MinimumLength = 1)]
-        [DataMember(Name = "nombre")]
+
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
         /// Gets or Sets PrimerApellido
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 100, MinimumLength = 1)]
-        [DataMember(Name = "primerApellido")]
+
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="primerApellido")]
         public string PrimerApellido { get; set; }
 
         /// <summary>
         /// Gets or Sets SegundoApellido
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 100, MinimumLength = 1)]
-        [DataMember(Name = "segundoApellido")]
+
+        [StringLength(100, MinimumLength=1)]
+        [DataMember(Name="segundoApellido")]
         public string SegundoApellido { get; set; }
 
         /// <summary>
         /// Gets or Sets FechaNacimiento
         /// </summary>
         [Required]
-        [DataMember(Name = "fechaNacimiento")]
+
+        [DataMember(Name="fechaNacimiento")]
         public DateTime? FechaNacimiento { get; set; }
 
         /// <summary>
         /// Gets or Sets Genero
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 50, MinimumLength = 1)]
-        [DataMember(Name = "genero")]
+
+        [StringLength(50, MinimumLength=1)]
+        [DataMember(Name="genero")]
         public string Genero { get; set; }
 
         /// <summary>
         /// Gets or Sets CorreoElectronico
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 150, MinimumLength = 1)]
-        [DataMember(Name = "correoElectronico")]
+
+        [StringLength(150, MinimumLength=1)]
+        [DataMember(Name="correoElectronico")]
         public string CorreoElectronico { get; set; }
 
         /// <summary>
         /// Gets or Sets TipoPersona
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 50, MinimumLength = 1)]
-        [DataMember(Name = "tipoPersona")]
+
+        [StringLength(50, MinimumLength=1)]
+        [DataMember(Name="tipoPersona")]
         public string TipoPersona { get; set; }
 
         /// <summary>
         /// Gets or Sets Curp
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 18, MinimumLength = 1)]
-        [DataMember(Name = "curp")]
+
+        [StringLength(18, MinimumLength=1)]
+        [DataMember(Name="curp")]
         public string Curp { get; set; }
 
         /// <summary>
         /// Gets or Sets Rfc
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 13, MinimumLength = 1)]
-        [DataMember(Name = "rfc")]
+
+        [StringLength(13, MinimumLength=1)]
+        [DataMember(Name="rfc")]
         public string Rfc { get; set; }
 
         /// <summary>
         /// Gets or Sets Foto
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 500, MinimumLength = 1)]
-        [DataMember(Name = "foto")]
+
+        [StringLength(500, MinimumLength=1)]
+        [DataMember(Name="foto")]
         public string Foto { get; set; }
 
         /// <summary>
         /// Gets or Sets Estado
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 500, MinimumLength = 1)]
-        [DataMember(Name = "estado")]
+
+        [StringLength(500, MinimumLength=1)]
+        [DataMember(Name="estado")]
         public string Estado { get; set; }
 
         /// <summary>
         /// Gets or Sets Empresa
         /// </summary>
         [Required]
-        [StringLength(maximumLength: 13, MinimumLength = 1)]
-        [DataMember(Name = "empresa")]
+
+        [StringLength(13, MinimumLength=1)]
+        [DataMember(Name="empresa")]
         public string Empresa { get; set; }
 
+        /// <summary>
+        /// Guid unico del registro
+        /// </summary>
+        /// <value>Guid unico del registro</value>
+        [Required]
+
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
 
         /// <summary>
-        /// Gets or Sets IsActive
+        /// Creation timestamp
         /// </summary>
+        /// <value>Creation timestamp</value>
         [Required]
-        [DataMember(Name = "isActive")]
+
+        [DataMember(Name="creationTimestamp")]
+        public DateTime? CreationTimestamp { get; set; }
+
+        /// <summary>
+        /// Modification timestamp
+        /// </summary>
+        /// <value>Modification timestamp</value>
+        [Required]
+
+        [DataMember(Name="modificationTimestamp")]
+        public DateTime? ModificationTimestamp { get; set; }
+
+        /// <summary>
+        /// Guid of the creation user
+        /// </summary>
+        /// <value>Guid of the creation user</value>
+        [Required]
+
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="isActive")]
         public bool? IsActive { get; set; }
 
         /// <summary>
-        /// Gets or Sets ConcurrencyToken
+        /// Token de concurrencia
         /// </summary>
+        /// <value>Token de concurrencia</value>
+        [Required]
 
-        [DataMember(Name = "concurrencyToken")]
+        [DataMember(Name="concurrencyToken")]
         public string ConcurrencyToken { get; set; }
 
         /// <summary>
@@ -162,26 +225,30 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ClienteResult {\n");
-            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
-            sb.Append(value: "  CodigoPais: ").Append(value: CodigoPais).Append(value: "\n");
-            sb.Append(value: "  Telefono: ").Append(value: Telefono).Append(value: "\n");
-            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  PrimerApellido: ").Append(value: PrimerApellido).Append(value: "\n");
-            sb.Append(value: "  SegundoApellido: ").Append(value: SegundoApellido).Append(value: "\n");
-            sb.Append(value: "  FechaNacimiento: ").Append(value: FechaNacimiento).Append(value: "\n");
-            sb.Append(value: "  Genero: ").Append(value: Genero).Append(value: "\n");
-            sb.Append(value: "  CorreoElectronico: ").Append(value: CorreoElectronico).Append(value: "\n");
-            sb.Append(value: "  TipoPersona: ").Append(value: TipoPersona).Append(value: "\n");
-            sb.Append(value: "  Curp: ").Append(value: Curp).Append(value: "\n");
-            sb.Append(value: "  Rfc: ").Append(value: Rfc).Append(value: "\n");
-            sb.Append(value: "  Foto: ").Append(value: Foto).Append(value: "\n");
-            sb.Append(value: "  Estado: ").Append(value: Estado).Append(value: "\n");
-            sb.Append(value: "  Empresa: ").Append(value: Empresa).Append(value: "\n");
-
-            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
-            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class ClienteResult {\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  CodigoPais: ").Append(CodigoPais).Append("\n");
+            sb.Append("  Telefono: ").Append(Telefono).Append("\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  PrimerApellido: ").Append(PrimerApellido).Append("\n");
+            sb.Append("  SegundoApellido: ").Append(SegundoApellido).Append("\n");
+            sb.Append("  FechaNacimiento: ").Append(FechaNacimiento).Append("\n");
+            sb.Append("  Genero: ").Append(Genero).Append("\n");
+            sb.Append("  CorreoElectronico: ").Append(CorreoElectronico).Append("\n");
+            sb.Append("  TipoPersona: ").Append(TipoPersona).Append("\n");
+            sb.Append("  Curp: ").Append(Curp).Append("\n");
+            sb.Append("  Rfc: ").Append(Rfc).Append("\n");
+            sb.Append("  Foto: ").Append(Foto).Append("\n");
+            sb.Append("  Estado: ").Append(Estado).Append("\n");
+            sb.Append("  Empresa: ").Append(Empresa).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
+            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -191,7 +258,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -201,9 +268,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ClienteResult)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((ClienteResult)obj);
         }
 
         /// <summary>
@@ -213,94 +280,119 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ClienteResult other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other: other.Id)
-                ) &&
+                    Id.Equals(other.Id)
+                ) && 
                 (
                     CodigoPais == other.CodigoPais ||
                     CodigoPais != null &&
-                    CodigoPais.Equals(value: other.CodigoPais)
-                ) &&
+                    CodigoPais.Equals(other.CodigoPais)
+                ) && 
                 (
                     Telefono == other.Telefono ||
                     Telefono != null &&
-                    Telefono.Equals(value: other.Telefono)
-                ) &&
+                    Telefono.Equals(other.Telefono)
+                ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(value: other.Nombre)
-                ) &&
+                    Nombre.Equals(other.Nombre)
+                ) && 
                 (
                     PrimerApellido == other.PrimerApellido ||
                     PrimerApellido != null &&
-                    PrimerApellido.Equals(value: other.PrimerApellido)
-                ) &&
+                    PrimerApellido.Equals(other.PrimerApellido)
+                ) && 
                 (
                     SegundoApellido == other.SegundoApellido ||
                     SegundoApellido != null &&
-                    SegundoApellido.Equals(value: other.SegundoApellido)
-                ) &&
+                    SegundoApellido.Equals(other.SegundoApellido)
+                ) && 
                 (
                     FechaNacimiento == other.FechaNacimiento ||
                     FechaNacimiento != null &&
-                    FechaNacimiento.Equals(other: other.FechaNacimiento)
-                ) &&
+                    FechaNacimiento.Equals(other.FechaNacimiento)
+                ) && 
                 (
                     Genero == other.Genero ||
                     Genero != null &&
-                    Genero.Equals(value: other.Genero)
-                ) &&
+                    Genero.Equals(other.Genero)
+                ) && 
                 (
                     CorreoElectronico == other.CorreoElectronico ||
                     CorreoElectronico != null &&
-                    CorreoElectronico.Equals(value: other.CorreoElectronico)
-                ) &&
+                    CorreoElectronico.Equals(other.CorreoElectronico)
+                ) && 
                 (
                     TipoPersona == other.TipoPersona ||
                     TipoPersona != null &&
-                    TipoPersona.Equals(value: other.TipoPersona)
-                ) &&
+                    TipoPersona.Equals(other.TipoPersona)
+                ) && 
                 (
                     Curp == other.Curp ||
                     Curp != null &&
-                    Curp.Equals(value: other.Curp)
-                ) &&
+                    Curp.Equals(other.Curp)
+                ) && 
                 (
                     Rfc == other.Rfc ||
                     Rfc != null &&
-                    Rfc.Equals(value: other.Rfc)
-                ) &&
+                    Rfc.Equals(other.Rfc)
+                ) && 
                 (
                     Foto == other.Foto ||
                     Foto != null &&
-                    Foto.Equals(value: other.Foto)
-                ) &&
+                    Foto.Equals(other.Foto)
+                ) && 
                 (
                     Estado == other.Estado ||
                     Estado != null &&
-                    Estado.Equals(value: other.Estado)
-                ) &&
+                    Estado.Equals(other.Estado)
+                ) && 
                 (
                     Empresa == other.Empresa ||
                     Empresa != null &&
-                    Empresa.Equals(value: other.Empresa)
-                ) &&
+                    Empresa.Equals(other.Empresa)
+                ) && 
+                (
+                    Guid == other.Guid ||
+                    Guid != null &&
+                    Guid.Equals(other.Guid)
+                ) && 
+                (
+                    CreationTimestamp == other.CreationTimestamp ||
+                    CreationTimestamp != null &&
+                    CreationTimestamp.Equals(other.CreationTimestamp)
+                ) && 
+                (
+                    ModificationTimestamp == other.ModificationTimestamp ||
+                    ModificationTimestamp != null &&
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
+                ) && 
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
-                    IsActive.Equals(other: other.IsActive)
-                ) &&
+                    IsActive.Equals(other.IsActive)
+                ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
-                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -314,61 +406,68 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Id != null)
+                    if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                if (CodigoPais != null)
+                    if (CodigoPais != null)
                     hashCode = hashCode * 59 + CodigoPais.GetHashCode();
-                if (Telefono != null)
+                    if (Telefono != null)
                     hashCode = hashCode * 59 + Telefono.GetHashCode();
-                if (Nombre != null)
+                    if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                if (PrimerApellido != null)
+                    if (PrimerApellido != null)
                     hashCode = hashCode * 59 + PrimerApellido.GetHashCode();
-                if (SegundoApellido != null)
+                    if (SegundoApellido != null)
                     hashCode = hashCode * 59 + SegundoApellido.GetHashCode();
-                if (FechaNacimiento != null)
+                    if (FechaNacimiento != null)
                     hashCode = hashCode * 59 + FechaNacimiento.GetHashCode();
-                if (Genero != null)
+                    if (Genero != null)
                     hashCode = hashCode * 59 + Genero.GetHashCode();
-                if (CorreoElectronico != null)
+                    if (CorreoElectronico != null)
                     hashCode = hashCode * 59 + CorreoElectronico.GetHashCode();
-                if (TipoPersona != null)
+                    if (TipoPersona != null)
                     hashCode = hashCode * 59 + TipoPersona.GetHashCode();
-                if (Curp != null)
+                    if (Curp != null)
                     hashCode = hashCode * 59 + Curp.GetHashCode();
-                if (Rfc != null)
+                    if (Rfc != null)
                     hashCode = hashCode * 59 + Rfc.GetHashCode();
-                if (Foto != null)
+                    if (Foto != null)
                     hashCode = hashCode * 59 + Foto.GetHashCode();
-                if (Estado != null)
+                    if (Estado != null)
                     hashCode = hashCode * 59 + Estado.GetHashCode();
-                if (Empresa != null)
+                    if (Empresa != null)
                     hashCode = hashCode * 59 + Empresa.GetHashCode();
-
-                if (IsActive != null)
+                    if (Guid != null)
+                    hashCode = hashCode * 59 + Guid.GetHashCode();
+                    if (CreationTimestamp != null)
+                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
+                    if (ModificationTimestamp != null)
+                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+                    if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
-                if (ConcurrencyToken != null)
+                    if (ConcurrencyToken != null)
                     hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ClienteResult left, ClienteResult right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(ClienteResult left, ClienteResult right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

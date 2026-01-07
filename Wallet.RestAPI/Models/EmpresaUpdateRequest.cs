@@ -27,7 +27,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
@@ -47,10 +47,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class EmpresaUpdateRequest {\n");
-            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class EmpresaUpdateRequest {\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -60,7 +60,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (EmpresaUpdateRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((EmpresaUpdateRequest)obj);
         }
 
         /// <summary>
@@ -82,19 +82,19 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(EmpresaUpdateRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(value: other.Nombre)
+                    Nombre.Equals(other.Nombre)
                 ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
-                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -121,12 +121,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(EmpresaUpdateRequest left, EmpresaUpdateRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(EmpresaUpdateRequest left, EmpresaUpdateRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

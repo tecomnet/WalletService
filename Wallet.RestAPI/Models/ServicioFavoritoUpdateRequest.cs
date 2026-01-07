@@ -27,7 +27,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [MaxLength(length: 100)]
+        [MaxLength(100)]
         [DataMember(Name="alias")]
         public string Alias { get; set; }
 
@@ -36,7 +36,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [MaxLength(length: 50)]
+        [MaxLength(50)]
         [DataMember(Name="numeroReferencia")]
         public string NumeroReferencia { get; set; }
 
@@ -56,11 +56,11 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ServicioFavoritoUpdateRequest {\n");
-            sb.Append(value: "  Alias: ").Append(value: Alias).Append(value: "\n");
-            sb.Append(value: "  NumeroReferencia: ").Append(value: NumeroReferencia).Append(value: "\n");
-            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class ServicioFavoritoUpdateRequest {\n");
+            sb.Append("  Alias: ").Append(Alias).Append("\n");
+            sb.Append("  NumeroReferencia: ").Append(NumeroReferencia).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -70,7 +70,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ServicioFavoritoUpdateRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((ServicioFavoritoUpdateRequest)obj);
         }
 
         /// <summary>
@@ -92,24 +92,24 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ServicioFavoritoUpdateRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Alias == other.Alias ||
                     Alias != null &&
-                    Alias.Equals(value: other.Alias)
+                    Alias.Equals(other.Alias)
                 ) && 
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
-                    NumeroReferencia.Equals(value: other.NumeroReferencia)
+                    NumeroReferencia.Equals(other.NumeroReferencia)
                 ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
-                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -138,12 +138,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ServicioFavoritoUpdateRequest left, ServicioFavoritoUpdateRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(ServicioFavoritoUpdateRequest left, ServicioFavoritoUpdateRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

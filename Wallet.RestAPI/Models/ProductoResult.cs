@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -21,72 +21,127 @@ namespace Wallet.RestAPI.Models
     /// </summary>
     [DataContract]
     public partial class ProductoResult : IEquatable<ProductoResult>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [Required]
-        [DataMember(Name = "id")]
+
+        [DataMember(Name="id")]
         public int? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets ProveedorId
         /// </summary>
         [Required]
-        [DataMember(Name = "proveedorId")]
+
+        [DataMember(Name="proveedorId")]
         public int? ProveedorId { get; set; }
 
         /// <summary>
         /// Gets or Sets Sku
         /// </summary>
         [Required]
-        [MaxLength(length: 50)]
-        [DataMember(Name = "sku")]
+
+        [MaxLength(50)]
+        [DataMember(Name="sku")]
         public string Sku { get; set; }
 
         /// <summary>
         /// Gets or Sets Nombre
         /// </summary>
         [Required]
-        [MaxLength(length: 100)]
-        [DataMember(Name = "nombre")]
+
+        [MaxLength(100)]
+        [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
         /// <summary>
         /// Gets or Sets Categoria
         /// </summary>
         [Required]
-        [DataMember(Name = "categoria")]
+
+        [MaxLength(100)]
+        [DataMember(Name="categoria")]
         public string Categoria { get; set; }
 
         /// <summary>
         /// Gets or Sets Precio
         /// </summary>
         [Required]
-        [DataMember(Name = "precio")]
+
+        [DataMember(Name="precio")]
         public decimal? Precio { get; set; }
 
         /// <summary>
         /// Gets or Sets UrlIcono
         /// </summary>
         [Required]
-        [DataMember(Name = "urlIcono")]
+
+        [DataMember(Name="urlIcono")]
         public string UrlIcono { get; set; }
 
+        /// <summary>
+        /// Guid unico del registro
+        /// </summary>
+        /// <value>Guid unico del registro</value>
+        [Required]
+
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
 
         /// <summary>
-        /// Gets or Sets IsActive
+        /// Creation timestamp
         /// </summary>
+        /// <value>Creation timestamp</value>
         [Required]
-        [DataMember(Name = "isActive")]
+
+        [DataMember(Name="creationTimestamp")]
+        public DateTime? CreationTimestamp { get; set; }
+
+        /// <summary>
+        /// Modification timestamp
+        /// </summary>
+        /// <value>Modification timestamp</value>
+        [Required]
+
+        [DataMember(Name="modificationTimestamp")]
+        public DateTime? ModificationTimestamp { get; set; }
+
+        /// <summary>
+        /// Guid of the creation user
+        /// </summary>
+        /// <value>Guid of the creation user</value>
+        [Required]
+
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="isActive")]
         public bool? IsActive { get; set; }
 
         /// <summary>
         /// Token de concurrencia
         /// </summary>
         /// <value>Token de concurrencia</value>
+        [Required]
 
-        [DataMember(Name = "concurrencyToken")]
+        [DataMember(Name="concurrencyToken")]
         public string ConcurrencyToken { get; set; }
 
         /// <summary>
@@ -96,18 +151,22 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ProductoResult {\n");
-            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
-            sb.Append(value: "  ProveedorId: ").Append(value: ProveedorId).Append(value: "\n");
-            sb.Append(value: "  Sku: ").Append(value: Sku).Append(value: "\n");
-            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  Categoria: ").Append(value: Categoria).Append(value: "\n");
-            sb.Append(value: "  Precio: ").Append(value: Precio).Append(value: "\n");
-            sb.Append(value: "  UrlIcono: ").Append(value: UrlIcono).Append(value: "\n");
-
-            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
-            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class ProductoResult {\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  ProveedorId: ").Append(ProveedorId).Append("\n");
+            sb.Append("  Sku: ").Append(Sku).Append("\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
+            sb.Append("  Precio: ").Append(Precio).Append("\n");
+            sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
+            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -117,7 +176,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -127,9 +186,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ProductoResult)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((ProductoResult)obj);
         }
 
         /// <summary>
@@ -139,54 +198,79 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ProductoResult other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other: other.Id)
-                ) &&
+                    Id.Equals(other.Id)
+                ) && 
                 (
                     ProveedorId == other.ProveedorId ||
                     ProveedorId != null &&
-                    ProveedorId.Equals(other: other.ProveedorId)
-                ) &&
+                    ProveedorId.Equals(other.ProveedorId)
+                ) && 
                 (
                     Sku == other.Sku ||
                     Sku != null &&
-                    Sku.Equals(value: other.Sku)
-                ) &&
+                    Sku.Equals(other.Sku)
+                ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(value: other.Nombre)
-                ) &&
+                    Nombre.Equals(other.Nombre)
+                ) && 
                 (
                     Categoria == other.Categoria ||
                     Categoria != null &&
-                    Categoria.Equals(obj: other.Categoria)
-                ) &&
+                    Categoria.Equals(other.Categoria)
+                ) && 
                 (
                     Precio == other.Precio ||
                     Precio != null &&
-                    Precio.Equals(other: other.Precio)
-                ) &&
+                    Precio.Equals(other.Precio)
+                ) && 
                 (
                     UrlIcono == other.UrlIcono ||
                     UrlIcono != null &&
-                    UrlIcono.Equals(value: other.UrlIcono)
-                ) &&
+                    UrlIcono.Equals(other.UrlIcono)
+                ) && 
+                (
+                    Guid == other.Guid ||
+                    Guid != null &&
+                    Guid.Equals(other.Guid)
+                ) && 
+                (
+                    CreationTimestamp == other.CreationTimestamp ||
+                    CreationTimestamp != null &&
+                    CreationTimestamp.Equals(other.CreationTimestamp)
+                ) && 
+                (
+                    ModificationTimestamp == other.ModificationTimestamp ||
+                    ModificationTimestamp != null &&
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
+                ) && 
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
-                    IsActive.Equals(other: other.IsActive)
-                ) &&
+                    IsActive.Equals(other.IsActive)
+                ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
-                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -200,45 +284,52 @@ namespace Wallet.RestAPI.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (Id != null)
+                    if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                if (ProveedorId != null)
+                    if (ProveedorId != null)
                     hashCode = hashCode * 59 + ProveedorId.GetHashCode();
-                if (Sku != null)
+                    if (Sku != null)
                     hashCode = hashCode * 59 + Sku.GetHashCode();
-                if (Nombre != null)
+                    if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
-                if (Categoria != null)
+                    if (Categoria != null)
                     hashCode = hashCode * 59 + Categoria.GetHashCode();
-                if (Precio != null)
+                    if (Precio != null)
                     hashCode = hashCode * 59 + Precio.GetHashCode();
-                if (UrlIcono != null)
+                    if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
-
-                if (IsActive != null)
+                    if (Guid != null)
+                    hashCode = hashCode * 59 + Guid.GetHashCode();
+                    if (CreationTimestamp != null)
+                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
+                    if (ModificationTimestamp != null)
+                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+                    if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
-                if (ConcurrencyToken != null)
+                    if (ConcurrencyToken != null)
                     hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(ProductoResult left, ProductoResult right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(ProductoResult left, ProductoResult right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }
