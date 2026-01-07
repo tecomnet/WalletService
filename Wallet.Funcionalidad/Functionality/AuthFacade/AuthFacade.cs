@@ -35,7 +35,8 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
                 return new AuthResultDto
                 {
                     Success = false,
-                    Errors = new List<string> { "Credenciales inválidas" }
+                    Errors = new List<string>
+                        { ServiceErrorsBuilder.Instance().GetError(ServiceErrorsBuilder.CredencialesInvalidas).Message }
                 };
             }
 
@@ -99,7 +100,12 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
             // Valida si el ID del usuario se puede extraer del token y es un entero válido.
             if (string.IsNullOrEmpty(value: userIdStr) || !int.TryParse(s: userIdStr, result: out int userId))
             {
-                return new AuthResultDto { Success = false, Errors = new List<string> { "Token inválido" } };
+                return new AuthResultDto
+                {
+                    Success = false,
+                    Errors = new List<string>
+                        { ServiceErrorsBuilder.Instance().GetError(ServiceErrorsBuilder.TokenInvalido).Message }
+                };
             }
 
             // Busca al usuario por su ID.
@@ -113,7 +119,11 @@ public class AuthFacade(ServiceDbContext context, ITokenService tokenService) : 
                 usuario.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
                 return new AuthResultDto
-                    { Success = false, Errors = new List<string> { "Refresh token inválido o expirado" } };
+                {
+                    Success = false,
+                    Errors = new List<string>
+                        { ServiceErrorsBuilder.Instance().GetError(ServiceErrorsBuilder.RefreshTokenInvalido).Message }
+                };
             }
 
             // Genera un nuevo token de acceso y un nuevo token de refresco.

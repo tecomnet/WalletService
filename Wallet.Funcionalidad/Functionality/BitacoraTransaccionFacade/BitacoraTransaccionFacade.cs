@@ -59,7 +59,10 @@ public class BitacoraTransaccionFacade(ServiceDbContext context) : IBitacoraTran
             return await context.BitacoraTransaccion
                        .Include(navigationPropertyPath: b => b.CuentaWallet)
                        .FirstOrDefaultAsync(predicate: b => b.Id == id) ??
-                   throw new KeyNotFoundException(message: $"Transaccion con ID {id} no encontrada.");
+                   throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                       errorCode: ServiceErrorsBuilder.BitacoraTransaccionNoEncontrada,
+                       dynamicContent: [id],
+                       module: this.GetType().Name));
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

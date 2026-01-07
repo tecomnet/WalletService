@@ -52,6 +52,8 @@ public class ServiceErrorsBuilder
         KeyValueConfigErrors();
         // 12. Errores de GestionWallet
         GestionWalletErrors();
+        // 13. Errores de BitacoraTransaccion
+        BitacoraTransaccionErrors();
     }
 
     /// <summary>
@@ -89,7 +91,7 @@ public class ServiceErrorsBuilder
     /// <summary>
     /// Código de error para excepciones no manejadas por la API.
     /// </summary>
-    public const string ApiErrorNoManejado = "API-ERROR-NO-MANEJADO";
+    public const string ApiErrorNoManejado = "API-ERROR-NO-CONTROLADO";
 
     /// <summary>
     /// Carga los errores generales del sistema.
@@ -484,7 +486,34 @@ public class ServiceErrorsBuilder
             errorCode: EmClaimUserError,
             message: "Error de autenticación",
             description: "El usuario de autenticación no es válido o no fue encontrado");
+
+        // Error: Credenciales inválidas
+        AddServiceError(
+            errorCode: CredencialesInvalidas,
+            message: "Credenciales inválidas",
+            description: "Las credenciales proporcionadas no son válidas.");
+
+        // Error: Token inválido
+        AddServiceError(
+            errorCode: TokenInvalido,
+            message: "Token inválido",
+            description: "El token proporcionado no es válido.");
+
+        // Error: Refresh token inválido o expirado
+        AddServiceError(
+            errorCode: RefreshTokenInvalido,
+            message: "Refresh token inválido o expirado",
+            description: "El token de refresco proporcionado no es válido o ha expirado.");
     }
+
+    /// <summary>Error: Credenciales inválidas.</summary>
+    public const string CredencialesInvalidas = "CREDENCIALES-INVALIDAS";
+
+    /// <summary>Error: Token inválido.</summary>
+    public const string TokenInvalido = "TOKEN-INVALIDO";
+
+    /// <summary>Error: Refresh token inválido.</summary>
+    public const string RefreshTokenInvalido = "REFRESH-TOKEN-INVALIDO";
 
     #endregion
 
@@ -811,6 +840,25 @@ public class ServiceErrorsBuilder
             errorCode: DetallePagoNoEncontrado,
             message: "Detalle de pago no encontrado.",
             description: "El detalle de pago con id {0} no fue encontrado.");
+    }
+
+    #endregion
+
+    #region BitacoraTransaccion
+
+    /// <summary>Error: La transacción no fue encontrada.</summary>
+    public const string BitacoraTransaccionNoEncontrada = "BITACORA-TRANSACCION-NO-ENCONTRADA";
+
+    /// <summary>
+    /// Carga los errores relacionados con BitacoraTransaccion.
+    /// </summary>
+    private void BitacoraTransaccionErrors()
+    {
+        // Error de transacción no encontrada
+        AddServiceError(
+            errorCode: BitacoraTransaccionNoEncontrada,
+            message: "Transaccion no encontrada.",
+            description: "Transaccion con ID {0} no encontrada.");
     }
 
     #endregion

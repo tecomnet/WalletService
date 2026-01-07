@@ -1,4 +1,5 @@
 using System;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -40,6 +41,26 @@ public class ServiceExceptionFilter : IExceptionFilter
             }
 
             // Establecemos el resultado, deteniendo la propagación
+            context.Result = new ObjectResult(value: responseBody)
+            {
+                StatusCode = statusCode
+            };
+        }
+        // --- 2. Manejo de Excepciones de Concurrencia (DbUpdateConcurrencyException) ---
+        else if (exceptionToHandle is DbUpdateConcurrencyException)
+        {
+            // Construimos la excepción de negocio para Concurrencia
+            var concurrencyError = DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ConcurrencyError,
+                dynamicContent: [],
+                module: "DataLayer");
+
+            var concurrencyAggregateException = new EMGeneralAggregateException(concurrencyError);
+
+            // 409 Conflict
+            var statusCode = (int)HttpStatusCode.Conflict;
+            var responseBody = new InlineResponse400(aggregateException: concurrencyAggregateException);
+
             context.Result = new ObjectResult(value: responseBody)
             {
                 StatusCode = statusCode

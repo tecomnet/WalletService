@@ -149,7 +149,8 @@ public class TarjetaVinculadaFacade(ServiceDbContext context) : ITarjetaVinculad
             await ValidarClienteYUsuarioActivos(idCliente: idCliente);
 
             if (Convert.ToBase64String(tarjetaObjetivo.ConcurrencyToken) != concurrencyToken)
-                throw new DbUpdateConcurrencyException("La tarjeta ha sido modificada por otro usuario.");
+                throw new DbUpdateConcurrencyException(ServiceErrorsBuilder.Instance()
+                    .GetError(ServiceErrorsBuilder.ConcurrencyError).Message);
 
             // Now find other cards for that account to unset favorite
             var tarjetas = await context.TarjetaVinculada
