@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.DOM.Enums;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
+using Wallet.RestAPI.Errors;
 using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Helpers;
 
@@ -60,28 +62,30 @@ public class ProveedorApiController : ProveedorApiControllerBase
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> GetProveedoresPorCategoriaAsync(string version, string categoria)
+    public override async Task<IActionResult> GetProveedoresServicioAsync(string version, string categoria)
     {
-        // Valida si la cateoria es un valor del enum valido
-        if (!Enum.IsDefined(typeof(Categoria), categoria))
+        List<Proveedor> proveedores;
+        // Viene categoria
+        if (!string.IsNullOrWhiteSpace(categoria))
         {
-            throw new ArgumentException(message: $"{nameof(categoria)} tiene un valor invalido", paramName: nameof(categoria));
+            // Valida si la categoria es un valor del enum valido
+            if (!Enum.IsDefined(typeof(Categoria), categoria))
+            {
+                return this.BadRequest(error:
+                    new InlineResponse400(restAPIError: new RestAPIErrors()
+                        .GetRestAPIError(errorCode: RestAPIErrors.CategoriaInvalida)));
+            }
+            // Convierte al enum del dom
+            var categoriaEnum = (Categoria)Enum.Parse(typeof(Categoria), categoria);
+            // Obtiene solo los de la categoria
+            proveedores = await _proveedorFacade.ObtenerProveedoresAsync(categoria: categoriaEnum);
         }
-        // Convierte al enum del dom
-        var categoriaEnum = (Categoria)Enum.Parse(typeof(Categoria), categoria);
-        // Obtiene proveedores por categoria enum
-        var proveedores = await _proveedorFacade.ObtenerProveedoresAsync(categoria: categoriaEnum);
+        else
+            // Obtiene todos 
+            proveedores = await _proveedorFacade.ObtenerProveedoresAsync();
         // Mapeo
         var response = _mapper.Map<List<ProveedorResult>>(source: proveedores);
-        // Retorna el result
-        return Ok(value: response);
-    }
-
-    /// <inheritdoc />
-    public override async Task<IActionResult> GetProveedoresServicioAsync(string version)
-    {
-        var proveedores = await _proveedorFacade.ObtenerProveedoresAsync();
-        var response = _mapper.Map<List<ProveedorResult>>(source: proveedores);
+        // Retorno
         return Ok(value: response);
     }
 

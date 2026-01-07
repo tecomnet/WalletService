@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Wallet.DOM;
 using AutoMapper;
+using Wallet.DOM.Enums;
+using Wallet.RestAPI.Helpers;
+using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Errors
 {
@@ -90,6 +95,8 @@ namespace Wallet.RestAPI.Errors
         /// Error code for general problem processing error
         /// </summary>
         public const string EmGeneralErrorProblemProcessingError = "EM-GENERAL-ERROR-PROBLEM-PROCESSING-ERROR";
+        
+        public const string CategoriaInvalida = "CATEGORIA-INVALIDA";
 
         /// <summary>
         /// Method that adds all general errors
@@ -175,6 +182,19 @@ namespace Wallet.RestAPI.Errors
                     errorCode: EmGeneralErrorProblemProcessingError,
                     title: "Problema al Procesar Error",
                     detail: "Error al procesar la solicitud.",
+                    instance: "DEFAULT",
+                    module: "REST-API",
+                    serviceName: DomCommon.ServiceName,
+                    serviceLocation: "NA"));
+            // Categoria invalida
+            _restAPIErrors.Add(
+                key: CategoriaInvalida,
+                value: new RestAPIError(
+                    type: null,
+                    status: 400,
+                    errorCode: CategoriaInvalida,
+                    title: "Categoria invalida",
+                    detail: $"El valor de la categoria es invalido. Valores validos son: {string.Join(", ",  EnumExtensions.GetEnumMemberValues<CategoriaEnum>())}",
                     instance: "DEFAULT",
                     module: "REST-API",
                     serviceName: DomCommon.ServiceName,

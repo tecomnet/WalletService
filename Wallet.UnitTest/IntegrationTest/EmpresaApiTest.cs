@@ -182,7 +182,7 @@ public class EmpresaApiTest : DatabaseTestFixture
             Nombre = "Producto Linked",
             Sku = "SKU-LINKED",
             Precio = 100,
-            Categoria = CategoriaEnum.MOVILIDAD,
+            Categoria = CategoriaEnum.MovilidadEnum,
             UrlIcono = "http://icon.png"
         };
         var prodRes =
@@ -324,7 +324,7 @@ public class EmpresaApiTest : DatabaseTestFixture
         // Products
         var prod1Req = new ProductoRequest
         {
-            Nombre = $"P1 {suffix}", Sku = $"SKU1-{suffix}", Precio = 10, Categoria = CategoriaEnum.OTROS,
+            Nombre = $"P1 {suffix}", Sku = $"SKU1-{suffix}", Precio = 10, Categoria = CategoriaEnum.ServiciosEnum,
             UrlIcono = "http://icon.com"
         };
         var prod1Res =
@@ -337,7 +337,7 @@ public class EmpresaApiTest : DatabaseTestFixture
 
         var prod2Req = new ProductoRequest
         {
-            Nombre = $"P2 {suffix}", Sku = $"SKU2-{suffix}", Precio = 20, Categoria = CategoriaEnum.OTROS,
+            Nombre = $"P2 {suffix}", Sku = $"SKU2-{suffix}", Precio = 20, Categoria = CategoriaEnum.ServiciosEnum,
             UrlIcono = "http://icon.com"
         };
         var prod2Res =

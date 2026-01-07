@@ -16,9 +16,5 @@ public enum Categoria
     /// <summary>
     /// Productos relacionados con servicios de movilidad (ej. transporte).
     /// </summary>
-    Movilidad,
-    /// <summary>
-    /// Categoria general
-    /// </summary>
-    Otros  
+    Movilidad
 }

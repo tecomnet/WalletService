@@ -149,7 +149,7 @@ public class FullFlowApiTest : DatabaseTestFixture
                 Nombre = $"Producto Test {i}",
                 Precio = 100 + i,
                 UrlIcono = $"icon_{i}.png",
-                Categoria = CategoriaEnum.MOVILIDAD
+                Categoria = CategoriaEnum.MovilidadEnum
             };
             // Envía la solicitud POST para crear un producto asociado a un proveedor.
             var response = await client.PostAsync(requestUri: $"/{ApiVersion}/proveedor/{proveedorId}/producto",

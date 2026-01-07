@@ -14,31 +14,27 @@ using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
-  /// <summary>
-  /// Estructura enum para categoria de proveeedor y productos
-  /// </summary>
-  /// <value>Estructura enum para categoria de proveeedor y productos</value>
-  [JsonConverter(converterType: typeof(CustomStringToEnumConverter<CategoriaEnum>))]
-  public enum CategoriaEnum
-  {
-    /// <summary>
-    /// Enum SERVICIOSEnum for SERVICIOS
-    /// </summary>
-    [EnumMember(Value = "SERVICIOS")] SERVICIOS = 0,
-
-    /// <summary>
-    /// Enum RECARGASEnum for RECARGAS
-    /// </summary>
-    [EnumMember(Value = "RECARGAS")] RECARGAS = 1,
-
-    /// <summary>
-    /// Enum MOVILIDADEnum for MOVILIDAD
-    /// </summary>
-    [EnumMember(Value = "MOVILIDAD")] MOVILIDAD = 2,
-
-    /// <summary>
-    /// Enum OTROSEnum for OTROS
-    /// </summary>
-    [EnumMember(Value = "OTROS")] OTROS = 3
-  }
+  
+          /// <summary>
+          /// Estructura enum para categoria de proveeedor y productos
+          /// </summary>
+          /// <value>Estructura enum para categoria de proveeedor y productos</value>
+          [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+          public enum CategoriaEnum
+          {
+              /// <summary>
+              /// Enum ServiciosEnum for Servicios
+              /// </summary>
+              [EnumMember(Value = "Servicios")]
+              ServiciosEnum = 0,
+              /// <summary>
+              /// Enum RecargasEnum for Recargas
+              /// </summary>
+              [EnumMember(Value = "Recargas")]
+              RecargasEnum = 1,
+              /// <summary>
+              /// Enum MovilidadEnum for Movilidad
+              /// </summary>
+              [EnumMember(Value = "Movilidad")]
+              MovilidadEnum = 2          }
 }

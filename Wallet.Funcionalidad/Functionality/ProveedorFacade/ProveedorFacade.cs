@@ -160,10 +160,10 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
         try
         {
             List<Proveedor> proveedores;
-            if (categoria != null)
+            if (categoria == null)
                 proveedores = await context.Proveedor.ToListAsync();
             else
-                proveedores = await context.Proveedor. Where(p=>p.Categoria == categoria).ToListAsync();
+                proveedores = await context.Proveedor.Where(p=>p.Categoria == categoria).ToListAsync();
             return proveedores;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)

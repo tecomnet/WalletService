@@ -33,6 +33,7 @@ namespace Wallet.RestAPI.Models
         /// <summary>
         /// Gets or Sets BrokerId
         /// </summary>
+        [Required]
 
         [DataMember(Name="brokerId")]
         public int? BrokerId { get; set; }
@@ -55,6 +56,14 @@ namespace Wallet.RestAPI.Models
         public string UrlIcono { get; set; }
 
         /// <summary>
+        /// Gets or Sets Categoria
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="categoria")]
+        public CategoriaEnum Categoria { get; set; }
+
+        /// <summary>
         /// Gets or Sets IsActive
         /// </summary>
         [Required]
@@ -66,6 +75,7 @@ namespace Wallet.RestAPI.Models
         /// Token de concurrencia
         /// </summary>
         /// <value>Token de concurrencia</value>
+        [Required]
 
         [DataMember(Name="concurrencyToken")]
         public string ConcurrencyToken { get; set; }
@@ -82,6 +92,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  BrokerId: ").Append(BrokerId).Append("\n");
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
             sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
+            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
             sb.Append("  IsActive: ").Append(IsActive).Append("\n");
             sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
@@ -141,6 +152,11 @@ namespace Wallet.RestAPI.Models
                     UrlIcono.Equals(other.UrlIcono)
                 ) && 
                 (
+                    Categoria == other.Categoria ||
+                    Categoria != null &&
+                    Categoria.Equals(other.Categoria)
+                ) && 
+                (
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other.IsActive)
@@ -170,6 +186,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
                     if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
+                    if (Categoria != null)
+                    hashCode = hashCode * 59 + Categoria.GetHashCode();
                     if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                     if (ConcurrencyToken != null)

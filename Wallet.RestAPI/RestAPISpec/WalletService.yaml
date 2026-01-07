@@ -1423,44 +1423,12 @@ paths:
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
       description: Obtiene todos los proveedores de servicio
-      parameters: []
-      tags:
-        - Proveedor
-  '/{version}/proveedorPorCategoria':
-    parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-    get:
-      summary: Obtiene todos los proveedores de servicio por categoria
-      operationId: getProveedoresPorCategoria
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProveedorResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '404':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Obtiene todos los proveedores de servicio por categoria
       parameters:
         - schema:
             type: string
           in: query
           name: categoria
           description: categoria del proveedor
-          required: true
       tags:
         - Proveedor
   '/{version}/proveedor/{idProveedor}':
@@ -3382,16 +3350,15 @@ components:
         - SMS
         - EMAIL
     CategoriaEnum:
-      title: Tipo2FA
+      title: Categoria
       x-stoplight:
         id: 0f8j5s3ilu4ci
       type: string
       description: Estructura enum para categoria de proveeedor y productos
       enum:
-        - SERVICIOS
-        - RECARGAS
-        - MOVILIDAD
-        - OTROS
+        - Servicios
+        - Recargas
+        - Movilidad
     GeneroEnum:
       title: Genero
       x-stoplight:
@@ -3783,6 +3750,8 @@ components:
         urlIcono:
           type: string
           maxLength: 500
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
         isActive:
           type: boolean
         concurrencyToken:
@@ -3790,8 +3759,11 @@ components:
           description: Token de concurrencia
       required:
         - id
+        - brokerId
         - nombre
+        - categoria
         - isActive
+        - concurrencyToken
     ProveedorRequest:
       title: ProveedorRequest
       type: object
