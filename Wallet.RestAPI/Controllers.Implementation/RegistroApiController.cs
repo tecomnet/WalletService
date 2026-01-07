@@ -20,10 +20,10 @@ namespace Wallet.RestAPI.Controllers.Implementation
 
             switch (body.Tipo)
             {
-                case Tipo2FAEnum.SMS:
+                case Tipo2FAEnum.SMSEnum:
                     result = await registroFacade.ConfirmarNumeroAsync(idUsuario: idUsuario.Value, codigo: body.Codigo);
                     break;
-                case Tipo2FAEnum.EMAIL:
+                case Tipo2FAEnum.EMAILEnum:
                     result = await registroFacade.VerificarCorreoAsync(idUsuario: idUsuario.Value, codigo: body.Codigo);
                     break;
                 default:

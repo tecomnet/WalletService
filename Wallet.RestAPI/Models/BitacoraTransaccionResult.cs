@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -17,15 +17,16 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Result containing transaction details
+    /// 
     /// </summary>
     [DataContract]
     public partial class BitacoraTransaccionResult : IEquatable<BitacoraTransaccionResult>
-    {
+    { 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [Required]
+
         [DataMember(Name="id")]
         public int? Id { get; set; }
 
@@ -33,6 +34,7 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets IdBilletera
         /// </summary>
         [Required]
+
         [DataMember(Name="idBilletera")]
         public int? IdBilletera { get; set; }
 
@@ -40,13 +42,15 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Monto
         /// </summary>
         [Required]
+
         [DataMember(Name="monto")]
-        public decimal? Monto { get; set; }
+        public double? Monto { get; set; }
 
         /// <summary>
         /// Gets or Sets Tipo
         /// </summary>
         [Required]
+
         [DataMember(Name="tipo")]
         public string Tipo { get; set; }
 
@@ -54,6 +58,7 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Direccion
         /// </summary>
         [Required]
+
         [DataMember(Name="direccion")]
         public string Direccion { get; set; }
 
@@ -61,28 +66,79 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Estatus
         /// </summary>
         [Required]
+
         [DataMember(Name="estatus")]
         public string Estatus { get; set; }
 
         /// <summary>
         /// Gets or Sets RefExternaId
         /// </summary>
+
         [DataMember(Name="refExternaId")]
         public string RefExternaId { get; set; }
 
         /// <summary>
-        /// Gets or Sets CreationTimestamp
+        /// Guid unico del registro
         /// </summary>
+        /// <value>Guid unico del registro</value>
         [Required]
+
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
+
+        /// <summary>
+        /// Creation timestamp
+        /// </summary>
+        /// <value>Creation timestamp</value>
+        [Required]
+
         [DataMember(Name="creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
-        /// Gets or Sets Guid
+        /// Modification timestamp
         /// </summary>
+        /// <value>Modification timestamp</value>
         [Required]
-        [DataMember(Name="guid")]
-        public Guid? Guid { get; set; }
+
+        [DataMember(Name="modificationTimestamp")]
+        public DateTime? ModificationTimestamp { get; set; }
+
+        /// <summary>
+        /// Guid of the creation user
+        /// </summary>
+        /// <value>Guid of the creation user</value>
+        [Required]
+
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="isActive")]
+        public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [Required]
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -91,17 +147,22 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class BitacoraTransaccionResult {\n");
-            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
-            sb.Append(value: "  IdBilletera: ").Append(value: IdBilletera).Append(value: "\n");
-            sb.Append(value: "  Monto: ").Append(value: Monto).Append(value: "\n");
-            sb.Append(value: "  Tipo: ").Append(value: Tipo).Append(value: "\n");
-            sb.Append(value: "  Direccion: ").Append(value: Direccion).Append(value: "\n");
-            sb.Append(value: "  Estatus: ").Append(value: Estatus).Append(value: "\n");
-            sb.Append(value: "  RefExternaId: ").Append(value: RefExternaId).Append(value: "\n");
-            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
-            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class BitacoraTransaccionResult {\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  IdBilletera: ").Append(IdBilletera).Append("\n");
+            sb.Append("  Monto: ").Append(Monto).Append("\n");
+            sb.Append("  Tipo: ").Append(Tipo).Append("\n");
+            sb.Append("  Direccion: ").Append(Direccion).Append("\n");
+            sb.Append("  Estatus: ").Append(Estatus).Append("\n");
+            sb.Append("  RefExternaId: ").Append(RefExternaId).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
+            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -111,7 +172,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -121,9 +182,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (BitacoraTransaccionResult)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((BitacoraTransaccionResult)obj);
         }
 
         /// <summary>
@@ -133,54 +194,79 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(BitacoraTransaccionResult other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other: other.Id)
+                    Id.Equals(other.Id)
                 ) && 
                 (
                     IdBilletera == other.IdBilletera ||
                     IdBilletera != null &&
-                    IdBilletera.Equals(other: other.IdBilletera)
+                    IdBilletera.Equals(other.IdBilletera)
                 ) && 
                 (
                     Monto == other.Monto ||
                     Monto != null &&
-                    Monto.Equals(other: other.Monto)
+                    Monto.Equals(other.Monto)
                 ) && 
                 (
                     Tipo == other.Tipo ||
                     Tipo != null &&
-                    Tipo.Equals(value: other.Tipo)
+                    Tipo.Equals(other.Tipo)
                 ) && 
                 (
                     Direccion == other.Direccion ||
                     Direccion != null &&
-                    Direccion.Equals(value: other.Direccion)
+                    Direccion.Equals(other.Direccion)
                 ) && 
                 (
                     Estatus == other.Estatus ||
                     Estatus != null &&
-                    Estatus.Equals(value: other.Estatus)
+                    Estatus.Equals(other.Estatus)
                 ) && 
                 (
                     RefExternaId == other.RefExternaId ||
                     RefExternaId != null &&
-                    RefExternaId.Equals(value: other.RefExternaId)
-                ) && 
-                (
-                    CreationTimestamp == other.CreationTimestamp ||
-                    CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other: other.CreationTimestamp)
+                    RefExternaId.Equals(other.RefExternaId)
                 ) && 
                 (
                     Guid == other.Guid ||
                     Guid != null &&
-                    Guid.Equals(other: other.Guid)
+                    Guid.Equals(other.Guid)
+                ) && 
+                (
+                    CreationTimestamp == other.CreationTimestamp ||
+                    CreationTimestamp != null &&
+                    CreationTimestamp.Equals(other.CreationTimestamp)
+                ) && 
+                (
+                    ModificationTimestamp == other.ModificationTimestamp ||
+                    ModificationTimestamp != null &&
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
+                ) && 
+                (
+                    IsActive == other.IsActive ||
+                    IsActive != null &&
+                    IsActive.Equals(other.IsActive)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -193,24 +279,35 @@ namespace Wallet.RestAPI.Models
             unchecked // Overflow is fine, just wrap
             {
                 var hashCode = 41;
-                if (Id != null)
+                // Suitable nullity checks etc, of course :)
+                    if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                if (IdBilletera != null)
+                    if (IdBilletera != null)
                     hashCode = hashCode * 59 + IdBilletera.GetHashCode();
-                if (Monto != null)
+                    if (Monto != null)
                     hashCode = hashCode * 59 + Monto.GetHashCode();
-                if (Tipo != null)
+                    if (Tipo != null)
                     hashCode = hashCode * 59 + Tipo.GetHashCode();
-                if (Direccion != null)
+                    if (Direccion != null)
                     hashCode = hashCode * 59 + Direccion.GetHashCode();
-                if (Estatus != null)
+                    if (Estatus != null)
                     hashCode = hashCode * 59 + Estatus.GetHashCode();
-                if (RefExternaId != null)
+                    if (RefExternaId != null)
                     hashCode = hashCode * 59 + RefExternaId.GetHashCode();
-                if (CreationTimestamp != null)
-                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
-                if (Guid != null)
+                    if (Guid != null)
                     hashCode = hashCode * 59 + Guid.GetHashCode();
+                    if (CreationTimestamp != null)
+                    hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
+                    if (ModificationTimestamp != null)
+                    hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+                    if (IsActive != null)
+                    hashCode = hashCode * 59 + IsActive.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
@@ -220,12 +317,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(BitacoraTransaccionResult left, BitacoraTransaccionResult right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(BitacoraTransaccionResult left, BitacoraTransaccionResult right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

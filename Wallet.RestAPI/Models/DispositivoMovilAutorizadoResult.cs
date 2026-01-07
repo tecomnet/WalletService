@@ -35,7 +35,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="token")]
         public string Token { get; set; }
 
@@ -44,7 +44,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="idDispositivo")]
         public string IdDispositivo { get; set; }
 
@@ -53,7 +53,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
@@ -62,7 +62,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="caracteristicas")]
         public string Caracteristicas { get; set; }
 
@@ -75,9 +75,9 @@ namespace Wallet.RestAPI.Models
         public bool? Actual { get; set; }
 
         /// <summary>
-        /// Guid of the key-value configuration
+        /// Guid unico del registro
         /// </summary>
-        /// <value>Guid of the key-value configuration</value>
+        /// <value>Guid unico del registro</value>
         [Required]
 
         [DataMember(Name="guid")]
@@ -132,6 +132,7 @@ namespace Wallet.RestAPI.Models
         /// Token de concurrencia
         /// </summary>
         /// <value>Token de concurrencia</value>
+        [Required]
 
         [DataMember(Name="concurrencyToken")]
         public string ConcurrencyToken { get; set; }
@@ -143,21 +144,21 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class DispositivoMovilAutorizadoResult {\n");
-            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
-            sb.Append(value: "  Token: ").Append(value: Token).Append(value: "\n");
-            sb.Append(value: "  IdDispositivo: ").Append(value: IdDispositivo).Append(value: "\n");
-            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  Caracteristicas: ").Append(value: Caracteristicas).Append(value: "\n");
-            sb.Append(value: "  Actual: ").Append(value: Actual).Append(value: "\n");
-            sb.Append(value: "  Guid: ").Append(value: Guid).Append(value: "\n");
-            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
-            sb.Append(value: "  ModificationTimestamp: ").Append(value: ModificationTimestamp).Append(value: "\n");
-            sb.Append(value: "  CreationUser: ").Append(value: CreationUser).Append(value: "\n");
-            sb.Append(value: "  ModificationUser: ").Append(value: ModificationUser).Append(value: "\n");
-            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
-            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class DispositivoMovilAutorizadoResult {\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  Token: ").Append(Token).Append("\n");
+            sb.Append("  IdDispositivo: ").Append(IdDispositivo).Append("\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  Caracteristicas: ").Append(Caracteristicas).Append("\n");
+            sb.Append("  Actual: ").Append(Actual).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
+            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -167,7 +168,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -177,9 +178,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (DispositivoMovilAutorizadoResult)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((DispositivoMovilAutorizadoResult)obj);
         }
 
         /// <summary>
@@ -189,74 +190,74 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(DispositivoMovilAutorizadoResult other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other: other.Id)
+                    Id.Equals(other.Id)
                 ) && 
                 (
                     Token == other.Token ||
                     Token != null &&
-                    Token.Equals(value: other.Token)
+                    Token.Equals(other.Token)
                 ) && 
                 (
                     IdDispositivo == other.IdDispositivo ||
                     IdDispositivo != null &&
-                    IdDispositivo.Equals(value: other.IdDispositivo)
+                    IdDispositivo.Equals(other.IdDispositivo)
                 ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(value: other.Nombre)
+                    Nombre.Equals(other.Nombre)
                 ) && 
                 (
                     Caracteristicas == other.Caracteristicas ||
                     Caracteristicas != null &&
-                    Caracteristicas.Equals(value: other.Caracteristicas)
+                    Caracteristicas.Equals(other.Caracteristicas)
                 ) && 
                 (
                     Actual == other.Actual ||
                     Actual != null &&
-                    Actual.Equals(other: other.Actual)
+                    Actual.Equals(other.Actual)
                 ) && 
                 (
                     Guid == other.Guid ||
                     Guid != null &&
-                    Guid.Equals(other: other.Guid)
+                    Guid.Equals(other.Guid)
                 ) && 
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other: other.CreationTimestamp)
+                    CreationTimestamp.Equals(other.CreationTimestamp)
                 ) && 
                 (
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
-                    ModificationTimestamp.Equals(other: other.ModificationTimestamp)
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
                 ) && 
                 (
                     CreationUser == other.CreationUser ||
                     CreationUser != null &&
-                    CreationUser.Equals(other: other.CreationUser)
+                    CreationUser.Equals(other.CreationUser)
                 ) && 
                 (
                     ModificationUser == other.ModificationUser ||
                     ModificationUser != null &&
-                    ModificationUser.Equals(other: other.ModificationUser)
+                    ModificationUser.Equals(other.ModificationUser)
                 ) && 
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
-                    IsActive.Equals(other: other.IsActive)
+                    IsActive.Equals(other.IsActive)
                 ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
-                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -305,12 +306,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(DispositivoMovilAutorizadoResult left, DispositivoMovilAutorizadoResult right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(DispositivoMovilAutorizadoResult left, DispositivoMovilAutorizadoResult right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

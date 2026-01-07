@@ -381,7 +381,7 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
         {
             Alias = "Card Duplicate",
             NumeroTarjeta = cardNumber,
-            Marca = MarcaTarjetaEnum.Visa,
+            Marca = MarcaTarjetaEnum.VisaEnum,
             FechaExpiracion = DateTime.UtcNow.AddYears(2)
         };
 

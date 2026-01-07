@@ -49,6 +49,7 @@ namespace Wallet.RestAPI.Models
         /// <summary>
         /// Gets or Sets CorreoElectronico
         /// </summary>
+        [Required]
 
         [DataMember(Name="correoElectronico")]
         public string CorreoElectronico { get; set; }
@@ -62,40 +63,54 @@ namespace Wallet.RestAPI.Models
         public string Estatus { get; set; }
 
         /// <summary>
-        /// Gets or Sets CreationUser
+        /// Guid unico del registro
         /// </summary>
+        /// <value>Guid unico del registro</value>
         [Required]
 
-        [DataMember(Name="creationUser")]
-        public Guid? CreationUser { get; set; }
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
 
         /// <summary>
-        /// Gets or Sets ModificationUser
+        /// Creation timestamp
         /// </summary>
-        [Required]
-
-        [DataMember(Name="modificationUser")]
-        public Guid? ModificationUser { get; set; }
-
-        /// <summary>
-        /// Gets or Sets CreationTimestamp
-        /// </summary>
+        /// <value>Creation timestamp</value>
         [Required]
 
         [DataMember(Name="creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
-        /// Gets or Sets ModificationTimestamp
+        /// Modification timestamp
         /// </summary>
+        /// <value>Modification timestamp</value>
         [Required]
 
         [DataMember(Name="modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
 
         /// <summary>
-        /// Gets or Sets IsActive
+        /// Guid of the creation user
         /// </summary>
+        /// <value>Guid of the creation user</value>
+        [Required]
+
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
         [Required]
 
         [DataMember(Name="isActive")]
@@ -105,6 +120,7 @@ namespace Wallet.RestAPI.Models
         /// Token de concurrencia
         /// </summary>
         /// <value>Token de concurrencia</value>
+        [Required]
 
         [DataMember(Name="concurrencyToken")]
         public string ConcurrencyToken { get; set; }
@@ -116,19 +132,20 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class UsuarioResult {\n");
-            sb.Append(value: "  Id: ").Append(value: Id).Append(value: "\n");
-            sb.Append(value: "  CodigoPais: ").Append(value: CodigoPais).Append(value: "\n");
-            sb.Append(value: "  Telefono: ").Append(value: Telefono).Append(value: "\n");
-            sb.Append(value: "  CorreoElectronico: ").Append(value: CorreoElectronico).Append(value: "\n");
-            sb.Append(value: "  Estatus: ").Append(value: Estatus).Append(value: "\n");
-            sb.Append(value: "  CreationUser: ").Append(value: CreationUser).Append(value: "\n");
-            sb.Append(value: "  ModificationUser: ").Append(value: ModificationUser).Append(value: "\n");
-            sb.Append(value: "  CreationTimestamp: ").Append(value: CreationTimestamp).Append(value: "\n");
-            sb.Append(value: "  ModificationTimestamp: ").Append(value: ModificationTimestamp).Append(value: "\n");
-            sb.Append(value: "  IsActive: ").Append(value: IsActive).Append(value: "\n");
-            sb.Append(value: "  ConcurrencyToken: ").Append(value: ConcurrencyToken).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class UsuarioResult {\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  CodigoPais: ").Append(CodigoPais).Append("\n");
+            sb.Append("  Telefono: ").Append(Telefono).Append("\n");
+            sb.Append("  CorreoElectronico: ").Append(CorreoElectronico).Append("\n");
+            sb.Append("  Estatus: ").Append(Estatus).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
+            sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
+            sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
+            sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -138,7 +155,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -148,9 +165,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (UsuarioResult)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((UsuarioResult)obj);
         }
 
         /// <summary>
@@ -160,64 +177,69 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(UsuarioResult other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Id == other.Id ||
                     Id != null &&
-                    Id.Equals(other: other.Id)
+                    Id.Equals(other.Id)
                 ) && 
                 (
                     CodigoPais == other.CodigoPais ||
                     CodigoPais != null &&
-                    CodigoPais.Equals(value: other.CodigoPais)
+                    CodigoPais.Equals(other.CodigoPais)
                 ) && 
                 (
                     Telefono == other.Telefono ||
                     Telefono != null &&
-                    Telefono.Equals(value: other.Telefono)
+                    Telefono.Equals(other.Telefono)
                 ) && 
                 (
                     CorreoElectronico == other.CorreoElectronico ||
                     CorreoElectronico != null &&
-                    CorreoElectronico.Equals(value: other.CorreoElectronico)
+                    CorreoElectronico.Equals(other.CorreoElectronico)
                 ) && 
                 (
                     Estatus == other.Estatus ||
                     Estatus != null &&
-                    Estatus.Equals(value: other.Estatus)
+                    Estatus.Equals(other.Estatus)
                 ) && 
                 (
-                    CreationUser == other.CreationUser ||
-                    CreationUser != null &&
-                    CreationUser.Equals(other: other.CreationUser)
-                ) && 
-                (
-                    ModificationUser == other.ModificationUser ||
-                    ModificationUser != null &&
-                    ModificationUser.Equals(other: other.ModificationUser)
+                    Guid == other.Guid ||
+                    Guid != null &&
+                    Guid.Equals(other.Guid)
                 ) && 
                 (
                     CreationTimestamp == other.CreationTimestamp ||
                     CreationTimestamp != null &&
-                    CreationTimestamp.Equals(other: other.CreationTimestamp)
+                    CreationTimestamp.Equals(other.CreationTimestamp)
                 ) && 
                 (
                     ModificationTimestamp == other.ModificationTimestamp ||
                     ModificationTimestamp != null &&
-                    ModificationTimestamp.Equals(other: other.ModificationTimestamp)
+                    ModificationTimestamp.Equals(other.ModificationTimestamp)
+                ) && 
+                (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
                 ) && 
                 (
                     IsActive == other.IsActive ||
                     IsActive != null &&
-                    IsActive.Equals(other: other.IsActive)
+                    IsActive.Equals(other.IsActive)
                 ) && 
                 (
                     ConcurrencyToken == other.ConcurrencyToken ||
                     ConcurrencyToken != null &&
-                    ConcurrencyToken.Equals(value: other.ConcurrencyToken)
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -241,14 +263,16 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + CorreoElectronico.GetHashCode();
                     if (Estatus != null)
                     hashCode = hashCode * 59 + Estatus.GetHashCode();
-                    if (CreationUser != null)
-                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                    if (ModificationUser != null)
-                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+                    if (Guid != null)
+                    hashCode = hashCode * 59 + Guid.GetHashCode();
                     if (CreationTimestamp != null)
                     hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
                     if (ModificationTimestamp != null)
                     hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
                     if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
                     if (ConcurrencyToken != null)
@@ -262,12 +286,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(UsuarioResult left, UsuarioResult right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(UsuarioResult left, UsuarioResult right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -17,23 +17,26 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Request to create a new wallet
+    /// 
     /// </summary>
     [DataContract]
     public partial class CrearCuentaWalletRequest : IEquatable<CrearCuentaWalletRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets IdCliente
         /// </summary>
         [Required]
-        [DataMember(Name = "idCliente")]
+
+        [DataMember(Name="idCliente")]
         public int? IdCliente { get; set; }
 
         /// <summary>
         /// Gets or Sets Moneda
         /// </summary>
         [Required]
-        [DataMember(Name = "moneda")]
+
+        [StringLength(3, MinimumLength=3)]
+        [DataMember(Name="moneda")]
         public string Moneda { get; set; }
 
         /// <summary>
@@ -43,10 +46,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class CrearCuentaWalletRequest {\n");
-            sb.Append(value: "  IdCliente: ").Append(value: IdCliente).Append(value: "\n");
-            sb.Append(value: "  Moneda: ").Append(value: Moneda).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class CrearCuentaWalletRequest {\n");
+            sb.Append("  IdCliente: ").Append(IdCliente).Append("\n");
+            sb.Append("  Moneda: ").Append(Moneda).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -56,7 +59,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -66,9 +69,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (CrearCuentaWalletRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((CrearCuentaWalletRequest)obj);
         }
 
         /// <summary>
@@ -78,19 +81,19 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(CrearCuentaWalletRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
-            return
+            return 
                 (
                     IdCliente == other.IdCliente ||
                     IdCliente != null &&
-                    IdCliente.Equals(other: other.IdCliente)
-                ) &&
+                    IdCliente.Equals(other.IdCliente)
+                ) && 
                 (
                     Moneda == other.Moneda ||
                     Moneda != null &&
-                    Moneda.Equals(value: other.Moneda)
+                    Moneda.Equals(other.Moneda)
                 );
         }
 
@@ -103,30 +106,29 @@ namespace Wallet.RestAPI.Models
             unchecked // Overflow is fine, just wrap
             {
                 var hashCode = 41;
-                if (IdCliente != null)
+                // Suitable nullity checks etc, of course :)
+                    if (IdCliente != null)
                     hashCode = hashCode * 59 + IdCliente.GetHashCode();
-                if (Moneda != null)
+                    if (Moneda != null)
                     hashCode = hashCode * 59 + Moneda.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
         public static bool operator ==(CrearCuentaWalletRequest left, CrearCuentaWalletRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(CrearCuentaWalletRequest left, CrearCuentaWalletRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
-#pragma warning restore 1591
-
+        #pragma warning restore 1591
         #endregion Operators
     }
 }

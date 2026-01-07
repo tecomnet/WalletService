@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -17,29 +17,32 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// Request object for registering a service payment
+    /// 
     /// </summary>
     [DataContract]
     public partial class RegistrarPagoServicioRequest : IEquatable<RegistrarPagoServicioRequest>
-    {
+    { 
         /// <summary>
         /// Gets or Sets IdBilletera
         /// </summary>
         [Required]
+
         [DataMember(Name="idBilletera")]
-        public int IdBilletera { get; set; }
+        public int? IdBilletera { get; set; }
 
         /// <summary>
         /// Gets or Sets Monto
         /// </summary>
         [Required]
+
         [DataMember(Name="monto")]
-        public decimal Monto { get; set; }
+        public decimal? Monto { get; set; }
 
         /// <summary>
         /// Gets or Sets NombreServicio
         /// </summary>
         [Required]
+
         [DataMember(Name="nombreServicio")]
         public string NombreServicio { get; set; }
 
@@ -47,12 +50,14 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets Direccion
         /// </summary>
         [Required]
+
         [DataMember(Name="direccion")]
         public string Direccion { get; set; }
 
         /// <summary>
         /// Gets or Sets RefExternaId
         /// </summary>
+
         [DataMember(Name="refExternaId")]
         public string RefExternaId { get; set; }
 
@@ -60,19 +65,22 @@ namespace Wallet.RestAPI.Models
         /// Gets or Sets IdProveedor
         /// </summary>
         [Required]
+
         [DataMember(Name="idProveedor")]
-        public int IdProveedor { get; set; }
+        public int? IdProveedor { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroReferencia
         /// </summary>
         [Required]
+
         [DataMember(Name="numeroReferencia")]
         public string NumeroReferencia { get; set; }
 
         /// <summary>
         /// Gets or Sets CodigoAutorizacion
         /// </summary>
+
         [DataMember(Name="codigoAutorizacion")]
         public string CodigoAutorizacion { get; set; }
 
@@ -83,16 +91,16 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class RegistrarPagoServicioRequest {\n");
-            sb.Append(value: "  IdBilletera: ").Append(value: IdBilletera).Append(value: "\n");
-            sb.Append(value: "  Monto: ").Append(value: Monto).Append(value: "\n");
-            sb.Append(value: "  NombreServicio: ").Append(value: NombreServicio).Append(value: "\n");
-            sb.Append(value: "  Direccion: ").Append(value: Direccion).Append(value: "\n");
-            sb.Append(value: "  RefExternaId: ").Append(value: RefExternaId).Append(value: "\n");
-            sb.Append(value: "  IdProveedor: ").Append(value: IdProveedor).Append(value: "\n");
-            sb.Append(value: "  NumeroReferencia: ").Append(value: NumeroReferencia).Append(value: "\n");
-            sb.Append(value: "  CodigoAutorizacion: ").Append(value: CodigoAutorizacion).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class RegistrarPagoServicioRequest {\n");
+            sb.Append("  IdBilletera: ").Append(IdBilletera).Append("\n");
+            sb.Append("  Monto: ").Append(Monto).Append("\n");
+            sb.Append("  NombreServicio: ").Append(NombreServicio).Append("\n");
+            sb.Append("  Direccion: ").Append(Direccion).Append("\n");
+            sb.Append("  RefExternaId: ").Append(RefExternaId).Append("\n");
+            sb.Append("  IdProveedor: ").Append(IdProveedor).Append("\n");
+            sb.Append("  NumeroReferencia: ").Append(NumeroReferencia).Append("\n");
+            sb.Append("  CodigoAutorizacion: ").Append(CodigoAutorizacion).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -102,7 +110,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -112,9 +120,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (RegistrarPagoServicioRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((RegistrarPagoServicioRequest)obj);
         }
 
         /// <summary>
@@ -124,46 +132,49 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(RegistrarPagoServicioRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     IdBilletera == other.IdBilletera ||
-                    IdBilletera.Equals(obj: other.IdBilletera)
+                    IdBilletera != null &&
+                    IdBilletera.Equals(other.IdBilletera)
                 ) && 
                 (
                     Monto == other.Monto ||
-                    Monto.Equals(value: other.Monto)
+                    Monto != null &&
+                    Monto.Equals(other.Monto)
                 ) && 
                 (
                     NombreServicio == other.NombreServicio ||
                     NombreServicio != null &&
-                    NombreServicio.Equals(value: other.NombreServicio)
+                    NombreServicio.Equals(other.NombreServicio)
                 ) && 
                 (
                     Direccion == other.Direccion ||
                     Direccion != null &&
-                    Direccion.Equals(value: other.Direccion)
+                    Direccion.Equals(other.Direccion)
                 ) && 
                 (
                     RefExternaId == other.RefExternaId ||
                     RefExternaId != null &&
-                    RefExternaId.Equals(value: other.RefExternaId)
+                    RefExternaId.Equals(other.RefExternaId)
                 ) && 
                 (
                     IdProveedor == other.IdProveedor ||
-                    IdProveedor.Equals(obj: other.IdProveedor)
+                    IdProveedor != null &&
+                    IdProveedor.Equals(other.IdProveedor)
                 ) && 
                 (
                     NumeroReferencia == other.NumeroReferencia ||
                     NumeroReferencia != null &&
-                    NumeroReferencia.Equals(value: other.NumeroReferencia)
+                    NumeroReferencia.Equals(other.NumeroReferencia)
                 ) && 
                 (
                     CodigoAutorizacion == other.CodigoAutorizacion ||
                     CodigoAutorizacion != null &&
-                    CodigoAutorizacion.Equals(value: other.CodigoAutorizacion)
+                    CodigoAutorizacion.Equals(other.CodigoAutorizacion)
                 );
         }
 
@@ -176,18 +187,22 @@ namespace Wallet.RestAPI.Models
             unchecked // Overflow is fine, just wrap
             {
                 var hashCode = 41;
-                hashCode = hashCode * 59 + IdBilletera.GetHashCode();
-                hashCode = hashCode * 59 + Monto.GetHashCode();
-                if (NombreServicio != null)
+                // Suitable nullity checks etc, of course :)
+                    if (IdBilletera != null)
+                    hashCode = hashCode * 59 + IdBilletera.GetHashCode();
+                    if (Monto != null)
+                    hashCode = hashCode * 59 + Monto.GetHashCode();
+                    if (NombreServicio != null)
                     hashCode = hashCode * 59 + NombreServicio.GetHashCode();
-                if (Direccion != null)
+                    if (Direccion != null)
                     hashCode = hashCode * 59 + Direccion.GetHashCode();
-                if (RefExternaId != null)
+                    if (RefExternaId != null)
                     hashCode = hashCode * 59 + RefExternaId.GetHashCode();
-                hashCode = hashCode * 59 + IdProveedor.GetHashCode();
-                if (NumeroReferencia != null)
+                    if (IdProveedor != null)
+                    hashCode = hashCode * 59 + IdProveedor.GetHashCode();
+                    if (NumeroReferencia != null)
                     hashCode = hashCode * 59 + NumeroReferencia.GetHashCode();
-                if (CodigoAutorizacion != null)
+                    if (CodigoAutorizacion != null)
                     hashCode = hashCode * 59 + CodigoAutorizacion.GetHashCode();
                 return hashCode;
             }
@@ -198,12 +213,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(RegistrarPagoServicioRequest left, RegistrarPagoServicioRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(RegistrarPagoServicioRequest left, RegistrarPagoServicioRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

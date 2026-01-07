@@ -27,7 +27,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [MaxLength(length: 50)]
+        [MaxLength(50)]
         [DataMember(Name="sku")]
         public string Sku { get; set; }
 
@@ -36,7 +36,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [MaxLength(length: 100)]
+        [MaxLength(100)]
         [DataMember(Name="nombre")]
         public string Nombre { get; set; }
 
@@ -52,7 +52,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [MaxLength(length: 255)]
+        [MaxLength(255)]
         [DataMember(Name="urlIcono")]
         public string UrlIcono { get; set; }
 
@@ -71,13 +71,13 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class ProductoRequest {\n");
-            sb.Append(value: "  Sku: ").Append(value: Sku).Append(value: "\n");
-            sb.Append(value: "  Nombre: ").Append(value: Nombre).Append(value: "\n");
-            sb.Append(value: "  Precio: ").Append(value: Precio).Append(value: "\n");
-            sb.Append(value: "  UrlIcono: ").Append(value: UrlIcono).Append(value: "\n");
-            sb.Append(value: "  Categoria: ").Append(value: Categoria).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class ProductoRequest {\n");
+            sb.Append("  Sku: ").Append(Sku).Append("\n");
+            sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  Precio: ").Append(Precio).Append("\n");
+            sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
+            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -87,7 +87,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -97,9 +97,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (ProductoRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((ProductoRequest)obj);
         }
 
         /// <summary>
@@ -109,34 +109,34 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(ProductoRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Sku == other.Sku ||
                     Sku != null &&
-                    Sku.Equals(value: other.Sku)
+                    Sku.Equals(other.Sku)
                 ) && 
                 (
                     Nombre == other.Nombre ||
                     Nombre != null &&
-                    Nombre.Equals(value: other.Nombre)
+                    Nombre.Equals(other.Nombre)
                 ) && 
                 (
                     Precio == other.Precio ||
                     Precio != null &&
-                    Precio.Equals(other: other.Precio)
+                    Precio.Equals(other.Precio)
                 ) && 
                 (
                     UrlIcono == other.UrlIcono ||
                     UrlIcono != null &&
-                    UrlIcono.Equals(value: other.UrlIcono)
+                    UrlIcono.Equals(other.UrlIcono)
                 ) && 
                 (
                     Categoria == other.Categoria ||
                     Categoria != null &&
-                    Categoria.Equals(obj: other.Categoria)
+                    Categoria.Equals(other.Categoria)
                 );
         }
 
@@ -169,12 +169,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(ProductoRequest left, ProductoRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(ProductoRequest left, ProductoRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

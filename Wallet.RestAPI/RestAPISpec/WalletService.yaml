@@ -2452,12 +2452,33 @@ components:
           type: string
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - idCliente
@@ -2466,7 +2487,11 @@ components:
         - moneda
         - guid
         - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
         - isActive
+        - concurrencyToken
     BitacoraTransaccionResult:
       type: object
       properties:
@@ -2490,10 +2515,33 @@ components:
           nullable: true
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - idBilletera
@@ -2503,6 +2551,11 @@ components:
         - estatus
         - guid
         - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+        - concurrencyToken
     DetallesPagoServicioResult:
       type: object
       properties:
@@ -2522,13 +2575,45 @@ components:
           nullable: true
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - idTransaccion
         - idProveedor
         - numeroReferencia
         - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+        - concurrencyToken
     RegistrarPagoServicioRequest:
       type: object
       properties:
@@ -2537,7 +2622,6 @@ components:
           format: int32
         monto:
           type: number
-          format: double
         nombreServicio:
           type: string
         direccion:
@@ -2599,21 +2683,33 @@ components:
           format: date-time
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
+          description: Creation timestamp
         modificationTimestamp:
           type: string
+          description: Modification timestamp
           format: date-time
         creationUser:
           type: string
           format: uuid
+          description: Guid of the creation user
         modificationUser:
           type: string
           format: uuid
+          description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
+        concurrencyToken:
+          type: string
+          description: Token de concurrencia
       required:
         - id
         - idUsuario
@@ -2626,6 +2722,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     LoginRequest:
       type: object
       properties:
@@ -2705,9 +2802,7 @@ components:
             id: neep14yhburn4
           format: date
         genero:
-          type: integer
-          x-stoplight:
-            id: neep14yhburn4
+          $ref: '#/components/schemas/GeneroEnum'
       required:
         - nombre
         - apellidoPaterno
@@ -2740,7 +2835,7 @@ components:
           type: string
           format: date
         genero:
-          type: integer
+          $ref: '#/components/schemas/GeneroEnum'
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -2820,23 +2915,33 @@ components:
           maxLength: 13
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
+          description: Creation timestamp
         modificationTimestamp:
           type: string
+          description: Modification timestamp
           format: date-time
         creationUser:
           type: string
           format: uuid
+          description: Guid of the creation user
         modificationUser:
           type: string
           format: uuid
+          description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
+          description: Token de concurrencia
       required:
         - id
         - codigoPais
@@ -2859,6 +2964,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     ProductoUpdateRequest:
       title: ProductoUpdateRequest
       type: object
@@ -2979,35 +3085,48 @@ components:
           type: string
         estatus:
           type: string
-        creationUser:
+        guid:
           type: string
-          format: uuid
-        modificationUser:
-          type: string
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
+          description: Creation timestamp
         modificationTimestamp:
           type: string
+          description: Modification timestamp
           format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
-          x-stoplight:
-            id: 114v5cpxh0ldo
       required:
         - id
         - codigoPais
         - telefono
+        - correoElectronico
         - estatus
-        - creationUser
-        - modificationUser
+        - guid
         - creationTimestamp
         - modificationTimestamp
+        - creationUser
+        - modificationUser
         - isActive
+        - concurrencyToken
     PreRegistroRequest:
       title: PreRegistroRequest
       type: object
@@ -3120,7 +3239,7 @@ components:
           maxLength: 50
         guid:
           type: string
-          description: Guid of the key-value configuration
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
@@ -3143,7 +3262,7 @@ components:
           format: uuid
           description: Guid of the modification user
           x-stoplight:
-            id: kyb43t959rajb
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -3162,6 +3281,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     DireccionResult:
       title: DireccionResult
       x-stoplight:
@@ -3227,7 +3347,7 @@ components:
           maxLength: 250
         guid:
           type: string
-          description: Guid of the key-value configuration
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
@@ -3250,7 +3370,7 @@ components:
           format: uuid
           description: Guid of the modification user
           x-stoplight:
-            id: 2x51kh083gl38
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -3270,6 +3390,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     DireccionUpdateRequest:
       title: DireccionUpdateRequest
       x-stoplight:
@@ -3411,7 +3532,7 @@ components:
           format: date
         guid:
           type: string
-          description: Guid of the key-value configuration
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
@@ -3434,7 +3555,7 @@ components:
           format: uuid
           description: Guid of the modification user
           x-stoplight:
-            id: a2uhbk4e5rhfy
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -3451,6 +3572,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     DispositivoMovilAutorizadoRequest:
       title: DispositivoMovilAutorizadoRequest
       type: object
@@ -3577,7 +3699,7 @@ components:
           maxLength: 100
         guid:
           type: string
-          description: Guid of the key-value configuration
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
@@ -3613,6 +3735,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     EmpresaResult:
       title: EmpresaResult
       x-stoplight:
@@ -3632,7 +3755,7 @@ components:
           maxLength: 100
         guid:
           type: string
-          description: Guid of the key-value configuration
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
@@ -3655,7 +3778,7 @@ components:
           format: uuid
           description: Guid of the modification user
           x-stoplight:
-            id: 2oa3t6cskgc2f
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -3668,6 +3791,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     BrokerRequest:
       title: BrokerRequest
       type: object
@@ -3707,21 +3831,30 @@ components:
           maxLength: 100
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
+          description: Creation timestamp
         modificationTimestamp:
           type: string
+          description: Modification timestamp
           format: date-time
         creationUser:
           type: string
           format: uuid
+          description: Guid of the creation user
         modificationUser:
           type: string
           format: uuid
+          description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -3734,6 +3867,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     ProveedorResult:
       title: ProveedorResult
       type: object
@@ -3752,8 +3886,32 @@ components:
           maxLength: 500
         categoria:
           $ref: '#/components/schemas/CategoriaEnum'
+        guid:
+          type: string
+          description: Guid unico del registro
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -3761,7 +3919,13 @@ components:
         - id
         - brokerId
         - nombre
+        - urlIcono
         - categoria
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
         - isActive
         - concurrencyToken
     ProveedorRequest:
@@ -3827,21 +3991,30 @@ components:
           maxLength: 50
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
+          description: Creation timestamp
         modificationTimestamp:
           type: string
+          description: Modification timestamp
           format: date-time
         creationUser:
           type: string
           format: uuid
+          description: Guid of the creation user
         modificationUser:
           type: string
           format: uuid
+          description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -3857,6 +4030,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     ServicioFavoritoRequest:
       title: ServicioFavoritoRequest
       type: object
@@ -3923,21 +4097,30 @@ components:
             id: e9qdswkg2xbi0
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
         creationTimestamp:
           type: string
           format: date-time
+          description: Creation timestamp
         modificationTimestamp:
           type: string
+          description: Modification timestamp
           format: date-time
         creationUser:
           type: string
           format: uuid
+          description: Guid of the creation user
         modificationUser:
           type: string
           format: uuid
+          description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -3955,6 +4138,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     ProductoRequest:
       title: ProductoRequest
       type: object
@@ -4093,16 +4277,16 @@ components:
           type: string
         guid:
           type: string
+          description: Guid unico del registro
           format: uuid
-          description: Guid of the key-value configuration
         creationTimestamp:
           type: string
           format: date-time
           description: Creation timestamp
         modificationTimestamp:
           type: string
-          format: date-time
           description: Modification timestamp
+          format: date-time
         creationUser:
           type: string
           format: uuid
@@ -4113,7 +4297,10 @@ components:
           description: Guid of the modification user
         isActive:
           type: boolean
+          format: uuid
           description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
           description: Token de concurrencia
@@ -4127,6 +4314,7 @@ components:
         - creationUser
         - modificationUser
         - isActive
+        - concurrencyToken
     StatusChangeRequest:
       title: StatusChangeRequest
       type: object
@@ -4163,8 +4351,43 @@ components:
           type: string
         estadoEntrega:
           $ref: '#/components/schemas/EstadoEntregaEnum'
+        guid:
+          type: string
+          description: Guid unico del registro
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
+          description: Token de concurrencia
+      required:
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+        - concurrencyToken
     TarjetaVinculadaResult:
       type: object
       properties:
@@ -4179,8 +4402,48 @@ components:
           $ref: '#/components/schemas/MarcaTarjetaEnum'
         esFavorita:
           type: boolean
+        guid:
+          type: string
+          description: Guid unico del registro
+          format: uuid
+        creationTimestamp:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        modificationTimestamp:
+          type: string
+          description: Modification timestamp
+          format: date-time
+        creationUser:
+          type: string
+          format: uuid
+          description: Guid of the creation user
+        modificationUser:
+          type: string
+          format: uuid
+          description: Guid of the modification user
+        isActive:
+          type: boolean
+          format: uuid
+          description: Guid of the modification user
+          x-stoplight:
+            id: 9fssiboo4dz6v
         concurrencyToken:
           type: string
+          description: Token de concurrencia
+      required:
+        - id
+        - panEnmascarado
+        - alias
+        - marca
+        - esFavorita
+        - guid
+        - creationTimestamp
+        - modificationTimestamp
+        - creationUser
+        - modificationUser
+        - isActive
+        - concurrencyToken
     SolicitarTarjetaVirtualRequest:
       type: object
       properties:

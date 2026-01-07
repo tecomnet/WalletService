@@ -45,10 +45,10 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class LoginRequest {\n");
-            sb.Append(value: "  Login: ").Append(value: Login).Append(value: "\n");
-            sb.Append(value: "  Password: ").Append(value: Password).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class LoginRequest {\n");
+            sb.Append("  Login: ").Append(Login).Append("\n");
+            sb.Append("  Password: ").Append(Password).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -58,7 +58,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (LoginRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((LoginRequest)obj);
         }
 
         /// <summary>
@@ -80,19 +80,19 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(LoginRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Login == other.Login ||
                     Login != null &&
-                    Login.Equals(value: other.Login)
+                    Login.Equals(other.Login)
                 ) && 
                 (
                     Password == other.Password ||
                     Password != null &&
-                    Password.Equals(value: other.Password)
+                    Password.Equals(other.Password)
                 );
         }
 
@@ -119,12 +119,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(LoginRequest left, LoginRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(LoginRequest left, LoginRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -14,26 +14,27 @@ using Wallet.RestAPI.Helpers;
 
 namespace Wallet.RestAPI.Models
 {
-    /// <summary>
-    /// Tipo de documento de consentimiento
-    /// </summary>
-    /// <value>Tipo de documento de consentimiento</value>
-    [JsonConverter(converterType: typeof(CustomStringToEnumConverter<TipoDocumentoConsentimientoEnum>))]
-    public enum TipoDocumentoConsentimientoEnum
-    {
-        /// <summary>
-        /// Enum TerminosEnum for Terminos
-        /// </summary>
-        [EnumMember(Value = "Terminos")] Terminos = 0,
-
-        /// <summary>
-        /// Enum PrivacidadEnum for Privacidad
-        /// </summary>
-        [EnumMember(Value = "Privacidad")] Privacidad = 1,
-
-        /// <summary>
-        /// Enum PLDEnum for PLD
-        /// </summary>
-        [EnumMember(Value = "PLD")] PLD = 2
-    }
+  
+          /// <summary>
+          /// Tipo de documento de consentimiento
+          /// </summary>
+          /// <value>Tipo de documento de consentimiento</value>
+          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<TipoDocumentoConsentimientoEnum>))]
+          public enum TipoDocumentoConsentimientoEnum
+          {
+              /// <summary>
+              /// Enum TerminosEnum for Terminos
+              /// </summary>
+              [EnumMember(Value = "Terminos")]
+              TerminosEnum = 0,
+              /// <summary>
+              /// Enum PrivacidadEnum for Privacidad
+              /// </summary>
+              [EnumMember(Value = "Privacidad")]
+              PrivacidadEnum = 1,
+              /// <summary>
+              /// Enum PLDEnum for PLD
+              /// </summary>
+              [EnumMember(Value = "PLD")]
+              PLDEnum = 2          }
 }

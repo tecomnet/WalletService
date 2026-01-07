@@ -39,9 +39,9 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class AsignarProductosRequest {\n");
-            sb.Append(value: "  ProductoIds: ").Append(value: ProductoIds).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class AsignarProductosRequest {\n");
+            sb.Append("  ProductoIds: ").Append(ProductoIds).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -51,7 +51,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (AsignarProductosRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((AsignarProductosRequest)obj);
         }
 
         /// <summary>
@@ -73,14 +73,14 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(AsignarProductosRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     ProductoIds == other.ProductoIds ||
                     ProductoIds != null &&
-                    ProductoIds.SequenceEqual(second: other.ProductoIds)
+                    ProductoIds.SequenceEqual(other.ProductoIds)
                 );
         }
 
@@ -105,12 +105,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(AsignarProductosRequest left, AsignarProductosRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(AsignarProductosRequest left, AsignarProductosRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

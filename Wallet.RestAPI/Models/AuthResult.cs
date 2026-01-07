@@ -52,26 +52,18 @@ namespace Wallet.RestAPI.Models
         public List<string> Errors { get; set; }
 
         /// <summary>
-        /// Gets or Sets IdCliente
-        /// </summary>
-
-        [DataMember(Name="idCliente")]
-        public int? IdCliente { get; set; }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class AuthResult {\n");
-            sb.Append(value: "  AccessToken: ").Append(value: AccessToken).Append(value: "\n");
-            sb.Append(value: "  RefreshToken: ").Append(value: RefreshToken).Append(value: "\n");
-            sb.Append(value: "  Success: ").Append(value: Success).Append(value: "\n");
-            sb.Append(value: "  Errors: ").Append(value: Errors).Append(value: "\n");
-            sb.Append(value: "  IdCliente: ").Append(value: IdCliente).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class AuthResult {\n");
+            sb.Append("  AccessToken: ").Append(AccessToken).Append("\n");
+            sb.Append("  RefreshToken: ").Append(RefreshToken).Append("\n");
+            sb.Append("  Success: ").Append(Success).Append("\n");
+            sb.Append("  Errors: ").Append(Errors).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -81,7 +73,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -91,9 +83,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (AuthResult)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((AuthResult)obj);
         }
 
         /// <summary>
@@ -103,34 +95,29 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(AuthResult other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     AccessToken == other.AccessToken ||
                     AccessToken != null &&
-                    AccessToken.Equals(value: other.AccessToken)
+                    AccessToken.Equals(other.AccessToken)
                 ) && 
                 (
                     RefreshToken == other.RefreshToken ||
                     RefreshToken != null &&
-                    RefreshToken.Equals(value: other.RefreshToken)
+                    RefreshToken.Equals(other.RefreshToken)
                 ) && 
                 (
                     Success == other.Success ||
                     Success != null &&
-                    Success.Equals(other: other.Success)
+                    Success.Equals(other.Success)
                 ) && 
                 (
                     Errors == other.Errors ||
                     Errors != null &&
-                    Errors.SequenceEqual(second: other.Errors)
-                ) && 
-                (
-                    IdCliente == other.IdCliente ||
-                    IdCliente != null &&
-                    IdCliente.Equals(other: other.IdCliente)
+                    Errors.SequenceEqual(other.Errors)
                 );
         }
 
@@ -152,8 +139,6 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Success.GetHashCode();
                     if (Errors != null)
                     hashCode = hashCode * 59 + Errors.GetHashCode();
-                    if (IdCliente != null)
-                    hashCode = hashCode * 59 + IdCliente.GetHashCode();
                 return hashCode;
             }
         }
@@ -163,12 +148,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(AuthResult left, AuthResult right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(AuthResult left, AuthResult right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591

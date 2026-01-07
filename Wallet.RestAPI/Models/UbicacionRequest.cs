@@ -51,7 +51,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="TipoEvento")]
         public string TipoEvento { get; set; }
 
@@ -60,7 +60,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="TipoDispositivo")]
         public string TipoDispositivo { get; set; }
 
@@ -69,7 +69,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 100, MinimumLength=1)]
+        [StringLength(100, MinimumLength=1)]
         [DataMember(Name="Agente")]
         public string Agente { get; set; }
 
@@ -78,7 +78,7 @@ namespace Wallet.RestAPI.Models
         /// </summary>
         [Required]
 
-        [StringLength(maximumLength: 45, MinimumLength=1)]
+        [StringLength(45, MinimumLength=1)]
         [DataMember(Name="DireccionIP")]
         public string DireccionIP { get; set; }
 
@@ -89,15 +89,15 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(value: "class UbicacionRequest {\n");
-            sb.Append(value: "  Latitud: ").Append(value: Latitud).Append(value: "\n");
-            sb.Append(value: "  Longitud: ").Append(value: Longitud).Append(value: "\n");
-            sb.Append(value: "  Dispositivo: ").Append(value: Dispositivo).Append(value: "\n");
-            sb.Append(value: "  TipoEvento: ").Append(value: TipoEvento).Append(value: "\n");
-            sb.Append(value: "  TipoDispositivo: ").Append(value: TipoDispositivo).Append(value: "\n");
-            sb.Append(value: "  Agente: ").Append(value: Agente).Append(value: "\n");
-            sb.Append(value: "  DireccionIP: ").Append(value: DireccionIP).Append(value: "\n");
-            sb.Append(value: "}\n");
+            sb.Append("class UbicacionRequest {\n");
+            sb.Append("  Latitud: ").Append(Latitud).Append("\n");
+            sb.Append("  Longitud: ").Append(Longitud).Append("\n");
+            sb.Append("  Dispositivo: ").Append(Dispositivo).Append("\n");
+            sb.Append("  TipoEvento: ").Append(TipoEvento).Append("\n");
+            sb.Append("  TipoDispositivo: ").Append(TipoDispositivo).Append("\n");
+            sb.Append("  Agente: ").Append(Agente).Append("\n");
+            sb.Append("  DireccionIP: ").Append(DireccionIP).Append("\n");
+            sb.Append("}\n");
             return sb.ToString();
         }
 
@@ -107,7 +107,7 @@ namespace Wallet.RestAPI.Models
         /// <returns>JSON string presentation of the object</returns>
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(value: this, formatting: Formatting.Indented);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
         /// <summary>
@@ -117,9 +117,9 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(objA: null, objB: obj)) return false;
-            if (ReferenceEquals(objA: this, objB: obj)) return true;
-            return obj.GetType() == GetType() && Equals(other: (UbicacionRequest)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((UbicacionRequest)obj);
         }
 
         /// <summary>
@@ -129,44 +129,44 @@ namespace Wallet.RestAPI.Models
         /// <returns>Boolean</returns>
         public bool Equals(UbicacionRequest other)
         {
-            if (ReferenceEquals(objA: null, objB: other)) return false;
-            if (ReferenceEquals(objA: this, objB: other)) return true;
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
                     Latitud == other.Latitud ||
                     Latitud != null &&
-                    Latitud.Equals(other: other.Latitud)
+                    Latitud.Equals(other.Latitud)
                 ) && 
                 (
                     Longitud == other.Longitud ||
                     Longitud != null &&
-                    Longitud.Equals(other: other.Longitud)
+                    Longitud.Equals(other.Longitud)
                 ) && 
                 (
                     Dispositivo == other.Dispositivo ||
                     Dispositivo != null &&
-                    Dispositivo.Equals(obj: other.Dispositivo)
+                    Dispositivo.Equals(other.Dispositivo)
                 ) && 
                 (
                     TipoEvento == other.TipoEvento ||
                     TipoEvento != null &&
-                    TipoEvento.Equals(value: other.TipoEvento)
+                    TipoEvento.Equals(other.TipoEvento)
                 ) && 
                 (
                     TipoDispositivo == other.TipoDispositivo ||
                     TipoDispositivo != null &&
-                    TipoDispositivo.Equals(value: other.TipoDispositivo)
+                    TipoDispositivo.Equals(other.TipoDispositivo)
                 ) && 
                 (
                     Agente == other.Agente ||
                     Agente != null &&
-                    Agente.Equals(value: other.Agente)
+                    Agente.Equals(other.Agente)
                 ) && 
                 (
                     DireccionIP == other.DireccionIP ||
                     DireccionIP != null &&
-                    DireccionIP.Equals(value: other.DireccionIP)
+                    DireccionIP.Equals(other.DireccionIP)
                 );
         }
 
@@ -203,12 +203,12 @@ namespace Wallet.RestAPI.Models
 
         public static bool operator ==(UbicacionRequest left, UbicacionRequest right)
         {
-            return Equals(objA: left, objB: right);
+            return Equals(left, right);
         }
 
         public static bool operator !=(UbicacionRequest left, UbicacionRequest right)
         {
-            return !Equals(objA: left, objB: right);
+            return !Equals(left, right);
         }
 
         #pragma warning restore 1591
