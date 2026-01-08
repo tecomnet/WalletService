@@ -17,10 +17,10 @@ using Newtonsoft.Json;
 namespace Wallet.RestAPI.Models
 {
     /// <summary>
-    /// 
+    /// Modelo para el resultado de una transaccion
     /// </summary>
     [DataContract]
-    public partial class BitacoraTransaccionResult : IEquatable<BitacoraTransaccionResult>
+    public partial class TransaccionResult : IEquatable<TransaccionResult>
     { 
         /// <summary>
         /// Gets or Sets Id
@@ -31,12 +31,12 @@ namespace Wallet.RestAPI.Models
         public int? Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets IdBilletera
+        /// Gets or Sets WalletId
         /// </summary>
         [Required]
 
-        [DataMember(Name="idBilletera")]
-        public int? IdBilletera { get; set; }
+        [DataMember(Name="walletId")]
+        public int? WalletId { get; set; }
 
         /// <summary>
         /// Gets or Sets Monto
@@ -44,7 +44,7 @@ namespace Wallet.RestAPI.Models
         [Required]
 
         [DataMember(Name="monto")]
-        public double? Monto { get; set; }
+        public decimal? Monto { get; set; }
 
         /// <summary>
         /// Gets or Sets Tipo
@@ -52,7 +52,7 @@ namespace Wallet.RestAPI.Models
         [Required]
 
         [DataMember(Name="tipo")]
-        public string Tipo { get; set; }
+        public TipoTransaccionEnum Tipo { get; set; }
 
         /// <summary>
         /// Gets or Sets Direccion
@@ -147,9 +147,9 @@ namespace Wallet.RestAPI.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class BitacoraTransaccionResult {\n");
+            sb.Append("class TransaccionResult {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  IdBilletera: ").Append(IdBilletera).Append("\n");
+            sb.Append("  WalletId: ").Append(WalletId).Append("\n");
             sb.Append("  Monto: ").Append(Monto).Append("\n");
             sb.Append("  Tipo: ").Append(Tipo).Append("\n");
             sb.Append("  Direccion: ").Append(Direccion).Append("\n");
@@ -184,15 +184,15 @@ namespace Wallet.RestAPI.Models
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((BitacoraTransaccionResult)obj);
+            return obj.GetType() == GetType() && Equals((TransaccionResult)obj);
         }
 
         /// <summary>
-        /// Returns true if BitacoraTransaccionResult instances are equal
+        /// Returns true if TransaccionResult instances are equal
         /// </summary>
-        /// <param name="other">Instance of BitacoraTransaccionResult to be compared</param>
+        /// <param name="other">Instance of TransaccionResult to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(BitacoraTransaccionResult other)
+        public bool Equals(TransaccionResult other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -204,9 +204,9 @@ namespace Wallet.RestAPI.Models
                     Id.Equals(other.Id)
                 ) && 
                 (
-                    IdBilletera == other.IdBilletera ||
-                    IdBilletera != null &&
-                    IdBilletera.Equals(other.IdBilletera)
+                    WalletId == other.WalletId ||
+                    WalletId != null &&
+                    WalletId.Equals(other.WalletId)
                 ) && 
                 (
                     Monto == other.Monto ||
@@ -282,8 +282,8 @@ namespace Wallet.RestAPI.Models
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (IdBilletera != null)
-                    hashCode = hashCode * 59 + IdBilletera.GetHashCode();
+                    if (WalletId != null)
+                    hashCode = hashCode * 59 + WalletId.GetHashCode();
                     if (Monto != null)
                     hashCode = hashCode * 59 + Monto.GetHashCode();
                     if (Tipo != null)
@@ -315,12 +315,12 @@ namespace Wallet.RestAPI.Models
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(BitacoraTransaccionResult left, BitacoraTransaccionResult right)
+        public static bool operator ==(TransaccionResult left, TransaccionResult right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(BitacoraTransaccionResult left, BitacoraTransaccionResult right)
+        public static bool operator !=(TransaccionResult left, TransaccionResult right)
         {
             return !Equals(left, right);
         }

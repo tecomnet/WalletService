@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -18,171 +18,165 @@ using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
-{
+{ 
     /// <summary>
     /// 
     /// </summary>
     [ApiController]
     public abstract class ClienteApiControllerBase : ServiceBaseController
     {
-        /// <summary>
-        /// Elimina un cliente por id
-        /// </summary>
-        /// <remarks>Elimina un cliente por id</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idCliente">Id del cliente</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpDelete]
-        [Route(template: "/{version:apiVersion}/cliente/{idCliente}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "DeleteCliente")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> DeleteClienteAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idCliente,
-            [FromQuery] [Required] string concurrencyToken);
+      /// <summary>
+      /// Elimina un cliente por id
+      /// </summary>
+      /// <remarks>Elimina un cliente por id</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idCliente">Id del cliente</param>
+      /// <param name="concurrencyToken">Token de concurrencia</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpDelete]
+      [Route("/{version:apiVersion}/cliente/{idCliente}")]
+      [ValidateModelState]
+      [SwaggerOperation("DeleteCliente")]
+      [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> DeleteClienteAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idCliente, [FromQuery] [Required()] string concurrencyToken);
 
-        /// <summary>
-        /// Obtiene un cliente por id
-        /// </summary>
-        /// <remarks>Obtiene un cliente por id</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idCliente">Id del cliente</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpGet]
-        [Route(template: "/{version:apiVersion}/cliente/{idCliente}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "GetCliente")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetClienteAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idCliente);
+      /// <summary>
+      /// Obtiene un cliente por id
+      /// </summary>
+      /// <remarks>Obtiene un cliente por id</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idCliente">Id del cliente</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpGet]
+      [Route("/{version:apiVersion}/cliente/{idCliente}")]
+      [ValidateModelState]
+      [SwaggerOperation("GetCliente")]
+      [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> GetClienteAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idCliente);
 
-        /// <summary>
-        /// Obtiene los clientes
-        /// </summary>
-        /// <remarks>Obtiene todos los clientes</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpGet]
-        [Route(template: "/{version:apiVersion}/cliente")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "GetClientes")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<ClienteResult>), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetClientesAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version);
+      /// <summary>
+      /// Obtiene los clientes
+      /// </summary>
+      /// <remarks>Obtiene todos los clientes</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpGet]
+      [Route("/{version:apiVersion}/cliente")]
+      [ValidateModelState]
+      [SwaggerOperation("GetClientes")]
+      [SwaggerResponse(statusCode: 200, type: typeof(List<ClienteResult>), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> GetClientesAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
 
-        /// <summary>
-        /// Obtiene los servicios favoritos de un cliente
-        /// </summary>
-        /// <remarks>Obtiene los servicios favoritos asignados a un cliente</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idCliente">Id del cliente</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpGet]
-        [Route(template: "/{version:apiVersion}/cliente/{idCliente}/serviciosFavoritos")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "GetServiciosFavoritosPorCliente")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<ServicioFavoritoResult>), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetServiciosFavoritosPorClienteAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idCliente);
+      /// <summary>
+      /// Obtiene los servicios favoritos de un cliente
+      /// </summary>
+      /// <remarks>Obtiene los servicios favoritos asignados a un cliente</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idCliente">Id del cliente</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpGet]
+      [Route("/{version:apiVersion}/cliente/{idCliente}/serviciosFavoritos")]
+      [ValidateModelState]
+      [SwaggerOperation("GetServiciosFavoritosPorCliente")]
+      [SwaggerResponse(statusCode: 200, type: typeof(List<ServicioFavoritoResult>), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> GetServiciosFavoritosPorClienteAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idCliente);
 
-        /// <summary>
-        /// Activa un cliente por id
-        /// </summary>
-        /// <remarks>Activa un cliente por id</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idCliente">Id del cliente</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpPut]
-        [Route(template: "/{version:apiVersion}/cliente/{idCliente}/activar")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "PutActivarCliente")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutActivarClienteAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idCliente,
-            [FromBody] StatusChangeRequest body);
+      /// <summary>
+      /// Activa un cliente por id
+      /// </summary>
+      /// <remarks>Activa un cliente por id</remarks>
+      /// <param name="body"></param>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idCliente">Id del cliente</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpPut]
+      [Route("/{version:apiVersion}/cliente/{idCliente}/activar")]
+      [ValidateModelState]
+      [SwaggerOperation("PutActivarCliente")]
+      [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> PutActivarClienteAsync([FromBody] StatusChangeRequest body,
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idCliente);
 
-        /// <summary>
-        /// Actualiza un cliente por id
-        /// </summary>
-        /// <remarks>Actualiza un cliente por id</remarks>
-        /// <param name="body"></param>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idCliente">Id del cliente</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        /// <response code="409">Response to client error satus code</response>
-        [HttpPut]
-        [Route(template: "/{version:apiVersion}/cliente/{idCliente}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "UpdateCliente")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 409, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> UpdateClienteAsync([FromBody] DatosClienteUpdateRequest body,
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idCliente);
+      /// <summary>
+      /// Actualiza un cliente por id
+      /// </summary>
+      /// <remarks>Actualiza un cliente por id</remarks>
+      /// <param name="body"></param>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idCliente">Id del cliente</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      /// <response code="409">Response to client error satus code</response>
+      [HttpPut]
+      [Route("/{version:apiVersion}/cliente/{idCliente}")]
+      [ValidateModelState]
+      [SwaggerOperation("UpdateCliente")]
+      [SwaggerResponse(statusCode: 200, type: typeof(ClienteResult), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 409, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> UpdateClienteAsync([FromBody] DatosClienteUpdateRequest body,
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idCliente);
     }
 }

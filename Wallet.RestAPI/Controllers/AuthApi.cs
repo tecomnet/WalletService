@@ -33,14 +33,14 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="200">OK</response>
         /// <response code="401">Response to client error satus code</response>
         [HttpPost]
-        [Route(template: "/{version:apiVersion}/auth/login")]
+        [Route("/{version:apiVersion}/auth/login")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "Login")]
+        [SwaggerOperation("Login")]
         [SwaggerResponse(statusCode: 200, type: typeof(AuthResult), description: "OK")]
         [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> LoginAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromBody] LoginRequest body);
 
         /// <summary>
@@ -52,14 +52,13 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="200">OK</response>
         /// <response code="400">Response to client error satus code</response>
         [HttpPost]
-        [Route(template: "/{version:apiVersion}/auth/refresh")]
+        [Route("/{version:apiVersion}/auth/refresh")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "Refresh")]
+        [SwaggerOperation("Refresh")]
         [SwaggerResponse(statusCode: 200, type: typeof(AuthResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         public abstract Task<IActionResult> RefreshAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromBody] RefreshTokenRequest body);
 
         /// <summary>
@@ -71,14 +70,12 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="204">No Content</response>
         /// <response code="401">Response to client error satus code</response>
         [HttpPost]
-        [Route(template: "/{version:apiVersion}/auth/revoke")]
+        [Route("/{version:apiVersion}/auth/revoke")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "Revoke")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
+        [SwaggerOperation("Revoke")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         public abstract Task<IActionResult> RevokeAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromBody] RevokeTokenRequest body);
     }
 }

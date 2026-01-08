@@ -66,6 +66,26 @@ public class CuentaWalletFacade(ServiceDbContext context, ITarjetaEmitidaFacade 
         }
     }
 
+    public async Task<CuentaWallet> ObtenerPorIdAsync(int idWallet)
+    {
+        try
+        {
+            return await context.CuentaWallet.FindAsync(idWallet)
+                   ?? throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                       errorCode: ServiceErrorsBuilder.CuentaWalletNoEncontrada,
+                       dynamicContent: [idWallet],
+                       module: this.GetType().Name));
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
     public async Task<CuentaWallet> ActualizarSaldoAsync(int idWallet, decimal nuevoSaldo, Guid modificationUser)
     {
         try

@@ -102,7 +102,8 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         // Call facade method
         var empresa = await empresaFacade.AsignarProductosAsync(
             idEmpresa: idEmpresa.Value,
-            idsProductos: body.ProductoIds?.Where(predicate: x => x.HasValue).Select(selector: x => x.Value).ToList() ?? new List<int>(),
+            idsProductos: body.ProductoIds?.Where(predicate: x => x.HasValue).Select(selector: x => x.Value).ToList() ??
+                          new List<int>(),
             modificationUser: this.GetAuthenticatedUserGuid());
 
         // Map to response model
@@ -124,7 +125,8 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         // Call facade method
         var empresa = await empresaFacade.DesasignarProductosAsync(
             idEmpresa: idEmpresa.Value,
-            idsProductos: body.ProductoIds?.Where(predicate: x => x.HasValue).Select(selector: x => x.Value).ToList() ?? new List<int>(),
+            idsProductos: body.ProductoIds?.Where(predicate: x => x.HasValue).Select(selector: x => x.Value).ToList() ??
+                          new List<int>(),
             modificationUser: this.GetAuthenticatedUserGuid());
 
         // Map to response model
@@ -166,8 +168,8 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> PutActivarEmpresaAsync(string version, int? idEmpresa,
-        StatusChangeRequest body)
+    public override async Task<IActionResult> PutActivarEmpresaAsync(StatusChangeRequest body, string version,
+        int? idEmpresa)
     {
         if (!idEmpresa.HasValue)
             return BadRequest(error: "IdEmpresa is required");

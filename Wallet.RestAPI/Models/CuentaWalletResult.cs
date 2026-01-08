@@ -31,12 +31,12 @@ namespace Wallet.RestAPI.Models
         public int? Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets IdCliente
+        /// Gets or Sets ClienteId
         /// </summary>
         [Required]
 
-        [DataMember(Name="idCliente")]
-        public int? IdCliente { get; set; }
+        [DataMember(Name="clienteId")]
+        public int? ClienteId { get; set; }
 
         /// <summary>
         /// Gets or Sets SaldoActual
@@ -44,7 +44,7 @@ namespace Wallet.RestAPI.Models
         [Required]
 
         [DataMember(Name="saldoActual")]
-        public double? SaldoActual { get; set; }
+        public decimal? SaldoActual { get; set; }
 
         /// <summary>
         /// Gets or Sets CuentaCLABE
@@ -134,7 +134,7 @@ namespace Wallet.RestAPI.Models
             var sb = new StringBuilder();
             sb.Append("class CuentaWalletResult {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  IdCliente: ").Append(IdCliente).Append("\n");
+            sb.Append("  ClienteId: ").Append(ClienteId).Append("\n");
             sb.Append("  SaldoActual: ").Append(SaldoActual).Append("\n");
             sb.Append("  CuentaCLABE: ").Append(CuentaCLABE).Append("\n");
             sb.Append("  Moneda: ").Append(Moneda).Append("\n");
@@ -187,9 +187,9 @@ namespace Wallet.RestAPI.Models
                     Id.Equals(other.Id)
                 ) && 
                 (
-                    IdCliente == other.IdCliente ||
-                    IdCliente != null &&
-                    IdCliente.Equals(other.IdCliente)
+                    ClienteId == other.ClienteId ||
+                    ClienteId != null &&
+                    ClienteId.Equals(other.ClienteId)
                 ) && 
                 (
                     SaldoActual == other.SaldoActual ||
@@ -255,8 +255,8 @@ namespace Wallet.RestAPI.Models
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (IdCliente != null)
-                    hashCode = hashCode * 59 + IdCliente.GetHashCode();
+                    if (ClienteId != null)
+                    hashCode = hashCode * 59 + ClienteId.GetHashCode();
                     if (SaldoActual != null)
                     hashCode = hashCode * 59 + SaldoActual.GetHashCode();
                     if (CuentaCLABE != null)

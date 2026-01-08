@@ -36,8 +36,8 @@ namespace Wallet.RestAPI.Controllers.Implementation
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> Confirmar2FAAsync(string version, int? idUsuario,
-            ConfirmacionRequest body)
+        public override async Task<IActionResult> Confirmar2FAAsync(ConfirmacionRequest body, string version,
+            int? idUsuario)
         {
             var result = await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario.Value,
                 tipo2FA: (Tipo2FA)(int)body!.Tipo, codigoVerificacion: body.Codigo,

@@ -73,8 +73,8 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
         return Ok(value: response);
     }
 
-    public override async Task<IActionResult> PutActivarClienteAsync(string version, int? idCliente,
-        StatusChangeRequest body)
+    public override async Task<IActionResult> PutActivarClienteAsync(StatusChangeRequest body, string version,
+        int? idCliente)
     {
         if (!idCliente.HasValue)
             return BadRequest(error: "IdCliente is required");

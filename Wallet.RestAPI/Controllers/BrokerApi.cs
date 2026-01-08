@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -18,190 +18,186 @@ using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
-{
+{ 
     /// <summary>
     /// 
     /// </summary>
     [ApiController]
     public abstract class BrokerApiControllerBase : ServiceBaseController
     {
-        /// <summary>
-        /// Elimina un broker
-        /// </summary>
-        /// <remarks>Elimina un broker</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idBroker">Id del broker</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpDelete]
-        [Route(template: "/{version:apiVersion}/broker/{idBroker}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "DeleteBroker")]
-        [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> DeleteBrokerAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idBroker);
+      /// <summary>
+      /// Elimina un broker
+      /// </summary>
+      /// <remarks>Elimina un broker</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idBroker">Id del broker</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpDelete]
+      [Route("/{version:apiVersion}/broker/{idBroker}")]
+      [ValidateModelState]
+      [SwaggerOperation("DeleteBroker")]
+      [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> DeleteBrokerAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idBroker);
 
-        /// <summary>
-        /// Obtiene un broker por id
-        /// </summary>
-        /// <remarks>Obtiene un broker por id</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idBroker">Id del broker</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpGet]
-        [Route(template: "/{version:apiVersion}/broker/{idBroker}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "GetBroker")]
-        [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetBrokerAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idBroker);
+      /// <summary>
+      /// Obtiene un broker por id
+      /// </summary>
+      /// <remarks>Obtiene un broker por id</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idBroker">Id del broker</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpGet]
+      [Route("/{version:apiVersion}/broker/{idBroker}")]
+      [ValidateModelState]
+      [SwaggerOperation("GetBroker")]
+      [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> GetBrokerAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idBroker);
 
-        /// <summary>
-        /// Obtiene todos los brokers
-        /// </summary>
-        /// <remarks>Obtiene todos los brokers</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpGet]
-        [Route(template: "/{version:apiVersion}/broker")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "GetBrokers")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<BrokerResult>), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetBrokersAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version);
-            
-        /// <summary>
-        /// Obtiene los proveedores de un broker
-        /// </summary>
-        /// <remarks>Obtiene los proveedores asociados a un broker</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idBroker">Id del broker</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpGet]
-        [Route(template: "/{version:apiVersion}/broker/{idBroker}/proveedores")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "GetProveedoresPorBroker")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<ProveedorResult>), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> GetProveedoresPorBrokerAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idBroker);
-        
-        /// <summary>
-        /// Guarda un broker
-        /// </summary>
-        /// <remarks>Guarda un broker</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="body"></param>
-        /// <response code="201">Created</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpPost]
-        [Route(template: "/{version:apiVersion}/broker")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "PostBroker")]
-        [SwaggerResponse(statusCode: 201, type: typeof(BrokerResult), description: "Created")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PostBrokerAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-            [FromBody] BrokerRequest body);
+      /// <summary>
+      /// Obtiene todos los brokers
+      /// </summary>
+      /// <remarks>Obtiene todos los brokers</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpGet]
+      [Route("/{version:apiVersion}/broker")]
+      [ValidateModelState]
+      [SwaggerOperation("GetBrokers")]
+      [SwaggerResponse(statusCode: 200, type: typeof(List<BrokerResult>), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> GetBrokersAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version);
 
-        /// <summary>
-        /// Activar un broker
-        /// </summary>
-        /// <remarks>Activa un broker</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idBroker">Id del broker</param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpPut]
-        [Route(template: "/{version:apiVersion}/broker/{idBroker}/activar")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "PutActivarBroker")]
-        [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutActivarBrokerAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idBroker);
-        
-        /// <summary>
-        /// Actualiza un broker
-        /// </summary>
-        /// <remarks>Actualiza un broker</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idBroker">Id del broker</param>
-        /// <param name="body"></param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpPut]
-        [Route(template: "/{version:apiVersion}/broker/{idBroker}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "PutBroker")]
-        [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> PutBrokerAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-            [FromRoute] [Required] int? idBroker, [FromBody] BrokerUpdateRequest body);
+
+      /// <summary>
+      /// Obtiene los proveedores de un broker
+      /// </summary>
+      /// <remarks>Obtiene los proveedores asociados a un broker</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idBroker">Id del broker</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpGet]
+      [Route("/{version:apiVersion}/broker/{idBroker}/proveedores")]
+      [ValidateModelState]
+      [SwaggerOperation("GetProveedoresPorBroker")]
+      [SwaggerResponse(statusCode: 200, type: typeof(List<ProveedorResult>), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> GetProveedoresPorBrokerAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idBroker);
+
+      /// <summary>
+      /// Guarda un broker
+      /// </summary>
+      /// <remarks>Guarda un broker</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="body"></param>
+      /// <response code="201">Created</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpPost]
+      [Route("/{version:apiVersion}/broker")]
+      [ValidateModelState]
+      [SwaggerOperation("PostBroker")]
+      [SwaggerResponse(statusCode: 201, type: typeof(BrokerResult), description: "Created")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> PostBrokerAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromBody] BrokerRequest body);
+
+      /// <summary>
+      /// Activar un broker
+      /// </summary>
+      /// <remarks>Activa un broker</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idBroker">Id del broker</param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpPut]
+      [Route("/{version:apiVersion}/broker/{idBroker}/activar")]
+      [ValidateModelState]
+      [SwaggerOperation("PutActivarBroker")]
+      [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> PutActivarBrokerAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idBroker);
+
+      /// <summary>
+      /// Actualiza un broker
+      /// </summary>
+      /// <remarks>Actualiza un broker</remarks>
+      /// <param name="version">Version of the API to use</param>
+      /// <param name="idBroker">Id del broker</param>
+      /// <param name="body"></param>
+      /// <response code="200">OK</response>
+      /// <response code="400">Response to client error satus code</response>
+      /// <response code="401">Response to client error satus code</response>
+      /// <response code="404">Response to client error satus code</response>
+      [HttpPut]
+      [Route("/{version:apiVersion}/broker/{idBroker}")]
+      [ValidateModelState]
+      [SwaggerOperation("PutBroker")]
+      [SwaggerResponse(statusCode: 200, type: typeof(BrokerResult), description: "OK")]
+      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+        description: "Response to client error satus code")]
+      public abstract Task<IActionResult> PutBrokerAsync(
+        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+        [FromRoute] [Required] int? idBroker, [FromBody] BrokerUpdateRequest body);
     }
 }

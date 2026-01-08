@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -17,14 +17,64 @@ using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
-{
+{ 
     /// <summary>
     /// 
     /// </summary>
     [ApiController]
-    //[Authorize]
     public abstract class UsuarioApiControllerBase : ServiceBaseController
     {
+        /// <summary>
+        /// Confirma codigo de verificacion 2FA
+        /// </summary>
+        /// <remarks>Confirma el codigo de verificacion 2FA despues de una actualizacion de contacto</remarks>
+        /// <param name="body"></param>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idUsuario"></param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpPost]
+        [Route("/{version:apiVersion}/usuario/{idUsuario}/confirmar2fa")]
+        [ValidateModelState]
+        [SwaggerOperation("Confirmar2FA")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool?), description: "OK")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> Confirmar2FAAsync([FromBody] ConfirmacionRequest body,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] int? idUsuario);
+
+        /// <summary>
+        /// DeleteUsuario
+        /// </summary>
+        /// <remarks>Desactiva un usuario impidiendo operaciones futuras</remarks>
+        /// <param name="version">Version of the API to use</param>
+        /// <param name="idUsuario"></param>
+        /// <param name="concurrencyToken"></param>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Response to client error satus code</response>
+        /// <response code="401">Response to client error satus code</response>
+        /// <response code="404">Response to client error satus code</response>
+        [HttpDelete]
+        [Route("/{version:apiVersion}/usuario/{idUsuario}")]
+        [ValidateModelState]
+        [SwaggerOperation("DeleteUsuarioAsync")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+            description: "Response to client error satus code")]
+        public abstract Task<IActionResult> DeleteUsuarioAsync(
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] int? idUsuario, [FromQuery] [Required()] string concurrencyToken);
+        
         /// <summary>
         /// Obtiene un usuario por id
         /// </summary>
@@ -36,19 +86,15 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpGet]
-        [Route(template: "/{version:apiVersion}/usuario/{idUsuario}")]
+        [Route("/{version:apiVersion}/usuario/{idUsuario}")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "GetUsuario")]
+        [SwaggerOperation("GetUsuario")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetUsuarioAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromRoute] [Required] int? idUsuario);
 
         /// <summary>
@@ -63,47 +109,16 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route(template: "/{version:apiVersion}/usuario/{idUsuario}/contrasena")]
+        [Route("/{version:apiVersion}/usuario/{idUsuario}/contrasena")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "PutUsuarioContrasena")]
+        [SwaggerOperation("PutUsuarioContrasena")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutUsuarioContrasenaAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromRoute] [Required] int? idUsuario, [FromBody] ContrasenaUpdateRequest body);
-
-        /// <summary>
-        /// Confirma codigo de verificacion 2FA
-        /// </summary>
-        /// <remarks>Confirma el codigo de verificacion 2FA despues de una actualizacion de contacto</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idUsuario"></param>
-        /// <param name="body"></param>
-        /// <response code="200">OK</response>
-        /// <response code="400">Response to client error satus code</response>
-        /// <response code="401">Response to client error satus code</response>
-        /// <response code="404">Response to client error satus code</response>
-        [HttpPost]
-        [Route(template: "/{version:apiVersion}/usuario/{idUsuario}/confirmar2fa")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "Confirmar2FA")]
-        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        public abstract Task<IActionResult> Confirmar2FAAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idUsuario, [FromBody] ConfirmacionRequest body);
 
         /// <summary>
         /// Actualiza email
@@ -117,21 +132,17 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route(template: "/{version:apiVersion}/usuario/{idUsuario}/actualizaEmail")]
+        [Route("/{version:apiVersion}/usuario/{idUsuario}/actualizaEmail")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "PutUsuarioEmail")]
+        [SwaggerOperation("PutUsuarioEmail")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutUsuarioEmailAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
             [FromRoute] [Required] int? idUsuario, [FromBody] EmailUpdateRequest body);
-
+        
         /// <summary>
         /// Actualiza telefono
         /// </summary>
@@ -144,47 +155,15 @@ namespace Wallet.RestAPI.Controllers
         /// <response code="401">Response to client error satus code</response>
         /// <response code="404">Response to client error satus code</response>
         [HttpPut]
-        [Route(template: "/{version:apiVersion}/usuario/{idUsuario}/actualizaTelefono")]
+        [Route("/{version:apiVersion}/usuario/{idUsuario}/actualizaTelefono")]
         [ValidateModelState]
-        [SwaggerOperation(summary: "PutUsuarioTelefono")]
+        [SwaggerOperation("PutUsuarioTelefono")]
         [SwaggerResponse(statusCode: 200, type: typeof(UsuarioResult), description: "OK")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400), description: "Response to client error satus code")]
+        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         public abstract Task<IActionResult> PutUsuarioTelefonoAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idUsuario, [FromBody] TelefonoUpdateRequest body);
-
-        /// <summary>
-        /// Desactiva un usuario
-        /// </summary>
-        /// <remarks>Desactiva un usuario impidiendo operaciones futuras</remarks>
-        /// <param name="version">Version of the API to use</param>
-        /// <param name="idUsuario">ID del usuario a desactivar</param>
-        /// <param name="concurrencyToken">Token de concurrencia</param>
-        /// <response code="204">No Content</response>
-        /// <response code="400">Response to client error status code</response>
-        /// <response code="401">Response to client error status code</response>
-        /// <response code="404">Response to client error status code</response>
-        [HttpDelete]
-        [Route(template: "/{version:apiVersion}/usuario/{idUsuario}")]
-        [ValidateModelState]
-        [SwaggerOperation(summary: "DeleteUsuario")]
-        [SwaggerResponse(statusCode: 204, description: "No Content")]
-        [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-            description: "Response to client error status code")]
-        [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-            description: "Response to client error status code")]
-        [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-            description: "Response to client error status code")]
-        public abstract Task<IActionResult> DeleteUsuarioAsync(
-            [FromRoute] [Required] [RegularExpression(pattern: "^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
-            string version,
-            [FromRoute] [Required] int? idUsuario,
-            [FromQuery] [Required] string concurrencyToken);
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] int? idUsuario, [FromBody] TelefonoUpdateRequest body); 
     }
 }

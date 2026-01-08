@@ -18,7 +18,7 @@ namespace Wallet.RestAPI.Models
           /// <summary>
           /// Gets or Sets EstadoEntregaEnum
           /// </summary>
-          [JsonConverter(typeof(CustomStringToEnumConverter<EstadoEntregaEnum>))]
+          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<EstadoEntregaEnum>))]
           public enum EstadoEntregaEnum
           {
               /// <summary>

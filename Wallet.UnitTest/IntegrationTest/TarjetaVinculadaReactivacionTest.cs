@@ -87,7 +87,8 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             FechaExpiracion = DateTime.UtcNow.AddYears(2)
         };
 
-        var response1 = await client.PostAsync(requestUri: $"/{ApiVersion}/cliente/{idCliente}/tarjetasVinculadas",
+        var response1 = await client.PostAsync(
+            requestUri: $"/{ApiVersion}/cuentaWallet/{idCuentaWallet}/tarjetasVinculadas",
             content: CreateContent(request1));
         Assert.Equal(expected: HttpStatusCode.Created, actual: response1.StatusCode);
 
@@ -120,7 +121,8 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             FechaExpiracion = DateTime.UtcNow.AddYears(3) // Changed Expiration
         };
 
-        var response3 = await client.PostAsync(requestUri: $"/{ApiVersion}/cliente/{idCliente}/tarjetasVinculadas",
+        var response3 = await client.PostAsync(
+            requestUri: $"/{ApiVersion}/cuentaWallet/{idCuentaWallet}/tarjetasVinculadas",
             content: CreateContent(request2));
         Assert.Equal(expected: HttpStatusCode.Created, actual: response3.StatusCode);
 
@@ -152,6 +154,7 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             new System.Net.Http.Headers.AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         int idCliente1, idCliente2;
+        int idCuentaWallet1, idCuentaWallet2;
         int idTarjeta1;
 
         // Setup Data for Two Users
@@ -196,6 +199,8 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
                 creationUser: guid);
             context.CuentaWallet.AddRange(cw1, cw2);
             await context.SaveChangesAsync();
+            idCuentaWallet1 = cw1.Id;
+            idCuentaWallet2 = cw2.Id;
         }
 
         string cardNumber = "4111222233334444";
@@ -208,7 +213,8 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             Marca = (MarcaTarjetaEnum)1,
             FechaExpiracion = DateTime.UtcNow.AddYears(1)
         };
-        var resp1 = await client.PostAsync(requestUri: $"/{ApiVersion}/cliente/{idCliente1}/tarjetasVinculadas",
+        var resp1 = await client.PostAsync(
+            requestUri: $"/{ApiVersion}/cuentaWallet/{idCuentaWallet1}/tarjetasVinculadas",
             content: CreateContent(req1));
         Assert.Equal(HttpStatusCode.Created, resp1.StatusCode);
         var res1 = JsonConvert.DeserializeObject<TarjetaVinculadaResult>(value: await resp1.Content.ReadAsStringAsync(),
@@ -227,7 +233,8 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             Marca = (MarcaTarjetaEnum)1,
             FechaExpiracion = DateTime.UtcNow.AddYears(1)
         };
-        var resp2 = await client.PostAsync(requestUri: $"/{ApiVersion}/cliente/{idCliente2}/tarjetasVinculadas",
+        var resp2 = await client.PostAsync(
+            requestUri: $"/{ApiVersion}/cuentaWallet/{idCuentaWallet2}/tarjetasVinculadas",
             content: CreateContent(req2));
         Assert.Equal(HttpStatusCode.Created, resp2.StatusCode);
         var res2 = JsonConvert.DeserializeObject<TarjetaVinculadaResult>(value: await resp2.Content.ReadAsStringAsync(),
@@ -340,6 +347,7 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             new System.Net.Http.Headers.AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         int idCliente;
+        int idCuentaWallet;
         string cardNumber = "9999888877776666";
 
         using (var context = CreateContext())
@@ -366,7 +374,9 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             var cuentaWallet = new CuentaWallet(idCliente: clienteEntity.Id, moneda: "MXN",
                 cuentaCLABE: "123456789012345678", creationUser: guid);
             context.CuentaWallet.Add(entity: cuentaWallet);
+            context.CuentaWallet.Add(entity: cuentaWallet);
             await context.SaveChangesAsync();
+            idCuentaWallet = cuentaWallet.Id;
 
             // Add ACTIVE card
             var t1 = new TarjetaVinculada(idCuentaWallet: cuentaWallet.Id, numeroTarjeta: cardNumber,
@@ -385,7 +395,8 @@ public class TarjetaVinculadaReactivacionTest : DatabaseTestFixture
             FechaExpiracion = DateTime.UtcNow.AddYears(2)
         };
 
-        var response = await client.PostAsync(requestUri: $"/{ApiVersion}/cliente/{idCliente}/tarjetasVinculadas",
+        var response = await client.PostAsync(
+            requestUri: $"/{ApiVersion}/cuentaWallet/{idCuentaWallet}/tarjetasVinculadas",
             content: CreateContent(request));
 
         // 3. Assert Failure

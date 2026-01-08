@@ -18,7 +18,7 @@ namespace Wallet.RestAPI.Models
           /// <summary>
           /// Gets or Sets MarcaTarjetaEnum
           /// </summary>
-          [JsonConverter(typeof(CustomStringToEnumConverter<MarcaTarjetaEnum>))]
+          [JsonConverter(converterType: typeof(CustomStringToEnumConverter<MarcaTarjetaEnum>))]
           public enum MarcaTarjetaEnum
           {
               /// <summary>

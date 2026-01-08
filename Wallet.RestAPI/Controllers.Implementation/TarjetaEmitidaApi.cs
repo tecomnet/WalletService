@@ -13,64 +13,29 @@ namespace Wallet.RestAPI.Controllers.Implementation
     public class TarjetaEmitidaApiController(ITarjetaEmitidaFacade tarjetaEmitidaFacade, IMapper mapper)
         : TarjetaEmitidaApiControllerBase
     {
-        public override async Task<IActionResult> GetTarjetasEmitidasPorClienteAsync(string version, int idCliente)
+        public override async Task<IActionResult> CambiarBloqueoTarjetaAsync(string version, CambioBloqueoRequest body,
+            int? idTarjeta)
         {
-            var tarjetas = await tarjetaEmitidaFacade.ObtenerTarjetasPorClienteAsync(idCliente);
-            var response = mapper.Map<List<TarjetaEmitidaResult>>(tarjetas);
-            return Ok(response);
-        }
-
-        public override async Task<IActionResult> SolicitarTarjetaVirtualAsync(string version, int idCliente,
-            SolicitarTarjetaVirtualRequest body)
-        {
-            if (idCliente != body.IdCliente)
-                return BadRequest(new InlineResponse400
-                    { Errors = new List<InlineResponse400Errors> { new() { Detail = "IdCliente mismatch" } } });
-
-            var tarjeta =
-                await tarjetaEmitidaFacade.SolicitarTarjetaVirtualAdicionalAsync(idCliente,
-                    this.GetAuthenticatedUserGuid());
-            var response = mapper.Map<TarjetaEmitidaResult>(tarjeta);
-            return Created($"/{version}/tarjetas-emitidas/{tarjeta.Id}", response);
-        }
-
-        public override async Task<IActionResult> SolicitarTarjetaFisicaAsync(string version, int idCliente,
-            SolicitarTarjetaFisicaRequest body)
-        {
-            if (idCliente != body.IdCliente)
-                return BadRequest(new InlineResponse400
-                    { Errors = new List<InlineResponse400Errors> { new() { Detail = "IdCliente mismatch" } } });
-
-            var tarjeta = await tarjetaEmitidaFacade.SolicitarTarjetaFisicaAsync(idCliente, body.NombreImpreso,
-                this.GetAuthenticatedUserGuid());
-            var response = mapper.Map<TarjetaEmitidaResult>(tarjeta);
-            return Created($"/{version}/tarjetas-emitidas/{tarjeta.Id}", response);
-        }
-
-        public override async Task<IActionResult> CambiarBloqueoTarjetaAsync(string version, int idTarjeta,
-            CambioBloqueoRequest body)
-        {
-            if (body.Bloquear == null)
-                return BadRequest(new InlineResponse400
-                    { Errors = new List<InlineResponse400Errors> { new() { Detail = "Bloquear status required" } } });
-
-            await tarjetaEmitidaFacade.CambiarEstadoBloqueoAsync(idTarjeta, body.Bloquear.Value, body.ConcurrencyToken,
-                this.GetAuthenticatedUserGuid());
+            if (idTarjeta == null) throw new ArgumentNullException(nameof(idTarjeta));
+            // Note: Facade CambiarEstadoBloqueoAsync(int idTarjeta, bool bloquear, ...)
+            await tarjetaEmitidaFacade.CambiarEstadoBloqueoAsync(idTarjeta.Value, body.Bloquear.Value,
+                body.ConcurrencyToken, this.GetAuthenticatedUserGuid());
             return Ok();
         }
 
-        public override async Task<IActionResult> ActualizarConfiguracionTarjetaAsync(string version, int idTarjeta,
-            ConfiguracionTarjetaRequest body)
+        public override async Task<IActionResult> ActualizarConfiguracionTarjetaAsync(string version,
+            ConfiguracionTarjetaRequest body, int? idTarjeta)
         {
-            if (body.LimiteDiario == null || body.ComprasEnLinea == null || body.Retiros == null)
-                return BadRequest(new InlineResponse400
-                {
-                    Errors = new List<InlineResponse400Errors>
-                        { new() { Detail = "All configuration fields required" } }
-                });
+            if (idTarjeta == null) throw new ArgumentNullException(nameof(idTarjeta));
 
-            await tarjetaEmitidaFacade.ActualizarConfiguracionAsync(idTarjeta, body.LimiteDiario.Value,
-                body.ComprasEnLinea.Value, body.Retiros.Value, body.ConcurrencyToken, this.GetAuthenticatedUserGuid());
+            await tarjetaEmitidaFacade.ActualizarConfiguracionAsync(
+                idTarjeta.Value,
+                body.LimiteDiario.Value,
+                body.ComprasEnLinea.Value,
+                body.Retiros.Value,
+                body.ConcurrencyToken,
+                this.GetAuthenticatedUserGuid()
+            );
             return Ok();
         }
     }

@@ -31,20 +31,20 @@ namespace Wallet.RestAPI.Models
         public int? Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets IdTransaccion
+        /// Gets or Sets TransaccionId
         /// </summary>
         [Required]
 
-        [DataMember(Name="idTransaccion")]
-        public int? IdTransaccion { get; set; }
+        [DataMember(Name="transaccionId")]
+        public int? TransaccionId { get; set; }
 
         /// <summary>
-        /// Gets or Sets IdProveedor
+        /// Gets or Sets ProductoId
         /// </summary>
         [Required]
 
-        [DataMember(Name="idProveedor")]
-        public int? IdProveedor { get; set; }
+        [DataMember(Name="productoId")]
+        public int? ProductoId { get; set; }
 
         /// <summary>
         /// Gets or Sets NumeroReferencia
@@ -133,8 +133,8 @@ namespace Wallet.RestAPI.Models
             var sb = new StringBuilder();
             sb.Append("class DetallesPagoServicioResult {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  IdTransaccion: ").Append(IdTransaccion).Append("\n");
-            sb.Append("  IdProveedor: ").Append(IdProveedor).Append("\n");
+            sb.Append("  TransaccionId: ").Append(TransaccionId).Append("\n");
+            sb.Append("  ProductoId: ").Append(ProductoId).Append("\n");
             sb.Append("  NumeroReferencia: ").Append(NumeroReferencia).Append("\n");
             sb.Append("  CodigoAutorizacion: ").Append(CodigoAutorizacion).Append("\n");
             sb.Append("  Guid: ").Append(Guid).Append("\n");
@@ -186,14 +186,14 @@ namespace Wallet.RestAPI.Models
                     Id.Equals(other.Id)
                 ) && 
                 (
-                    IdTransaccion == other.IdTransaccion ||
-                    IdTransaccion != null &&
-                    IdTransaccion.Equals(other.IdTransaccion)
+                    TransaccionId == other.TransaccionId ||
+                    TransaccionId != null &&
+                    TransaccionId.Equals(other.TransaccionId)
                 ) && 
                 (
-                    IdProveedor == other.IdProveedor ||
-                    IdProveedor != null &&
-                    IdProveedor.Equals(other.IdProveedor)
+                    ProductoId == other.ProductoId ||
+                    ProductoId != null &&
+                    ProductoId.Equals(other.ProductoId)
                 ) && 
                 (
                     NumeroReferencia == other.NumeroReferencia ||
@@ -254,10 +254,10 @@ namespace Wallet.RestAPI.Models
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (IdTransaccion != null)
-                    hashCode = hashCode * 59 + IdTransaccion.GetHashCode();
-                    if (IdProveedor != null)
-                    hashCode = hashCode * 59 + IdProveedor.GetHashCode();
+                    if (TransaccionId != null)
+                    hashCode = hashCode * 59 + TransaccionId.GetHashCode();
+                    if (ProductoId != null)
+                    hashCode = hashCode * 59 + ProductoId.GetHashCode();
                     if (NumeroReferencia != null)
                     hashCode = hashCode * 59 + NumeroReferencia.GetHashCode();
                     if (CodigoAutorizacion != null)

@@ -1,31 +1,28 @@
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Wallet.Funcionalidad.Functionality.BitacoraTransaccionFacade;
+using Wallet.Funcionalidad.Functionality.DetallesPagoServicioFacade;
 using Wallet.RestAPI.Models;
 
-namespace Wallet.RestAPI.Controllers.Implementation;
-
-/// <summary>
-/// Implementation of the BitacoraTransaccion API controller.
-/// </summary>
-public class BitacoraTransaccionApiController(
-    IBitacoraTransaccionFacade bitacoraTransaccionFacade,
-    IMapper mapper)
-    : BitacoraTransaccionApiControllerBase
+namespace Wallet.RestAPI.Controllers.Implementation
 {
-    /// <inheritdoc />
-    public override async Task<IActionResult> GetTransaccionesPorClienteAsync(string version, int idCliente)
+    public class BitacoraTransaccionApiController(
+        IDetallesPagoServicioFacade detallesPagoServicioFacade,
+        IMapper mapper)
+        : BitacoraTransaccionApiControlleBase
     {
-        // Call facade method
-        var transacciones = await bitacoraTransaccionFacade.ObtenerPorClienteAsync(idCliente: idCliente);
+        public override async Task<IActionResult> GetDetallesPorTransaccionAsync(string version, int? idTransaccion)
+        {
+            if (idTransaccion == null) throw new ArgumentNullException(nameof(idTransaccion));
 
-        // Map to response model
-        var response = mapper.Map<List<BitacoraTransaccionResult>>(source: transacciones);
+            var detalles = await detallesPagoServicioFacade.ObtenerPorTransaccionAsync(idTransaccion.Value);
 
-        // Return OK response
-        return Ok(value: response);
+            // Check if there are details
+            if (detalles == null || detalles.Count == 0) return NotFound();
+
+            var response = mapper.Map<DetallesPagoServicioResult>(detalles[0]);
+            return Ok(response);
+        }
     }
 }
