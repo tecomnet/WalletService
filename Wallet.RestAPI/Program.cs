@@ -42,6 +42,8 @@ builder.Services.AddControllers(configure: options =>
 		// Agrega un conversor para enumeraciones que las serializa como cadenas en camelCase.
 		opts.SerializerSettings.Converters.Add(item: new StringEnumConverter(namingStrategy: new CamelCaseNamingStrategy
 			{ OverrideSpecifiedNames = true }));
+		// Agrega conversor personalizado para decimales (0.00)
+		opts.SerializerSettings.Converters.Add(new Wallet.RestAPI.Converters.DecimalFormatConverter());
 	})
 	// Agrega soporte para serialización y deserialización XML.
 	.AddXmlSerializerFormatters();
@@ -145,7 +147,8 @@ app.UseSwaggerUI(setupAction: c =>
 	// Genera un endpoint de Swagger para cada versión de API disponible.
 	foreach (var description in provider.ApiVersionDescriptions)
 	{
-		c.SwaggerEndpoint(url: $"/swagger/{description.GroupName}/swagger.json", name: "WalletService " + description.ApiVersion);
+		c.SwaggerEndpoint(url: $"/swagger/{description.GroupName}/swagger.json",
+			name: "WalletService " + description.ApiVersion);
 	}
 });
 
@@ -175,7 +178,8 @@ void AddApiVersioning(IServiceCollection builderServices)
 {
 	builderServices.AddApiVersioning(setupAction: setup =>
 	{
-		setup.DefaultApiVersion = new ApiVersion(majorVersion: 0, minorVersion: 1); // Establece la versión por defecto de la API.
+		setup.DefaultApiVersion =
+			new ApiVersion(majorVersion: 0, minorVersion: 1); // Establece la versión por defecto de la API.
 		setup.AssumeDefaultVersionWhenUnspecified = true; // Asume la versión por defecto si no se especifica.
 		setup.ReportApiVersions = true; // Reporta las versiones de la API en los encabezados de respuesta.
 	}).AddApiExplorer(setupAction: setup =>
@@ -193,7 +197,8 @@ void AddSwagger(IServiceCollection builderServices)
 	{
 		options.OperationFilter<DeprecatedVersionFilter>(); // Aplica un filtro para operaciones de versiones obsoletas.
 		options.IgnoreObsoleteProperties(); // Ignora propiedades marcadas como obsoletas en los esquemas.
-		options.CustomSchemaIds(schemaIdSelector: type => type.FullName?.Replace(oldValue: "+", newValue: ".")); // Genera IDs de esquema personalizados.
+		options.CustomSchemaIds(schemaIdSelector: type =>
+			type.FullName?.Replace(oldValue: "+", newValue: ".")); // Genera IDs de esquema personalizados.
 	});
 
 	// Configura opciones adicionales de Swagger, posiblemente desde un archivo de configuración.

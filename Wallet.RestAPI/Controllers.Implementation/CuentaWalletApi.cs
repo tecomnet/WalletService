@@ -59,7 +59,7 @@ public class CuentaWalletApiController(
     }
 
     /// <inheritdoc />
-    public override async Task<IActionResult> GetTarjetasVinculadasPorClienteAsync(string version, string idWallet)
+    public override async Task<IActionResult> GetTarjetasVinculadasPorWalletAsync(string version, string idWallet)
     {
         var idCliente = await GetClienteIdFromWalletId(idWallet);
         var tarjetas = await tarjetaVinculadaFacade.ObtenerTarjetasPorClienteAsync(idCliente);

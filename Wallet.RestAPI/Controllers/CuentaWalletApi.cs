@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service. 
+ * Api para exponer la funcionalidad de wallet service.
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -18,189 +18,196 @@ using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
-{ 
+{
+  /// <summary>
+  /// 
+  /// </summary>
+  [ApiController]
+  public abstract class CuentaWalletApiControllerBase : ServiceBaseController
+  {
     /// <summary>
-    /// 
+    /// Obtiene la cuenta wallet de un cliente
     /// </summary>
-    [ApiController]
-    public abstract class CuentaWalletApiControllerBase : ServiceBaseController
-    {
-      /// <summary>
-      /// Obtiene la cuenta wallet de un cliente
-      /// </summary>
-      /// <remarks>Obtiene la cuenta wallet de un cliente</remarks>
-      /// <param name="version">Version of the API to use</param>
-      /// <param name="idCliente">Id del cliente</param>
-      /// <response code="200">OK</response>
-      /// <response code="400">Response to client error satus code</response>
-      /// <response code="401">Response to client error satus code</response>
-      /// <response code="404">Response to client error satus code</response>
-      [HttpGet]
-      [Route("/{version:apiVersion}/cuentaWallet/{idCliente}")]
-      [ValidateModelState]
-      [SwaggerOperation("GetCuentaWalletPorCliente")]
-      [SwaggerResponse(statusCode: 200, type: typeof(CuentaWalletResult), description: "OK")]
-      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      public abstract Task<IActionResult> GetCuentaWalletPorClienteAsync(
-        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-        [FromRoute] [Required] int? idCliente);
+    /// <remarks>Obtiene la cuenta wallet de un cliente</remarks>
+    /// <param name="version">Version of the API to use</param>
+    /// <param name="idCliente">Id del cliente</param>
+    /// <response code="200">OK</response>
+    /// <response code="400">Response to client error satus code</response>
+    /// <response code="401">Response to client error satus code</response>
+    /// <response code="404">Response to client error satus code</response>
+    [HttpGet]
+    [Route("/{version:apiVersion}/cuentaWallet/{idCliente}")]
+    [ValidateModelState]
+    [SwaggerOperation("GetCuentaWalletPorCliente")]
+    [SwaggerResponse(statusCode: 200, type: typeof(CuentaWalletResult), description: "OK")]
+    [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    public abstract Task<IActionResult> GetCuentaWalletPorClienteAsync(
+      [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+      string version,
+      [FromRoute] [Required] int? idCliente);
 
-      /// <summary>
-      /// Obtiene las tarjetas emitidas de un cliente
-      /// </summary>
-      /// <remarks>Obtiene las tarjetas emitidas de una wallet</remarks>
-      /// <param name="version">Version of the API to use</param>
-      /// <param name="idWallet">Id de la cuenta wallet</param>
-      /// <response code="200">OK</response>
-      /// <response code="400">Response to client error satus code</response>
-      /// <response code="401">Response to client error satus code</response>
-      /// <response code="404">Response to client error satus code</response>
-      [HttpGet]
-      [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/tarjetasemitidas")]
-      [ValidateModelState]
-      [SwaggerOperation("GetTarjetasEmitidasPorWallet")]
-      [SwaggerResponse(statusCode: 200, type: typeof(List<TarjetaEmitidaResult>), description: "OK")]
-      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      public abstract Task<IActionResult> GetTarjetasEmitidasPorWalletAsync(
-        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-        [FromRoute] [Required] string idWallet);
+    /// <summary>
+    /// Obtiene las tarjetas emitidas de un cliente
+    /// </summary>
+    /// <remarks>Obtiene las tarjetas emitidas de una wallet</remarks>
+    /// <param name="version">Version of the API to use</param>
+    /// <param name="idWallet">Id de la cuenta wallet</param>
+    /// <response code="200">OK</response>
+    /// <response code="400">Response to client error satus code</response>
+    /// <response code="401">Response to client error satus code</response>
+    /// <response code="404">Response to client error satus code</response>
+    [HttpGet]
+    [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/tarjetasemitidas")]
+    [ValidateModelState]
+    [SwaggerOperation("GetTarjetasEmitidasPorWallet")]
+    [SwaggerResponse(statusCode: 200, type: typeof(List<TarjetaEmitidaResult>), description: "OK")]
+    [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    public abstract Task<IActionResult> GetTarjetasEmitidasPorWalletAsync(
+      [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+      string version,
+      [FromRoute] [Required] string idWallet);
 
-      /// <summary>
-      /// Obtiene las tarjetas vinculadas de una wallet
-      /// </summary>
-      /// <remarks>Obtiene las tarjetas vinculadas de una wallet</remarks>
-      /// <param name="version">Version of the API to use</param>
-      /// <param name="idWallet">Id de la cuenta wallet</param>
-      /// <response code="200">OK</response>
-      /// <response code="400">Response to client error satus code</response>
-      /// <response code="401">Response to client error satus code</response>
-      /// <response code="404">Response to client error satus code</response>
-      [HttpGet]
-      [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/tarjetasVinculadas")]
-      [ValidateModelState]
-      [SwaggerOperation("GetTarjetasVinculadasPorCliente")]
-      [SwaggerResponse(statusCode: 200, type: typeof(List<TarjetaVinculadaResult>), description: "OK")]
-      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      public abstract Task<IActionResult> GetTarjetasVinculadasPorClienteAsync(
-        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-        [FromRoute] [Required] string idWallet);
+    /// <summary>
+    /// Obtiene las tarjetas vinculadas de una wallet
+    /// </summary>
+    /// <remarks>Obtiene las tarjetas vinculadas de una wallet</remarks>
+    /// <param name="version">Version of the API to use</param>
+    /// <param name="idWallet">Id de la cuenta wallet</param>
+    /// <response code="200">OK</response>
+    /// <response code="400">Response to client error satus code</response>
+    /// <response code="401">Response to client error satus code</response>
+    /// <response code="404">Response to client error satus code</response>
+    [HttpGet]
+    [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/tarjetasVinculadas")]
+    [ValidateModelState]
+    [SwaggerOperation("GetTarjetasVinculadasPorWallet")]
+    [SwaggerResponse(statusCode: 200, type: typeof(List<TarjetaVinculadaResult>), description: "OK")]
+    [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    public abstract Task<IActionResult> GetTarjetasVinculadasPorWalletAsync(
+      [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+      string version,
+      [FromRoute] [Required] string idWallet);
 
-      /// <summary>
-      /// Obtiene las transacciones de una wallet
-      /// </summary>
-      /// <remarks>Obtiene las transacciones de una cuenta wallet</remarks>
-      /// <param name="version">Version of the API to use</param>
-      /// <param name="idWallet">id de la cuenta wallet</param>
-      /// <response code="200">OK</response>
-      /// <response code="400">Response to client error satus code</response>
-      /// <response code="401">Response to client error satus code</response>
-      /// <response code="404">Response to client error satus code</response>
-      [HttpGet]
-      [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/transaccion")]
-      [ValidateModelState]
-      [SwaggerOperation("GetTransaccionesPorWallet")]
-      [SwaggerResponse(statusCode: 200, type: typeof(List<TransaccionResult>), description: "OK")]
-      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      public abstract Task<IActionResult> GetTransaccionesPorWalletAsync(
-        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-        [FromRoute] [Required] string idWallet);
+    /// <summary>
+    /// Obtiene las transacciones de una wallet
+    /// </summary>
+    /// <remarks>Obtiene las transacciones de una cuenta wallet</remarks>
+    /// <param name="version">Version of the API to use</param>
+    /// <param name="idWallet">id de la cuenta wallet</param>
+    /// <response code="200">OK</response>
+    /// <response code="400">Response to client error satus code</response>
+    /// <response code="401">Response to client error satus code</response>
+    /// <response code="404">Response to client error satus code</response>
+    [HttpGet]
+    [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/transaccion")]
+    [ValidateModelState]
+    [SwaggerOperation("GetTransaccionesPorWallet")]
+    [SwaggerResponse(statusCode: 200, type: typeof(List<TransaccionResult>), description: "OK")]
+    [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    public abstract Task<IActionResult> GetTransaccionesPorWalletAsync(
+      [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+      string version,
+      [FromRoute] [Required] string idWallet);
 
-      /// <summary>
-      /// Guarda una transaccion de la wallet
-      /// </summary>
-      /// <remarks>Guarda una transaccion de la wallet</remarks>
-      /// <param name="version">Version of the API to use</param>
-      /// <param name="idWallet">id de la cuenta wallet</param>
-      /// <param name="body">Modelo para crear una transaccion</param>
-      /// <response code="201">Created</response>
-      /// <response code="400">Response to client error satus code</response>
-      /// <response code="401">Response to client error satus code</response>
-      /// <response code="404">Response to client error satus code</response>
-      [HttpPost]
-      [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/transaccion")]
-      [ValidateModelState]
-      [SwaggerOperation("PostTransaccionesPorWallet")]
-      [SwaggerResponse(statusCode: 201, type: typeof(TransaccionResult), description: "Created")]
-      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      public abstract Task<IActionResult> PostTransaccionesPorWalletAsync(
-        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-        [FromRoute] [Required] string idWallet, [FromBody] TransaccionRequest body);
+    /// <summary>
+    /// Guarda una transaccion de la wallet
+    /// </summary>
+    /// <remarks>Guarda una transaccion de la wallet</remarks>
+    /// <param name="version">Version of the API to use</param>
+    /// <param name="idWallet">id de la cuenta wallet</param>
+    /// <param name="body">Modelo para crear una transaccion</param>
+    /// <response code="201">Created</response>
+    /// <response code="400">Response to client error satus code</response>
+    /// <response code="401">Response to client error satus code</response>
+    /// <response code="404">Response to client error satus code</response>
+    [HttpPost]
+    [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/transaccion")]
+    [ValidateModelState]
+    [SwaggerOperation("PostTransaccionesPorWallet")]
+    [SwaggerResponse(statusCode: 201, type: typeof(TransaccionResult), description: "Created")]
+    [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    public abstract Task<IActionResult> PostTransaccionesPorWalletAsync(
+      [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+      string version,
+      [FromRoute] [Required] string idWallet, [FromBody] TransaccionRequest body);
 
-      /// <summary>
-      /// Solicita una tarjeta fisica
-      /// </summary>
-      /// <remarks>Solicita una tarjeta fisica</remarks>
-      /// <param name="body"></param>
-      /// <param name="version">Version of the API to use</param>
-      /// <param name="idWallet">Id de la cuenta wallet</param>
-      /// <response code="201">Created</response>
-      /// <response code="400">Response to client error satus code</response>
-      /// <response code="401">Response to client error satus code</response>
-      /// <response code="404">Response to client error satus code</response>
-      [HttpPost]
-      [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/tarjetasemitidas/fisica")]
-      [ValidateModelState]
-      [SwaggerOperation("SolicitarTarjetaFisica")]
-      [SwaggerResponse(statusCode: 201, type: typeof(TarjetaEmitidaResult), description: "Created")]
-      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      public abstract Task<IActionResult> SolicitarTarjetaFisicaAsync([FromBody] SolicitarTarjetaFisicaRequest body,
-        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-        [FromRoute] [Required] string idWallet);
+    /// <summary>
+    /// Solicita una tarjeta fisica
+    /// </summary>
+    /// <remarks>Solicita una tarjeta fisica</remarks>
+    /// <param name="body"></param>
+    /// <param name="version">Version of the API to use</param>
+    /// <param name="idWallet">Id de la cuenta wallet</param>
+    /// <response code="201">Created</response>
+    /// <response code="400">Response to client error satus code</response>
+    /// <response code="401">Response to client error satus code</response>
+    /// <response code="404">Response to client error satus code</response>
+    [HttpPost]
+    [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/tarjetasemitidas/fisica")]
+    [ValidateModelState]
+    [SwaggerOperation("SolicitarTarjetaFisica")]
+    [SwaggerResponse(statusCode: 201, type: typeof(TarjetaEmitidaResult), description: "Created")]
+    [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    public abstract Task<IActionResult> SolicitarTarjetaFisicaAsync([FromBody] SolicitarTarjetaFisicaRequest body,
+      [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+      string version,
+      [FromRoute] [Required] string idWallet);
 
-      /// <summary>
-      /// Solicita una tarjeta virtual adicional
-      /// </summary>
-      /// <remarks>Solicita una tarjeta virtual adicional</remarks>
-      /// <param name="body"></param>
-      /// <param name="version">Version of the API to use</param>
-      /// <param name="idWallet">Id de la cuenta wallet</param>
-      /// <response code="201">Created</response>
-      /// <response code="400">Response to client error satus code</response>
-      /// <response code="401">Response to client error satus code</response>
-      /// <response code="404">Response to client error satus code</response>
-      [HttpPost]
-      [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/tarjetasemitidas/virtual")]
-      [ValidateModelState]
-      [SwaggerOperation("SolicitarTarjetaVirtual")]
-      [SwaggerResponse(statusCode: 201, type: typeof(TarjetaEmitidaResult), description: "Created")]
-      [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
-        description: "Response to client error satus code")]
-      public abstract Task<IActionResult> SolicitarTarjetaVirtualAsync([FromBody] SolicitarTarjetaVirtualRequest body,
-        [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-        [FromRoute] [Required] string idWallet);
-    }
+    /// <summary>
+    /// Solicita una tarjeta virtual adicional
+    /// </summary>
+    /// <remarks>Solicita una tarjeta virtual adicional</remarks>
+    /// <param name="body"></param>
+    /// <param name="version">Version of the API to use</param>
+    /// <param name="idWallet">Id de la cuenta wallet</param>
+    /// <response code="201">Created</response>
+    /// <response code="400">Response to client error satus code</response>
+    /// <response code="401">Response to client error satus code</response>
+    /// <response code="404">Response to client error satus code</response>
+    [HttpPost]
+    [Route("/{version:apiVersion}/cuentaWallet/{idWallet}/tarjetasemitidas/virtual")]
+    [ValidateModelState]
+    [SwaggerOperation("SolicitarTarjetaVirtual")]
+    [SwaggerResponse(statusCode: 201, type: typeof(TarjetaEmitidaResult), description: "Created")]
+    [SwaggerResponse(statusCode: 400, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 401, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
+      description: "Response to client error satus code")]
+    public abstract Task<IActionResult> SolicitarTarjetaVirtualAsync([FromBody] SolicitarTarjetaVirtualRequest body,
+      [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+      string version,
+      [FromRoute] [Required] string idWallet);
+  }
 }
