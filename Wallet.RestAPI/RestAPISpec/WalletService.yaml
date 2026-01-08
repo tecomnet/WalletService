@@ -338,12 +338,12 @@ paths:
         - jwsToken: []
       tags:
         - Cliente
-  '/{version}/cliente/{idCliente}/tarjetasVinculadas':
+  '/{version}/cuentaWallet/{idWallet}/tarjetasVinculadas':
     parameters:
       - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
+      - $ref: '#/components/parameters/idWallet'
     get:
-      summary: Obtiene las tarjetas vinculadas de un cliente
+      summary: Obtiene las tarjetas vinculadas de una wallet
       operationId: GetTarjetasVinculadasPorCliente
       responses:
         '200':
@@ -360,11 +360,11 @@ paths:
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      description: Obtiene las tarjetas vinculadas de un cliente
+      description: Obtiene las tarjetas vinculadas de una wallet
       tags:
-        - TarjetaVinculada
+        - CuentaWallet
     post:
-      summary: Vincula una nueva tarjeta
+      summary: Vincula una nueva tarjeta a una wallet
       operationId: VincularTarjeta
       requestBody:
         content:
@@ -385,18 +385,13 @@ paths:
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      description: Vincula una nueva tarjeta al cliente
+      description: Vincula una nueva tarjeta a una wallet
       tags:
         - TarjetaVinculada
   '/{version}/tarjetasVinculadas/{idTarjeta}':
     parameters:
       - $ref: '#/components/parameters/version'
-      - name: idTarjeta
-        in: path
-        required: true
-        schema:
-          type: integer
-        description: Id de la tarjeta vinculada
+      - $ref: '#/components/parameters/idTarjeta'
     delete:
       summary: Desvincula una tarjeta
       operationId: DesvincularTarjeta
@@ -415,12 +410,7 @@ paths:
   '/{version}/tarjetasVinculadas/{idTarjeta}/favorita':
     parameters:
       - $ref: '#/components/parameters/version'
-      - name: idTarjeta
-        in: path
-        required: true
-        schema:
-          type: integer
-        description: Id de la tarjeta vinculada
+      - $ref: '#/components/parameters/idTarjeta'
     put:
       summary: Establece tarjeta como favorita
       operationId: EstablecerTarjetaFavorita
@@ -604,34 +594,6 @@ paths:
           description: token autorizacion del dispositivo
       tags:
         - DispositivoMovilAutorizado
-  '/{version}/pagoServicios':
-    parameters:
-      - $ref: '#/components/parameters/version'
-    post:
-      summary: Registra un nuevo pago de servicio
-      operationId: RegistrarPagoServicio
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegistrarPagoServicioRequest'
-        required: true
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DetallesPagoServicioResult'
-        '400':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '401':
-          $ref: '#/components/responses/HTTP_Error_400'
-        '500':
-          $ref: '#/components/responses/HTTP_Error_400'
-      description: Registra un pago de servicio y su transaccion asociada
-      tags:
-        - DetallesPagoServicio
   '/{version}/estado':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -1422,7 +1384,7 @@ paths:
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      description: Obtiene todos los proveedores de servicio
+      description: 'Obtiene todos los proveedores de servicio, opcionalmente filtra por categoria'
       parameters:
         - schema:
             type: string
@@ -2184,10 +2146,21 @@ paths:
               $ref: '#/components/schemas/RevokeTokenRequest'
       tags:
         - Auth
-  '/{version}/cliente/{idCliente}/cuentaWallet':
+  '/{version}/cuentaWallet/{idCliente}':
     parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - name: idCliente
+        in: path
+        schema:
+          type: integer
+        description: Id del cliente
+        required: true
     get:
       summary: Obtiene la cuenta wallet de un cliente
       operationId: GetCuentaWalletPorCliente
@@ -2209,13 +2182,24 @@ paths:
       tags:
         - CuentaWallet
       description: Obtiene la cuenta wallet de un cliente
-  '/{version}/cliente/{idCliente}/transacciones':
+  '/{version}/cuentaWallet/{idWallet}/transaccion':
     parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idWallet
+        in: path
+        required: true
+        description: id de la cuenta wallet
     get:
-      summary: Obtiene las transacciones de un cliente
-      operationId: GetTransaccionesPorCliente
+      summary: Obtiene las transacciones de una wallet
+      operationId: GetTransaccionesPorWallet
       responses:
         '200':
           description: OK
@@ -2224,7 +2208,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/BitacoraTransaccionResult'
+                  $ref: '#/components/schemas/TransaccionResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
@@ -2233,39 +2217,47 @@ paths:
           $ref: '#/components/responses/HTTP_Error_400'
       security:
         - jwsToken: []
+      description: Obtiene las transacciones de una cuenta wallet
       tags:
-        - BitacoraTransaccion
-      description: Obtiene las transacciones de un cliente
-  '/{version}/cliente/{idCliente}/pagoServicios':
-    parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
-    get:
-      summary: Obtiene el historial de pagos de servicios de un cliente
-      operationId: GetDetallesPagoServicioPorCliente
+        - CuentaWallet
+    post:
+      summary: Guarda una transaccion de la wallet
+      operationId: PostTransaccionesPorWallet
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DetallesPagoServicioResult'
+                $ref: '#/components/schemas/TransaccionResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
           $ref: '#/components/responses/HTTP_Error_400'
         '404':
           $ref: '#/components/responses/HTTP_Error_400'
-      security:
-        - jwsToken: []
+      description: Guarda una transaccion de la wallet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransaccionRequest'
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+        description: Modelo para crear una transaccion
       tags:
-        - DetallesPagoServicio
-      description: Obtiene el historial de pagos de servicios de un cliente
-  '/{version}/transacciones/{idTransaccion}/detalles':
+        - CuentaWallet
+  '/{version}/transacciones/{idTransaccion}/PagoServicioDetalles':
     parameters:
-      - $ref: '#/components/parameters/version'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
       - name: idTransaccion
         in: path
         required: true
@@ -2282,9 +2274,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DetallesPagoServicioResult'
+                $ref: '#/components/schemas/DetallesPagoServicioResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
         '401':
@@ -2293,16 +2283,27 @@ paths:
           $ref: '#/components/responses/HTTP_Error_400'
       security:
         - jwsToken: []
-      tags:
-        - DetallesPagoServicio
       description: Obtiene los detalles de pago de servicio por transacción
-  '/{version}/cliente/{idCliente}/tarjetasemitidas':
+      tags:
+        - BitacoraTransaccion
+  '/{version}/cuentaWallet/{idWallet}/tarjetasemitidas':
     parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idWallet
+        in: path
+        required: true
+        description: Id de la cuenta wallet
     get:
       summary: Obtiene las tarjetas emitidas de un cliente
-      operationId: GetTarjetasEmitidasPorCliente
+      operationId: GetTarjetasEmitidasPorWallet
       responses:
         '200':
           description: OK
@@ -2314,13 +2315,28 @@ paths:
                   $ref: '#/components/schemas/TarjetaEmitidaResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
+      description: Obtiene las tarjetas emitidas de una wallet
       tags:
-        - TarjetaEmitida
-      description: Obtiene las tarjetas emitidas de un cliente
-  '/{version}/cliente/{idCliente}/tarjetasemitidas/virtual':
+        - CuentaWallet
+  '/{version}/cuentaWallet/{idWallet}/tarjetasemitidas/virtual':
     parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idWallet
+        in: path
+        required: true
+        description: Id de la cuenta wallet
     post:
       summary: Solicita una tarjeta virtual adicional
       operationId: SolicitarTarjetaVirtual
@@ -2339,13 +2355,28 @@ paths:
                 $ref: '#/components/schemas/TarjetaEmitidaResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
-      tags:
-        - TarjetaEmitida
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
       description: Solicita una tarjeta virtual adicional
-  '/{version}/cliente/{idCliente}/tarjetasemitidas/fisica':
+      tags:
+        - CuentaWallet
+  '/{version}/cuentaWallet/{idWallet}/tarjetasemitidas/fisica':
     parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/idCliente'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
+        description: Version of the API to use
+      - schema:
+          type: string
+        name: idWallet
+        in: path
+        required: true
+        description: Id de la cuenta wallet
     post:
       summary: Solicita una tarjeta fisica
       operationId: SolicitarTarjetaFisica
@@ -2364,9 +2395,13 @@ paths:
                 $ref: '#/components/schemas/TarjetaEmitidaResult'
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
-      tags:
-        - TarjetaEmitida
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
       description: Solicita una tarjeta fisica
+      tags:
+        - CuentaWallet
   '/{version}/tarjetasemitidas/{idTarjeta}/bloqueo':
     parameters:
       - $ref: '#/components/parameters/version'
@@ -2376,6 +2411,7 @@ paths:
         schema:
           type: integer
           format: int32
+        description: Id de la tarjeta emitida
     put:
       summary: Cambia el estado de bloqueo de una tarjeta
       operationId: CambiarBloqueoTarjeta
@@ -2390,6 +2426,10 @@ paths:
           description: OK
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          $ref: '#/components/responses/HTTP_Error_400'
+        '404':
+          $ref: '#/components/responses/HTTP_Error_400'
       tags:
         - TarjetaEmitida
       description: Cambia el estado de bloqueo de una tarjeta
@@ -2402,6 +2442,7 @@ paths:
         schema:
           type: integer
           format: int32
+        description: Id de la tarjeta emitida
     put:
       summary: Actualiza la configuracion de una tarjeta
       operationId: ActualizarConfiguracionTarjeta
@@ -2414,38 +2455,31 @@ paths:
       responses:
         '200':
           description: OK
+          content: {}
         '400':
           $ref: '#/components/responses/HTTP_Error_400'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
       tags:
         - TarjetaEmitida
       description: Actualiza la configuracion de una tarjeta
 components:
   schemas:
-    CrearCuentaWalletRequest:
-      type: object
-      properties:
-        idCliente:
-          type: integer
-          format: int32
-        moneda:
-          type: string
-          minLength: 3
-          maxLength: 3
-      required:
-        - idCliente
-        - moneda
     CuentaWalletResult:
       type: object
       properties:
         id:
           type: integer
           format: int32
-        idCliente:
+        clienteId:
           type: integer
           format: int32
+          x-stoplight:
+            id: zq4psu44vd0mz
         saldoActual:
           type: number
-          format: double
         cuentaCLABE:
           type: string
         moneda:
@@ -2481,7 +2515,7 @@ components:
           description: Token de concurrencia
       required:
         - id
-        - idCliente
+        - clienteId
         - saldoActual
         - cuentaCLABE
         - moneda
@@ -2492,20 +2526,24 @@ components:
         - modificationUser
         - isActive
         - concurrencyToken
-    BitacoraTransaccionResult:
+    TransaccionResult:
       type: object
+      x-stoplight:
+        id: b26917aad16f5
+      description: Modelo para el resultado de una transaccion
       properties:
         id:
           type: integer
           format: int32
-        idBilletera:
+        walletId:
           type: integer
           format: int32
+          x-stoplight:
+            id: cwtidolxwf295
         monto:
           type: number
-          format: double
         tipo:
-          type: string
+          $ref: '#/components/schemas/TipoTransaccionEnum'
         direccion:
           type: string
         estatus:
@@ -2544,7 +2582,7 @@ components:
           description: Token de concurrencia
       required:
         - id
-        - idBilletera
+        - walletId
         - monto
         - tipo
         - direccion
@@ -2562,12 +2600,16 @@ components:
         id:
           type: integer
           format: int32
-        idTransaccion:
+        transaccionId:
           type: integer
           format: int32
-        idProveedor:
+          x-stoplight:
+            id: dxs5u1yj8ydam
+        productoId:
           type: integer
           format: int32
+          x-stoplight:
+            id: v6q6be925e29z
         numeroReferencia:
           type: string
         codigoAutorizacion:
@@ -2604,8 +2646,8 @@ components:
           description: Token de concurrencia
       required:
         - id
-        - idTransaccion
-        - idProveedor
+        - transaccionId
+        - productoId
         - numeroReferencia
         - guid
         - creationTimestamp
@@ -2614,36 +2656,6 @@ components:
         - modificationUser
         - isActive
         - concurrencyToken
-    RegistrarPagoServicioRequest:
-      type: object
-      properties:
-        idBilletera:
-          type: integer
-          format: int32
-        monto:
-          type: number
-        nombreServicio:
-          type: string
-        direccion:
-          type: string
-        refExternaId:
-          type: string
-          nullable: true
-        idProveedor:
-          type: integer
-          format: int32
-        numeroReferencia:
-          type: string
-        codigoAutorizacion:
-          type: string
-          nullable: true
-      required:
-        - idBilletera
-        - monto
-        - nombreServicio
-        - direccion
-        - idProveedor
-        - numeroReferencia
     TipoDocumentoConsentimientoEnum:
       type: string
       x-stoplight:
@@ -3948,6 +3960,7 @@ components:
         - brokerId
         - nombre
         - categoria
+        - urlIcono
     ProveedorUpdateRequest:
       title: ProveedorUpdateRequest
       type: object
@@ -4545,6 +4558,42 @@ components:
         - Enviada
         - Entregada
         - Devuelta
+    TransaccionRequest:
+      title: TransaccionRequest
+      x-stoplight:
+        id: wevcms0q4b9gq
+      type: object
+      description: 'Modelo para crear una transaccion '
+      properties:
+        monto:
+          type: number
+          x-stoplight:
+            id: x2fn6pm1c1sk1
+        tipoTransaccion:
+          $ref: '#/components/schemas/TipoTransaccionEnum'
+        concepto:
+          x-stoplight:
+            id: x2fn6pm1c1sk1
+          type: string
+        idProducto:
+          x-stoplight:
+            id: x2fn6pm1c1sk1
+          type: integer
+      required:
+        - monto
+        - tipoTransaccion
+        - concepto
+        - idProducto
+    TipoTransaccionEnum:
+      title: TipoTransaccionEnum
+      x-stoplight:
+        id: nxtxp8cx0pmxl
+      type: string
+      description: Enumeracion con los tipos de transacciones
+      enum:
+        - PagoServicio
+        - RecargaTelefonica
+        - Movilidad
   securitySchemes:
     jwsToken:
       type: http
@@ -4604,6 +4653,20 @@ components:
         type: integer
       description: Id del broker
       required: true
+    idTarjeta:
+      name: idTarjeta
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id tarjeta vinculada o emitida
+    idWallet:
+      name: idWallet
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Id de la cuenta wallet
   responses:
     HTTP_Error_400:
       description: Response to client error satus code
