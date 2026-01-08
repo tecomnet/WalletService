@@ -80,7 +80,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             nombre: body.Nombre,
             precio: (decimal?)body.Precio,
             icono: body.UrlIcono,
-            categoria: body.Categoria.ToString(),
+            categoria: EnumExtensions.GetEnumMemberValue(body.Categoria),
             creationUser: this.GetAuthenticatedUserGuid());
 
         var result = mapper.Map<ProductoResult>(source: producto);
@@ -137,7 +137,7 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
             nombre: body.Nombre,
             precio: (decimal?)body.Precio,
             icono: body.UrlIcono,
-            categoria: body.Categoria.ToString(),
+            categoria: EnumExtensions.GetEnumMemberValue(body.Categoria),
             concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
 

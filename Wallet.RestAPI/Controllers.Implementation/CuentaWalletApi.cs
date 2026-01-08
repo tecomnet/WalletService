@@ -95,7 +95,7 @@ public class CuentaWalletApiController(
         var transaccion = await bitacoraTransaccionFacade.GuardarTransaccionAsync(
             idBilletera: idBilletera,
             monto: (decimal)body.Monto,
-            tipo: body.TipoTransaccion.ToString(),
+            tipo: EnumExtensions.GetEnumMemberValue(body.TipoTransaccion),
             direccion: "N/A", // Not provided in request? Check Spec. Spec says direccion is required in Result, but not in Request? Request has 'concepto'.
             estatus: "Completada", // Default?
             creationUser: this.GetAuthenticatedUserGuid(),
