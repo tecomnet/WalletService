@@ -109,31 +109,28 @@ public class DetallesPagoServicioFacadeTest : BaseFacadeTest<IDetallesPagoServic
                 "SERVICIO_TEST",
                 "Cargo",
                 "Completada",
-                _userId,
-                It.IsAny<string?>()))
+                _userId))
             .ReturnsAsync(value: expectedTransaccion);
 
         // Act
         var result = await _facade.RegistrarPagoServicioAsync(
             idBilletera: data.wallet.Id,
             monto: 500m,
-            nombreServicio: "SERVICIO_TEST",
+            tipo: "SERVICIO_TEST",
+            idProducto: 105,
             direccion: "Cargo",
             estatus: "Completada",
-            refExternaId: null,
-            idProveedor: 105,
             numeroReferencia: "REF_SKY_123",
-            codigoAutorizacion: "AUTH_777",
             creationUser: _userId);
 
         // Assert
         Assert.NotNull(@object: result);
-        Assert.Equal(expected: realTransaccion.Id, actual: result.IdTransaccion);
-        Assert.Equal(expected: "REF_SKY_123", actual: result.NumeroReferencia);
+        Assert.Equal(expected: realTransaccion.Id, actual: result.Id);
+        Assert.Equal(expected: "REF_SKY_123", actual: result.DetallesPagoServicio.NumeroReferencia);
 
         // Verify Mock Interaction
         _bitacoraTransaccionFacadeMock.Verify(expression: x => x.GuardarTransaccionAsync(
-            data.wallet.Id, 500m, "SERVICIO_TEST", "Cargo", "Completada", _userId, It.IsAny<string?>()), times: Times.Once);
+            data.wallet.Id, 500m, "SERVICIO_TEST", "Cargo", "Completada", _userId), times: Times.Once);
 
         // Verify Details Persisted in DB
         var savedDetail = await Context.DetallesPagoServicio.FirstOrDefaultAsync(predicate: d => d.Id == result.Id);

@@ -52,6 +52,8 @@ public class BitacoraTransaccion : ValidatablePersistentObjectLogicalDelete
     public string? RefExternaId { get; set; }
 
     [ForeignKey(name: nameof(IdBilletera))] public virtual CuentaWallet? CuentaWallet { get; set; }
+    
+    public virtual DetallesPagoServicio? DetallesPagoServicio { get; set; }
 
     protected BitacoraTransaccion()
     {

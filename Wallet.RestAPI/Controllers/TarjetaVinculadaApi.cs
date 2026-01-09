@@ -43,7 +43,7 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400), description: "Response to client error satus code")]
         public abstract Task<IActionResult> DesvincularTarjetaAsync(
           [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-          [FromRoute] [Required] string idTarjeta);
+          [FromRoute] [Required] int? idTarjeta);
         
         /// <summary>
         /// Establece tarjeta como favorita
@@ -67,7 +67,7 @@ namespace Wallet.RestAPI.Controllers
         public abstract Task<IActionResult> EstablecerTarjetaFavoritaAsync(
           [FromBody] SetFavoritaRequest body,
           [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-          [FromRoute] [Required] string idTarjeta);
+          [FromRoute] [Required] int? idTarjeta);
 
         /// <summary>
         /// Vincula una nueva tarjeta a una wallet
@@ -91,6 +91,6 @@ namespace Wallet.RestAPI.Controllers
         public abstract Task<IActionResult> VincularTarjetaAsync(
           [FromBody] VincularTarjetaRequest body,
           [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-          [FromRoute] [Required] string idWallet);
+          [FromRoute] [Required] int? idWallet);
     }
 }

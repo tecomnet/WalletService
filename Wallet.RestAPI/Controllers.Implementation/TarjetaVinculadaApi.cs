@@ -18,23 +18,18 @@ namespace Wallet.RestAPI.Controllers.Implementation
         IMapper mapper)
         : TarjetaVinculadaApiControllerBase
     {
-        private async Task<int> GetClienteIdFromWalletId(string idWallet)
+        private async Task<int> GetClienteIdFromWalletId(int idWallet)
         {
-            if (!int.TryParse(idWallet, out var id))
-            {
-                throw new ArgumentException("Invalid Wallet ID format");
-            }
-
-            var wallet = await cuentaWalletFacade.ObtenerPorIdAsync(id);
+            var wallet = await cuentaWalletFacade.ObtenerPorIdAsync(idWallet: idWallet);
             return wallet.IdCliente;
         }
 
         public override async Task<IActionResult> VincularTarjetaAsync(VincularTarjetaRequest body, string version,
-            string idWallet)
+            int? idWallet)
         {
             // Mapping enum manually or verify match.
             var marca = (MarcaTarjeta)body.Marca;
-            var idCliente = await GetClienteIdFromWalletId(idWallet);
+            var idCliente = await GetClienteIdFromWalletId(idWallet: idWallet.Value);
 
             var tarjeta = await tarjetaVinculadaFacade.VincularTarjetaAsync(idCliente,
                 body.NumeroTarjeta, body.Alias, marca, body.FechaExpiracion.Value, this.GetAuthenticatedUserGuid());
@@ -42,20 +37,16 @@ namespace Wallet.RestAPI.Controllers.Implementation
             return Created($"/{version}/cuentaWallet/{idWallet}/tarjetasVinculadas/{tarjeta.Id}", response);
         }
 
-        public override async Task<IActionResult> DesvincularTarjetaAsync(string version, string idTarjeta)
+        public override async Task<IActionResult> DesvincularTarjetaAsync(string version, int? idTarjeta)
         {
-            if (!int.TryParse(idTarjeta, out var id)) throw new ArgumentException("Invalid Card ID");
-
-            await tarjetaVinculadaFacade.DesvincularTarjetaAsync(id, this.GetAuthenticatedUserGuid());
+            await tarjetaVinculadaFacade.DesvincularTarjetaAsync(idTarjeta: idTarjeta.Value, this.GetAuthenticatedUserGuid());
             return Ok();
         }
 
         public override async Task<IActionResult> EstablecerTarjetaFavoritaAsync(SetFavoritaRequest body,
-            string version, string idTarjeta)
+            string version, int? idTarjeta)
         {
-            if (!int.TryParse(idTarjeta, out var id)) throw new ArgumentException("Invalid Card ID");
-
-            var tarjeta = await tarjetaVinculadaFacade.EstablecerFavoritaAsync(id, body.ConcurrencyToken,
+            var tarjeta = await tarjetaVinculadaFacade.EstablecerFavoritaAsync(idTarjeta: idTarjeta.Value, body.ConcurrencyToken,
                 this.GetAuthenticatedUserGuid());
             return Ok(mapper.Map<TarjetaVinculadaResult>(tarjeta));
         }

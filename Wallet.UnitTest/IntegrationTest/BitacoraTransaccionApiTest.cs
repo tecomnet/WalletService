@@ -73,7 +73,7 @@ public class BitacoraTransaccionApiTest : DatabaseTestFixture
             // Create DetallesPagoServicio
             var detalles = new DetallesPagoServicio(
                 idTransaccion: bitacora.Id,
-                idProveedor: 1, // Mock provider ID
+                idProducto: 1, // Mock provider ID
                 numeroReferencia: "REF123",
                 creationUser: Guid.NewGuid()
             );

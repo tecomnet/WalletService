@@ -10,14 +10,14 @@ public class BitacoraTransaccionFacade(ServiceDbContext context) : IBitacoraTran
 {
     public async Task<BitacoraTransaccion> GuardarTransaccionAsync(int idBilletera, decimal monto, string tipo,
         string direccion,
-        string estatus, Guid creationUser, string? refExternaId)
+        string estatus, Guid creationUser)
     {
         try
         {
             var transaccion =
                 new BitacoraTransaccion(idBilletera: idBilletera, monto: monto, tipo: tipo, direccion: direccion,
-                    estatus: estatus, creationUser: creationUser, refExternaId: refExternaId);
-
+                    estatus: estatus, creationUser: creationUser);
+            
             context.BitacoraTransaccion.Add(entity: transaccion);
             await context.SaveChangesAsync();
 

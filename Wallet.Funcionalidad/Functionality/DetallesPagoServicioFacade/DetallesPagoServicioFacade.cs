@@ -17,7 +17,7 @@ public class DetallesPagoServicioFacade(
     {
         try
         {
-            var detalles = new DetallesPagoServicio(idTransaccion: idTransaccion, idProveedor: idProveedor,
+            var detalles = new DetallesPagoServicio(idTransaccion: idTransaccion, idProducto: idProveedor,
                 numeroReferencia: numeroReferencia, creationUser: creationUser,
                 codigoAutorizacion: codigoAutorizacion);
 
@@ -113,16 +113,14 @@ public class DetallesPagoServicioFacade(
         }
     }
 
-    public async Task<DetallesPagoServicio> RegistrarPagoServicioAsync(
+    public async Task<BitacoraTransaccion> RegistrarPagoServicioAsync(
         int idBilletera,
         decimal monto,
-        string nombreServicio,
+        string tipo,
         string direccion,
         string estatus,
-        string? refExternaId,
-        int idProveedor,
+        int idProducto,
         string numeroReferencia,
-        string? codigoAutorizacion,
         Guid creationUser)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
@@ -132,20 +130,19 @@ public class DetallesPagoServicioFacade(
             var transaccion = await bitacoraTransaccionFacade.GuardarTransaccionAsync(
                 idBilletera: idBilletera,
                 monto: monto,
-                tipo: nombreServicio, // Tipo de transacción (ej. SERVICIO)
+                tipo: tipo, // Tipo de transacción (ej. SERVICIO)
                 direccion: direccion,
                 estatus: estatus,
-                creationUser: creationUser,
-                refExternaId: refExternaId
+                creationUser: creationUser
             );
 
             // 2. Crear los detalles del pago de servicio vinculados a la transacción
             var detalles = new DetallesPagoServicio(
                 idTransaccion: transaccion.Id,
-                idProveedor: idProveedor,
+                idProducto: idProducto,
                 numeroReferencia: numeroReferencia,
                 creationUser: creationUser,
-                codigoAutorizacion: codigoAutorizacion
+                codigoAutorizacion: "Auto-001"
             );
 
             context.DetallesPagoServicio.Add(entity: detalles);
@@ -154,7 +151,7 @@ public class DetallesPagoServicioFacade(
             // 3. Confirmar la transacción de base de datos
             await transaction.CommitAsync();
 
-            return detalles;
+            return transaccion;
         }
         catch (Exception exception)
         {

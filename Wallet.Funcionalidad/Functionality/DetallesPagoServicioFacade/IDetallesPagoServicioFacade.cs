@@ -12,15 +12,13 @@ public interface IDetallesPagoServicioFacade
     Task<List<DetallesPagoServicio>> ObtenerTodosAsync();
     Task<List<DetallesPagoServicio>> ObtenerPorTransaccionAsync(int idTransaccion);
 
-    Task<DetallesPagoServicio> RegistrarPagoServicioAsync(
+    Task<BitacoraTransaccion> RegistrarPagoServicioAsync(
         int idBilletera,
         decimal monto,
-        string nombreServicio,
+        string tipo,
         string direccion,
         string estatus,
-        string? refExternaId,
-        int idProveedor,
+        int idProducto,
         string numeroReferencia,
-        string? codigoAutorizacion,
         Guid creationUser);
 }

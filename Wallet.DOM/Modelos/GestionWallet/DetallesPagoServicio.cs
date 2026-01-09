@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Wallet.DOM.Comun;
 using Wallet.DOM.Errors;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.DOM.Modelos.GestionWallet;
 
@@ -20,7 +21,7 @@ public class DetallesPagoServicio : ValidatablePersistentObjectLogicalDelete
     public int
         IdTransaccion { get; set; } // Changed to int to match BitacoraTransaccion.Id (inherited from PersistentClass)
 
-    [Required] public int IdProveedor { get; set; }
+    [Required] public int IdProducto { get; set; }
 
     /// <summary>
     /// Número de referencia del servicio (Contrato, Teléfono, etc.)
@@ -36,12 +37,14 @@ public class DetallesPagoServicio : ValidatablePersistentObjectLogicalDelete
     public string? CodigoAutorizacion { get; set; }
 
     [ForeignKey(name: nameof(IdTransaccion))] public virtual BitacoraTransaccion? Transaccion { get; set; }
+    
+    public virtual Producto? Producto { get; set; }
 
     protected DetallesPagoServicio()
     {
     }
 
-    public DetallesPagoServicio(int idTransaccion, int idProveedor, string numeroReferencia, Guid creationUser,
+    public DetallesPagoServicio(int idTransaccion, int idProducto, string numeroReferencia, Guid creationUser,
         string? codigoAutorizacion = null)
         : base(creationUser: creationUser)
     {
@@ -50,7 +53,7 @@ public class DetallesPagoServicio : ValidatablePersistentObjectLogicalDelete
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
         IdTransaccion = idTransaccion;
-        IdProveedor = idProveedor;
+        IdProducto = idProducto;
         NumeroReferencia = numeroReferencia;
         CodigoAutorizacion = codigoAutorizacion;
     }

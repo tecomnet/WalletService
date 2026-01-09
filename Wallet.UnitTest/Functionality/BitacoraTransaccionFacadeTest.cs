@@ -54,7 +54,7 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
 
         // Act
         var result = await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 100.50m, tipo: "DEPOSITO", direccion: "Abono", estatus: "Completada",
-            creationUser: _userId, refExternaId: "REF123");
+            creationUser: _userId);
 
         // Assert
         Assert.NotNull(@object: result);
@@ -69,7 +69,7 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
     {
         // Arrange
         var wallet = await CriarWalletAsync();
-        await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 50m, tipo: "TEST", direccion: "Abono", estatus: "Completada", creationUser: _userId, refExternaId: null);
+        await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 50m, tipo: "TEST", direccion: "Abono", estatus: "Completada", creationUser: _userId);
 
         // Act
         var result = await _facade.ObtenerTodasAsync();
@@ -84,7 +84,7 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
     {
         // Arrange
         var wallet = await CriarWalletAsync();
-        await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 75m, tipo: "TEST", direccion: "Abono", estatus: "Completada", creationUser: _userId, refExternaId: null);
+        await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 75m, tipo: "TEST", direccion: "Abono", estatus: "Completada", creationUser: _userId);
 
         // Act
         var result = await _facade.ObtenerPorClienteAsync(idCliente: wallet.IdCliente);

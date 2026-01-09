@@ -71,13 +71,6 @@ namespace Wallet.RestAPI.Models
         public string Estatus { get; set; }
 
         /// <summary>
-        /// Gets or Sets RefExternaId
-        /// </summary>
-
-        [DataMember(Name="refExternaId")]
-        public string RefExternaId { get; set; }
-
-        /// <summary>
         /// Guid unico del registro
         /// </summary>
         /// <value>Guid unico del registro</value>
@@ -154,7 +147,6 @@ namespace Wallet.RestAPI.Models
             sb.Append("  Tipo: ").Append(Tipo).Append("\n");
             sb.Append("  Direccion: ").Append(Direccion).Append("\n");
             sb.Append("  Estatus: ").Append(Estatus).Append("\n");
-            sb.Append("  RefExternaId: ").Append(RefExternaId).Append("\n");
             sb.Append("  Guid: ").Append(Guid).Append("\n");
             sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
             sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
@@ -229,11 +221,6 @@ namespace Wallet.RestAPI.Models
                     Estatus.Equals(other.Estatus)
                 ) && 
                 (
-                    RefExternaId == other.RefExternaId ||
-                    RefExternaId != null &&
-                    RefExternaId.Equals(other.RefExternaId)
-                ) && 
-                (
                     Guid == other.Guid ||
                     Guid != null &&
                     Guid.Equals(other.Guid)
@@ -292,8 +279,6 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + Direccion.GetHashCode();
                     if (Estatus != null)
                     hashCode = hashCode * 59 + Estatus.GetHashCode();
-                    if (RefExternaId != null)
-                    hashCode = hashCode * 59 + RefExternaId.GetHashCode();
                     if (Guid != null)
                     hashCode = hashCode * 59 + Guid.GetHashCode();
                     if (CreationTimestamp != null)

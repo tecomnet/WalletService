@@ -2148,19 +2148,8 @@ paths:
         - Auth
   '/{version}/cuentaWallet/{idCliente}':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - name: idCliente
-        in: path
-        schema:
-          type: integer
-        description: Id del cliente
-        required: true
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idCliente'
     get:
       summary: Obtiene la cuenta wallet de un cliente
       operationId: GetCuentaWalletPorCliente
@@ -2184,19 +2173,8 @@ paths:
       description: Obtiene la cuenta wallet de un cliente
   '/{version}/cuentaWallet/{idWallet}/transaccion':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idWallet
-        in: path
-        required: true
-        description: id de la cuenta wallet
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idWallet'
     get:
       summary: Obtiene las transacciones de una wallet
       operationId: GetTransaccionesPorWallet
@@ -2241,19 +2219,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransaccionRequest'
+              $ref: '#/components/schemas/TransaccionServicioRequest'
         description: Modelo para crear una transaccion
       tags:
         - CuentaWallet
   '/{version}/transacciones/{idTransaccion}/PagoServicioDetalles':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
+      - $ref: '#/components/parameters/version'
       - name: idTransaccion
         in: path
         required: true
@@ -2284,19 +2256,8 @@ paths:
         - BitacoraTransaccion
   '/{version}/cuentaWallet/{idWallet}/tarjetasemitidas':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idWallet
-        in: path
-        required: true
-        description: Id de la cuenta wallet
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idWallet'
     get:
       summary: Obtiene las tarjetas emitidas de una wallet
       operationId: GetTarjetasEmitidasPorWallet
@@ -2320,19 +2281,8 @@ paths:
         - CuentaWallet
   '/{version}/cuentaWallet/{idWallet}/tarjetasemitidas/virtual':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idWallet
-        in: path
-        required: true
-        description: Id de la cuenta wallet
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idWallet'
     post:
       summary: Solicita una tarjeta virtual adicional
       operationId: SolicitarTarjetaVirtual
@@ -2360,19 +2310,8 @@ paths:
         - CuentaWallet
   '/{version}/cuentaWallet/{idWallet}/tarjetasemitidas/fisica':
     parameters:
-      - name: version
-        in: path
-        required: true
-        schema:
-          type: string
-          pattern: '^(?<major>[0-9]+).(?<minor>[0-9]+)$'
-        description: Version of the API to use
-      - schema:
-          type: string
-        name: idWallet
-        in: path
-        required: true
-        description: Id de la cuenta wallet
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/idWallet'
     post:
       summary: Solicita una tarjeta fisica
       operationId: SolicitarTarjetaFisica
@@ -2401,13 +2340,7 @@ paths:
   '/{version}/tarjetasemitidas/{idTarjeta}/bloqueo':
     parameters:
       - $ref: '#/components/parameters/version'
-      - name: idTarjeta
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int32
-        description: Id de la tarjeta emitida
+      - $ref: '#/components/parameters/idTarjeta'
     put:
       summary: Cambia el estado de bloqueo de una tarjeta
       operationId: CambiarBloqueoTarjeta
@@ -2432,13 +2365,7 @@ paths:
   '/{version}/tarjetasemitidas/{idTarjeta}/configuracion':
     parameters:
       - $ref: '#/components/parameters/version'
-      - name: idTarjeta
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int32
-        description: Id de la tarjeta emitida
+      - $ref: '#/components/parameters/idTarjeta'
     put:
       summary: Actualiza la configuracion de una tarjeta
       operationId: ActualizarConfiguracionTarjeta
@@ -2544,9 +2471,6 @@ components:
           type: string
         estatus:
           type: string
-        refExternaId:
-          type: string
-          nullable: true
         guid:
           type: string
           description: Guid unico del registro
@@ -4510,7 +4434,7 @@ components:
           $ref: '#/components/schemas/MarcaTarjetaEnum'
         fechaExpiracion:
           type: string
-          format: date-time
+          format: date
       required:
         - numeroTarjeta
         - alias
@@ -4554,12 +4478,12 @@ components:
         - Enviada
         - Entregada
         - Devuelta
-    TransaccionRequest:
-      title: TransaccionRequest
+    TransaccionServicioRequest:
+      title: TransaccionServicioRequest
       x-stoplight:
         id: wevcms0q4b9gq
       type: object
-      description: 'Modelo para crear una transaccion '
+      description: Modelo para crear una transaccion para servicios y recargas
       properties:
         monto:
           type: number
@@ -4571,15 +4495,20 @@ components:
           x-stoplight:
             id: x2fn6pm1c1sk1
           type: string
+          nullable: true
         idProducto:
           x-stoplight:
             id: x2fn6pm1c1sk1
           type: integer
+        numeroReferencia:
+          x-stoplight:
+            id: x2fn6pm1c1sk1
+          type: string
       required:
         - monto
         - tipoTransaccion
-        - concepto
         - idProducto
+        - numeroReferencia
     TipoTransaccionEnum:
       title: TipoTransaccionEnum
       x-stoplight:
@@ -4654,14 +4583,14 @@ components:
       in: path
       required: true
       schema:
-        type: string
+        type: integer
       description: Id tarjeta vinculada o emitida
     idWallet:
       name: idWallet
       in: path
       required: true
       schema:
-        type: string
+        type: integer
       description: Id de la cuenta wallet
   responses:
     HTTP_Error_400:

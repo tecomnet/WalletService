@@ -75,7 +75,7 @@ namespace Wallet.RestAPI.Controllers
     public abstract Task<IActionResult> GetTarjetasEmitidasPorWalletAsync(
       [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
       string version,
-      [FromRoute] [Required] string idWallet);
+      [FromRoute] [Required] int? idWallet);
 
     /// <summary>
     /// Obtiene las tarjetas vinculadas de una wallet
@@ -101,7 +101,7 @@ namespace Wallet.RestAPI.Controllers
     public abstract Task<IActionResult> GetTarjetasVinculadasPorWalletAsync(
       [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
       string version,
-      [FromRoute] [Required] string idWallet);
+      [FromRoute] [Required] int? idWallet);
 
     /// <summary>
     /// Obtiene las transacciones de una wallet
@@ -127,7 +127,7 @@ namespace Wallet.RestAPI.Controllers
     public abstract Task<IActionResult> GetTransaccionesPorWalletAsync(
       [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
       string version,
-      [FromRoute] [Required] string idWallet);
+      [FromRoute] [Required] int? idWallet);
 
     /// <summary>
     /// Guarda una transaccion de la wallet
@@ -154,7 +154,7 @@ namespace Wallet.RestAPI.Controllers
     public abstract Task<IActionResult> PostTransaccionesPorWalletAsync(
       [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
       string version,
-      [FromRoute] [Required] string idWallet, [FromBody] TransaccionRequest body);
+      [FromRoute] [Required] int? idWallet, [FromBody] TransaccionServicioRequest body);
 
     /// <summary>
     /// Solicita una tarjeta fisica
@@ -181,7 +181,7 @@ namespace Wallet.RestAPI.Controllers
     public abstract Task<IActionResult> SolicitarTarjetaFisicaAsync([FromBody] SolicitarTarjetaFisicaRequest body,
       [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
       string version,
-      [FromRoute] [Required] string idWallet);
+      [FromRoute] [Required] int? idWallet);
 
     /// <summary>
     /// Solicita una tarjeta virtual adicional
@@ -208,6 +208,6 @@ namespace Wallet.RestAPI.Controllers
     public abstract Task<IActionResult> SolicitarTarjetaVirtualAsync([FromBody] SolicitarTarjetaVirtualRequest body,
       [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
       string version,
-      [FromRoute] [Required] string idWallet);
+      [FromRoute] [Required] int? idWallet);
   }
 }
