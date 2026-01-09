@@ -21,9 +21,6 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     public override async Task<IActionResult> DeleteClienteAsync(string version, int? idCliente,
         string concurrencyToken)
     {
-        if (!idCliente.HasValue)
-            return BadRequest(error: "IdCliente is required");
-
         // Call facade method
         var cliente =
             await clienteFacade.EliminarClienteAsync(idCliente: idCliente.Value, concurrencyToken: concurrencyToken,
@@ -36,9 +33,6 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
 
     public override async Task<IActionResult> GetClienteAsync(string version, int? idCliente)
     {
-        if (!idCliente.HasValue)
-            return BadRequest(error: "IdCliente is required");
-
         // Call facade method
         var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente.Value);
         // Map to response model
@@ -62,9 +56,6 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
 
     public override async Task<IActionResult> GetServiciosFavoritosPorClienteAsync(string version, int? idCliente)
     {
-        if (!idCliente.HasValue)
-            return BadRequest(error: "IdCliente is required");
-
         // Call facade method
         var serviciosFavoritos = await clienteFacade.ObtenerServiciosFavoritosAsync(idCliente: idCliente.Value);
         // Map to response model
@@ -76,9 +67,6 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     public override async Task<IActionResult> PutActivarClienteAsync(StatusChangeRequest body, string version,
         int? idCliente)
     {
-        if (!idCliente.HasValue)
-            return BadRequest(error: "IdCliente is required");
-
         // Call facade method
         var cliente = await clienteFacade.ActivarClienteAsync(idCliente: idCliente.Value,
             concurrencyToken: body.ConcurrencyToken,
@@ -92,12 +80,6 @@ public class ClienteApiController(IClienteFacade clienteFacade, IMapper mapper)
     public override async Task<IActionResult> UpdateClienteAsync(DatosClienteUpdateRequest body, string version,
         int? idCliente)
     {
-        if (!idCliente.HasValue)
-            return BadRequest(error: "IdCliente is required");
-
-        if (body.FechaNacimiento == null)
-            return BadRequest(error: "FechaNacimiento is required");
-
         var cliente = await clienteFacade.ActualizarClienteAsync(
             idCliente: idCliente.Value,
             nombre: body.Nombre,

@@ -91,15 +91,17 @@ public class ServicioFavoritoFacade(
             if (!servicioFavorito.IsActive)
             {
                 throw new EMGeneralAggregateException(
-                    exception: DomCommon.BuildEmGeneralException(errorCode: ServiceErrorsBuilder.ServicioFavoritoInactivo,
+                    exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.ServicioFavoritoInactivo,
                         dynamicContent: [idServicioFavorito], module: this.GetType().Name));
             }
 
             // Manejo de ConcurrencyToken
             if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
-                context.Entry(entity: servicioFavorito).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(s: concurrencyToken);
+                context.Entry(entity: servicioFavorito).Property(propertyExpression: x => x.ConcurrencyToken)
+                        .OriginalValue =
+                    DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             }
 
             // Actualiza los datos del servicio favorito.

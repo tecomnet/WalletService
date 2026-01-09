@@ -15,11 +15,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     /// <inheritdoc />
     public override async Task<IActionResult> DeleteProductoAsync(string version, int? idProducto)
     {
-        if (idProducto == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
-        }
-
         var result =
             await proveedorFacade.EliminarProductoAsync(idProducto: idProducto.Value,
                 modificationUser: this.GetAuthenticatedUserGuid());
@@ -29,11 +24,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     /// <inheritdoc />
     public override async Task<IActionResult> GetProductoAsync(string version, int? idProducto)
     {
-        if (idProducto == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
-        }
-
         var producto = await proveedorFacade.ObtenerProductoPorIdAsync(idProducto: idProducto.Value);
         var result = mapper.Map<ProductoResult>(source: producto);
         return Ok(value: result);
@@ -53,12 +43,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     /// <inheritdoc />
     public override async Task<IActionResult> GetProductosPorProveedorAsync(string version, int? idProveedor)
     {
-        if (idProveedor == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProveedor),
-                message: "El ID del proveedor es requerido.");
-        }
-
         var productos = await proveedorFacade.ObtenerProductosPorProveedorAsync(proveedorId: idProveedor.Value);
         var response = mapper.Map<List<ProductoResult>>(source: productos);
         return Ok(value: response);
@@ -68,12 +52,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     /// <inheritdoc />
     public override async Task<IActionResult> PostProductoAsync(string version, int? idProveedor, ProductoRequest body)
     {
-        if (idProveedor == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProveedor),
-                message: "El ID del proveedor es requerido.");
-        }
-
         var producto = await proveedorFacade.GuardarProductoAsync(
             proveedorId: idProveedor.Value,
             sku: body.Sku,
@@ -90,11 +68,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     /// <inheritdoc />
     public override async Task<IActionResult> PutActivarProductoAsync(string version, int? idProducto)
     {
-        if (idProducto == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
-        }
-
         var result =
             await proveedorFacade.ActivarProductoAsync(idProducto: idProducto.Value,
                 modificationUser: this.GetAuthenticatedUserGuid());
@@ -104,16 +77,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     /// <inheritdoc />
     public override async Task<IActionResult> PutActualizarProveedorAsync(string version, int? idProducto, int? body)
     {
-        if (idProducto == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
-        }
-
-        if (body == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(body), message: "El ID del proveedor es requerido.");
-        }
-
         var result = await proveedorFacade.ActualizarProveedorDeProductoAsync(
             idProducto: idProducto.Value,
             idProveedor: body.Value,
@@ -126,11 +89,6 @@ public class ProductoApiController(IProveedorFacade proveedorFacade, IMapper map
     public override async Task<IActionResult> PutProductoAsync(string version, int? idProducto,
         ProductoUpdateRequest body)
     {
-        if (idProducto == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProducto), message: "El ID del producto es requerido.");
-        }
-
         var producto = await proveedorFacade.ActualizarProductoAsync(
             idProducto: idProducto.Value,
             sku: body.Sku,

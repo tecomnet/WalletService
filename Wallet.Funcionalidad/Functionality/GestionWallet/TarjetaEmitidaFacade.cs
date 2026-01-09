@@ -107,7 +107,8 @@ public class TarjetaEmitidaFacade(ServiceDbContext context) : ITarjetaEmitidaFac
             var tarjeta = await ObtenerTarjetaPorIdAsync(idTarjeta);
 
             if (Convert.ToBase64String(tarjeta.ConcurrencyToken) != concurrencyToken)
-                throw new DbUpdateConcurrencyException("La tarjeta ha sido modificada por otro usuario.");
+                throw new DbUpdateConcurrencyException(ServiceErrorsBuilder.Instance()
+                    .GetError(ServiceErrorsBuilder.ConcurrencyError).Message);
 
             // Validar estatus de cliente y usuario
             await context.Entry(entity: tarjeta).Reference(propertyExpression: t => t.CuentaWallet).LoadAsync();
@@ -135,7 +136,8 @@ public class TarjetaEmitidaFacade(ServiceDbContext context) : ITarjetaEmitidaFac
             var tarjeta = await ObtenerTarjetaPorIdAsync(idTarjeta);
 
             if (Convert.ToBase64String(tarjeta.ConcurrencyToken) != concurrencyToken)
-                throw new DbUpdateConcurrencyException("La tarjeta ha sido modificada por otro usuario.");
+                throw new DbUpdateConcurrencyException(ServiceErrorsBuilder.Instance()
+                    .GetError(ServiceErrorsBuilder.ConcurrencyError).Message);
 
             // Validar estatus de cliente y usuario
             await context.Entry(entity: tarjeta).Reference(propertyExpression: t => t.CuentaWallet).LoadAsync();

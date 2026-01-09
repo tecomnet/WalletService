@@ -110,10 +110,28 @@ public class ServiceErrorsBuilder
             message: "El registro ha sido modificado por otro usuario.",
             description:
             "El registro que intenta actualizar ha sido modificado por otro usuario. Por favor, recargue los datos e intente nuevamente.");
+
+        // Error de token de concurrencia inválido
+        AddServiceError(
+            errorCode: ConcurrencyTokenInvalido,
+            message: "El token de concurrencia es inválido.",
+            description: "El token de concurrencia proporcionado '{0}' no tiene un formato válido.");
+
+        // Error de token de concurrencia requerido
+        AddServiceError(
+            errorCode: ConcurrencyTokenRequerido,
+            message: "El token de concurrencia es requerido.",
+            description: "El token de concurrencia es obligatorio para esta operación.");
     }
 
     /// <summary>Error: El registro fue modificado por otro usuario.</summary>
     public const string ConcurrencyError = "ERROR-CONCURRENCIA-OPTIMISTA";
+
+    /// <summary>Error: El token de concurrencia es inválido.</summary>
+    public const string ConcurrencyTokenInvalido = "ERROR-TOKEN-CONCURRENCIA-INVALIDO";
+
+    /// <summary>Error: El token de concurrencia es requerido.</summary>
+    public const string ConcurrencyTokenRequerido = "ERROR-TOKEN-CONCURRENCIA-REQUERIDO";
 
     /// <summary>Error: El tipo de autorización es incorrecto.</summary>
     public const string EmIncorrectAuthorizationType = "EM-TIPO-AUTORIZACION-INCORRECTO";
@@ -321,6 +339,11 @@ public class ServiceErrorsBuilder
             errorCode: ClienteCorreoElectronicoNoConfigurado,
             message: "El cliente no tiene correo electrónico configurado",
             description: "El cliente {0} no tiene correo electrónico configurado");
+        // Error de tipo de dispositivo inválido
+        AddServiceError(
+            errorCode: DispositivoInvalido,
+            message: "El tipo de dispositivo es inválido.",
+            description: "El valor {0} no es un tipo de dispositivo válido.");
         // Error de verificación 2FA SMS no confirmado
         AddServiceError(
             errorCode: Verificacion2FASMSNoConfirmado,
@@ -367,6 +390,9 @@ public class ServiceErrorsBuilder
 
     /// <summary>Error: La dirección está inactiva.</summary>
     public const string DireccionInactiva = "DIRECCION-INACTIVA";
+
+    /// <summary>Error: El tipo de dispositivo es inválido.</summary>
+    public const string DispositivoInvalido = "DISPOSITIVO-INVALIDO";
 
     #endregion
 

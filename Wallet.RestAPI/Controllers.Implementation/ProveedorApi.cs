@@ -36,11 +36,6 @@ public class ProveedorApiController : ProveedorApiControllerBase
     /// <inheritdoc />
     public override async Task<IActionResult> DeleteProveedorAsync(string version, int? idProveedor)
     {
-        if (idProveedor == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
-        }
-
         var proveedor = await _proveedorFacade.EliminarProveedorAsync(idProveedor: idProveedor.Value,
             modificationUser: this.GetAuthenticatedUserGuid());
         var response = _mapper.Map<ProveedorResult>(source: proveedor);
@@ -50,11 +45,6 @@ public class ProveedorApiController : ProveedorApiControllerBase
     /// <inheritdoc />
     public override async Task<IActionResult> GetProveedorAsync(string version, int? idProveedor)
     {
-        if (idProveedor == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
-        }
-
         var proveedorEncontrado =
             await _proveedorFacade.ObtenerProveedorPorIdAsync(idProveedor: idProveedor.Value);
         var response = _mapper.Map<ProveedorResult>(source: proveedorEncontrado);
@@ -75,6 +65,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
                     new InlineResponse400(restAPIError: new RestAPIErrors()
                         .GetRestAPIError(errorCode: RestAPIErrors.CategoriaInvalida)));
             }
+
             // Convierte al enum del dom
             var categoriaEnum = (Categoria)Enum.Parse(typeof(Categoria), categoria);
             // Obtiene solo los de la categoria
@@ -83,6 +74,7 @@ public class ProveedorApiController : ProveedorApiControllerBase
         else
             // Obtiene todos 
             proveedores = await _proveedorFacade.ObtenerProveedoresAsync();
+
         // Mapeo
         var response = _mapper.Map<List<ProveedorResult>>(source: proveedores);
         // Retorno
@@ -109,11 +101,6 @@ public class ProveedorApiController : ProveedorApiControllerBase
     /// <inheritdoc />
     public override async Task<IActionResult> PutActivarProveedorAsync(string version, int? idProveedor)
     {
-        if (idProveedor == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
-        }
-
         var proveedor = await _proveedorFacade.ActivarProveedorAsync(idProveedor: idProveedor.Value,
             modificationUser: this.GetAuthenticatedUserGuid());
         var response = _mapper.Map<ProveedorResult>(source: proveedor);
@@ -124,11 +111,6 @@ public class ProveedorApiController : ProveedorApiControllerBase
     public override async Task<IActionResult> PutProveedorAsync(string version, int? idProveedor,
         ProveedorUpdateRequest body)
     {
-        if (idProveedor == null)
-        {
-            throw new ArgumentNullException(paramName: nameof(idProveedor), message: "El ID del proveedor es requerido.");
-        }
-
         var proveedor = await _proveedorFacade.ActualizarProveedorAsync(
             idProveedor: idProveedor.Value,
             urlIcono: body.UrlIcono,

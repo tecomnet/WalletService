@@ -109,7 +109,7 @@ public class KeyValueConfigFacade(ServiceDbContext context) : IKeyValueConfigFac
             if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
                 context.Entry(entity: config).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(s: concurrencyToken);
+                    DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             }
 
             config.Update(value: value, modificationUser: modificationUser);

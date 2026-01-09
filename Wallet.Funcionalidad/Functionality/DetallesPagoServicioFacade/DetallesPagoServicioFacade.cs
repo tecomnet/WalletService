@@ -103,10 +103,18 @@ public class DetallesPagoServicioFacade(
     {
         try
         {
-            return await context.DetallesPagoServicio
+            var result = await context.DetallesPagoServicio
                 .Include(navigationPropertyPath: d => d.Transaccion)
                 .Where(predicate: d => d.BitacoraTransaccionId == idTransaccion)
                 .ToListAsync();
+
+            if (result == null || result.Count == 0)
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.DetallePagoNoEncontrado,
+                    dynamicContent: [idTransaccion],
+                    module: this.GetType().Name));
+
+            return result;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

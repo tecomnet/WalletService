@@ -68,7 +68,7 @@ public class DireccionFacade(IClienteFacade clienteFacade, ServiceDbContext cont
             if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
                 context.Entry(entity: direccion).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(s: concurrencyToken);
+                    DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             }
 
             // Actualiza los datos de la dirección con los valores proporcionados.

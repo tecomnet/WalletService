@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Wallet.DOM.Enums;
 using Wallet.DOM.Modelos.GestionWallet;
 using Wallet.Funcionalidad.Functionality.BitacoraTransaccionFacade;
 using Wallet.Funcionalidad.Functionality.CuentaWalletFacade;
@@ -11,6 +10,7 @@ using Wallet.Funcionalidad.Functionality.DetallesPagoServicioFacade;
 using Wallet.Funcionalidad.Functionality.GestionWallet;
 using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Helpers;
+using Wallet.RestAPI.Errors;
 
 namespace Wallet.RestAPI.Controllers.Implementation;
 
@@ -50,7 +50,7 @@ public class CuentaWalletApiController(
     /// <inheritdoc />
     public override async Task<IActionResult> GetTarjetasEmitidasPorWalletAsync(string version, int? idWallet)
     {
-        var idCliente = await GetClienteIdFromWalletId(idWallet:idWallet.Value);
+        var idCliente = await GetClienteIdFromWalletId(idWallet: idWallet.Value);
         var tarjetas = await tarjetaEmitidaFacade.ObtenerTarjetasPorClienteAsync(idCliente);
         var response = mapper.Map<List<TarjetaEmitidaResult>>(tarjetas);
         return Ok(response);
@@ -59,7 +59,7 @@ public class CuentaWalletApiController(
     /// <inheritdoc />
     public override async Task<IActionResult> GetTarjetasVinculadasPorWalletAsync(string version, int? idWallet)
     {
-        var idCliente = await GetClienteIdFromWalletId(idWallet:idWallet.Value);
+        var idCliente = await GetClienteIdFromWalletId(idWallet: idWallet.Value);
         var tarjetas = await tarjetaVinculadaFacade.ObtenerTarjetasPorClienteAsync(idCliente);
         var response = mapper.Map<List<TarjetaVinculadaResult>>(tarjetas);
         return Ok(response);
@@ -68,7 +68,7 @@ public class CuentaWalletApiController(
     /// <inheritdoc />
     public override async Task<IActionResult> GetTransaccionesPorWalletAsync(string version, int? idWallet)
     {
-        var idCliente = await GetClienteIdFromWalletId(idWallet:idWallet.Value);
+        var idCliente = await GetClienteIdFromWalletId(idWallet: idWallet.Value);
         // Note: Facade currently gets by client. Ideally should get by wallet directly if possible, 
         // but matching Client logic for now as per facade availability.
         var transacciones = await bitacoraTransaccionFacade.ObtenerPorClienteAsync(idCliente);
@@ -110,9 +110,10 @@ public class CuentaWalletApiController(
         }
         else
         {
-            throw new ArgumentException("Transaccion aun no disponible");
+            var error = new RestAPIErrors().GetRestAPIError(RestAPIErrors.TransaccionNoDisponible);
+            return BadRequest(new InlineResponse400(error));
         }
-        
+
         var response = mapper.Map<TransaccionResult>(transaccion);
         return Created($"/{version}/cuentaWallet/{idWallet}/transaccion", response);
     }
@@ -122,7 +123,7 @@ public class CuentaWalletApiController(
         string version,
         int? idWallet)
     {
-        var idCliente = await GetClienteIdFromWalletId(idWallet:idWallet.Value);
+        var idCliente = await GetClienteIdFromWalletId(idWallet: idWallet.Value);
         // Verify body.IdCliente matches wallet's client? Or just use authorized user?
         // Using resolved client ID for safety.
 
@@ -138,7 +139,7 @@ public class CuentaWalletApiController(
         string version,
         int? idWallet)
     {
-        var idCliente = await GetClienteIdFromWalletId(idWallet:idWallet.Value);
+        var idCliente = await GetClienteIdFromWalletId(idWallet: idWallet.Value);
         var tarjeta =
             await tarjetaEmitidaFacade.SolicitarTarjetaVirtualAdicionalAsync(idCliente,
                 this.GetAuthenticatedUserGuid());

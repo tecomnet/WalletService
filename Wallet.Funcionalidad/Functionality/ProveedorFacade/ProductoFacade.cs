@@ -101,7 +101,7 @@ public partial class ProveedorFacade : IProveedorFacade
             if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
                 context.Entry(entity: producto).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(s: concurrencyToken);
+                    DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             }
 
             // Valida que el producto no esté inactivo.

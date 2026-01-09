@@ -105,7 +105,7 @@ public class UsuarioFacade(
             // TODO: ValidarConfirmacionCodigoVerificacionSms2Fa(usuario: usuario); // Metodo no existe
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: usuario).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             // Actualiza la contraseña, validando la actual.
             usuario.ActualizarContrasena(
                 contrasenaActual: contrasenaActual,
@@ -144,7 +144,7 @@ public class UsuarioFacade(
 
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: usuario).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             // Actualiza el correo electrónico en la entidad.
             usuario.ActualizarCorreoElectronico(correoElectronico: correoElectronico,
                 modificationUser: modificationUser);
@@ -201,7 +201,7 @@ public class UsuarioFacade(
 
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: usuario).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             // Actualiza el teléfono en la entidad.
             usuario.ActualizarTelefono(codigoPais: codigoPais, telefono: telefono,
                 modificationUser: modificationUser);
@@ -400,7 +400,7 @@ public class UsuarioFacade(
 
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: usuario).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
 
             // Desactiva el usuario (borrado lógico).
             usuario.Deactivate(modificationUser: modificationUser);

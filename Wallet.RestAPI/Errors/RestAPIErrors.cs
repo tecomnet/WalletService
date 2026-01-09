@@ -95,8 +95,13 @@ namespace Wallet.RestAPI.Errors
         /// Error code for general problem processing error
         /// </summary>
         public const string EmGeneralErrorProblemProcessingError = "EM-GENERAL-ERROR-PROBLEM-PROCESSING-ERROR";
-        
+
         public const string CategoriaInvalida = "CATEGORIA-INVALIDA";
+
+        /// <summary>
+        /// Error code for unavailable transaction type
+        /// </summary>
+        public const string TransaccionNoDisponible = "TRANSACCION-NO-DISPONIBLE";
 
         /// <summary>
         /// Method that adds all general errors
@@ -111,7 +116,7 @@ namespace Wallet.RestAPI.Errors
                     status: 400,
                     errorCode: RestApiBadVersion,
                     title: "Versión incorrecta utilizada para la API REST",
-                    detail: "Las versiones actuales soportadas para la API REST son 0.1, 0.2 y 0.4",
+                    detail: "Las versión proporcionada no es correcta.",
                     instance: "DEFAULT",
                     module: "REST-API",
                     serviceName: DomCommon.ServiceName,
@@ -138,7 +143,7 @@ namespace Wallet.RestAPI.Errors
                     type: null,
                     status: 500,
                     errorCode: EmGeneric500Exception,
-                    title: "Excepción Genérica 500",
+                    title: "Excepción no controlada",
                     detail: "Ocurrió una excepción no controlada.",
                     instance: "DEFAULT",
                     module: "REST-API",
@@ -194,7 +199,22 @@ namespace Wallet.RestAPI.Errors
                     status: 400,
                     errorCode: CategoriaInvalida,
                     title: "Categoria invalida",
-                    detail: $"El valor de la categoria es invalido. Valores validos son: {string.Join(", ",  EnumExtensions.GetEnumMemberValues<CategoriaEnum>())}",
+                    detail:
+                    $"El valor de la categoria es invalido. Valores validos son: {string.Join(", ", EnumExtensions.GetEnumMemberValues<CategoriaEnum>())}",
+                    instance: "DEFAULT",
+                    module: "REST-API",
+                    serviceName: DomCommon.ServiceName,
+                    serviceLocation: "NA"));
+
+            // Transaccion no disponible
+            _restAPIErrors.Add(
+                key: TransaccionNoDisponible,
+                value: new RestAPIError(
+                    type: null,
+                    status: 400,
+                    errorCode: TransaccionNoDisponible,
+                    title: "Transacción no disponible",
+                    detail: "El tipo de transacción solicitado no está disponible en este momento.",
                     instance: "DEFAULT",
                     module: "REST-API",
                     serviceName: DomCommon.ServiceName,

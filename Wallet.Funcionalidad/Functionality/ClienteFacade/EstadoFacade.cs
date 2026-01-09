@@ -163,7 +163,7 @@ public class EstadoFacade(ServiceDbContext context) : IEstadoFacade
             if (!string.IsNullOrEmpty(value: concurrencyToken))
             {
                 context.Entry(entity: estado).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(s: concurrencyToken);
+                    DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             }
 
             // Valida que el nuevo nombre no cause duplicidad con otros estados (excluyendo el actual).

@@ -108,7 +108,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: empresa).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             // Validamos que la empresa este activa
             ValidarEmpresaActiva(empresa: empresa);
             // Validamos duplicidad
@@ -139,7 +139,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: empresa).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             // Eliminamos la empresa
             empresa.Deactivate(modificationUser: modificationUser);
             // Guardamos cambios
@@ -166,7 +166,7 @@ public class EmpresaFacade(ServiceDbContext context) : IEmpresaFacade
             var empresa = await ObtenerPorIdAsync(idEmpresa: idEmpresa);
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: empresa).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             // Activamos la empresa
             empresa.Activate(modificationUser: modificationUser);
             // Guardamos cambios

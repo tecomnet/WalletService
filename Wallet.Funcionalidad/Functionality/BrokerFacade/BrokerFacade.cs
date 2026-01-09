@@ -93,7 +93,7 @@ namespace Wallet.Funcionalidad.Functionality.BrokerFacade
                 var broker = await ObtenerBrokerPorIdAsync(idBroker: idBroker);
                 // Establece el token original para la validación de concurrencia optimista
                 _context.Entry(entity: broker).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                    Convert.FromBase64String(s: concurrencyToken);
+                    DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
 
                 ValidarIsActive(broker: broker);
                 ValidarDuplicidad(nombre: nombre, id: broker.Id);

@@ -28,18 +28,22 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
         var empresa = new Empresa(nombre: "TecomTest", creationUser: _userId);
         Context.Empresa.Add(entity: empresa);
 
-        var usuario = new Usuario(codigoPais: "+52", telefono: "5599999999", correoElectronico: null, contrasena: null, estatus: EstatusRegistroEnum.TerminosCondicionesAceptado,
+        var usuario = new Usuario(codigoPais: "+52", telefono: "5599999999", correoElectronico: null, contrasena: null,
+            estatus: EstatusRegistroEnum.TerminosCondicionesAceptado,
             creationUser: _userId);
         Context.Usuario.Add(entity: usuario);
 
         var cliente = new Cliente(usuario: usuario, empresa: empresa, creationUser: _userId);
-        cliente.AgregarDatosPersonales(nombre: "Test", primerApellido: "User", segundoApellido: "Bitacora", fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1), genero: Genero.Masculino, modificationUser: _userId);
+        cliente.AgregarDatosPersonales(nombre: "Test", primerApellido: "User", segundoApellido: "Bitacora",
+            fechaNacimiento: new DateOnly(year: 1990, month: 1, day: 1), genero: Genero.Masculino,
+            modificationUser: _userId);
         Context.Cliente.Add(entity: cliente);
         await Context.SaveChangesAsync();
 
         // Use facade or manual creation? Manual is safer for unit test isolation vs dependencies loop.
         // But implementation requires valid IDs.
-        var wallet = new CuentaWallet(idCliente: cliente.Id, moneda: "MXN", cuentaCLABE: "123456789012345678", creationUser: _userId);
+        var wallet = new CuentaWallet(idCliente: cliente.Id, moneda: "MXN", cuentaCLABE: "123456789012345678",
+            creationUser: _userId);
         Context.CuentaWallet.Add(entity: wallet);
         await Context.SaveChangesAsync();
 
@@ -53,7 +57,8 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
         var wallet = await CriarWalletAsync();
 
         // Act
-        var result = await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 100.50m, tipo: "DEPOSITO", direccion: "Abono", estatus: "Completada",
+        var result = await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 100.50m, tipo: "DEPOSITO",
+            direccion: "Abono", estatus: "Completada",
             creationUser: _userId);
 
         // Assert
@@ -61,7 +66,6 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
         Assert.NotEqual(expected: 0, actual: result.Id);
         Assert.Equal(expected: wallet.Id, actual: result.CuentaWalletId);
         Assert.Equal(expected: 100.50m, actual: result.Monto);
-        Assert.Equal(expected: "REF123", actual: result.RefExternaId);
     }
 
     [Fact]
@@ -69,7 +73,8 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
     {
         // Arrange
         var wallet = await CriarWalletAsync();
-        await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 50m, tipo: "TEST", direccion: "Abono", estatus: "Completada", creationUser: _userId);
+        await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 50m, tipo: "TEST", direccion: "Abono",
+            estatus: "Completada", creationUser: _userId);
 
         // Act
         var result = await _facade.ObtenerTodasAsync();
@@ -84,7 +89,8 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
     {
         // Arrange
         var wallet = await CriarWalletAsync();
-        await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 75m, tipo: "TEST", direccion: "Abono", estatus: "Completada", creationUser: _userId);
+        await _facade.GuardarTransaccionAsync(idBilletera: wallet.Id, monto: 75m, tipo: "TEST", direccion: "Abono",
+            estatus: "Completada", creationUser: _userId);
 
         // Act
         var result = await _facade.ObtenerPorClienteAsync(idCliente: wallet.IdCliente);

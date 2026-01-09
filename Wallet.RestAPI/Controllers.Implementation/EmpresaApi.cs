@@ -46,9 +46,6 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         string version,
         int? idEmpresa, EmpresaUpdateRequest body)
     {
-        if (!idEmpresa.HasValue)
-            return BadRequest(error: "IdEmpresa is required");
-
         // Call facade method
         var empresa = await empresaFacade.ActualizaEmpresaAsync(idEmpresa: idEmpresa.Value, nombre: body.Nombre,
             concurrencyToken: body.ConcurrencyToken,
@@ -64,9 +61,6 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         string version,
         int? idEmpresa)
     {
-        if (!idEmpresa.HasValue)
-            return BadRequest(error: "IdEmpresa is required");
-
         // Call facade method
         var productos = await empresaFacade.ObtenerProductosPorEmpresaAsync(idEmpresa: idEmpresa.Value);
         // Map to response model
@@ -80,9 +74,6 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         string version,
         int? idEmpresa)
     {
-        if (!idEmpresa.HasValue)
-            return BadRequest(error: "IdEmpresa is required");
-
         // Call facade method
         var clientes = await empresaFacade.ObtenerClientesPorEmpresaAsync(idEmpresa: idEmpresa.Value);
         // Map to response model
@@ -96,9 +87,6 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         AsignarProductosRequest body,
         string version, int? idEmpresa)
     {
-        if (!idEmpresa.HasValue)
-            return BadRequest(error: "IdEmpresa is required");
-
         // Call facade method
         var empresa = await empresaFacade.AsignarProductosAsync(
             idEmpresa: idEmpresa.Value,
@@ -119,9 +107,6 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
         string version,
         int? idEmpresa)
     {
-        if (!idEmpresa.HasValue)
-            return BadRequest(error: "IdEmpresa is required");
-
         // Call facade method
         var empresa = await empresaFacade.DesasignarProductosAsync(
             idEmpresa: idEmpresa.Value,
@@ -139,9 +124,6 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     /// <inheritdoc/>
     public override async Task<IActionResult> GetEmpresaAsync(string version, int? idEmpresa)
     {
-        if (!idEmpresa.HasValue)
-            return BadRequest(error: "IdEmpresa is required");
-
         // Call facade method
         var empresa = await empresaFacade.ObtenerPorIdAsync(idEmpresa: idEmpresa.Value);
         // Map to response model
@@ -154,9 +136,6 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     public override async Task<IActionResult> DeleteEmpresaAsync(string version, int? idEmpresa,
         string concurrencyToken)
     {
-        if (!idEmpresa.HasValue)
-            return BadRequest(error: "IdEmpresa is required");
-
         // Call facade method
         var empresa =
             await empresaFacade.EliminaEmpresaAsync(idEmpresa: idEmpresa.Value, concurrencyToken: concurrencyToken,
@@ -171,9 +150,6 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     public override async Task<IActionResult> PutActivarEmpresaAsync(StatusChangeRequest body, string version,
         int? idEmpresa)
     {
-        if (!idEmpresa.HasValue)
-            return BadRequest(error: "IdEmpresa is required");
-
         // Call facade method
         var empresa =
             await empresaFacade.ActivaEmpresaAsync(idEmpresa: idEmpresa.Value, concurrencyToken: body.ConcurrencyToken,

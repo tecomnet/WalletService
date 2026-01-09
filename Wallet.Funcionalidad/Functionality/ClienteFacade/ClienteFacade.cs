@@ -137,7 +137,7 @@ public class ClienteFacade(
                 {
                     // Establece el token original para la validación de concurrencia optimista
                     context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                        Convert.FromBase64String(s: concurrencyToken);
+                        DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
                 }
             }
 
@@ -193,7 +193,7 @@ public class ClienteFacade(
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             cliente.Deactivate(modificationUser: modificationUser);
             cliente.Usuario.Deactivate(modificationUser: modificationUser); // Also deactivate Usuario? Maybe.
             await context.SaveChangesAsync();
@@ -218,7 +218,7 @@ public class ClienteFacade(
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             cliente.Activate(modificationUser: modificationUser);
             cliente.Usuario.Activate(modificationUser: modificationUser); // Also activate Usuario? Maybe.
             await context.SaveChangesAsync();

@@ -14,7 +14,8 @@ namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacade
 {
     /// <inheritdoc />
-    public async Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, Categoria categoria, int brokerId,  Guid creationUser,
+    public async Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, Categoria categoria,
+        int brokerId, Guid creationUser,
         string? testCase = null)
     {
         try
@@ -80,7 +81,8 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
     }
 
     /// <inheritdoc />
-    public async Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, Categoria categoria, string urlIcono, 
+    public async Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, Categoria categoria,
+        string urlIcono,
         string concurrencyToken, Guid modificationUser,
         string? testCase = null)
     {
@@ -90,11 +92,12 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             var proveedor = await ObtenerProveedorPorIdAsync(idProveedor: idProveedor);
             // Establece el token original para la validación de concurrencia optimista
             context.Entry(entity: proveedor).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
-                Convert.FromBase64String(s: concurrencyToken);
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             ValidarProveedorIsActive(proveedor: proveedor);
             ValidarProveedorDuplicado(nombre: nombre, id: idProveedor);
             // Actualiza los datos del proveedor.
-            proveedor.Update(nombre: nombre, urlIcono: urlIcono, categoria: categoria, modificationUser: modificationUser);
+            proveedor.Update(nombre: nombre, urlIcono: urlIcono, categoria: categoria,
+                modificationUser: modificationUser);
 
             // Guarda los cambios.
             await context.SaveChangesAsync();
@@ -163,7 +166,7 @@ public partial class ProveedorFacade(ServiceDbContext context) : IProveedorFacad
             if (categoria == null)
                 proveedores = await context.Proveedor.ToListAsync();
             else
-                proveedores = await context.Proveedor.Where(p=>p.Categoria == categoria).ToListAsync();
+                proveedores = await context.Proveedor.Where(p => p.Categoria == categoria).ToListAsync();
             return proveedores;
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
