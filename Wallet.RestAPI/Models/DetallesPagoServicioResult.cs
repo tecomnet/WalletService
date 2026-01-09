@@ -31,7 +31,7 @@ namespace Wallet.RestAPI.Models
         public int? Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets TransaccionId
+        /// Gets or Sets BitacoraTransaccionId
         /// </summary>
         [Required]
 
@@ -133,7 +133,7 @@ namespace Wallet.RestAPI.Models
             var sb = new StringBuilder();
             sb.Append("class DetallesPagoServicioResult {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  TransaccionId: ").Append(TransaccionId).Append("\n");
+            sb.Append("  BitacoraTransaccionId: ").Append(TransaccionId).Append("\n");
             sb.Append("  ProductoId: ").Append(ProductoId).Append("\n");
             sb.Append("  NumeroReferencia: ").Append(NumeroReferencia).Append("\n");
             sb.Append("  CodigoAutorizacion: ").Append(CodigoAutorizacion).Append("\n");

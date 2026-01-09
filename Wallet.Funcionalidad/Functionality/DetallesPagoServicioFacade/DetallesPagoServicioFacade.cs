@@ -4,20 +4,25 @@ using Wallet.DOM.Modelos.GestionWallet;
 using Wallet.Funcionalidad.Functionality.BitacoraTransaccionFacade;
 using Wallet.DOM;
 using Wallet.DOM.Errors;
+using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 
 namespace Wallet.Funcionalidad.Functionality.DetallesPagoServicioFacade;
 
 public class DetallesPagoServicioFacade(
     ServiceDbContext context,
-    IBitacoraTransaccionFacade bitacoraTransaccionFacade)
+    IBitacoraTransaccionFacade bitacoraTransaccionFacade,
+    IProveedorFacade productoFacade)
     : IDetallesPagoServicioFacade
 {
-    public async Task<DetallesPagoServicio> GuardarDetallesAsync(int idTransaccion, int idProveedor,
+    public async Task<DetallesPagoServicio> GuardarDetallesAsync(int idTransaccion, int idProducto,
         string numeroReferencia, Guid creationUser, string? codigoAutorizacion)
     {
         try
         {
-            var detalles = new DetallesPagoServicio(idTransaccion: idTransaccion, idProducto: idProveedor,
+            // Obtener el producto
+            var producto = await productoFacade.ObtenerProductoPorIdAsync(idProducto: idProducto);
+            
+            var detalles = new DetallesPagoServicio(transaccionId: idTransaccion, producto: producto,
                 numeroReferencia: numeroReferencia, creationUser: creationUser,
                 codigoAutorizacion: codigoAutorizacion);
 
@@ -100,7 +105,7 @@ public class DetallesPagoServicioFacade(
         {
             return await context.DetallesPagoServicio
                 .Include(navigationPropertyPath: d => d.Transaccion)
-                .Where(predicate: d => d.IdTransaccion == idTransaccion)
+                .Where(predicate: d => d.BitacoraTransaccionId == idTransaccion)
                 .ToListAsync();
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
@@ -136,10 +141,13 @@ public class DetallesPagoServicioFacade(
                 creationUser: creationUser
             );
 
+            // Obtener el producto
+            var producto = await productoFacade.ObtenerProductoPorIdAsync(idProducto: idProducto);
+            
             // 2. Crear los detalles del pago de servicio vinculados a la transacción
             var detalles = new DetallesPagoServicio(
-                idTransaccion: transaccion.Id,
-                idProducto: idProducto,
+                transaccionId: transaccion.Id,
+                producto: producto,
                 numeroReferencia: numeroReferencia,
                 creationUser: creationUser,
                 codigoAutorizacion: "Auto-001"

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wallet.DOM.ApplicationDbContext;
 
@@ -11,9 +12,11 @@ using Wallet.DOM.ApplicationDbContext;
 namespace Wallet.DOM.Migrations
 {
     [DbContext(typeof(ServiceDbContext))]
-    partial class ServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260109153252_ProductoEnDetallesPagoServicios")]
+    partial class ProductoEnDetallesPagoServicios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1099,7 +1102,7 @@ namespace Wallet.DOM.Migrations
                     b.Property<Guid>("CreationUser")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CuentaWalletId")
+                    b.Property<int?>("DetallesPagoServicioId")
                         .HasColumnType("int");
 
                     b.Property<string>("Direccion")
@@ -1114,6 +1117,9 @@ namespace Wallet.DOM.Migrations
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("IdBilletera")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -1142,7 +1148,9 @@ namespace Wallet.DOM.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CuentaWalletId");
+                    b.HasIndex("DetallesPagoServicioId");
+
+                    b.HasIndex("IdBilletera");
 
                     b.ToTable("BitacoraTransaccion");
                 });
@@ -1213,9 +1221,6 @@ namespace Wallet.DOM.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BitacoraTransaccionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("CodigoAutorizacion")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -1233,6 +1238,12 @@ namespace Wallet.DOM.Migrations
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("IdProducto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdTransaccion")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -1257,8 +1268,7 @@ namespace Wallet.DOM.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BitacoraTransaccionId")
-                        .IsUnique();
+                    b.HasIndex("IdTransaccion");
 
                     b.HasIndex("ProductoId");
 
@@ -1650,13 +1660,19 @@ namespace Wallet.DOM.Migrations
 
             modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.BitacoraTransaccion", b =>
                 {
+                    b.HasOne("Wallet.DOM.Modelos.GestionWallet.DetallesPagoServicio", "DetallesPagoServicio")
+                        .WithMany()
+                        .HasForeignKey("DetallesPagoServicioId");
+
                     b.HasOne("Wallet.DOM.Modelos.GestionWallet.CuentaWallet", "CuentaWallet")
                         .WithMany("BitacoraTransacciones")
-                        .HasForeignKey("CuentaWalletId")
+                        .HasForeignKey("IdBilletera")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CuentaWallet");
+
+                    b.Navigation("DetallesPagoServicio");
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.CuentaWallet", b =>
@@ -1673,8 +1689,8 @@ namespace Wallet.DOM.Migrations
             modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.DetallesPagoServicio", b =>
                 {
                     b.HasOne("Wallet.DOM.Modelos.GestionWallet.BitacoraTransaccion", "Transaccion")
-                        .WithOne("DetallesPagoServicio")
-                        .HasForeignKey("Wallet.DOM.Modelos.GestionWallet.DetallesPagoServicio", "BitacoraTransaccionId")
+                        .WithMany()
+                        .HasForeignKey("IdTransaccion")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1746,12 +1762,6 @@ namespace Wallet.DOM.Migrations
                     b.Navigation("UbicacionesGeolocalizacion");
 
                     b.Navigation("Verificaciones2Fa");
-                });
-
-            modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.BitacoraTransaccion", b =>
-                {
-                    b.Navigation("DetallesPagoServicio")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Wallet.DOM.Modelos.GestionWallet.CuentaWallet", b =>

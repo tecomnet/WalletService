@@ -7,6 +7,7 @@ using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.DOM.Modelos.GestionWallet;
 using Wallet.Funcionalidad.Functionality.BitacoraTransaccionFacade;
 using Wallet.Funcionalidad.Functionality.DetallesPagoServicioFacade;
+using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 using Wallet.UnitTest.Functionality.Configuration;
 
 namespace Wallet.UnitTest.Functionality;
@@ -15,12 +16,13 @@ public class DetallesPagoServicioFacadeTest : BaseFacadeTest<IDetallesPagoServic
 {
     private readonly IDetallesPagoServicioFacade _facade;
     private readonly Mock<IBitacoraTransaccionFacade> _bitacoraTransaccionFacadeMock;
+    private readonly Mock<IProveedorFacade> _proveedorFacadeMock;
     private readonly Guid _userId = Guid.NewGuid();
 
     public DetallesPagoServicioFacadeTest() : base(setupConfig: new SetupDataConfig())
     {
         _bitacoraTransaccionFacadeMock = new Mock<IBitacoraTransaccionFacade>();
-        _facade = new DetallesPagoServicioFacade(context: Context, bitacoraTransaccionFacade: _bitacoraTransaccionFacadeMock.Object);
+        _facade = new DetallesPagoServicioFacade(context: Context, bitacoraTransaccionFacade: _bitacoraTransaccionFacadeMock.Object, productoFacade: _proveedorFacadeMock.Object);
     }
 
     public void Dispose()
@@ -46,7 +48,7 @@ public class DetallesPagoServicioFacadeTest : BaseFacadeTest<IDetallesPagoServic
         Context.CuentaWallet.Add(entity: wallet);
         await Context.SaveChangesAsync();
 
-        var transaccion = new BitacoraTransaccion(idBilletera: wallet.Id, monto: 200m, tipo: "SERVICIO", direccion: "Cargo", estatus: "Completada", creationUser: _userId);
+        var transaccion = new BitacoraTransaccion(cuentaWalletId: wallet.Id, monto: 200m, tipo: "SERVICIO", direccion: "Cargo", estatus: "Completada", creationUser: _userId);
         Context.BitacoraTransaccion.Add(entity: transaccion);
         await Context.SaveChangesAsync();
 
@@ -60,12 +62,12 @@ public class DetallesPagoServicioFacadeTest : BaseFacadeTest<IDetallesPagoServic
         var data = await SetupDataAsync();
 
         // Act
-        var result = await _facade.GuardarDetallesAsync(idTransaccion: data.transaccion.Id, idProveedor: 101, numeroReferencia: "REF_CFE_123", creationUser: _userId, codigoAutorizacion: "AUTH_999");
+        var result = await _facade.GuardarDetallesAsync(idTransaccion: data.transaccion.Id, idProducto: 101, numeroReferencia: "REF_CFE_123", creationUser: _userId, codigoAutorizacion: "AUTH_999");
 
         // Assert
         Assert.NotNull(@object: result);
         Assert.NotEqual(expected: 0, actual: result.Id);
-        Assert.Equal(expected: data.transaccion.Id, actual: result.IdTransaccion);
+        Assert.Equal(expected: data.transaccion.Id, actual: result.BitacoraTransaccionId);
         Assert.Equal(expected: "REF_CFE_123", actual: result.NumeroReferencia);
         Assert.Equal(expected: "AUTH_999", actual: result.CodigoAutorizacion);
     }
@@ -75,7 +77,7 @@ public class DetallesPagoServicioFacadeTest : BaseFacadeTest<IDetallesPagoServic
     {
         // Arrange
         var data = await SetupDataAsync();
-        await _facade.GuardarDetallesAsync(idTransaccion: data.transaccion.Id, idProveedor: 102, numeroReferencia: "REF_TELMEX", creationUser: _userId, codigoAutorizacion: "AUTH_888");
+        await _facade.GuardarDetallesAsync(idTransaccion: data.transaccion.Id, idProducto: 102, numeroReferencia: "REF_TELMEX", creationUser: _userId, codigoAutorizacion: "AUTH_888");
 
         // Act
         var result = await _facade.ObtenerPorClienteAsync(idCliente: data.wallet.IdCliente);
@@ -93,11 +95,11 @@ public class DetallesPagoServicioFacadeTest : BaseFacadeTest<IDetallesPagoServic
 
         // Pre-create the transaction in DB to satisfy FK constraints for the test
         // because we are mocking the Facade which would normally create it.
-        var realTransaccion = new BitacoraTransaccion(idBilletera: data.wallet.Id, monto: 500m, tipo: "SERVICIO", direccion: "Cargo", estatus: "Completada", creationUser: _userId);
+        var realTransaccion = new BitacoraTransaccion(cuentaWalletId: data.wallet.Id, monto: 500m, tipo: "SERVICIO", direccion: "Cargo", estatus: "Completada", creationUser: _userId);
         Context.BitacoraTransaccion.Add(entity: realTransaccion);
         await Context.SaveChangesAsync();
 
-        var expectedTransaccion = new BitacoraTransaccion(idBilletera: data.wallet.Id, monto: 500m, tipo: "SERVICIO", direccion: "Cargo", estatus: "Completada",
+        var expectedTransaccion = new BitacoraTransaccion(cuentaWalletId: data.wallet.Id, monto: 500m, tipo: "SERVICIO", direccion: "Cargo", estatus: "Completada",
             creationUser: _userId);
         // Use the ID of the real transaction we just created
         typeof(BitacoraTransaccion).GetProperty(name: "Id")?.SetValue(obj: expectedTransaccion, value: realTransaccion.Id);
@@ -135,6 +137,6 @@ public class DetallesPagoServicioFacadeTest : BaseFacadeTest<IDetallesPagoServic
         // Verify Details Persisted in DB
         var savedDetail = await Context.DetallesPagoServicio.FirstOrDefaultAsync(predicate: d => d.Id == result.Id);
         Assert.NotNull(@object: savedDetail);
-        Assert.Equal(expected: realTransaccion.Id, actual: savedDetail.IdTransaccion);
+        Assert.Equal(expected: realTransaccion.Id, actual: savedDetail.BitacoraTransaccionId);
     }
 }

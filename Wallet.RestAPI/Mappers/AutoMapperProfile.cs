@@ -93,7 +93,7 @@ public class AutoMapperProfile : Profile
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null))
             .ForMember(dest => dest.ClienteId, opt => opt.MapFrom(src => src.IdCliente));
         CreateMap<BitacoraTransaccion, TransaccionResult>()
-            .ForMember(dest => dest.WalletId, opt => opt.MapFrom(src => src.IdBilletera))
+            .ForMember(dest => dest.WalletId, opt => opt.MapFrom(src => src.CuentaWalletId))
             .ForMember(dest => dest.ConcurrencyToken,
                 opt => opt.MapFrom(src =>
                     src.ConcurrencyToken != null ? Convert.ToBase64String(src.ConcurrencyToken) : null));

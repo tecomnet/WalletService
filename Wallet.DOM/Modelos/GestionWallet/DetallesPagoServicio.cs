@@ -19,9 +19,7 @@ public class DetallesPagoServicio : ValidatablePersistentObjectLogicalDelete
 
     [Required]
     public int
-        IdTransaccion { get; set; } // Changed to int to match BitacoraTransaccion.Id (inherited from PersistentClass)
-
-    [Required] public int IdProducto { get; set; }
+    BitacoraTransaccionId { get; set; } // Changed to int to match BitacoraTransaccion.Id (inherited from PersistentClass)
 
     /// <summary>
     /// Número de referencia del servicio (Contrato, Teléfono, etc.)
@@ -36,15 +34,15 @@ public class DetallesPagoServicio : ValidatablePersistentObjectLogicalDelete
     [MaxLength(length: 100)]
     public string? CodigoAutorizacion { get; set; }
 
-    [ForeignKey(name: nameof(IdTransaccion))] public virtual BitacoraTransaccion? Transaccion { get; set; }
+    [ForeignKey(name: nameof(BitacoraTransaccionId))] public virtual BitacoraTransaccion? Transaccion { get; set; }
     
-    public virtual Producto? Producto { get; set; }
+    public Producto? Producto { get; set; }
 
     protected DetallesPagoServicio()
     {
     }
 
-    public DetallesPagoServicio(int idTransaccion, int idProducto, string numeroReferencia, Guid creationUser,
+    public DetallesPagoServicio(int transaccionId, Producto producto, string numeroReferencia, Guid creationUser,
         string? codigoAutorizacion = null)
         : base(creationUser: creationUser)
     {
@@ -52,8 +50,8 @@ public class DetallesPagoServicio : ValidatablePersistentObjectLogicalDelete
         IsPropertyValid(propertyName: nameof(NumeroReferencia), value: numeroReferencia, exceptions: ref exceptions);
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
-        IdTransaccion = idTransaccion;
-        IdProducto = idProducto;
+        BitacoraTransaccionId = transaccionId;
+        Producto = producto;
         NumeroReferencia = numeroReferencia;
         CodigoAutorizacion = codigoAutorizacion;
     }

@@ -86,7 +86,7 @@ public class CuentaWalletApiController(
         // Request body enum is mapped as string in facade.
 
         /*var transaccion = await bitacoraTransaccionFacade.GuardarTransaccionAsync(
-            idBilletera: idBilletera,
+            cuentaWalletId: cuentaWalletId,
             monto: (decimal)body.Monto,
             tipo: EnumExtensions.GetEnumMemberValue(body.TipoTransaccion),
             direccion: "CARGO", // Not provided in request? Check Spec. Spec says direccion is required in Result, but not in Request? Request has 'concepto'.

@@ -137,15 +137,12 @@ public class ServiceDbContext : DbContext
         modelBuilder.Entity<BitacoraTransaccion>()
             .HasOne(navigationExpression: b => b.CuentaWallet)
             .WithMany(navigationExpression: w => w.BitacoraTransacciones)
-            .HasForeignKey(foreignKeyExpression: b => b.IdBilletera);
+            .HasForeignKey(foreignKeyExpression: b => b.CuentaWalletId);
 
-        modelBuilder.Entity<DetallesPagoServicio>()
-            .HasKey(keyExpression: d => d.Id);
-
-        modelBuilder.Entity<DetallesPagoServicio>()
-            .HasOne(navigationExpression: d => d.Transaccion)
-            .WithMany() // Assuming 1:Many or 1:1? Let's assume 1 transaction has optional details, details belongs to transaction. Modulo details points to transaction.
-            .HasForeignKey(foreignKeyExpression: d => d.IdTransaccion);
+        modelBuilder.Entity<BitacoraTransaccion>()
+            .HasOne(b => b.DetallesPagoServicio)
+            .WithOne(d => d.Transaccion)
+            .HasForeignKey<DetallesPagoServicio>(d => d.BitacoraTransaccionId);
 
         modelBuilder.Entity<TarjetaEmitida>()
             .HasKey(keyExpression: t => t.Id);

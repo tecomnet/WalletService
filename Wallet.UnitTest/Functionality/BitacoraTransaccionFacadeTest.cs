@@ -59,7 +59,7 @@ public class BitacoraTransaccionFacadeTest : BaseFacadeTest<IBitacoraTransaccion
         // Assert
         Assert.NotNull(@object: result);
         Assert.NotEqual(expected: 0, actual: result.Id);
-        Assert.Equal(expected: wallet.Id, actual: result.IdBilletera);
+        Assert.Equal(expected: wallet.Id, actual: result.CuentaWalletId);
         Assert.Equal(expected: 100.50m, actual: result.Monto);
         Assert.Equal(expected: "REF123", actual: result.RefExternaId);
     }

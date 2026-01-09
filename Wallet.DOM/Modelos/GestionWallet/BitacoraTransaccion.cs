@@ -18,7 +18,7 @@ public class BitacoraTransaccion : ValidatablePersistentObjectLogicalDelete
         PropertyConstraint.StringPropertyConstraint(propertyName: nameof(RefExternaId), isRequired: false, minimumLength: 1, maximumLength: 100)
     ];
 
-    [Required] public int IdBilletera { get; set; }
+    [Required] public int CuentaWalletId { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(19,2)")]
@@ -51,15 +51,15 @@ public class BitacoraTransaccion : ValidatablePersistentObjectLogicalDelete
     [MaxLength(length: 100)]
     public string? RefExternaId { get; set; }
 
-    [ForeignKey(name: nameof(IdBilletera))] public virtual CuentaWallet? CuentaWallet { get; set; }
+    [ForeignKey(name: nameof(CuentaWalletId))] public virtual CuentaWallet? CuentaWallet { get; set; }
     
-    public virtual DetallesPagoServicio? DetallesPagoServicio { get; set; }
+    public DetallesPagoServicio DetallesPagoServicio { get; set; }
 
     protected BitacoraTransaccion()
     {
     }
 
-    public BitacoraTransaccion(int idBilletera, decimal monto, string tipo, string direccion, string estatus,
+    public BitacoraTransaccion(int cuentaWalletId, decimal monto, string tipo, string direccion, string estatus,
         Guid creationUser, string? refExternaId = null)
         : base(creationUser: creationUser)
     {
@@ -70,7 +70,7 @@ public class BitacoraTransaccion : ValidatablePersistentObjectLogicalDelete
 
         if (exceptions.Count > 0) throw new EMGeneralAggregateException(exceptions: exceptions);
 
-        IdBilletera = idBilletera;
+        CuentaWalletId = cuentaWalletId;
         Monto = monto;
         Tipo = tipo;
         Direccion = direccion;

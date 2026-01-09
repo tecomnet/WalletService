@@ -15,7 +15,7 @@ public class BitacoraTransaccionFacade(ServiceDbContext context) : IBitacoraTran
         try
         {
             var transaccion =
-                new BitacoraTransaccion(idBilletera: idBilletera, monto: monto, tipo: tipo, direccion: direccion,
+                new BitacoraTransaccion(cuentaWalletId: idBilletera, monto: monto, tipo: tipo, direccion: direccion,
                     estatus: estatus, creationUser: creationUser);
             
             context.BitacoraTransaccion.Add(entity: transaccion);

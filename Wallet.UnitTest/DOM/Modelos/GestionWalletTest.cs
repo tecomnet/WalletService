@@ -47,11 +47,11 @@ public class GestionWalletModelosTest
         // Arrange
         // Arrange
         var creationUser = Guid.NewGuid();
-        var bitacora = new BitacoraTransaccion(idBilletera: 1, monto: 500.00m, tipo: "SPEI", direccion: "Abono", estatus: "Completada", creationUser: creationUser,
+        var bitacora = new BitacoraTransaccion(cuentaWalletId: 1, monto: 500.00m, tipo: "SPEI", direccion: "Abono", estatus: "Completada", creationUser: creationUser,
             refExternaId: Guid.NewGuid().ToString());
 
         // Assert
-        Assert.Equal(expected: 1, actual: bitacora.IdBilletera);
+        Assert.Equal(expected: 1, actual: bitacora.CuentaWalletId);
         Assert.Equal(expected: 500.00m, actual: bitacora.Monto);
         Assert.Equal(expected: "SPEI", actual: bitacora.Tipo);
         Assert.NotEqual(expected: DateTime.MinValue, actual: bitacora.CreationTimestamp);

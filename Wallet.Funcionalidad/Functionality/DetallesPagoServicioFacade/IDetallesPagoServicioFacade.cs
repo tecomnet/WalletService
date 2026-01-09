@@ -4,7 +4,7 @@ namespace Wallet.Funcionalidad.Functionality.DetallesPagoServicioFacade;
 
 public interface IDetallesPagoServicioFacade
 {
-    Task<DetallesPagoServicio> GuardarDetallesAsync(int idTransaccion, int idProveedor, string numeroReferencia,
+    Task<DetallesPagoServicio> GuardarDetallesAsync(int idTransaccion, int idProducto, string numeroReferencia,
         Guid creationUser, string? codigoAutorizacion);
 
     Task<DetallesPagoServicio> ObtenerPorIdAsync(int id);

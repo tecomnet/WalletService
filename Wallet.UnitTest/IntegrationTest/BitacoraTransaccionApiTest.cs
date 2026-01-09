@@ -3,6 +3,8 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Wallet.DOM.Enums;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 using Xunit.Abstractions;
@@ -59,7 +61,7 @@ public class BitacoraTransaccionApiTest : DatabaseTestFixture
 
             // Create Transaction
             var bitacora = new BitacoraTransaccion(
-                idBilletera: cuenta.Id,
+                cuentaWalletId: cuenta.Id,
                 monto: 100.00m,
                 tipo: "PagoServicio",
                 direccion: "Cargo",
@@ -69,11 +71,15 @@ public class BitacoraTransaccionApiTest : DatabaseTestFixture
 
             context.BitacoraTransaccion.Add(bitacora);
             await context.SaveChangesAsync();
+            
+            // New proveedor
+            var proveedor = new Proveedor(nombre:"proveedor1", urlIcono: "url icono", Categoria.Servicios, new Broker("broker1", creationUser: Guid.Empty), Guid.Empty);
+            
 
             // Create DetallesPagoServicio
             var detalles = new DetallesPagoServicio(
-                idTransaccion: bitacora.Id,
-                idProducto: 1, // Mock provider ID
+                transaccionId: bitacora.Id,
+                producto: new Producto(proveedor: proveedor, sku: "sku1", nombre: "producto1", precio: 100.00m, urlIcono: "url icono", categoria: nameof(Categoria.Servicios), creationUser: Guid.NewGuid()), 
                 numeroReferencia: "REF123",
                 creationUser: Guid.NewGuid()
             );
