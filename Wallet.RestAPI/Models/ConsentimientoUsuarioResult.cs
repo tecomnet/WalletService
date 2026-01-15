@@ -63,52 +63,67 @@ namespace Wallet.RestAPI.Models
         public DateTime? FechaAceptacion { get; set; }
 
         /// <summary>
-        /// Gets or Sets Guid
+        /// Guid unico del registro
         /// </summary>
+        /// <value>Guid unico del registro</value>
         [Required]
 
         [DataMember(Name="guid")]
         public Guid? Guid { get; set; }
 
         /// <summary>
-        /// Gets or Sets CreationTimestamp
+        /// Creation timestamp
         /// </summary>
+        /// <value>Creation timestamp</value>
         [Required]
 
         [DataMember(Name="creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
-        /// Gets or Sets ModificationTimestamp
+        /// Modification timestamp
         /// </summary>
+        /// <value>Modification timestamp</value>
         [Required]
 
         [DataMember(Name="modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
 
         /// <summary>
-        /// Gets or Sets CreationUser
+        /// Guid of the creation user
         /// </summary>
+        /// <value>Guid of the creation user</value>
         [Required]
 
         [DataMember(Name="creationUser")]
         public Guid? CreationUser { get; set; }
 
         /// <summary>
-        /// Gets or Sets ModificationUser
+        /// Guid of the modification user
         /// </summary>
+        /// <value>Guid of the modification user</value>
         [Required]
 
         [DataMember(Name="modificationUser")]
         public Guid? ModificationUser { get; set; }
 
         /// <summary>
-        /// Gets or Sets IsActive
+        /// Guid of the modification user
         /// </summary>
+        /// <value>Guid of the modification user</value>
         [Required]
 
         [DataMember(Name="isActive")]
         public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [Required]
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -129,6 +144,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
             sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
             sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -219,6 +235,11 @@ namespace Wallet.RestAPI.Models
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other.IsActive)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -254,6 +275,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + ModificationUser.GetHashCode();
                     if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }

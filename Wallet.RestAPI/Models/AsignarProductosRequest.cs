@@ -25,11 +25,12 @@ namespace Wallet.RestAPI.Models
     public partial class AsignarProductosRequest : IEquatable<AsignarProductosRequest>
     { 
         /// <summary>
-        /// Lista de identificadores de productos
+        /// Gets or Sets ProductoIds
         /// </summary>
         [Required]
+
         [DataMember(Name="productoIds")]
-        public List<int> ProductoIds { get; set; }
+        public List<int?> ProductoIds { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -92,7 +93,8 @@ namespace Wallet.RestAPI.Models
             unchecked // Overflow is fine, just wrap
             {
                 var hashCode = 41;
-                if (ProductoIds != null)
+                // Suitable nullity checks etc, of course :)
+                    if (ProductoIds != null)
                     hashCode = hashCode * 59 + ProductoIds.GetHashCode();
                 return hashCode;
             }

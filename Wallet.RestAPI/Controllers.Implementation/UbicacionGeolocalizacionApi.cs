@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
@@ -20,15 +19,6 @@ public class UbicacionApiController(IUbicacionGeolocalizacionFacade ubicacionFac
     /// <inheritdoc />
     public override async Task<IActionResult> PostUbicacionAsync(string version, int? idCliente, UbicacionRequest body)
     {
-        // Obtienes el valor como entero de forma segura.
-        int dispositivo = (int)body.Dispositivo;
-        // Intentar convertir el entero al tipo Enum
-        if (!Enum.IsDefined(enumType: typeof(Wallet.DOM.Enums.Dispositivo), value: dispositivo))
-        {
-            //Si es un valor inválido, lanza una excepción de validación o un BadRequest.
-            throw new ArgumentException(message: $"El valor {dispositivo} no es un tipo de dispositivo válido.");
-        }
-
         // Call facade method
         var ubicacion = await ubicacionFacade.GuardarUbicacionGeolocalizacionAsync(
             idCliente: idCliente.Value,

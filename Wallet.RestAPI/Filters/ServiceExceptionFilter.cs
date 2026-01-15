@@ -1,4 +1,5 @@
 using System;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -34,19 +35,32 @@ public class ServiceExceptionFilter : IExceptionFilter
             var responseBody = new InlineResponse400(aggregateException: aggregateException);
 
             // Mapeo del código de error al Status Code HTTP
-            if (errorCode == ServiceErrorsBuilder.ClienteNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.EstadoNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.EmpresaNoEncontrada ||
-                errorCode == ServiceErrorsBuilder.CodigoVerificacionNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.BrokerNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.ProveedorNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.ProductoNoEncontrado ||
-                errorCode == ServiceErrorsBuilder.ServicioFavoritoNoEncontrado)
+            if (errorCode != null && (errorCode.Contains("NO-ENCONTRADA") || errorCode.Contains("NO-ENCONTRADO")))
             {
                 statusCode = (int)HttpStatusCode.NotFound; // 404
             }
 
             // Establecemos el resultado, deteniendo la propagación
+            context.Result = new ObjectResult(value: responseBody)
+            {
+                StatusCode = statusCode
+            };
+        }
+        // --- 2. Manejo de Excepciones de Concurrencia (DbUpdateConcurrencyException) ---
+        else if (exceptionToHandle is DbUpdateConcurrencyException)
+        {
+            // Construimos la excepción de negocio para Concurrencia
+            var concurrencyError = DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ConcurrencyError,
+                dynamicContent: [],
+                module: "DataLayer");
+
+            var concurrencyAggregateException = new EMGeneralAggregateException(concurrencyError);
+
+            // 409 Conflict
+            var statusCode = (int)HttpStatusCode.Conflict;
+            var responseBody = new InlineResponse400(aggregateException: concurrencyAggregateException);
+
             context.Result = new ObjectResult(value: responseBody)
             {
                 StatusCode = statusCode

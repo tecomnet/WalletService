@@ -35,12 +35,12 @@ namespace Wallet.DOM.ApplicationDbContext
             // La cadena de conexión se obtiene a través de un método auxiliar.
             // Se configura el comportamiento de división de consultas para optimizar el rendimiento.
             optionsBuilder.UseSqlServer(
-                connectionString: DbConnectionHelper.GetConnectionString(configuration),
+                connectionString: DbConnectionHelper.GetConnectionString(configuration: configuration),
                 sqlServerOptionsAction: builder =>
-                    builder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                    builder.UseQuerySplittingBehavior(querySplittingBehavior: QuerySplittingBehavior.SplitQuery));
 
             // Retorna una nueva instancia de ServiceDbContext con las opciones configuradas.
-            return new ServiceDbContext(optionsBuilder.Options);
+            return new ServiceDbContext(options: optionsBuilder.Options);
         }
     }
 }

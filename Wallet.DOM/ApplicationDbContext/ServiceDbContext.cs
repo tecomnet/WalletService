@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
+using Wallet.DOM.Modelos.GestionWallet;
 
 namespace Wallet.DOM.ApplicationDbContext;
 
@@ -23,6 +27,13 @@ public class ServiceDbContext : DbContext
     public DbSet<ServicioFavorito> ServicioFavorito { get; set; }
     public DbSet<ConsentimientosUsuario> ConsentimientosUsuario { get; set; } = null!;
     public DbSet<KeyValueConfig> KeyValueConfig { get; set; } = null!;
+
+    // Wallet Management
+    public DbSet<CuentaWallet> CuentaWallet { get; set; }
+    public DbSet<BitacoraTransaccion> BitacoraTransaccion { get; set; }
+    public DbSet<DetallesPagoServicio> DetallesPagoServicio { get; set; }
+    public DbSet<TarjetaEmitida> TarjetaEmitida { get; set; }
+    public DbSet<TarjetaVinculada> TarjetaVinculada { get; set; }
 
 
     // Sobrescribimos este método para configurar el modelo y agregar los datos iniciales
@@ -49,8 +60,8 @@ public class ServiceDbContext : DbContext
 
         // Configuración de la relación muchos a muchos entre Empresa y Producto
         modelBuilder.Entity<Empresa>()
-            .HasMany(e => e.Productos)
-            .WithMany(p => p.Empresas);
+            .HasMany(navigationExpression: e => e.Productos)
+            .WithMany(navigationExpression: p => p.Empresas);
 
         // -----------------------------------------------------
         // 2. SEEDING DE DATOS (Llenado de datos iniciales)
@@ -111,6 +122,43 @@ public class ServiceDbContext : DbContext
             new Estado { Id = 31, Nombre = "Yucatán", CreationUser = Guid.Empty, TestCaseID = "Seeding", IsActive = true },
             new Estado { Id = 32, Nombre = "Zacatecas", CreationUser = Guid.Empty, TestCaseID = "Seeding", IsActive = true }
         );*/
+        // Wallet Management Configuration
+        modelBuilder.Entity<CuentaWallet>()
+            .HasKey(keyExpression: c => c.Id);
+
+        modelBuilder.Entity<CuentaWallet>()
+            .HasOne(navigationExpression: c => c.Cliente)
+            .WithMany()
+            .HasForeignKey(foreignKeyExpression: c => c.IdCliente);
+
+        modelBuilder.Entity<BitacoraTransaccion>()
+            .HasKey(keyExpression: b => b.Id);
+
+        modelBuilder.Entity<BitacoraTransaccion>()
+            .HasOne(navigationExpression: b => b.CuentaWallet)
+            .WithMany(navigationExpression: w => w.BitacoraTransacciones)
+            .HasForeignKey(foreignKeyExpression: b => b.CuentaWalletId);
+
+        modelBuilder.Entity<BitacoraTransaccion>()
+            .HasOne(b => b.DetallesPagoServicio)
+            .WithOne(d => d.Transaccion)
+            .HasForeignKey<DetallesPagoServicio>(d => d.BitacoraTransaccionId);
+
+        modelBuilder.Entity<TarjetaEmitida>()
+            .HasKey(keyExpression: t => t.Id);
+
+        modelBuilder.Entity<TarjetaEmitida>()
+            .HasOne(navigationExpression: t => t.CuentaWallet)
+            .WithMany()
+            .HasForeignKey(foreignKeyExpression: t => t.IdCuentaWallet);
+
+        modelBuilder.Entity<TarjetaVinculada>()
+            .HasKey(keyExpression: t => t.Id);
+
+        modelBuilder.Entity<TarjetaVinculada>()
+            .HasOne(navigationExpression: t => t.CuentaWallet)
+            .WithMany(navigationExpression: c => c.TarjetasVinculadas)
+            .HasForeignKey(foreignKeyExpression: t => t.IdCuentaWallet);
     }
 }
     

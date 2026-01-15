@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Wallet.RestAPI.Models;
 using Wallet.DOM.Enums;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.UnitTest.FixtureBase;
 using Microsoft.AspNetCore.TestHost;
 using Moq;
@@ -15,6 +15,7 @@ using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
+[Trait(name: "Category", value: "Integration")]
 public class UserApiTest : DatabaseTestFixture
 {
     // Api URI
@@ -65,7 +66,7 @@ public class UserApiTest : DatabaseTestFixture
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<UsuarioResult>(value: responseContentString);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: user.Id, actual: result.Id);
         Assert.Equal(expected: user.CorreoElectronico, actual: result.CorreoElectronico);
     }
@@ -81,7 +82,8 @@ public class UserApiTest : DatabaseTestFixture
         var request = new TelefonoUpdateRequest
         {
             CodigoPais = "+52",
-            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}"
+            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
+            ConcurrencyToken = Convert.ToBase64String(inArray: user.ConcurrencyToken)
         };
 
         // Act
@@ -93,7 +95,7 @@ public class UserApiTest : DatabaseTestFixture
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<UsuarioResult>(value: responseContentString);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: request.Telefono, actual: result.Telefono);
     }
 
@@ -107,7 +109,8 @@ public class UserApiTest : DatabaseTestFixture
 
         var request = new EmailUpdateRequest
         {
-            CorreoElectronico = $"newemail{Guid.NewGuid()}@test.com"
+            CorreoElectronico = $"newemail{Guid.NewGuid()}@test.com",
+            ConcurrencyToken = Convert.ToBase64String(inArray: user.ConcurrencyToken)
         };
 
         // Act
@@ -120,7 +123,7 @@ public class UserApiTest : DatabaseTestFixture
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<UsuarioResult>(value: responseContentString);
 
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: request.CorreoElectronico, actual: result.CorreoElectronico);
 
         // CRITICAL CHECK: Status should PRESERVE RegistroCompletado
@@ -128,8 +131,8 @@ public class UserApiTest : DatabaseTestFixture
 
         // Verify in DB to be absolutely sure
         using var context = CreateContext();
-        var dbUser = await context.Usuario.FindAsync(user.Id);
-        Assert.NotNull(dbUser);
+        var dbUser = await context.Usuario.FindAsync(keyValues: user.Id);
+        Assert.NotNull(@object: dbUser);
         Assert.Equal(expected: EstatusRegistroEnum.RegistroCompletado, actual: dbUser.Estatus);
     }
 
@@ -137,7 +140,8 @@ public class UserApiTest : DatabaseTestFixture
     public async Task Put_Email_ReturnsBadRequest_For_Incomplete_User()
     {
         // Arrange
-        // 1. Manually create a user with an intermediate status.
+        // 1. Manually create a user with an intermediate status (e.g. DatosClienteCompletado)
+        byte[] userToken;
         using (var setupContext = CreateContext())
         {
             var incompleteUser = new Usuario(
@@ -149,8 +153,9 @@ public class UserApiTest : DatabaseTestFixture
                 creationUser: Guid.NewGuid(),
                 testCase: "IntegrationTest_Incomplete");
 
-            await setupContext.Usuario.AddAsync(incompleteUser);
+            await setupContext.Usuario.AddAsync(entity: incompleteUser);
             await setupContext.SaveChangesAsync();
+            userToken = incompleteUser.ConcurrencyToken;
         }
 
         // 2. Authenticate manually.
@@ -159,34 +164,35 @@ public class UserApiTest : DatabaseTestFixture
 
         using (var context = CreateContext())
         {
-            user = await context.Usuario.FirstOrDefaultAsync(u => u.TestCaseID == "IntegrationTest_Incomplete");
+            user = await context.Usuario.FirstOrDefaultAsync(predicate: u => u.TestCaseID == "IntegrationTest_Incomplete");
             using var scope = Factory.Services.CreateScope();
             var tokenService = scope.ServiceProvider
                 .GetRequiredService<Wallet.Funcionalidad.Services.TokenService.ITokenService>();
             var claims = new List<System.Security.Claims.Claim>
             {
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name,
-                    user.CorreoElectronico ?? user.Telefono),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new System.Security.Claims.Claim("Guid", user.Guid.ToString())
+                new System.Security.Claims.Claim(type: System.Security.Claims.ClaimTypes.Name,
+                    value: user.CorreoElectronico ?? user.Telefono),
+                new System.Security.Claims.Claim(type: System.Security.Claims.ClaimTypes.NameIdentifier, value: user.Id.ToString()),
+                new System.Security.Claims.Claim(type: "Guid", value: user.Guid.ToString())
             };
-            token = tokenService.GenerateAccessToken(claims);
+            token = tokenService.GenerateAccessToken(claims: claims);
         }
 
         var client = Factory.CreateClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         var request = new EmailUpdateRequest
         {
-            CorreoElectronico = $"updated{Guid.NewGuid()}@test.com"
+            CorreoElectronico = $"updated{Guid.NewGuid()}@test.com",
+            ConcurrencyToken = Convert.ToBase64String(inArray: userToken)
         };
 
         // Act
-        var content = CreateContent(request);
-        var response = await client.PutAsync($"{API_VERSION}/usuario/{user.Id}/actualizaEmail", content);
+        var content = CreateContent(body: request);
+        var response = await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaEmail", content: content);
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.BadRequest, actual: response.StatusCode);
     }
 
     [Fact]
@@ -200,7 +206,8 @@ public class UserApiTest : DatabaseTestFixture
         var request = new TelefonoUpdateRequest
         {
             CodigoPais = "+52",
-            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}"
+            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
+            ConcurrencyToken = Convert.ToBase64String(inArray: user.ConcurrencyToken)
         };
 
         // Act
@@ -213,7 +220,7 @@ public class UserApiTest : DatabaseTestFixture
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<UsuarioResult>(value: responseContentString);
 
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: request.Telefono, actual: result.Telefono);
 
         // CRITICAL CHECK: Status should PRESERVE RegistroCompletado
@@ -221,8 +228,8 @@ public class UserApiTest : DatabaseTestFixture
 
         // Verify in DB
         using var context = CreateContext();
-        var dbUser = await context.Usuario.FindAsync(user.Id);
-        Assert.NotNull(dbUser);
+        var dbUser = await context.Usuario.FindAsync(keyValues: user.Id);
+        Assert.NotNull(@object: dbUser);
         Assert.Equal(expected: EstatusRegistroEnum.RegistroCompletado, actual: dbUser.Estatus);
     }
 
@@ -231,6 +238,7 @@ public class UserApiTest : DatabaseTestFixture
     {
         // Arrange
         // 1. Manually create a user with an intermediate status
+        byte[] userToken;
         using (var setupContext = CreateContext())
         {
             var incompleteUser = new Usuario(
@@ -242,8 +250,9 @@ public class UserApiTest : DatabaseTestFixture
                 creationUser: Guid.NewGuid(),
                 testCase: "IntegrationTest_Incomplete_Phone");
 
-            await setupContext.Usuario.AddAsync(incompleteUser);
+            await setupContext.Usuario.AddAsync(entity: incompleteUser);
             await setupContext.SaveChangesAsync();
+            userToken = incompleteUser.ConcurrencyToken;
         }
 
         // 2. Authenticate
@@ -252,34 +261,35 @@ public class UserApiTest : DatabaseTestFixture
 
         using (var context = CreateContext())
         {
-            user = await context.Usuario.FirstOrDefaultAsync(u => u.TestCaseID == "IntegrationTest_Incomplete_Phone");
+            user = await context.Usuario.FirstOrDefaultAsync(predicate: u => u.TestCaseID == "IntegrationTest_Incomplete_Phone");
             using var scope = Factory.Services.CreateScope();
             var tokenService = scope.ServiceProvider
                 .GetRequiredService<Wallet.Funcionalidad.Services.TokenService.ITokenService>();
             var claims = new List<System.Security.Claims.Claim>
             {
-                new(System.Security.Claims.ClaimTypes.Name, user.CorreoElectronico ?? user.Telefono),
-                new(System.Security.Claims.ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new("Guid", user.Guid.ToString())
+                new(type: System.Security.Claims.ClaimTypes.Name, value: user.CorreoElectronico ?? user.Telefono),
+                new(type: System.Security.Claims.ClaimTypes.NameIdentifier, value: user.Id.ToString()),
+                new(type: "Guid", value: user.Guid.ToString())
             };
-            token = tokenService.GenerateAccessToken(claims);
+            token = tokenService.GenerateAccessToken(claims: claims);
         }
 
         var client = Factory.CreateClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         var request = new TelefonoUpdateRequest
         {
             CodigoPais = "+52",
-            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}"
+            Telefono = $"9{new Random().Next(minValue: 100000000, maxValue: 999999999)}",
+            ConcurrencyToken = Convert.ToBase64String(inArray: userToken)
         };
 
         // Act
-        var content = CreateContent(request);
-        var response = await client.PutAsync($"{API_VERSION}/usuario/{user.Id}/actualizaTelefono", content);
+        var content = CreateContent(body: request);
+        var response = await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaTelefono", content: content);
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.BadRequest, actual: response.StatusCode);
     }
 
     [Fact]
@@ -294,7 +304,8 @@ public class UserApiTest : DatabaseTestFixture
         {
             ContrasenaActual = "Password123!", // Matches default in fixture
             ContrasenaNueva = "NewPassword123!",
-            ContrasenaNuevaConfrimacion = "NewPassword123!"
+            ContrasenaNuevaConfrimacion = "NewPassword123!",
+            ConcurrencyToken = Convert.ToBase64String(inArray: user.ConcurrencyToken)
         };
 
         // Act
@@ -307,15 +318,15 @@ public class UserApiTest : DatabaseTestFixture
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<UsuarioResult>(value: responseContentString);
 
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
 
         // CRITICAL CHECK: Status should PRESERVE RegistroCompletado
         Assert.Equal(expected: EstatusRegistroEnum.RegistroCompletado.ToString(), actual: result.Estatus);
 
         // Verify in DB
         using var context = CreateContext();
-        var dbUser = await context.Usuario.FindAsync(user.Id);
-        Assert.NotNull(dbUser);
+        var dbUser = await context.Usuario.FindAsync(keyValues: user.Id);
+        Assert.NotNull(@object: dbUser);
         Assert.Equal(expected: EstatusRegistroEnum.RegistroCompletado, actual: dbUser.Estatus);
     }
 
@@ -335,7 +346,15 @@ public class UserApiTest : DatabaseTestFixture
                 creationUser: Guid.NewGuid(),
                 testCase: "IntegrationTest_FirstPassword");
 
-            await setupContext.Usuario.AddAsync(incompleteUser);
+            await setupContext.Usuario.AddAsync(entity: incompleteUser);
+
+            // Add required Empresa and Cliente for Wallet creation
+            var empresa = new Wallet.DOM.Modelos.GestionEmpresa.Empresa(nombre: "Tecomnet", creationUser: Guid.NewGuid());
+            await setupContext.Empresa.AddAsync(entity: empresa);
+
+            var cliente = new Wallet.DOM.Modelos.GestionCliente.Cliente(usuario: incompleteUser, empresa: empresa, creationUser: Guid.NewGuid());
+            await setupContext.Cliente.AddAsync(entity: cliente);
+
             await setupContext.SaveChangesAsync();
         }
 
@@ -347,7 +366,7 @@ public class UserApiTest : DatabaseTestFixture
         string token;
         using (var context = CreateContext())
         {
-            user = await context.Usuario.FirstOrDefaultAsync(u => u.TestCaseID == "IntegrationTest_FirstPassword");
+            user = await context.Usuario.FirstOrDefaultAsync(predicate: u => u.TestCaseID == "IntegrationTest_FirstPassword");
             using var scope = Factory.Services.CreateScope();
             var tokenService = scope.ServiceProvider
                 .GetRequiredService<Wallet.Funcionalidad.Services.TokenService.ITokenService>();
@@ -356,44 +375,44 @@ public class UserApiTest : DatabaseTestFixture
             // We'll generate a standard token for the test to pass Authorization middleware if present.
             var claims = new List<System.Security.Claims.Claim>
             {
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name,
-                    user.CorreoElectronico ?? user.Telefono ?? "testuser"),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new System.Security.Claims.Claim("Guid", user.Guid.ToString())
+                new System.Security.Claims.Claim(type: System.Security.Claims.ClaimTypes.Name,
+                    value: user.CorreoElectronico ?? user.Telefono ?? "testuser"),
+                new System.Security.Claims.Claim(type: System.Security.Claims.ClaimTypes.NameIdentifier, value: user.Id.ToString()),
+                new System.Security.Claims.Claim(type: "Guid", value: user.Guid.ToString())
             };
-            token = tokenService.GenerateAccessToken(claims);
+            token = tokenService.GenerateAccessToken(claims: claims);
         }
 
         var client = Factory.CreateClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         var request = new CompletarRegistroRequest
         {
             Contrasena = "Password123!",
-            ConfirmacionContrasena = "Password123!"
+            ConfirmacionContrasena = "Password123!",
         };
 
         // Act
-        var content = CreateContent(request);
+        var content = CreateContent(body: request);
         // Endpoint is on RegistroApiController: PUT /{version}/registro/{id}/completar
-        var response = await client.PutAsync($"{API_VERSION}/registro/{user.Id}/completar", content);
+        var response = await client.PutAsync(requestUri: $"{API_VERSION}/registro/{user.Id}/completar", content: content);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContentString = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<UsuarioResult>(responseContentString);
+        var result = JsonConvert.DeserializeObject<UsuarioResult>(value: responseContentString);
 
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
 
         // CRITICAL CHECK: Status should CHANGE to RegistroCompletado
-        Assert.Equal(EstatusRegistroEnum.RegistroCompletado.ToString(), result.Estatus);
+        Assert.Equal(expected: EstatusRegistroEnum.RegistroCompletado.ToString(), actual: result.Estatus);
 
         // Verify in DB
         using var verifyContext = CreateContext();
-        var dbUser = await verifyContext.Usuario.FindAsync(user.Id);
-        Assert.NotNull(dbUser);
-        Assert.Equal(EstatusRegistroEnum.RegistroCompletado, dbUser.Estatus);
-        Assert.NotNull(dbUser.Contrasena); // Password should be set
+        var dbUser = await verifyContext.Usuario.FindAsync(keyValues: user.Id);
+        Assert.NotNull(@object: dbUser);
+        Assert.Equal(expected: EstatusRegistroEnum.RegistroCompletado, actual: dbUser.Estatus);
+        Assert.NotNull(@object: dbUser.Contrasena); // Password should be set
     }
 
 
@@ -409,15 +428,31 @@ public class UserApiTest : DatabaseTestFixture
     [Fact]
     public async Task Confirmar2FA_Email_Success()
     {
+        // Custom factory to override mock
+        var factory = Factory.WithWebHostBuilder(configuration: builder =>
+        {
+            builder.ConfigureTestServices(servicesConfiguration: services =>
+            {
+                var mock = new Mock<ITwilioServiceFacade>();
+                mock.Setup(expression: x => x.ConfirmarVerificacionEmail(It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                mock.Setup(expression: x => x.VerificacionEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+
+                services.AddScoped<ITwilioServiceFacade>(implementationFactory: _ => mock.Object);
+            });
+        });
+
         // Arrange
+        var client = factory.CreateClient();
         var (user, token) = await CreateAuthenticatedUserAsync();
-        var client = Factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         // 1. Update Email to trigger 2FA
         var updateRequest = new EmailUpdateRequest
         {
-            CorreoElectronico = $"confirm2fa{Guid.NewGuid()}@test.com"
+            CorreoElectronico = $"confirm2fa{Guid.NewGuid()}@test.com",
+            ConcurrencyToken = Convert.ToBase64String(inArray: user.ConcurrencyToken)
         };
         var updateContent = CreateContent(body: updateRequest);
         await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaEmail", content: updateContent);
@@ -429,12 +464,12 @@ public class UserApiTest : DatabaseTestFixture
         // 3. Confirm 2FA
         var confirmRequest = new
         {
-            tipo = "Email",
+            tipo = "email", // lowercase
             codigo = verificationCode
         };
         // Use manual serialization to ensure control
-        var json = System.Text.Json.JsonSerializer.Serialize(confirmRequest);
-        var confirmContent = new StringContent(json, Encoding.UTF8, "application/json");
+        var json = System.Text.Json.JsonSerializer.Serialize(value: confirmRequest);
+        var confirmContent = new StringContent(content: json, encoding: Encoding.UTF8, mediaType: "application/json");
 
         // Act
         var response = await client.PostAsync(
@@ -449,33 +484,49 @@ public class UserApiTest : DatabaseTestFixture
         // Verify in DB that it is marked as verified
         using (var context = CreateContext())
         {
-            var dbUser = await context.Usuario.Include(u => u.Verificaciones2Fa)
-                .FirstAsync(u => u.Id == user.Id);
+            var dbUser = await context.Usuario.Include(navigationPropertyPath: u => u.Verificaciones2Fa)
+                .FirstAsync(predicate: u => u.Id == user.Id);
             var verificacion = dbUser.Verificaciones2Fa
-                .FirstOrDefault(v => v.Codigo == verificationCode && v.Tipo == Tipo2FA.Email);
-            Assert.NotNull(verificacion);
-            Assert.True(verificacion.Verificado);
+                .FirstOrDefault(predicate: v => v.Codigo == verificationCode && v.Tipo == Tipo2FA.Email);
+            Assert.NotNull(@object: verificacion);
+            Assert.True(condition: verificacion.Verificado);
         }
     }
 
     [Fact]
     public async Task Confirmar2FA_Telefono_Success()
     {
+        // Custom factory to override mock
+        var factory = Factory.WithWebHostBuilder(configuration: builder =>
+        {
+            builder.ConfigureTestServices(servicesConfiguration: services =>
+            {
+                var mock = new Mock<ITwilioServiceFacade>();
+                mock.Setup(expression: x => x.ConfirmarVerificacionSMS(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                mock.Setup(expression: x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+
+                services.AddScoped<ITwilioServiceFacade>(implementationFactory: _ => mock.Object);
+            });
+        });
+
         // Arrange
+        var client = factory.CreateClient();
         var (user, token) = await CreateAuthenticatedUserAsync();
-        var client = Factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
 
         // 1. Update Phone to trigger 2FA
         var updateRequest = new TelefonoUpdateRequest
         {
-            CodigoPais = "052",
-            Telefono = "55" + new Random().Next(10000000, 99999999)
+            CodigoPais = "+52",
+            Telefono = "55" + new Random().Next(minValue: 10000000, maxValue: 99999999),
+            ConcurrencyToken = Convert.ToBase64String(inArray: user.ConcurrencyToken)
         };
         var updateContent = CreateContent(body: updateRequest);
         var updateResponse = await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaTelefono",
             content: updateContent);
-        Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: updateResponse.StatusCode);
 
         // 2. Mock code
         string verificationCode = "1234";
@@ -483,19 +534,18 @@ public class UserApiTest : DatabaseTestFixture
         // 3. Confirm 2FA
         var confirmRequest = new
         {
-            tipo = "Sms",
+            tipo = "sms", // lowercase
             codigo = verificationCode
         };
 
-        var json = System.Text.Json.JsonSerializer.Serialize(confirmRequest);
-        var confirmContent = new StringContent(json, Encoding.UTF8, "application/json");
+        var json = System.Text.Json.JsonSerializer.Serialize(value: confirmRequest);
+        var confirmContent = new StringContent(content: json, encoding: Encoding.UTF8, mediaType: "application/json");
 
         // Act
         var response = await client.PostAsync(
             requestUri: $"{API_VERSION}/usuario/{user.Id}/confirmar2fa", content: confirmContent);
 
         // Assert
-        // var responseContentString = await response.Content.ReadAsStringAsync(); // Debugging
         Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var responseContentString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<bool>(value: responseContentString);
@@ -504,12 +554,13 @@ public class UserApiTest : DatabaseTestFixture
         // Verify in DB
         using (var context = CreateContext())
         {
-            var dbUser = await context.Usuario.Include(u => u.Verificaciones2Fa)
-                .FirstAsync(u => u.Id == user.Id);
+            var dbUser = await context.Usuario.Include(navigationPropertyPath: u => u.Verificaciones2Fa)
+                .FirstAsync(predicate: u => u.Id == user.Id);
             var verificacion = dbUser.Verificaciones2Fa
-                .FirstOrDefault(v => v.Codigo == verificationCode && v.Tipo == Tipo2FA.Sms);
-            Assert.NotNull(verificacion);
-            Assert.True(verificacion.Verificado);
+                .OrderByDescending(keySelector: v => v.CreationTimestamp)
+                .FirstOrDefault(predicate: v => v.Codigo == verificationCode && v.Tipo == Tipo2FA.Sms);
+            Assert.NotNull(@object: verificacion);
+            Assert.True(condition: verificacion.Verificado);
         }
     }
 
@@ -517,26 +568,23 @@ public class UserApiTest : DatabaseTestFixture
     public async Task Confirmar2FA_BadCode_ReturnsFalse()
     {
         // Custom factory to override mock
-        var factory = Factory.WithWebHostBuilder(builder =>
+        var factory = Factory.WithWebHostBuilder(configuration: builder =>
         {
-            builder.ConfigureTestServices(services =>
+            builder.ConfigureTestServices(servicesConfiguration: services =>
             {
                 var mock = new Mock<ITwilioServiceFacade>();
                 // Setup to return False
-                mock.Setup(x => x.ConfirmarVerificacionSMS(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                    .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = false });
-                mock.Setup(x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
-                    .ReturnsAsync(new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
+                mock.Setup(expression: x => x.ConfirmarVerificacionSMS(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = false });
+                mock.Setup(expression: x => x.VerificacionSMS(It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(value: new VerificacionResult { Sid = "TEST_SID", IsVerified = true });
 
-                services.AddScoped<ITwilioServiceFacade>(_ => mock.Object);
+                services.AddScoped<ITwilioServiceFacade>(implementationFactory: _ => mock.Object);
             });
         });
 
         // Use the custom factory to create client
         var client = factory.CreateClient();
-        // Since we created a new client/factory, we need to authenticate again? 
-        // Factory.CreateAuthenticatedUserAsync uses the global Factory. 
-        // But the DB is shared (Postgres/SQL container).
         // We can reuse the tokens if we set the header.
         var (user, token) = await CreateAuthenticatedUserAsync();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: token);
@@ -545,12 +593,13 @@ public class UserApiTest : DatabaseTestFixture
         var updateRequest = new TelefonoUpdateRequest
         {
             CodigoPais = "052",
-            Telefono = "55" + new Random().Next(10000000, 99999999)
+            Telefono = "55" + new Random().Next(minValue: 10000000, maxValue: 99999999),
+            ConcurrencyToken = Convert.ToBase64String(inArray: user.ConcurrencyToken)
         };
         var updateContent = CreateContent(body: updateRequest);
         var updateResponse = await client.PutAsync(requestUri: $"{API_VERSION}/usuario/{user.Id}/actualizaTelefono",
             content: updateContent);
-        Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: updateResponse.StatusCode);
 
         // 2. Bad code
         string verificationCode = "WRONG";
@@ -558,12 +607,12 @@ public class UserApiTest : DatabaseTestFixture
         // 3. Confirm 2FA
         var confirmRequest = new
         {
-            tipo = "Sms",
+            tipo = "sms", // lowercase
             codigo = verificationCode
         };
 
-        var json = System.Text.Json.JsonSerializer.Serialize(confirmRequest);
-        var confirmContent = new StringContent(json, Encoding.UTF8, "application/json");
+        var json = System.Text.Json.JsonSerializer.Serialize(value: confirmRequest);
+        var confirmContent = new StringContent(content: json, encoding: Encoding.UTF8, mediaType: "application/json");
 
         // Act
         var response = await client.PostAsync(
@@ -591,8 +640,8 @@ public class UserApiTest : DatabaseTestFixture
             tipo = "Email",
             codigo = "1234"
         };
-        var json = System.Text.Json.JsonSerializer.Serialize(confirmRequest);
-        var confirmContent = new StringContent(json, Encoding.UTF8, "application/json");
+        var json = System.Text.Json.JsonSerializer.Serialize(value: confirmRequest);
+        var confirmContent = new StringContent(content: json, encoding: Encoding.UTF8, mediaType: "application/json");
 
         // Act
         var response = await client.PostAsync(
@@ -600,6 +649,6 @@ public class UserApiTest : DatabaseTestFixture
 
         // Assert
         // Current implementation returns BadRequest (400) for UsuarioNoEncontrado exception.
-        Assert.Equal(expected: HttpStatusCode.BadRequest, actual: response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.NotFound, actual: response.StatusCode);
     }
 }

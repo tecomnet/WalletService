@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.Funcionalidad.Functionality.ProveedorFacade;
 
@@ -80,12 +80,29 @@ public class ServicioFavoritoFacade(
 
     /// <inheritdoc />
     public async Task<ServicioFavorito> ActualizarServicioFavoritoAsync(int idServicioFavorito, string alias,
-        string numeroReferencia, Guid modificationUser, string? testCase = null)
+        string numeroReferencia, string? concurrencyToken, Guid modificationUser, string? testCase = null)
     {
         try
         {
             // Obtiene el servicio favorito existente.
             var servicioFavorito = await ObtenerServicioFavoritoPorIdAsync(idServicioFavorito: idServicioFavorito);
+
+            // Validar que el servicio favorito esté activo
+            if (!servicioFavorito.IsActive)
+            {
+                throw new EMGeneralAggregateException(
+                    exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.ServicioFavoritoInactivo,
+                        dynamicContent: [idServicioFavorito], module: this.GetType().Name));
+            }
+
+            // Manejo de ConcurrencyToken
+            if (!string.IsNullOrEmpty(value: concurrencyToken))
+            {
+                context.Entry(entity: servicioFavorito).Property(propertyExpression: x => x.ConcurrencyToken)
+                        .OriginalValue =
+                    DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
+            }
 
             // Actualiza los datos del servicio favorito.
             servicioFavorito.Update(alias: alias, numeroReferencia: numeroReferencia,
@@ -94,6 +111,12 @@ public class ServicioFavoritoFacade(
             // Guarda los cambios.
             await context.SaveChangesAsync();
             return servicioFavorito;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                errorCode: ServiceErrorsBuilder.ConcurrencyError,
+                dynamicContent: []));
         }
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {

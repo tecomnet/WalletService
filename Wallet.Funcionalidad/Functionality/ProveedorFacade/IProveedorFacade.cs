@@ -1,4 +1,5 @@
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Enums;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 
@@ -9,11 +10,12 @@ public interface IProveedorFacade
     /// </summary>
     /// <param name="nombre">El nombre del proveedor.</param>
     /// <param name="urlIcono">La URL del ícono del proveedor.</param>
+    /// <param name="categoria">Categoria del proveedor</param>
     /// <param name="brokerId">El identificador único del broker asociado.</param>
     /// <param name="creationUser">El identificador del usuario que crea el registro.</param>
     /// <param name="testCase">Caso de prueba (opcional).</param>
     /// <returns>El objeto <see cref="Proveedor"/> guardado.</returns>
-    Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, int brokerId, Guid creationUser,
+    Task<Proveedor> GuardarProveedorAsync(string nombre, string urlIcono, Categoria categoria, int brokerId, Guid creationUser,
         string? testCase = null);
 
     /// <summary>
@@ -28,11 +30,13 @@ public interface IProveedorFacade
     /// </summary>
     /// <param name="idProveedor">El identificador único del proveedor a actualizar.</param>
     /// <param name="nombre">El nuevo nombre del proveedor.</param>
+    /// <param name="categoria">Categoria del proveedor</param>
     /// <param name="urlIcono">La URL del ícono del proveedor.</param>
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <param name="testCase">Caso de prueba (opcional).</param>
     /// <returns>El objeto <see cref="Proveedor"/> actualizado.</returns>
-    Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, string urlIcono, Guid modificationUser,
+    Task<Proveedor> ActualizarProveedorAsync(int idProveedor, string nombre, Categoria categoria, string urlIcono, string concurrencyToken,
+        Guid modificationUser,
         string? testCase = null);
 
     /// <summary>
@@ -55,7 +59,7 @@ public interface IProveedorFacade
     /// Obtiene una lista de todos los proveedores registrados.
     /// </summary>
     /// <returns>Una lista de objetos <see cref="Proveedor"/>.</returns>
-    Task<List<Proveedor>> ObtenerProveedoresAsync();
+    Task<List<Proveedor>> ObtenerProveedoresAsync(Categoria? categoria = null);
 
     /// <summary>
     /// Agrega un nuevo producto a un proveedor existente.
@@ -97,7 +101,7 @@ public interface IProveedorFacade
     /// <param name="modificationUser">El identificador del usuario que realiza la modificación.</param>
     /// <returns>El objeto <see cref="Producto"/> actualizado.</returns>
     Task<Producto> ActualizarProductoAsync(int idProducto, string sku, string nombre, decimal? precio, string icono,
-        string categoria, Guid modificationUser);
+        string categoria, string concurrencyToken, Guid modificationUser);
 
     /// <summary>
     /// Elimina (lógicamente) un producto del sistema.
@@ -120,6 +124,13 @@ public interface IProveedorFacade
     /// </summary>
     /// <returns>Una lista de todos los productos.</returns>
     Task<List<Producto>> ObtenerProductosAsync();
+
+    /// <summary>
+    /// Obtiene todos los productos que pertenecen a una categoría específica.
+    /// </summary>
+    /// <param name="categoria">La categoría de los productos.</param>
+    /// <returns>Una lista de objetos <see cref="Producto"/> filtrada por categoría.</returns>
+    Task<List<Producto>> ObtenerProductosPorCategoriaAsync(string categoria);
 
     /// <summary>
     /// Actualiza el proveedor de un producto.

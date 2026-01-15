@@ -30,7 +30,8 @@ namespace Wallet.DOM
         /// <param name="dynamicContent">Una lista de objetos que representan contenido dinámico para incluir en la descripción del error.</param>
         /// <param name="module">El nombre del módulo donde se originó la excepción. Por defecto es <see cref="ModuleName"/>.</param>
         /// <returns>Una nueva instancia de <see cref="EMGeneralException"/>.</returns>
-        private static EMGeneralException BuildEmGeneralException(IServiceError serviceError, List<object> dynamicContent, string module = ModuleName)
+        private static EMGeneralException BuildEmGeneralException(IServiceError serviceError,
+            List<object> dynamicContent, string module = ModuleName)
         {
             return new EMGeneralException(
                 serviceError: serviceError,
@@ -47,13 +48,43 @@ namespace Wallet.DOM
         /// <param name="dynamicContent">Una lista de objetos que representan contenido dinámico para incluir en la descripción del error.</param>
         /// <param name="module">El nombre del módulo donde se originó la excepción. Por defecto es <see cref="ModuleName"/>.</param>
         /// <returns>Una nueva instancia de <see cref="EMGeneralException"/>.</returns>
-        public static EMGeneralException BuildEmGeneralException(string errorCode, List<object> dynamicContent, string module = ModuleName)
+        public static EMGeneralException BuildEmGeneralException(string errorCode, List<object> dynamicContent,
+            string module = ModuleName)
         {
             // Obtiene el objeto de error de servicio a partir del código de error.
             var serviceError = ServiceError.GetError(errorCode: errorCode);
             // Construye la excepción general utilizando el objeto de error de servicio.
-            var itaGeneralException = BuildEmGeneralException(serviceError: serviceError, dynamicContent: dynamicContent, module: module);
+            var itaGeneralException = BuildEmGeneralException(serviceError: serviceError,
+                dynamicContent: dynamicContent, module: module);
             return itaGeneralException;
+        }
+
+        /// <summary>
+        /// Intenta parsear un token de concurrencia en Base64 de forma segura.
+        /// Si el formato es inválido, lanza una excepción de servicio estandarizada.
+        /// </summary>
+        /// <param name="token">El token en formato Base64.</param>
+        /// <param name="module">El nombre del módulo donde se invoca.</param>
+        /// <returns>El array de bytes del token.</returns>
+        public static byte[] SafeParseConcurrencyToken(string token, string module)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new EMGeneralAggregateException(exception: BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ConcurrencyTokenRequerido,
+                    dynamicContent: [], module: module));
+            }
+
+            try
+            {
+                return Convert.FromBase64String(s: token);
+            }
+            catch (Exception)
+            {
+                throw new EMGeneralAggregateException(exception: BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ConcurrencyTokenInvalido,
+                    dynamicContent: [token], module: module));
+            }
         }
     }
 }

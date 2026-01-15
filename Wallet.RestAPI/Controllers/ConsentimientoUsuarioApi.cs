@@ -1,7 +1,7 @@
 /*
  * Wallet Service API
  *
- * Api para exponer la funcionalidad de wallet service.
+ * Api para exponer la funcionalidad de wallet service. 
  *
  * OpenAPI spec version: 0.1.0
  * Contact: edilberto_diaz14@hotmail.com
@@ -11,16 +11,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using Wallet.RestAPI.Attributes;
 using Wallet.RestAPI.Controllers.Base;
 using Wallet.RestAPI.Models;
 
 namespace Wallet.RestAPI.Controllers
-{
+{ 
     /// <summary>
     /// 
     /// </summary>
@@ -49,7 +47,8 @@ namespace Wallet.RestAPI.Controllers
         [SwaggerResponse(statusCode: 404, type: typeof(InlineResponse400),
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> GetConsentimientosUsuarioAsync(
-            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
+            [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")]
+            string version,
             [FromRoute] [Required] int? idUsuario);
 
         /// <summary>
@@ -76,7 +75,6 @@ namespace Wallet.RestAPI.Controllers
             description: "Response to client error satus code")]
         public abstract Task<IActionResult> PostConsentimientoUsuarioAsync(
             [FromRoute] [Required] [RegularExpression("^(?<major>[0-9]+).(?<minor>[0-9]+)$")] string version,
-            [FromRoute] [Required] int? idUsuario,
-            [FromBody] ConsentimientoUsuarioRequest body);
+            [FromRoute] [Required] int? idUsuario, [FromBody] ConsentimientoUsuarioRequest body);
     }
 }

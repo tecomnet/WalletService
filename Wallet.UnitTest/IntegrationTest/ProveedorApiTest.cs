@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 
@@ -16,9 +17,9 @@ public class ProveedorApiTest : DatabaseTestFixture
     {
         SetupDataAsync(setupDataAction: async context =>
         {
-            var broker1 = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test 1", creationUser: Guid.NewGuid());
-            var broker2 = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test 2", creationUser: Guid.NewGuid());
-            await context.Broker.AddRangeAsync(broker1, broker2);
+            var broker1 = new Broker(nombre: "Broker Test 1", creationUser: Guid.NewGuid());
+            var broker2 = new Broker(nombre: "Broker Test 2", creationUser: Guid.NewGuid());
+            await context.Broker.AddRangeAsync(entities: [broker1, broker2]);
             await context.SaveChangesAsync();
         }).GetAwaiter().GetResult();
     }
@@ -55,7 +56,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: request.Nombre, actual: result.Nombre);
         Assert.True(condition: result.Id > 0);
     }
@@ -74,7 +75,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var responseContent = await response.Content.ReadAsStringAsync();
         var result =
             JsonConvert.DeserializeObject<List<ProveedorResult>>(value: responseContent, settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
     }
 
     [Fact]
@@ -94,7 +95,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var createResult =
             JsonConvert.DeserializeObject<ProveedorResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(createResult);
+        Assert.NotNull(@object: createResult);
 
         // Act
         var response = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}/{createResult.Id}");
@@ -104,7 +105,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: createResult.Id, actual: result.Id);
     }
 
@@ -125,14 +126,15 @@ public class ProveedorApiTest : DatabaseTestFixture
         var createResult =
             JsonConvert.DeserializeObject<ProveedorResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(createResult);
+        Assert.NotNull(@object: createResult);
 
         // Act
-        var updateRequest = new ProveedorRequest
+        var updateRequest = new ProveedorUpdateRequest
         {
             Nombre = "Amazon Prime",
             UrlIcono = "https://amazon.com/icon.png",
-            BrokerId = 2
+            BrokerId = 2,
+            ConcurrencyToken = createResult.ConcurrencyToken
         };
         var response =
             await client.PutAsync(requestUri: $"{API_VERSION}/{API_URI}/{createResult.Id}",
@@ -143,7 +145,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: updateRequest.Nombre, actual: result.Nombre);
         // Assert.Equal(expected: updateRequest.Categoria, actual: result.Categoria); // Categoria removed
     }
@@ -171,7 +173,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var createResult =
             JsonConvert.DeserializeObject<ProveedorResult>(value: await createResponse.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(createResult);
+        Assert.NotNull(@object: createResult);
         Assert.True(condition: createResult.Id > 0, userMessage: "Created provider ID should be > 0");
 
         // Act
@@ -182,7 +184,7 @@ public class ProveedorApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProveedorResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.False(condition: result.IsActive);
     }
 

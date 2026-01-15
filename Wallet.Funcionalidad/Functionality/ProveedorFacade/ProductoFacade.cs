@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM;
-using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Enums;
+using Wallet.DOM.Modelos.GestionEmpresa;
 
 namespace Wallet.Funcionalidad.Functionality.ProveedorFacade;
 
@@ -91,12 +91,19 @@ public partial class ProveedorFacade : IProveedorFacade
 
     /// <inheritdoc />
     public async Task<Producto> ActualizarProductoAsync(int idProducto, string sku, string nombre,
-        decimal? precio, string icono, string categoria, Guid modificationUser)
+        decimal? precio, string icono, string categoria, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             // Obtiene el producto existente.
             var producto = await ObtenerProductoPorIdAsync(idProducto: idProducto);
+            // Establece el token original para la validación de concurrencia optimista
+            if (!string.IsNullOrEmpty(value: concurrencyToken))
+            {
+                context.Entry(entity: producto).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                    DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
+            }
+
             // Valida que el producto no esté inactivo.
             ValidarProductoIsActive(producto: producto);
             // Valida duplicidad
@@ -109,7 +116,8 @@ public partial class ProveedorFacade : IProveedorFacade
             await context.SaveChangesAsync();
             return producto;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
@@ -181,6 +189,32 @@ public partial class ProveedorFacade : IProveedorFacade
     }
 
     /// <inheritdoc />
+    public async Task<List<Producto>> ObtenerProductosPorCategoriaAsync(string categoria)
+    {
+        try
+        {
+            if (!Enum.TryParse<Categoria>(value: categoria, ignoreCase: true, result: out _))
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.ProductoCategoriaInvalida,
+                    dynamicContent: [categoria],
+                    module: this.GetType().Name));
+            }
+
+            return await context.Producto
+                .Where(predicate: x => x.Categoria == categoria && x.IsActive)
+                .ToListAsync();
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        {
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    /// <inheritdoc />
     public async Task<Producto> ActualizarProveedorDeProductoAsync(int idProducto, int idProveedor,
         Guid modificationUser)
     {
@@ -238,7 +272,7 @@ public partial class ProveedorFacade : IProveedorFacade
         if (existentes.Count == 0) return;
 
         // Validar duplicidad de nombre
-        if (existentes.Any(x => x.Nombre == nombre))
+        if (existentes.Any(predicate: x => x.Nombre == nombre))
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ProductoExistente,
@@ -247,7 +281,7 @@ public partial class ProveedorFacade : IProveedorFacade
         }
 
         // Validar duplicidad de SKU
-        if (existentes.Any(x => x.Sku == sku))
+        if (existentes.Any(predicate: x => x.Sku == sku))
         {
             throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
                 errorCode: ServiceErrorsBuilder.ProductoSkuExistente,

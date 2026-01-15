@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
 
@@ -18,9 +19,9 @@ public class ProductoApiTest : DatabaseTestFixture
     {
         SetupDataAsync(setupDataAction: async context =>
         {
-            if (!await context.Broker.AnyAsync(b => b.Nombre == "Broker Test"))
+            if (!await context.Broker.AnyAsync(predicate: b => b.Nombre == "Broker Test"))
             {
-                var broker = new Wallet.DOM.Modelos.Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
+                var broker = new Broker(nombre: "Broker Test", creationUser: Guid.NewGuid());
                 await context.Broker.AddAsync(entity: broker);
             }
 
@@ -47,7 +48,7 @@ public class ProductoApiTest : DatabaseTestFixture
             Nombre = "Netflix Premium",
             Precio = 15.99m,
             UrlIcono = "https://netflix.com/icon.png",
-            Categoria = CategoriaEnum.SERVICIOSEnum
+            Categoria = CategoriaEnum.ServiciosEnum
         };
         var content = CreateContent(body: request);
 
@@ -60,7 +61,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: request.Sku, actual: result.Sku);
         Assert.Equal(expected: provider.Id, actual: result.ProveedorId);
     }
@@ -81,7 +82,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: product.Id, actual: result.Id);
     }
 
@@ -93,13 +94,13 @@ public class ProductoApiTest : DatabaseTestFixture
         var provider = await CreateProveedor(client: client);
         var product = await CreateProducto(client: client, providerId: provider.Id.GetValueOrDefault());
 
-        var updateRequest = new ProductoRequest
+        var updateRequest = new ProductoUpdateRequest
         {
             Sku = "NETFLIX-STD",
             Nombre = "Netflix Standard",
-            Precio = 10.99m,
+            Precio = 10.99,
             UrlIcono = "https://netflix.com/icon.png",
-            Categoria = CategoriaEnum.SERVICIOSEnum
+            ConcurrencyToken = product.ConcurrencyToken
         };
 
         // Act
@@ -111,9 +112,9 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.Equal(expected: updateRequest.Sku, actual: result.Sku);
-        Assert.Equal(expected: updateRequest.Precio, actual: result.Precio);
+        Assert.Equal(expected: (decimal?)updateRequest.Precio, actual: result.Precio);
     }
 
     [Fact]
@@ -132,7 +133,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.False(condition: result.IsActive);
     }
 
@@ -154,7 +155,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<List<ProductoResult>>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.True(condition: result.Count >= 2);
     }
 
@@ -176,7 +177,7 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<List<ProductoResult>>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
         Assert.True(condition: result.Count >= 2);
     }
 
@@ -199,14 +200,14 @@ public class ProductoApiTest : DatabaseTestFixture
         var result =
             JsonConvert.DeserializeObject<ProductoResult>(value: await response.Content.ReadAsStringAsync(),
                 settings: _jsonSettings);
-        Assert.NotNull(result);
+        Assert.NotNull(@object: result);
 
         // Verify update
         var getResponse = await client.GetAsync(requestUri: $"{API_VERSION}/{API_URI}/{product.Id}");
         var getResult = JsonConvert.DeserializeObject<ProductoResult>(
             value: await getResponse.Content.ReadAsStringAsync(),
             settings: _jsonSettings);
-        Assert.NotNull(getResult);
+        Assert.NotNull(@object: getResult);
         Assert.Equal(expected: providerB.Id, actual: getResult.ProveedorId);
     }
 
@@ -218,7 +219,7 @@ public class ProductoApiTest : DatabaseTestFixture
             BrokerId = 1, // Assuming Seeded Broker Id 1 exists or I need to fetch it? SetupDataConfig seeds brokers? Yes CommonSettings creates brokers.
             UrlIcono = "https://icon.png",
         };
-     
+
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}",
             content: CreateContent(body: request));
         Assert.True(condition: response.IsSuccessStatusCode,
@@ -236,7 +237,7 @@ public class ProductoApiTest : DatabaseTestFixture
             Nombre = nombre,
             Precio = 10.0m,
             UrlIcono = "icon",
-            Categoria = CategoriaEnum.SERVICIOSEnum
+            Categoria = CategoriaEnum.ServiciosEnum
         };
         var response = await client.PostAsync(requestUri: $"{API_VERSION}/{PROVEEDOR_API_URI}/{providerId}/producto",
             content: CreateContent(body: request));

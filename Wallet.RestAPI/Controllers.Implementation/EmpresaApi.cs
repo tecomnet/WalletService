@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Helpers;
@@ -44,10 +44,11 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     /// <inheritdoc/>
     public override async Task<IActionResult> PutEmpresaAsync(
         string version,
-        int? idEmpresa, EmpresaRequest body)
+        int? idEmpresa, EmpresaUpdateRequest body)
     {
         // Call facade method
         var empresa = await empresaFacade.ActualizaEmpresaAsync(idEmpresa: idEmpresa.Value, nombre: body.Nombre,
+            concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<EmpresaResult>(source: empresa);
@@ -83,14 +84,14 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
 
     /// <inheritdoc/>
     public override async Task<IActionResult> AsignarProductosAsync(
-        string version,
-        [FromRoute] int idEmpresa,
-        [FromBody] AsignarProductosRequest body)
+        AsignarProductosRequest body,
+        string version, int? idEmpresa)
     {
         // Call facade method
         var empresa = await empresaFacade.AsignarProductosAsync(
-            idEmpresa: idEmpresa,
-            idsProductos: body.ProductoIds,
+            idEmpresa: idEmpresa.Value,
+            idsProductos: body.ProductoIds?.Where(predicate: x => x.HasValue).Select(selector: x => x.Value).ToList() ??
+                          new List<int>(),
             modificationUser: this.GetAuthenticatedUserGuid());
 
         // Map to response model
@@ -102,14 +103,15 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
 
     /// <inheritdoc/>
     public override async Task<IActionResult> DesasignarProductosAsync(
+        AsignarProductosRequest body,
         string version,
-        [FromRoute] int idEmpresa,
-        [FromBody] AsignarProductosRequest body)
+        int? idEmpresa)
     {
         // Call facade method
         var empresa = await empresaFacade.DesasignarProductosAsync(
-            idEmpresa: idEmpresa,
-            idsProductos: body.ProductoIds,
+            idEmpresa: idEmpresa.Value,
+            idsProductos: body.ProductoIds?.Where(predicate: x => x.HasValue).Select(selector: x => x.Value).ToList() ??
+                          new List<int>(),
             modificationUser: this.GetAuthenticatedUserGuid());
 
         // Map to response model
@@ -120,10 +122,38 @@ public class EmpresaApiController(IEmpresaFacade empresaFacade, IMapper mapper) 
     }
 
     /// <inheritdoc/>
-    public override async Task<IActionResult> GetEmpresaAsync(string version, int idEmpresa)
+    public override async Task<IActionResult> GetEmpresaAsync(string version, int? idEmpresa)
     {
         // Call facade method
-        var empresa = await empresaFacade.ObtenerPorIdAsync(idEmpresa: idEmpresa);
+        var empresa = await empresaFacade.ObtenerPorIdAsync(idEmpresa: idEmpresa.Value);
+        // Map to response model
+        var response = mapper.Map<EmpresaResult>(source: empresa);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> DeleteEmpresaAsync(string version, int? idEmpresa,
+        string concurrencyToken)
+    {
+        // Call facade method
+        var empresa =
+            await empresaFacade.EliminaEmpresaAsync(idEmpresa: idEmpresa.Value, concurrencyToken: concurrencyToken,
+                modificationUser: this.GetAuthenticatedUserGuid());
+        // Map to response model
+        var response = mapper.Map<EmpresaResult>(source: empresa);
+        // Return OK response
+        return Ok(value: response);
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IActionResult> PutActivarEmpresaAsync(StatusChangeRequest body, string version,
+        int? idEmpresa)
+    {
+        // Call facade method
+        var empresa =
+            await empresaFacade.ActivaEmpresaAsync(idEmpresa: idEmpresa.Value, concurrencyToken: body.ConcurrencyToken,
+                modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<EmpresaResult>(source: empresa);
         // Return OK response

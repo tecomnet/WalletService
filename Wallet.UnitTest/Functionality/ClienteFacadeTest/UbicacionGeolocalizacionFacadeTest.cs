@@ -44,7 +44,7 @@ public class UbicacionGeolocalizacionFacadeTest(SetupDataConfig setupConfig)
                 creationUser: SetupConfig.UserId,
                 testCase: SetupConfig.TestCaseId);
             // No nullo
-            Assert.NotNull(ubicacion);
+            Assert.NotNull(@object: ubicacion);
             // Assert properties 
             Assert.Equal(expected: latitud, actual: ubicacion.Latitud);
             Assert.Equal(expected: longitud, actual: ubicacion.Longitud);
@@ -58,12 +58,12 @@ public class UbicacionGeolocalizacionFacadeTest(SetupDataConfig setupConfig)
             // Get the user from context
             var ubicacionContext = await Context.UbicacionGeolocalizacion.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == ubicacion.Id);
-            Assert.NotNull(ubicacionContext);
+            Assert.NotNull(@object: ubicacionContext);
             var usuarioContext = await Context.Usuario.Include(navigationPropertyPath: u => u.Cliente).AsNoTracking()
                 .FirstOrDefaultAsync(predicate: u => u.Id == ubicacionContext.UsuarioId);
 
             // Confirm user created in context
-            Assert.NotNull(usuarioContext);
+            Assert.NotNull(@object: usuarioContext);
             // Assert properties 
             Assert.Equal(expected: idCliente, actual: usuarioContext.Cliente!.Id);
             Assert.Equal(expected: latitud, actual: ubicacionContext.Latitud);

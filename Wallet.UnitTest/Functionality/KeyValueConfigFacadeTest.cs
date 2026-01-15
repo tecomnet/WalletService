@@ -1,11 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Errors;
 using Wallet.Funcionalidad.Functionality.KeyValueConfigFacade;
 using Wallet.UnitTest.FixtureBase;
-using Xunit;
 
 namespace Wallet.UnitTest.Functionality;
 
@@ -17,7 +14,7 @@ public class KeyValueConfigFacadeTest : DatabaseTestFixture, IDisposable
     public KeyValueConfigFacadeTest()
     {
         _context = CreateContext();
-        _facade = new KeyValueConfigFacade(_context);
+        _facade = new KeyValueConfigFacade(context: _context);
     }
 
     public void Dispose()
@@ -34,13 +31,13 @@ public class KeyValueConfigFacadeTest : DatabaseTestFixture, IDisposable
         var user = Guid.NewGuid();
 
         // Act
-        var result = await _facade.GuardarKeyValueConfigAsync(key, value, user);
+        var result = await _facade.GuardarKeyValueConfigAsync(key: key, value: value, creationUser: user);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(key, result.Key);
-        Assert.Equal(value, result.Value);
-        Assert.NotNull(await _context.KeyValueConfig.FirstOrDefaultAsync(x => x.Key == key));
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: key, actual: result.Key);
+        Assert.Equal(expected: value, actual: result.Value);
+        Assert.NotNull(@object: await _context.KeyValueConfig.FirstOrDefaultAsync(predicate: x => x.Key == key));
     }
 
     [Fact]
@@ -50,15 +47,15 @@ public class KeyValueConfigFacadeTest : DatabaseTestFixture, IDisposable
         var key = "TestKey_" + Guid.NewGuid();
         var value = "TestValue";
         var user = Guid.NewGuid();
-        await _facade.GuardarKeyValueConfigAsync(key, value, user);
+        await _facade.GuardarKeyValueConfigAsync(key: key, value: value, creationUser: user);
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<EMGeneralAggregateException>(() =>
-            _facade.GuardarKeyValueConfigAsync(key, value, user));
+        var ex = await Assert.ThrowsAsync<EMGeneralAggregateException>(testCode: () =>
+            _facade.GuardarKeyValueConfigAsync(key: key, value: value, creationUser: user));
 
         // Assert error code
         // Assert error code
-        Assert.Contains(ex.InnerExceptions, e => e.Code == ServiceErrorsBuilder.KeyValueConfigYaExiste);
+        Assert.Contains(collection: ex.InnerExceptions, filter: e => e.Code == ServiceErrorsBuilder.KeyValueConfigYaExiste);
     }
 
     [Fact]
@@ -68,14 +65,14 @@ public class KeyValueConfigFacadeTest : DatabaseTestFixture, IDisposable
         var key = "TestKey_" + Guid.NewGuid();
         var value = "TestValue";
         var user = Guid.NewGuid();
-        await _facade.GuardarKeyValueConfigAsync(key, value, user);
+        await _facade.GuardarKeyValueConfigAsync(key: key, value: value, creationUser: user);
 
         // Act
-        var result = await _facade.ObtenerKeyValueConfigPorKeyAsync(key);
+        var result = await _facade.ObtenerKeyValueConfigPorKeyAsync(key: key);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(key, result.Key);
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: key, actual: result.Key);
     }
 
     [Fact]
@@ -85,16 +82,16 @@ public class KeyValueConfigFacadeTest : DatabaseTestFixture, IDisposable
         var key1 = "TestKey1_" + Guid.NewGuid();
         var key2 = "TestKey2_" + Guid.NewGuid();
         var user = Guid.NewGuid();
-        await _facade.GuardarKeyValueConfigAsync(key1, "Val1", user);
-        await _facade.GuardarKeyValueConfigAsync(key2, "Val2", user);
+        await _facade.GuardarKeyValueConfigAsync(key: key1, value: "Val1", creationUser: user);
+        await _facade.GuardarKeyValueConfigAsync(key: key2, value: "Val2", creationUser: user);
 
         // Act
         var results = await _facade.ObtenerTodasLasConfiguracionesAsync();
 
         // Assert
-        Assert.NotNull(results);
-        Assert.True(results.Count >= 2);
-        Assert.Contains(results, x => x.Key == key1);
-        Assert.Contains(results, x => x.Key == key2);
+        Assert.NotNull(@object: results);
+        Assert.True(condition: results.Count >= 2);
+        Assert.Contains(collection: results, filter: x => x.Key == key1);
+        Assert.Contains(collection: results, filter: x => x.Key == key2);
     }
 }

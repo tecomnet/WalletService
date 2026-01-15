@@ -1,5 +1,5 @@
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 
 namespace Wallet.UnitTest.DOM.Modelos;
 

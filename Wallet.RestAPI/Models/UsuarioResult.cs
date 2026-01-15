@@ -49,6 +49,7 @@ namespace Wallet.RestAPI.Models
         /// <summary>
         /// Gets or Sets CorreoElectronico
         /// </summary>
+        [Required]
 
         [DataMember(Name="correoElectronico")]
         public string CorreoElectronico { get; set; }
@@ -62,44 +63,67 @@ namespace Wallet.RestAPI.Models
         public string Estatus { get; set; }
 
         /// <summary>
-        /// Gets or Sets CreationUser
+        /// Guid unico del registro
         /// </summary>
+        /// <value>Guid unico del registro</value>
         [Required]
 
-        [DataMember(Name="creationUser")]
-        public Guid? CreationUser { get; set; }
+        [DataMember(Name="guid")]
+        public Guid? Guid { get; set; }
 
         /// <summary>
-        /// Gets or Sets ModificationUser
+        /// Creation timestamp
         /// </summary>
-        [Required]
-
-        [DataMember(Name="modificationUser")]
-        public Guid? ModificationUser { get; set; }
-
-        /// <summary>
-        /// Gets or Sets CreationTimestamp
-        /// </summary>
+        /// <value>Creation timestamp</value>
         [Required]
 
         [DataMember(Name="creationTimestamp")]
         public DateTime? CreationTimestamp { get; set; }
 
         /// <summary>
-        /// Gets or Sets ModificationTimestamp
+        /// Modification timestamp
         /// </summary>
+        /// <value>Modification timestamp</value>
         [Required]
 
         [DataMember(Name="modificationTimestamp")]
         public DateTime? ModificationTimestamp { get; set; }
 
         /// <summary>
-        /// Gets or Sets IsActive
+        /// Guid of the creation user
         /// </summary>
+        /// <value>Guid of the creation user</value>
+        [Required]
+
+        [DataMember(Name="creationUser")]
+        public Guid? CreationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
+        [Required]
+
+        [DataMember(Name="modificationUser")]
+        public Guid? ModificationUser { get; set; }
+
+        /// <summary>
+        /// Guid of the modification user
+        /// </summary>
+        /// <value>Guid of the modification user</value>
         [Required]
 
         [DataMember(Name="isActive")]
         public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [Required]
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -114,11 +138,13 @@ namespace Wallet.RestAPI.Models
             sb.Append("  Telefono: ").Append(Telefono).Append("\n");
             sb.Append("  CorreoElectronico: ").Append(CorreoElectronico).Append("\n");
             sb.Append("  Estatus: ").Append(Estatus).Append("\n");
-            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
-            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
+            sb.Append("  Guid: ").Append(Guid).Append("\n");
             sb.Append("  CreationTimestamp: ").Append(CreationTimestamp).Append("\n");
             sb.Append("  ModificationTimestamp: ").Append(ModificationTimestamp).Append("\n");
+            sb.Append("  CreationUser: ").Append(CreationUser).Append("\n");
+            sb.Append("  ModificationUser: ").Append(ModificationUser).Append("\n");
             sb.Append("  IsActive: ").Append(IsActive).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -181,14 +207,9 @@ namespace Wallet.RestAPI.Models
                     Estatus.Equals(other.Estatus)
                 ) && 
                 (
-                    CreationUser == other.CreationUser ||
-                    CreationUser != null &&
-                    CreationUser.Equals(other.CreationUser)
-                ) && 
-                (
-                    ModificationUser == other.ModificationUser ||
-                    ModificationUser != null &&
-                    ModificationUser.Equals(other.ModificationUser)
+                    Guid == other.Guid ||
+                    Guid != null &&
+                    Guid.Equals(other.Guid)
                 ) && 
                 (
                     CreationTimestamp == other.CreationTimestamp ||
@@ -201,9 +222,24 @@ namespace Wallet.RestAPI.Models
                     ModificationTimestamp.Equals(other.ModificationTimestamp)
                 ) && 
                 (
+                    CreationUser == other.CreationUser ||
+                    CreationUser != null &&
+                    CreationUser.Equals(other.CreationUser)
+                ) && 
+                (
+                    ModificationUser == other.ModificationUser ||
+                    ModificationUser != null &&
+                    ModificationUser.Equals(other.ModificationUser)
+                ) && 
+                (
                     IsActive == other.IsActive ||
                     IsActive != null &&
                     IsActive.Equals(other.IsActive)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -227,16 +263,20 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + CorreoElectronico.GetHashCode();
                     if (Estatus != null)
                     hashCode = hashCode * 59 + Estatus.GetHashCode();
-                    if (CreationUser != null)
-                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
-                    if (ModificationUser != null)
-                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
+                    if (Guid != null)
+                    hashCode = hashCode * 59 + Guid.GetHashCode();
                     if (CreationTimestamp != null)
                     hashCode = hashCode * 59 + CreationTimestamp.GetHashCode();
                     if (ModificationTimestamp != null)
                     hashCode = hashCode * 59 + ModificationTimestamp.GetHashCode();
+                    if (CreationUser != null)
+                    hashCode = hashCode * 59 + CreationUser.GetHashCode();
+                    if (ModificationUser != null)
+                    hashCode = hashCode * 59 + ModificationUser.GetHashCode();
                     if (IsActive != null)
                     hashCode = hashCode * 59 + IsActive.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }

@@ -1,4 +1,4 @@
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
@@ -41,7 +41,8 @@ public interface IEstadoFacade
     /// <param name="nombre">El nuevo nombre para el estado.</param>
     /// <param name="modificationUser">El identificador del usuario que modifica el estado.</param>
     /// <returns>Una tarea que representa la operación asíncrona. El resultado de la tarea es el objeto Estado actualizado.</returns>
-    public Task<Estado> ActualizaEstadoAsync(int idEstado, string nombre, Guid modificationUser);
+    public Task<Estado> ActualizaEstadoAsync(int idEstado, string nombre, string? concurrencyToken,
+        Guid modificationUser);
 
     /// <summary>
     /// Elimina (lógicamente) un estado de forma asíncrona.
