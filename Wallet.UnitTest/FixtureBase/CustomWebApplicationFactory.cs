@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Wallet.DOM.Enums;
+using Wallet.DOM.Helper;
 using Wallet.Funcionalidad;
 using Wallet.Funcionalidad.Remoting.REST.ChecktonPldManagement;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;

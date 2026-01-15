@@ -3,7 +3,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
 using Wallet.Funcionalidad.ServiceClient;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
@@ -26,12 +26,8 @@ public class ClienteFacade(
             // Obtener cliente
             var cliente = await context.Cliente.Include(navigationPropertyPath: x => x.Direccion)
                 .Include(navigationPropertyPath: x => x.Usuario)
-                .ThenInclude(navigationPropertyPath: u => u.DispositivoMovilAutorizados)
-                .Include(navigationPropertyPath: x => x.Usuario)
-                .ThenInclude(navigationPropertyPath: u => u.Verificaciones2Fa)
                 .Include(navigationPropertyPath: x => x.Estado)
-                .Include(navigationPropertyPath: x => x.Usuario)
-                .Include(navigationPropertyPath: u => u.Empresa)
+                .Include(navigationPropertyPath: x => x.Empresa)
                 .FirstOrDefaultAsync(predicate: x => x.Id == idCliente);
             // Validar cliente
             if (cliente == null)
@@ -65,7 +61,9 @@ public class ClienteFacade(
         string nombreEstado,
         DateOnly fechaNacimiento,
         Genero genero,
+        string concurrencyToken,
         Guid modificationUser,
+        bool enforceClientConcurrency = true,
         string? testCase = null)
     {
         try
@@ -86,12 +84,31 @@ public class ClienteFacade(
             var cliente = await context.Cliente
                 .Include(navigationPropertyPath: x => x.Direccion)
                 .Include(navigationPropertyPath: x => x.Usuario)
-                .FirstOrDefaultAsync(c => c.UsuarioId == idUsuario);
+                .FirstOrDefaultAsync(predicate: c => c.UsuarioId == idUsuario);
+
+            if (cliente != null)
+            {
+                if (!cliente.IsActive)
+                {
+                    throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.ClienteInactivo,
+                        dynamicContent: [cliente.NombreCompleto ?? "Cliente"],
+                        module: this.GetType().Name));
+                }
+
+                if (!cliente.Usuario.IsActive)
+                {
+                    throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.UsuarioInactivo,
+                        dynamicContent: [],
+                        module: this.GetType().Name));
+                }
+            }
 
             if (cliente == null)
             {
                 // Recuperar el usuario para vincularlo
-                var usuario = await context.Usuario.FirstOrDefaultAsync(u => u.Id == idUsuario);
+                var usuario = await context.Usuario.FirstOrDefaultAsync(predicate: u => u.Id == idUsuario);
                 if (usuario == null)
                 {
                     throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -100,11 +117,28 @@ public class ClienteFacade(
                         module: this.GetType().Name));
                 }
 
+                if (!usuario.IsActive)
+                {
+                    throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                        errorCode: ServiceErrorsBuilder.UsuarioInactivo,
+                        dynamicContent: [],
+                        module: this.GetType().Name));
+                }
+
                 // TODO EMD: UBICARLO EN LA EMPRESA TECOMNET
                 var empresa = await empresaFacade.ObtenerPorNombreAsync(nombre: "Tecomnet");
                 // Crear cliente
-                cliente = new Cliente(usuario, creationUser: usuario.CreationUser, empresa: empresa);
-                await context.Cliente.AddAsync(cliente);
+                cliente = new Cliente(usuario: usuario, creationUser: usuario.CreationUser, empresa: empresa);
+                await context.Cliente.AddAsync(entity: cliente);
+            }
+            else
+            {
+                if (enforceClientConcurrency)
+                {
+                    // Establece el token original para la validación de concurrencia optimista
+                    context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                        DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
+                }
             }
 
             // Actualizar datos personales
@@ -139,7 +173,8 @@ public class ClienteFacade(
             // Retornar cliente
             return cliente;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -151,17 +186,21 @@ public class ClienteFacade(
 
 
     /// <inheritdoc />
-    public async Task<Cliente> EliminarClienteAsync(int idCliente, Guid modificationUser)
+    public async Task<Cliente> EliminarClienteAsync(int idCliente, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             cliente.Deactivate(modificationUser: modificationUser);
             cliente.Usuario.Deactivate(modificationUser: modificationUser); // Also deactivate Usuario? Maybe.
             await context.SaveChangesAsync();
             return cliente;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -172,17 +211,21 @@ public class ClienteFacade(
     }
 
     /// <inheritdoc />
-    public async Task<Cliente> ActivarClienteAsync(int idCliente, Guid modificationUser)
+    public async Task<Cliente> ActivarClienteAsync(int idCliente, string concurrencyToken, Guid modificationUser)
     {
         try
         {
             var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+            // Establece el token original para la validación de concurrencia optimista
+            context.Entry(entity: cliente).Property(propertyExpression: x => x.ConcurrencyToken).OriginalValue =
+                DomCommon.SafeParseConcurrencyToken(token: concurrencyToken, module: this.GetType().Name);
             cliente.Activate(modificationUser: modificationUser);
             cliente.Usuario.Activate(modificationUser: modificationUser); // Also activate Usuario? Maybe.
             await context.SaveChangesAsync();
             return cliente;
         }
-        catch (Exception exception) when (exception is not EMGeneralAggregateException)
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
         {
             // Throw an aggregate exception
             throw GenericExceptionManager.GetAggregateException(
@@ -219,8 +262,8 @@ public class ClienteFacade(
         {
             // Obtener cliente con sus servicios favoritos
             var cliente = await context.Cliente
-                .Include(c => c.ServiciosFavoritos)
-                .FirstOrDefaultAsync(c => c.Id == idCliente);
+                .Include(navigationPropertyPath: c => c.ServiciosFavoritos)
+                .FirstOrDefaultAsync(predicate: c => c.Id == idCliente);
 
             // Validar cliente
             if (cliente == null)
@@ -237,6 +280,47 @@ public class ClienteFacade(
         catch (Exception exception) when (exception is not EMGeneralAggregateException)
         {
             // Throw an aggregate exception
+            throw GenericExceptionManager.GetAggregateException(
+                serviceName: DomCommon.ServiceName,
+                module: this.GetType().Name,
+                exception: exception);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<Cliente> ActualizarClienteAsync(
+        int idCliente,
+        string nombre,
+        string primerApellido,
+        string segundoApellido,
+        string nombreEstado,
+        DateOnly fechaNacimiento,
+        Genero genero,
+        string concurrencyToken,
+        Guid modificationUser,
+        string? testCase = null)
+    {
+        try
+        {
+            // Obtener cliente para asegurar existencia y obtener UsuarioId
+            var cliente = await ObtenerClientePorIdAsync(idCliente: idCliente);
+
+            // Llamar a la logica central de actualización
+            return await ActualizarClienteDatosPersonalesAsync(
+                idUsuario: cliente.UsuarioId,
+                nombre: nombre,
+                primerApellido: primerApellido,
+                segundoApellido: segundoApellido,
+                nombreEstado: nombreEstado,
+                fechaNacimiento: fechaNacimiento,
+                genero: genero,
+                concurrencyToken: concurrencyToken,
+                modificationUser: modificationUser,
+                testCase: testCase);
+        }
+        catch (Exception exception) when (exception is not EMGeneralAggregateException &&
+                                          exception is not DbUpdateConcurrencyException)
+        {
             throw GenericExceptionManager.GetAggregateException(
                 serviceName: DomCommon.ServiceName,
                 module: this.GetType().Name,

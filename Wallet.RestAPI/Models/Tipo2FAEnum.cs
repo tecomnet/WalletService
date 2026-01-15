@@ -19,7 +19,6 @@ namespace Wallet.RestAPI.Models
           /// Estructura enum para tipo de verificacion 2fa
           /// </summary>
           /// <value>Estructura enum para tipo de verificacion 2fa</value>
-          //[JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
           [JsonConverter(converterType: typeof(CustomStringToEnumConverter<Tipo2FAEnum>))]
           public enum Tipo2FAEnum
           {

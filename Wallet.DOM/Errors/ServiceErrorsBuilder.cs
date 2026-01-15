@@ -50,6 +50,10 @@ public class ServiceErrorsBuilder
         RegistroErrors();
         // 11. Errores de KeyValueConfig
         KeyValueConfigErrors();
+        // 12. Errores de GestionWallet
+        GestionWalletErrors();
+        // 13. Errores de BitacoraTransaccion
+        BitacoraTransaccionErrors();
     }
 
     /// <summary>
@@ -87,7 +91,7 @@ public class ServiceErrorsBuilder
     /// <summary>
     /// Código de error para excepciones no manejadas por la API.
     /// </summary>
-    public const string ApiErrorNoManejado = "API-ERROR-NO-MANEJADO";
+    public const string ApiErrorNoManejado = "API-ERROR-NO-CONTROLADO";
 
     /// <summary>
     /// Carga los errores generales del sistema.
@@ -99,7 +103,35 @@ public class ServiceErrorsBuilder
             errorCode: ApiErrorNoManejado, // Usa la constante pública
             message: "Error Interno del Servidor",
             description: "Ocurrió un error inesperado que ha sido registrado. Inténtelo de nuevo más tarde.");
+
+        // Error de concurrencia optimista
+        AddServiceError(
+            errorCode: ConcurrencyError,
+            message: "El registro ha sido modificado por otro usuario.",
+            description:
+            "El registro que intenta actualizar ha sido modificado por otro usuario. Por favor, recargue los datos e intente nuevamente.");
+
+        // Error de token de concurrencia inválido
+        AddServiceError(
+            errorCode: ConcurrencyTokenInvalido,
+            message: "El token de concurrencia es inválido.",
+            description: "El token de concurrencia proporcionado '{0}' no tiene un formato válido.");
+
+        // Error de token de concurrencia requerido
+        AddServiceError(
+            errorCode: ConcurrencyTokenRequerido,
+            message: "El token de concurrencia es requerido.",
+            description: "El token de concurrencia es obligatorio para esta operación.");
     }
+
+    /// <summary>Error: El registro fue modificado por otro usuario.</summary>
+    public const string ConcurrencyError = "ERROR-CONCURRENCIA-OPTIMISTA";
+
+    /// <summary>Error: El token de concurrencia es inválido.</summary>
+    public const string ConcurrencyTokenInvalido = "ERROR-TOKEN-CONCURRENCIA-INVALIDO";
+
+    /// <summary>Error: El token de concurrencia es requerido.</summary>
+    public const string ConcurrencyTokenRequerido = "ERROR-TOKEN-CONCURRENCIA-REQUERIDO";
 
     /// <summary>Error: El tipo de autorización es incorrecto.</summary>
     public const string EmIncorrectAuthorizationType = "EM-TIPO-AUTORIZACION-INCORRECTO";
@@ -110,6 +142,9 @@ public class ServiceErrorsBuilder
     #endregion
 
     #region Cliente
+
+    /// <summary>Error: El usuario está inactivo.</summary>
+    public const string UsuarioInactivo = "USUARIO-INACTIVO";
 
     /// <summary>Error: El dispositivo móvil autorizado es requerido.</summary>
     public const string DispositivoMovilAutorizadoRequerido = "DISPOSITIVO-MOVIL-AUTORIZADO-REQUERIDO";
@@ -304,6 +339,11 @@ public class ServiceErrorsBuilder
             errorCode: ClienteCorreoElectronicoNoConfigurado,
             message: "El cliente no tiene correo electrónico configurado",
             description: "El cliente {0} no tiene correo electrónico configurado");
+        // Error de tipo de dispositivo inválido
+        AddServiceError(
+            errorCode: DispositivoInvalido,
+            message: "El tipo de dispositivo es inválido.",
+            description: "El valor {0} no es un tipo de dispositivo válido.");
         // Error de verificación 2FA SMS no confirmado
         AddServiceError(
             errorCode: Verificacion2FASMSNoConfirmado,
@@ -341,6 +381,18 @@ public class ServiceErrorsBuilder
 
     /// <summary>Error: El cliente ya está registrado.</summary>
     public const string ClienteYaRegistrado = "CLIENTE-YA-REGISTRADO";
+
+    /// <summary>Error: La cuenta wallet está inactiva.</summary>
+    public const string CuentaWalletInactiva = "CUENTA-WALLET-INACTIVA";
+
+    /// <summary>Error: La cuenta wallet no fue encontrada.</summary>
+    public const string CuentaWalletNoEncontrada = "CUENTA-WALLET-NO-ENCONTRADA";
+
+    /// <summary>Error: La dirección está inactiva.</summary>
+    public const string DireccionInactiva = "DIRECCION-INACTIVA";
+
+    /// <summary>Error: El tipo de dispositivo es inválido.</summary>
+    public const string DispositivoInvalido = "DISPOSITIVO-INVALIDO";
 
     #endregion
 
@@ -460,7 +512,34 @@ public class ServiceErrorsBuilder
             errorCode: EmClaimUserError,
             message: "Error de autenticación",
             description: "El usuario de autenticación no es válido o no fue encontrado");
+
+        // Error: Credenciales inválidas
+        AddServiceError(
+            errorCode: CredencialesInvalidas,
+            message: "Credenciales inválidas",
+            description: "Las credenciales proporcionadas no son válidas.");
+
+        // Error: Token inválido
+        AddServiceError(
+            errorCode: TokenInvalido,
+            message: "Token inválido",
+            description: "El token proporcionado no es válido.");
+
+        // Error: Refresh token inválido o expirado
+        AddServiceError(
+            errorCode: RefreshTokenInvalido,
+            message: "Refresh token inválido o expirado",
+            description: "El token de refresco proporcionado no es válido o ha expirado.");
     }
+
+    /// <summary>Error: Credenciales inválidas.</summary>
+    public const string CredencialesInvalidas = "CREDENCIALES-INVALIDAS";
+
+    /// <summary>Error: Token inválido.</summary>
+    public const string TokenInvalido = "TOKEN-INVALIDO";
+
+    /// <summary>Error: Refresh token inválido.</summary>
+    public const string RefreshTokenInvalido = "REFRESH-TOKEN-INVALIDO";
 
     #endregion
 
@@ -511,6 +590,7 @@ public class ServiceErrorsBuilder
     public const string ProductoExistente = "PRODUCTO-EXISTENTE";
     public const string ProductoSkuExistente = "PRODUCTO-SKU-EXISTENTE";
     public const string ProductoInactivo = "PRODUCTO-INACTIVO";
+    public const string ProductoCategoriaInvalida = "PRODUCTO-CATEGORIA-INVALIDA";
 
 
     /// <summary>
@@ -553,6 +633,11 @@ public class ServiceErrorsBuilder
             errorCode: ProductoInactivo,
             message: "El producto del proveedor de servicio no está activo.",
             description: "El producto del proveedor de servicio {0} no está activo. Primero debe activarlo.");
+        // Error de categoria invalida
+        AddServiceError(
+            errorCode: ProductoCategoriaInvalida,
+            message: "La categoría del producto es inválida.",
+            description: "La categoría provides {0} no es válida.");
     }
 
     #endregion
@@ -627,6 +712,9 @@ public class ServiceErrorsBuilder
     /// <summary>Error: Servicio favorito no encontrado.</summary>
     public const string ServicioFavoritoNoEncontrado = "SERVICIO-FAVORITO-NO-ENCONTRADO";
 
+    /// <summary>Error: Servicio favorito inactivo.</summary>
+    public const string ServicioFavoritoInactivo = "SERVICIO-FAVORITO-INACTIVO";
+
     /// <summary>
     /// Carga los errores relacionados con la entidad ServicioFavorito.
     /// </summary>
@@ -637,6 +725,12 @@ public class ServiceErrorsBuilder
             errorCode: ServicioFavoritoNoEncontrado,
             message: "Servicio Favorito no encontrado",
             description: "El servicio favorito con id {0} no fue encontrado.");
+
+        // Error de servicio favorito inactivo
+        AddServiceError(
+            errorCode: ServicioFavoritoInactivo,
+            message: "Servicio Favorito inactivo",
+            description: "El servicio favorito con id {0} no está activo. Primero debe activarlo.");
     }
 
     #endregion
@@ -677,6 +771,9 @@ public class ServiceErrorsBuilder
     /// <summary>Error: La configuración KeyValue ya existe.</summary>
     public const string KeyValueConfigYaExiste = "KEY-VALUE-CONFIG-YA-EXISTE";
 
+    /// <summary>Error: La configuración KeyValue está inactiva.</summary>
+    public const string KeyValueConfigInactivo = "KEY-VALUE-CONFIG-INACTIVO";
+
     /// <summary>
     /// Carga los errores relacionados con la entidad KeyValueConfig.
     /// </summary>
@@ -693,6 +790,101 @@ public class ServiceErrorsBuilder
             errorCode: KeyValueConfigYaExiste,
             message: "La configuración ya existe.",
             description: "La configuración con clave {0} ya existe.");
+
+        // Error de configuración inactiva
+        AddServiceError(
+            errorCode: KeyValueConfigInactivo,
+            message: "La configuración está inactiva.",
+            description: "La configuración con clave {0} no está activa. Primero debe activarla.");
+    }
+
+    #endregion
+
+    #region GestionWallet
+
+    /// <summary>Error: Operación logística no permitida para tarjeta virtual.</summary>
+    public const string TarjetaVirtualNoLogistica = "TARJETA-VIRTUAL-NO-LOGISTICA";
+
+    /// <summary>Error: La tarjeta ya se encuentra vinculada.</summary>
+    public const string TarjetaYaVinculada = "TARJETA-YA-VINCULADA";
+
+    /// <summary>Error: La tarjeta ha expirado.</summary>
+    public const string TarjetaExpirada = "TARJETA-EXPIRADA";
+
+    /// <summary>Error: La tarjeta no fue encontrada.</summary>
+    public const string TarjetaNoEncontrada = "TARJETA-NO-ENCONTRADA";
+
+    /// <summary>Error: La tarjeta vinculada no fue encontrada.</summary>
+    public const string TarjetaVinculadaNoEncontrada = "TARJETA-VINCULADA-NO-ENCONTRADA";
+
+    /// <summary>Error: El detalle de pago no fue encontrado.</summary>
+    public const string DetallePagoNoEncontrado = "DETALLE-PAGO-NO-ENCONTRADO";
+
+    /// <summary>
+    /// Carga los errores relacionados con GestionWallet (Tarjetas).
+    /// </summary>
+    private void GestionWalletErrors()
+    {
+        // Error de logística en tarjeta virtual
+        AddServiceError(
+            errorCode: TarjetaVirtualNoLogistica,
+            message: "Operación no permitida.",
+            description: "No se pueden realizar operaciones de logística/entrega en una tarjeta virtual.");
+
+        // Error de tarjeta expirada
+        AddServiceError(
+            errorCode: TarjetaExpirada,
+            message: "Tarjeta Expirada.",
+            description: "La tarjeta ha expirado y no puede realizar operaciones.");
+
+        // Error de tarjeta ya vinculada
+        AddServiceError(
+            errorCode: TarjetaYaVinculada,
+            message: "Tarjeta ya vinculada.",
+            description: "La tarjeta ya se encuentra vinculada a la cuenta.");
+
+        // Error de wallet no encontrada
+        AddServiceError(
+            errorCode: CuentaWalletNoEncontrada,
+            message: "La wallet no fue encontrada.",
+            description: "No se encontró wallet para el cliente {0}.");
+
+        // Error de tarjeta no encontrada
+        AddServiceError(
+            errorCode: TarjetaNoEncontrada,
+            message: "Tarjeta no encontrada.",
+            description: "La tarjeta con id {0} no fue encontrada.");
+
+        // Error de tarjeta vinculada no encontrada
+        AddServiceError(
+            errorCode: TarjetaVinculadaNoEncontrada,
+            message: "Tarjeta vinculada no encontrada.",
+            description: "La tarjeta vinculada con id {0} no fue encontrada.");
+
+        // Error de detalle de pago no encontrado
+        AddServiceError(
+            errorCode: DetallePagoNoEncontrado,
+            message: "Detalle de pago no encontrado.",
+            description: "El detalle de pago con id {0} no fue encontrado.");
+    }
+
+    #endregion
+
+    #region BitacoraTransaccion
+
+    /// <summary>Error: La transacción no fue encontrada.</summary>
+    public const string BitacoraTransaccionNoEncontrada = "BITACORA-TRANSACCION-NO-ENCONTRADA";
+
+    /// <summary>
+    /// Carga los errores relacionados con BitacoraTransaccion.
+    /// </summary>
+    private void BitacoraTransaccionErrors()
+    {
+        // Error de transacción no encontrada
+        AddServiceError(
+            errorCode: BitacoraTransaccionNoEncontrada,
+            message: "Transaccion no encontrada.",
+            description: "Transaccion con ID {0} no encontrada.");
     }
 
     #endregion

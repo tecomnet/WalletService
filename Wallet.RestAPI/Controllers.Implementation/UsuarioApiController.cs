@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.RestAPI.Models;
@@ -30,14 +29,15 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var usuario = await usuarioFacade.ActualizarContrasenaAsync(idUsuario: idUsuario.Value,
                 contrasenaActual: body.ContrasenaActual,
                 contrasenaNueva: body.ContrasenaNueva, confirmacionContrasenaNueva: body.ContrasenaNuevaConfrimacion,
+                concurrencyToken: body.ConcurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
         }
 
         /// <inheritdoc />
-        public override async Task<IActionResult> Confirmar2FAAsync(string version, int? idUsuario,
-            ConfirmacionRequest body)
+        public override async Task<IActionResult> Confirmar2FAAsync(ConfirmacionRequest body, string version,
+            int? idUsuario)
         {
             var result = await usuarioFacade.ConfirmarCodigoVerificacion2FAAsync(idUsuario: idUsuario.Value,
                 tipo2FA: (Tipo2FA)(int)body!.Tipo, codigoVerificacion: body.Codigo,
@@ -51,6 +51,7 @@ namespace Wallet.RestAPI.Controllers.Implementation
         {
             var usuario = await usuarioFacade.ActualizarCorreoElectronicoAsync(idUsuario: idUsuario.Value,
                 correoElectronico: body.CorreoElectronico,
+                concurrencyToken: body.ConcurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
@@ -63,9 +64,21 @@ namespace Wallet.RestAPI.Controllers.Implementation
             var usuario = await usuarioFacade.ActualizarTelefonoAsync(idUsuario: idUsuario.Value,
                 codigoPais: body.CodigoPais,
                 telefono: body.Telefono,
+                concurrencyToken: body.ConcurrencyToken,
                 modificationUser: this.GetAuthenticatedUserGuid());
             var result = mapper.Map<UsuarioResult>(source: usuario);
             return Ok(value: result);
+        }
+
+        /// <inheritdoc />
+        public override async Task<IActionResult> DeleteUsuarioAsync(string version, int? idUsuario,
+            string concurrencyToken)
+        {
+            await usuarioFacade.DesactivarUsuarioAsync(
+                idUsuario: idUsuario.Value,
+                concurrencyToken: concurrencyToken,
+                modificationUser: this.GetAuthenticatedUserGuid());
+            return NoContent();
         }
     }
 }

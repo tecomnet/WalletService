@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionCliente;
+using Wallet.DOM.Modelos.GestionEmpresa;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.AuthFacade;
 using Wallet.Funcionalidad.Services.TokenService;
 
@@ -78,11 +80,11 @@ public class AuthFacadeTest
             contrasena: "password", estatus: EstatusRegistroEnum.RegistroCompletado, creationUser: creationUser);
         context.Usuario.Add(entity: usuario);
 
-        var empresa = new Empresa("Tecomnet", creationUser);
-        context.Empresa.Add(empresa);
+        var empresa = new Empresa(nombre: "Tecomnet", creationUser: creationUser);
+        context.Empresa.Add(entity: empresa);
 
-        var cliente = new Cliente(usuario, empresa, creationUser);
-        context.Cliente.Add(cliente);
+        var cliente = new Cliente(usuario: usuario, empresa: empresa, creationUser: creationUser);
+        context.Cliente.Add(entity: cliente);
 
         await context.SaveChangesAsync();
 
@@ -94,13 +96,13 @@ public class AuthFacadeTest
         await authFacade.LoginAsync(login: "test@example.com", password: "password");
 
         // Assert
-        _tokenServiceMock.Verify(x => x.GenerateAccessToken(It.Is<IEnumerable<Claim>>(c =>
+        _tokenServiceMock.Verify(expression: x => x.GenerateAccessToken(It.Is<IEnumerable<Claim>>(c =>
             c.Any(claim => claim.Type == "UsuarioId" && claim.Value == usuario.Id.ToString()) &&
             c.Any(claim => claim.Type == "CorreoElectronico" && claim.Value == usuario.CorreoElectronico) &&
             c.Any(claim => claim.Type == "Telefono" && claim.Value == usuario.Telefono) &&
             c.Any(claim => claim.Type == "ClienteId" && claim.Value == cliente.Id.ToString()) &&
             c.Any(claim => claim.Type == "Guid" && claim.Value == usuario.Guid.ToString())
-        )), Times.Once);
+        )), times: Times.Once);
     }
 
 
@@ -157,7 +159,7 @@ public class AuthFacadeTest
 
         // Assert
         var dbUser = await context.Usuario.FindAsync(keyValues: usuario.Id);
-        Assert.NotNull(dbUser);
+        Assert.NotNull(@object: dbUser);
         Assert.True(condition: string.IsNullOrEmpty(value: dbUser.RefreshToken));
     }
 }

@@ -2,7 +2,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 
 namespace Wallet.Funcionalidad.Functionality.ClienteFacade;
 
@@ -31,9 +31,17 @@ public class UbicacionGeolocalizacionFacade(IClienteFacade clienteFacade, Servic
     {
         try
         {
+            if (!Enum.IsDefined(typeof(Dispositivo), dispositivo))
+            {
+                throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
+                    errorCode: ServiceErrorsBuilder.DispositivoInvalido,
+                    dynamicContent: [dispositivo],
+                    module: this.GetType().Name));
+            }
+
             // Obtiene al cliente por su ID.
             var cliente = await clienteFacade.ObtenerClientePorIdAsync(idCliente: idCliente);
-            
+
             // Crea una nueva instancia de UbicacionesGeolocalizacion con los datos proporcionados.
             var ubicacionGeolocalizacion = new UbicacionesGeolocalizacion(
                 latitud: latitud,
@@ -45,14 +53,14 @@ public class UbicacionGeolocalizacionFacade(IClienteFacade clienteFacade, Servic
                 direccionIp: direccionIp,
                 creationUser: creationUser,
                 testCase: testCase);
-            
+
             // Agrega la ubicación geolocalizada al usuario asociado al cliente.
             cliente.Usuario.AgregarUbicacionGeolocalizacion(ubicacion: ubicacionGeolocalizacion,
                 modificationUser: creationUser);
-            
+
             // Guarda los cambios en la base de datos de forma asíncrona.
             await context.SaveChangesAsync();
-            
+
             // Retorna la ubicación geolocalizada recién creada.
             return ubicacionGeolocalizacion;
         }

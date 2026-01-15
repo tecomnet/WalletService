@@ -30,7 +30,7 @@ namespace Wallet.RestAPI.Models
         [StringLength(5, MinimumLength=5)]
         [DataMember(Name="codigoPostal")]
         public string CodigoPostal { get; set; }
-        
+
         /// <summary>
         /// Gets or Sets Municipio
         /// </summary>
@@ -86,6 +86,15 @@ namespace Wallet.RestAPI.Models
         public string Referencia { get; set; }
 
         /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [Required]
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -100,6 +109,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  NumeroExterior: ").Append(NumeroExterior).Append("\n");
             sb.Append("  NumeroInterior: ").Append(NumeroInterior).Append("\n");
             sb.Append("  Referencia: ").Append(Referencia).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -170,6 +180,11 @@ namespace Wallet.RestAPI.Models
                     Referencia == other.Referencia ||
                     Referencia != null &&
                     Referencia.Equals(other.Referencia)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -197,6 +212,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + NumeroInterior.GetHashCode();
                     if (Referencia != null)
                     hashCode = hashCode * 59 + Referencia.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }

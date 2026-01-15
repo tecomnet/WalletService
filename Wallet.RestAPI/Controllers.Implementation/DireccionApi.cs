@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Wallet.Funcionalidad.Functionality.ClienteFacade;
 using Wallet.RestAPI.Models;
 using Wallet.RestAPI.Helpers;
@@ -39,6 +38,7 @@ public class DireccionApiController(IDireccionFacade direccionFacade, IMapper ma
             numeroExterior: body.NumeroExterior,
             numeroInterior: body.NumeroInterior,
             referencia: body.Referencia,
+            concurrencyToken: body.ConcurrencyToken,
             modificationUser: this.GetAuthenticatedUserGuid());
         // Map to response model
         var response = mapper.Map<DireccionResult>(source: direccion);

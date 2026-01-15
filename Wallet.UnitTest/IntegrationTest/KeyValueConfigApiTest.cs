@@ -1,11 +1,9 @@
 using System.Net;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Wallet.DOM.Modelos;
 using Wallet.RestAPI.Models;
 using Wallet.UnitTest.FixtureBase;
-using Xunit;
 
 namespace Wallet.UnitTest.IntegrationTest;
 
@@ -20,10 +18,10 @@ public class KeyValueConfigApiTest : DatabaseTestFixture
         // We can seed data here if we want isolated data, or use shared if appropriate.
         // For KeyValueConfig, let's insert some data.
         var context = CreateContext();
-        if (!context.KeyValueConfig.AnyAsync(x => x.Key == "IntegrationTestKey").Result)
+        if (!context.KeyValueConfig.AnyAsync(predicate: x => x.Key == "IntegrationTestKey").Result)
         {
-            context.KeyValueConfig.Add(new KeyValueConfig("IntegrationTestKey", "IntegrationTestValue",
-                System.Guid.NewGuid()));
+            context.KeyValueConfig.Add(entity: new KeyValueConfig(key: "IntegrationTestKey", value: "IntegrationTestValue",
+                creationUser: System.Guid.NewGuid()));
             context.SaveChanges();
         }
     }
@@ -35,15 +33,15 @@ public class KeyValueConfigApiTest : DatabaseTestFixture
         var client = Factory.CreateAuthenticatedClient();
 
         // Act
-        var response = await client.GetAsync($"{ApiVersion}/{ApiUri}");
+        var response = await client.GetAsync(requestUri: $"{ApiVersion}/{ApiUri}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var content = await response.Content.ReadAsStringAsync();
-        var results = JsonConvert.DeserializeObject<List<KeyValueConfigResult>>(content);
+        var results = JsonConvert.DeserializeObject<List<KeyValueConfigResult>>(value: content);
 
-        Assert.NotNull(results);
-        Assert.Contains(results, x => x.Key == "IntegrationTestKey" && x.Value == "IntegrationTestValue");
+        Assert.NotNull(@object: results);
+        Assert.Contains(collection: results, filter: x => x.Key == "IntegrationTestKey" && x.Value == "IntegrationTestValue");
     }
 
     [Fact]
@@ -55,17 +53,17 @@ public class KeyValueConfigApiTest : DatabaseTestFixture
         var payload = new KeyValueConfigRequest { Key = key, Value = "NewValue" };
 
         // Act
-        var response = await client.PostAsync($"{ApiVersion}/{ApiUri}",
-            new System.Net.Http.StringContent(JsonConvert.SerializeObject(payload), System.Text.Encoding.UTF8,
-                "application/json"));
+        var response = await client.PostAsync(requestUri: $"{ApiVersion}/{ApiUri}",
+            content: new System.Net.Http.StringContent(content: JsonConvert.SerializeObject(value: payload), encoding: System.Text.Encoding.UTF8,
+                mediaType: "application/json"));
 
         // Assert
-        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.Created, actual: response.StatusCode);
         var content = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<KeyValueConfigResult>(content);
-        Assert.NotNull(result);
-        Assert.Equal(key, result.Key);
-        Assert.Equal("NewValue", result.Value);
+        var result = JsonConvert.DeserializeObject<KeyValueConfigResult>(value: content);
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: key, actual: result.Key);
+        Assert.Equal(expected: "NewValue", actual: result.Value);
     }
 
     [Fact]
@@ -75,19 +73,19 @@ public class KeyValueConfigApiTest : DatabaseTestFixture
         var client = Factory.CreateAuthenticatedClient();
         var context = CreateContext();
         var key = "GetKey_" + System.Guid.NewGuid();
-        context.KeyValueConfig.Add(new KeyValueConfig(key, "GetValue", System.Guid.NewGuid()));
+        context.KeyValueConfig.Add(entity: new KeyValueConfig(key: key, value: "GetValue", creationUser: System.Guid.NewGuid()));
         await context.SaveChangesAsync();
 
         // Act
-        var response = await client.GetAsync($"{ApiVersion}/{ApiUri}/{key}");
+        var response = await client.GetAsync(requestUri: $"{ApiVersion}/{ApiUri}/{key}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var content = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<KeyValueConfigResult>(content);
-        Assert.NotNull(result);
-        Assert.Equal(key, result.Key);
-        Assert.Equal("GetValue", result.Value);
+        var result = JsonConvert.DeserializeObject<KeyValueConfigResult>(value: content);
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: key, actual: result.Key);
+        Assert.Equal(expected: "GetValue", actual: result.Value);
     }
 
     [Fact]
@@ -97,23 +95,28 @@ public class KeyValueConfigApiTest : DatabaseTestFixture
         var client = Factory.CreateAuthenticatedClient();
         var context = CreateContext();
         var key = "UpdateKey_" + System.Guid.NewGuid();
-        context.KeyValueConfig.Add(new KeyValueConfig(key, "OriginalValue", System.Guid.NewGuid()));
+        var entity = new KeyValueConfig(key: key, value: "OriginalValue", creationUser: System.Guid.NewGuid());
+        context.KeyValueConfig.Add(entity: entity);
         await context.SaveChangesAsync();
 
-        var payload = new KeyValueConfigUpdateRequest { Value = "UpdatedValue" };
+        var payload = new KeyValueConfigUpdateRequest
+        {
+            Value = "UpdatedValue",
+            ConcurrencyToken = Convert.ToBase64String(inArray: entity.ConcurrencyToken)
+        };
 
         // Act
-        var response = await client.PutAsync($"{ApiVersion}/{ApiUri}/{key}",
-            new System.Net.Http.StringContent(JsonConvert.SerializeObject(payload), System.Text.Encoding.UTF8,
-                "application/json"));
+        var response = await client.PutAsync(requestUri: $"{ApiVersion}/{ApiUri}/{key}",
+            content: new System.Net.Http.StringContent(content: JsonConvert.SerializeObject(value: payload), encoding: System.Text.Encoding.UTF8,
+                mediaType: "application/json"));
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
         var content = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<KeyValueConfigResult>(content);
-        Assert.NotNull(result);
-        Assert.Equal(key, result.Key);
-        Assert.Equal("UpdatedValue", result.Value);
+        var result = JsonConvert.DeserializeObject<KeyValueConfigResult>(value: content);
+        Assert.NotNull(@object: result);
+        Assert.Equal(expected: key, actual: result.Key);
+        Assert.Equal(expected: "UpdatedValue", actual: result.Value);
     }
 
     [Fact]
@@ -123,20 +126,20 @@ public class KeyValueConfigApiTest : DatabaseTestFixture
         var client = Factory.CreateAuthenticatedClient();
         var context = CreateContext();
         var key = "DeleteKey_" + System.Guid.NewGuid();
-        context.KeyValueConfig.Add(new KeyValueConfig(key, "DeleteValue", System.Guid.NewGuid()));
+        context.KeyValueConfig.Add(entity: new KeyValueConfig(key: key, value: "DeleteValue", creationUser: System.Guid.NewGuid()));
         await context.SaveChangesAsync();
 
         // Act
-        var response = await client.DeleteAsync($"{ApiVersion}/{ApiUri}/{key}");
+        var response = await client.DeleteAsync(requestUri: $"{ApiVersion}/{ApiUri}/{key}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(expected: HttpStatusCode.OK, actual: response.StatusCode);
 
         // Verify deletion
         context.ChangeTracker.Clear();
         var deletedEntity = await context.KeyValueConfig.IgnoreQueryFilters()
-            .FirstOrDefaultAsync(x => x.Key == key);
-        Assert.NotNull(deletedEntity);
-        Assert.False(deletedEntity.IsActive, "Entity should be logically deleted (IsActive=false)");
+            .FirstOrDefaultAsync(predicate: x => x.Key == key);
+        Assert.NotNull(@object: deletedEntity);
+        Assert.False(condition: deletedEntity.IsActive, userMessage: "Entity should be logically deleted (IsActive=false)");
     }
 }

@@ -41,6 +41,15 @@ namespace Wallet.RestAPI.Models
         public string Telefono { get; set; }
 
         /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [Required]
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -50,6 +59,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("class TelefonoUpdateRequest {\n");
             sb.Append("  CodigoPais: ").Append(CodigoPais).Append("\n");
             sb.Append("  Telefono: ").Append(Telefono).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -95,6 +105,11 @@ namespace Wallet.RestAPI.Models
                     Telefono == other.Telefono ||
                     Telefono != null &&
                     Telefono.Equals(other.Telefono)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -112,6 +127,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + CodigoPais.GetHashCode();
                     if (Telefono != null)
                     hashCode = hashCode * 59 + Telefono.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }

@@ -3,7 +3,7 @@ using Wallet.DOM;
 using Wallet.DOM.ApplicationDbContext;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 
 namespace Wallet.Funcionalidad.Functionality.ConsentimientosUsuarioFacade;
 
@@ -15,7 +15,7 @@ public class ConsentimientosUsuarioFacade(ServiceDbContext context) : IConsentim
         try
         {
             // Verificar si el usuario existe
-            var usuario = await context.Usuario.FindAsync(idUsuario);
+            var usuario = await context.Usuario.FindAsync(keyValues: idUsuario);
             if (usuario == null)
             {
                 throw new EMGeneralAggregateException(exception: DomCommon.BuildEmGeneralException(
@@ -33,7 +33,7 @@ public class ConsentimientosUsuarioFacade(ServiceDbContext context) : IConsentim
                 creationUser: creationUser
             );
 
-            await context.ConsentimientosUsuario.AddAsync(consentimiento);
+            await context.ConsentimientosUsuario.AddAsync(entity: consentimiento);
             await context.SaveChangesAsync();
 
             return consentimiento;
@@ -52,12 +52,12 @@ public class ConsentimientosUsuarioFacade(ServiceDbContext context) : IConsentim
         try
         {
             var consentimientos = await context.ConsentimientosUsuario
-                .Where(c => c.IdUsuario == idUsuario && c.IsActive)
+                .Where(predicate: c => c.IdUsuario == idUsuario && c.IsActive)
                 .ToListAsync();
 
             var ultimosConsentimientos = consentimientos
-                .GroupBy(c => c.TipoDocumento)
-                .Select(g => g.OrderByDescending(c => c.FechaAceptacion).First())
+                .GroupBy(keySelector: c => c.TipoDocumento)
+                .Select(selector: g => g.OrderByDescending(keySelector: c => c.FechaAceptacion).First())
                 .ToList();
 
             return ultimosConsentimientos;

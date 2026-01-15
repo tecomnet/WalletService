@@ -40,8 +40,17 @@ namespace Wallet.RestAPI.Models
         public string Nombre { get; set; }
 
         /// <summary>
+        /// Gets or Sets Categoria
+        /// </summary>
+        [Required]
+
+        [DataMember(Name="categoria")]
+        public CategoriaEnum Categoria { get; set; }
+
+        /// <summary>
         /// Gets or Sets UrlIcono
         /// </summary>
+        [Required]
 
         [MaxLength(500)]
         [DataMember(Name="urlIcono")]
@@ -57,6 +66,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("class ProveedorRequest {\n");
             sb.Append("  BrokerId: ").Append(BrokerId).Append("\n");
             sb.Append("  Nombre: ").Append(Nombre).Append("\n");
+            sb.Append("  Categoria: ").Append(Categoria).Append("\n");
             sb.Append("  UrlIcono: ").Append(UrlIcono).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -105,6 +115,11 @@ namespace Wallet.RestAPI.Models
                     Nombre.Equals(other.Nombre)
                 ) && 
                 (
+                    Categoria == other.Categoria ||
+                    Categoria != null &&
+                    Categoria.Equals(other.Categoria)
+                ) && 
+                (
                     UrlIcono == other.UrlIcono ||
                     UrlIcono != null &&
                     UrlIcono.Equals(other.UrlIcono)
@@ -125,6 +140,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + BrokerId.GetHashCode();
                     if (Nombre != null)
                     hashCode = hashCode * 59 + Nombre.GetHashCode();
+                    if (Categoria != null)
+                    hashCode = hashCode * 59 + Categoria.GetHashCode();
                     if (UrlIcono != null)
                     hashCode = hashCode * 59 + UrlIcono.GetHashCode();
                 return hashCode;

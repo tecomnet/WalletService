@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionUsuario;
 using Wallet.Funcionalidad.Functionality.UsuarioFacade;
 using Wallet.Funcionalidad.Remoting.REST.TwilioManagement;
 using Wallet.UnitTest.Functionality.Configuration;
@@ -43,15 +43,15 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                 modificationUser: SetupConfig.UserId);
 
             // Assert token returned
-            Assert.NotNull(token);
+            Assert.NotNull(@object: token);
             Assert.Equal(expected: "generated_token", actual: token);
 
             // Get the user from context
             var usuarioContext = await Context.Usuario.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
             // Confirm user updated in context
-            Assert.NotNull(usuarioContext);
-            Assert.NotNull(usuarioContext.Contrasena);
+            Assert.NotNull(@object: usuarioContext);
+            Assert.NotNull(@object: usuarioContext.Contrasena);
 
             // Assert successful test
             Assert.True(condition: success);
@@ -94,21 +94,26 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                     x.VerificacionEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(value: new VerificacionResult { Sid = "SID123", IsVerified = true });
 
+            // Fetch real concurrency token
+            var userDb = await Context.Usuario.AsNoTracking().FirstOrDefaultAsync(predicate: u => u.Id == idUsuario);
+            var token = userDb?.ConcurrencyToken ?? [];
+
             // Call facade method
             var usuario = await Facade.ActualizarCorreoElectronicoAsync(
                 idUsuario: idUsuario,
                 correoElectronico: correoElectronico,
+                concurrencyToken: Convert.ToBase64String(inArray: token),
                 modificationUser: SetupConfig.UserId);
 
             // Assert user updated
-            Assert.NotNull(usuario);
+            Assert.NotNull(@object: usuario);
             Assert.Equal(expected: correoElectronico, actual: usuario.CorreoElectronico);
 
             // Get the user from context
             var usuarioContext = await Context.Usuario.AsNoTracking()
                 .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
             // Confirm user updated in context
-            Assert.NotNull(usuarioContext);
+            Assert.NotNull(@object: usuarioContext);
             Assert.Equal(expected: correoElectronico, actual: usuarioContext.CorreoElectronico);
 
             // Assert successful test
@@ -157,7 +162,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                 testCase: SetupConfig.TestCaseId);
 
             // Assert user created
-            Assert.NotNull(usuario);
+            Assert.NotNull(@object: usuario);
             // Assert user properties
             Assert.True(condition: usuario.CodigoPais == codigoPais &&
                                    usuario.Telefono == telefono);
@@ -167,7 +172,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                 .FirstOrDefaultAsync(predicate: x => x.Id == usuario.Id);
 
             // Confirm user created in context
-            Assert.NotNull(usuarioContext);
+            Assert.NotNull(@object: usuarioContext);
             // Assert user properties
             Assert.True(condition: usuarioContext.CodigoPais == codigoPais &&
                                    usuarioContext.Telefono == telefono);
@@ -247,7 +252,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
             if (success)
             {
                 // Assert result is true
-                Assert.True(result);
+                Assert.True(condition: result);
 
                 // Get the user from context
                 var usuarioContext = await Context.Usuario.Include(navigationPropertyPath: x => x.Verificaciones2Fa)
@@ -255,7 +260,7 @@ public class UsuarioFacadeTest(SetupDataConfig setupConfig)
                     .FirstOrDefaultAsync(predicate: x => x.Id == idUsuario);
 
                 // Confirm user updated in context
-                Assert.NotNull(usuarioContext);
+                Assert.NotNull(@object: usuarioContext);
                 Assert.Contains(collection: usuarioContext.Verificaciones2Fa,
                     filter: v => v.Verificado && v.Codigo == codigoVerificacion);
             }

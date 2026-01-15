@@ -19,28 +19,22 @@ namespace Wallet.RestAPI.Models
           /// Estructura enum para categoria de proveeedor y productos
           /// </summary>
           /// <value>Estructura enum para categoria de proveeedor y productos</value>
-          //[JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
           [JsonConverter(converterType: typeof(CustomStringToEnumConverter<CategoriaEnum>))]
           public enum CategoriaEnum
           {
               /// <summary>
-              /// Enum SERVICIOSEnum for SERVICIOS
+              /// Enum ServiciosEnum for Servicios
               /// </summary>
-              [EnumMember(Value = "SERVICIOS")]
-              SERVICIOSEnum = 0,
+              [EnumMember(Value = "Servicios")]
+              ServiciosEnum = 0,
               /// <summary>
-              /// Enum RECARGASEnum for RECARGAS
+              /// Enum RecargasEnum for Recargas
               /// </summary>
-              [EnumMember(Value = "RECARGAS")]
-              RECARGASEnum = 1,
+              [EnumMember(Value = "Recargas")]
+              RecargasEnum = 1,
               /// <summary>
-              /// Enum MOVILIDADEnum for MOVILIDAD
+              /// Enum MovilidadEnum for Movilidad
               /// </summary>
-              [EnumMember(Value = "MOVILIDAD")]
-              MOVILIDADEnum = 2,
-              /// <summary>
-              /// Enum OTROSEnum for OTROS
-              /// </summary>
-              [EnumMember(Value = "OTROS")]
-              OTROSEnum = 3          }
+              [EnumMember(Value = "Movilidad")]
+              MovilidadEnum = 2          }
 }

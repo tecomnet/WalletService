@@ -1,6 +1,7 @@
 using Moq;
+using Wallet.DOM.Enums;
 using Wallet.DOM.Errors;
-using Wallet.DOM.Modelos;
+using Wallet.DOM.Modelos.GestionEmpresa;
 using Xunit.Sdk;
 
 namespace Wallet.UnitTest.DOM.Modelos;
@@ -39,12 +40,13 @@ public class ProveedorTest : UnitTestTemplate
         {
             // Arrange
             var mockBroker = new Mock<Broker>();
-            mockBroker.SetupGet(b => b.Id).Returns(brokerId);
+            mockBroker.SetupGet(expression: b => b.Id).Returns(value: brokerId);
 
             // Act
             var proveedor = new Proveedor(
                 broker: mockBroker.Object,
                 urlIcono: "https://cfe.mx/logo.png",
+                categoria: Categoria.Servicios,
                 nombre: nombre,
                 creationUser: Guid.NewGuid()
             );
@@ -54,7 +56,7 @@ public class ProveedorTest : UnitTestTemplate
                 userMessage: $"El caso '{caseName}' debería haber tenido éxito, pero falló.");
             Assert.Equal(expected: brokerId, actual: proveedor.BrokerId);
             Assert.Equal(expected: nombre, actual: proveedor.Nombre);
-            Assert.NotNull(proveedor.Productos);
+            Assert.NotNull(@object: proveedor.Productos);
         }
         catch (EMGeneralAggregateException exception)
         {

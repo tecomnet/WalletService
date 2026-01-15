@@ -50,6 +50,15 @@ namespace Wallet.RestAPI.Models
         public string ContrasenaNuevaConfrimacion { get; set; }
 
         /// <summary>
+        /// Token de concurrencia
+        /// </summary>
+        /// <value>Token de concurrencia</value>
+        [Required]
+
+        [DataMember(Name="concurrencyToken")]
+        public string ConcurrencyToken { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -60,6 +69,7 @@ namespace Wallet.RestAPI.Models
             sb.Append("  ContrasenaActual: ").Append(ContrasenaActual).Append("\n");
             sb.Append("  ContrasenaNueva: ").Append(ContrasenaNueva).Append("\n");
             sb.Append("  ContrasenaNuevaConfrimacion: ").Append(ContrasenaNuevaConfrimacion).Append("\n");
+            sb.Append("  ConcurrencyToken: ").Append(ConcurrencyToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -110,6 +120,11 @@ namespace Wallet.RestAPI.Models
                     ContrasenaNuevaConfrimacion == other.ContrasenaNuevaConfrimacion ||
                     ContrasenaNuevaConfrimacion != null &&
                     ContrasenaNuevaConfrimacion.Equals(other.ContrasenaNuevaConfrimacion)
+                ) && 
+                (
+                    ConcurrencyToken == other.ConcurrencyToken ||
+                    ConcurrencyToken != null &&
+                    ConcurrencyToken.Equals(other.ConcurrencyToken)
                 );
         }
 
@@ -129,6 +144,8 @@ namespace Wallet.RestAPI.Models
                     hashCode = hashCode * 59 + ContrasenaNueva.GetHashCode();
                     if (ContrasenaNuevaConfrimacion != null)
                     hashCode = hashCode * 59 + ContrasenaNuevaConfrimacion.GetHashCode();
+                    if (ConcurrencyToken != null)
+                    hashCode = hashCode * 59 + ConcurrencyToken.GetHashCode();
                 return hashCode;
             }
         }
