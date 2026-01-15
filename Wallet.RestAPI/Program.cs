@@ -128,27 +128,26 @@ app.UseAuthorization();
 app.MapOpenApi();
 
 // Configura Swagger para agregar información de servidores dinámicamente.
-app.UseSwagger(setupAction: options =>
+app.UseSwagger(options =>
 {
-	options.PreSerializeFilters.Add(item: (swagger, httpReq) =>
+	options.PreSerializeFilters.Add((swagger, httpReq) =>
 	{
 		swagger.Servers =
 		[
 			new() { Url = $"https://{httpReq.Host.Value}", Description = "Local Tecom Net" },
-			new() { Url = $"https://{httpReq.Host.Value}", Description = "Deployed Tecom Net" }
+			new() { Url = $"https://{httpReq.Host.Value}/Wallet/WalletService", Description = "Deployed Tecom Net" }
 		];
 	});
 });
 
 // Configura la interfaz de usuario de Swagger (Swagger UI).
-app.UseSwaggerUI(setupAction: c =>
+app.UseSwaggerUI(c =>
 {
 	var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 	// Genera un endpoint de Swagger para cada versión de API disponible.
 	foreach (var description in provider.ApiVersionDescriptions)
 	{
-		c.SwaggerEndpoint(url: $"/swagger/{description.GroupName}/swagger.json",
-			name: "WalletService " + description.ApiVersion);
+		c.SwaggerEndpoint($"/Wallet/WalletService/swagger/{description.GroupName}/swagger.json", "WalletService " + description.ApiVersion);
 	}
 });
 
